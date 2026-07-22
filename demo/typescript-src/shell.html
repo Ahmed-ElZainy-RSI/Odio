@@ -1,0 +1,1037 @@
+<title>Reading Ibn Battuta, Six Ways — TypeScript Edition</title>
+
+<style>
+@font-face {
+  font-family: "Amiri";
+  src: url(data:font/woff2;base64,__FONT_AMIRI__) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces Display";
+  src: url(data:font/woff2;base64,__FONT_DISPLAY__) format("woff2");
+  font-weight: 680;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fraunces Sub";
+  src: url(data:font/woff2;base64,__FONT_SUB__) format("woff2");
+  font-weight: 460;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #eae2cc;
+  --paper-2: #f4efe0;
+  --paper-3: #ddd2ae;
+  --ink: #241f16;
+  --ink-soft: #5f5645;
+  --ink-faint: #8a8069;
+  --gold: #a97b2f;
+  --gold-strong: #7a5511;
+  --lapis: #1f4e63;
+  --lapis-soft: #3a7391;
+  --vermilion: #9c3b2e;
+  --line: #cabf9c;
+  --line-strong: #b0a37a;
+  --shadow: 20 15% 20%;
+  --surface: var(--paper);
+
+  --ramp-1: #ecd9a8;
+  --ramp-2: #ddbf7c;
+  --ramp-3: #c99f52;
+  --ramp-4: #b4842f;
+  --ramp-5: #966816;
+  --ramp-6: #7a5511;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1b1712;
+    --paper-2: #221e17;
+    --paper-3: #2c261c;
+    --ink: #ece3cc;
+    --ink-soft: #bcb195;
+    --ink-faint: #8a8069;
+    --gold: #d1a44e;
+    --gold-strong: #e8c079;
+    --lapis: #7bb6d1;
+    --lapis-soft: #5c93ab;
+    --vermilion: #e08a72;
+    --line: #3c3527;
+    --line-strong: #4d442f;
+    --surface: var(--paper);
+
+    --ramp-1: #4a3d20;
+    --ramp-2: #675328;
+    --ramp-3: #866c30;
+    --ramp-4: #a98639;
+    --ramp-5: #cca24a;
+    --ramp-6: #eec573;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #1b1712;
+  --paper-2: #221e17;
+  --paper-3: #2c261c;
+  --ink: #ece3cc;
+  --ink-soft: #bcb195;
+  --ink-faint: #8a8069;
+  --gold: #d1a44e;
+  --gold-strong: #e8c079;
+  --lapis: #7bb6d1;
+  --lapis-soft: #5c93ab;
+  --vermilion: #e08a72;
+  --line: #3c3527;
+  --line-strong: #4d442f;
+  --ramp-1: #4a3d20;
+  --ramp-2: #675328;
+  --ramp-3: #866c30;
+  --ramp-4: #a98639;
+  --ramp-5: #cca24a;
+  --ramp-6: #eec573;
+}
+:root[data-theme="light"] {
+  --paper: #eae2cc;
+  --paper-2: #f4efe0;
+  --paper-3: #ddd2ae;
+  --ink: #241f16;
+  --ink-soft: #5f5645;
+  --ink-faint: #8a8069;
+  --gold: #a97b2f;
+  --gold-strong: #7a5511;
+  --lapis: #1f4e63;
+  --lapis-soft: #3a7391;
+  --vermilion: #9c3b2e;
+  --line: #cabf9c;
+  --line-strong: #b0a37a;
+  --ramp-1: #ecd9a8;
+  --ramp-2: #ddbf7c;
+  --ramp-3: #c99f52;
+  --ramp-4: #b4842f;
+  --ramp-5: #966816;
+  --ramp-6: #7a5511;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light dark; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Fraunces Sub", Georgia, "Iowan Old Style", serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+  overflow-x: hidden;
+  background-image: var(--theme-texture, none);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+body, .block, .ts-card, .page-card, .bar-track, .code-block, .disclaimer, .flag-banner, .anomaly-callout, .table-wrap, .resize-presets button, .view-toggle button {
+  transition: background-color 0.45s ease, border-color 0.45s ease, color 0.45s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  body, .block, .ts-card, .page-card, .bar-track, .code-block, .disclaimer, .flag-banner, .anomaly-callout, .table-wrap, .resize-presets button, .view-toggle button {
+    transition: none !important;
+  }
+}
+
+/* Per-theme ambient background texture, purely decorative and static (no looping animation on a reading page) */
+:root[data-theme-name="blueprint"] body {
+  --theme-texture:
+    linear-gradient(color-mix(in oklch, var(--lapis) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--lapis) 14%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+:root[data-theme-name="terminal"] body {
+  --theme-texture: repeating-linear-gradient(
+    0deg,
+    color-mix(in oklch, var(--lapis) 5%, transparent) 0px,
+    color-mix(in oklch, var(--lapis) 5%, transparent) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+img { max-width: 100%; display: block; }
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+a { color: var(--lapis); }
+
+.eyebrow {
+  font-family: "Amiri", serif;
+  font-size: 1.05rem;
+  color: var(--gold-strong);
+  letter-spacing: 0.02em;
+}
+.label {
+  font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.ts-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--lapis);
+  background: color-mix(in oklch, var(--lapis) 12%, var(--paper-2));
+  border: 1px solid color-mix(in oklch, var(--lapis) 40%, var(--line));
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  margin-top: 1.1rem;
+}
+.ts-badge::before { content: "TS"; font-weight: 800; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  padding: clamp(3rem, 9vw, 6rem) 0 clamp(2.5rem, 6vw, 4rem);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 140%;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 10%, color-mix(in oklch, var(--gold) 14%, transparent), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 0%, color-mix(in oklch, var(--lapis) 10%, transparent), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero .wrap { position: relative; z-index: 1; }
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.hero h1 {
+  font-family: var(--font-display, "Fraunces Display"), Georgia, serif;
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  line-height: 1.05;
+  margin: 0.6rem 0 1rem;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.9s 0.15s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.hero p.sub {
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  color: var(--ink-soft);
+  max-width: 46em;
+  opacity: 0;
+  animation: rise 0.9s 0.4s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.meta-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.6rem;
+  opacity: 0;
+  animation: rise 0.9s 0.6s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.meta-row .stat {
+  font-family: var(--font-display, "Fraunces Display"), serif;
+  font-size: 1.5rem;
+  font-weight: 680;
+  color: var(--gold-strong);
+}
+.meta-row .stat-label {
+  display: block;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 0.15rem;
+}
+@keyframes rise { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .hero h1, .hero p.sub, .meta-row { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+.hero-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.theme-swatches {
+  display: inline-flex;
+  gap: 0.3rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+.theme-swatches button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 0.32rem 0.7rem 0.32rem 0.4rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.theme-swatches button:hover { color: var(--ink); }
+.theme-swatches button.active { background: var(--gold); color: var(--paper); }
+.theme-swatches .swatch {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.15);
+  flex: none;
+}
+.swatch-manuscript { background: linear-gradient(135deg, #eae2cc 50%, #a97b2f 50%); }
+.swatch-blueprint { background: linear-gradient(135deg, #dbe6f0 50%, #1f6fa8 50%); }
+.swatch-terminal { background: linear-gradient(135deg, #0c0e0c 50%, #7bffb0 50%); }
+
+@keyframes swatchPulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.theme-swatches button.pulse { animation: swatchPulse 0.35s cubic-bezier(.3,.7,.4,1.4); }
+@media (prefers-reduced-motion: reduce) { .theme-swatches button.pulse { animation: none !important; } }
+
+.theme-toggle {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--gold); }
+
+/* ---------- Section chrome ---------- */
+section.block { padding: clamp(2.5rem, 6vw, 4.5rem) 0; border-bottom: 1px solid var(--line); }
+section.block:last-of-type { border-bottom: none; }
+.block-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
+.block-head h2 {
+  font-family: var(--font-display, "Fraunces Display"), serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  margin-top: 0.2rem;
+}
+.block-head p { color: var(--ink-soft); max-width: 38em; margin: 0.35rem 0 0; font-size: 0.96rem; }
+
+/* ---------- Source & Results layout ---------- */
+.resize-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.resize-presets .label { margin-right: 0.2rem; }
+.resize-presets button {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.76rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 0.32rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.resize-presets button:hover { border-color: var(--gold); color: var(--ink); }
+.resize-presets button.active { background: var(--gold); border-color: var(--gold); color: var(--paper); }
+
+.compare-layout {
+  display: grid;
+  grid-template-columns: var(--rail-w, 220px) 14px 1fr;
+  gap: 0 1.1rem;
+  align-items: start;
+  transition: grid-template-columns 0.32s cubic-bezier(.2,.8,.3,1);
+}
+.compare-layout.dragging { transition: none; }
+
+.resizer {
+  align-self: stretch;
+  position: relative;
+  cursor: col-resize;
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.resizer::before {
+  content: "";
+  width: 3px;
+  height: 100%;
+  min-height: 240px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.2s ease;
+}
+.resizer::after {
+  content: "⋮";
+  position: absolute;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  width: 20px; height: 20px;
+  line-height: 18px;
+  text-align: center;
+}
+.resizer:hover::before, .resizer:focus-visible::before { background: var(--gold); }
+.resizer:focus-visible { outline: none; }
+.resizer:focus-visible::after { border-color: var(--gold); color: var(--gold-strong); }
+@media (prefers-reduced-motion: reduce) { .compare-layout { transition: none !important; } }
+.page-rail {
+  position: sticky;
+  top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-height: 82vh;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+.page-rail::-webkit-scrollbar { width: 5px; }
+.page-rail::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
+.compare-main { min-width: 0; }
+
+.page-card {
+  flex: none;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.page-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+  box-shadow: 0 10px 24px -10px hsl(var(--shadow) / 0.35);
+}
+.page-card img { width: 100%; height: auto; }
+.page-card .num {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 0.35rem 0;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 860px) {
+  .compare-layout { grid-template-columns: 1fr !important; }
+  .resizer, .resize-presets { display: none; }
+  .page-rail {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-height: none;
+    padding-bottom: 0.5rem;
+  }
+  .page-rail .page-card { width: 120px; }
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--ink) 78%, transparent);
+  backdrop-filter: blur(6px);
+  padding: 4vh 4vw;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-height: 92vh;
+  max-width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6);
+  opacity: 0;
+  transform: scale(0.96);
+  animation: pop 0.28s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes pop { to { opacity: 1; transform: scale(1); } }
+.lightbox-close {
+  position: absolute;
+  top: 1.4rem;
+  right: 1.4rem;
+  background: none;
+  border: none;
+  color: #f2ead4;
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #f2ead4;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.lightbox-nav.prev { left: 1.2rem; }
+.lightbox-nav.next { right: 1.2rem; }
+@media (prefers-reduced-motion: reduce) { .lightbox img { animation: none !important; opacity: 1 !important; transform: none !important; } }
+
+/* ---------- Cost ---------- */
+.disclaimer {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  background: color-mix(in oklch, var(--vermilion) 10%, var(--paper-2));
+  border: 1px solid color-mix(in oklch, var(--vermilion) 35%, var(--line));
+  border-radius: 6px;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.6rem;
+}
+.disclaimer b { color: var(--vermilion); font-weight: 600; }
+
+.chart { display: flex; flex-direction: column; gap: 0.55rem; }
+.bar-row { display: grid; grid-template-columns: 152px 1fr 92px; align-items: center; gap: 0.8rem; }
+.bar-row .name {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-align: right;
+}
+.bar-track {
+  position: relative;
+  height: 22px;
+  background: var(--paper-2);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.bar-fill {
+  position: absolute; inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(.16,.8,.24,1);
+}
+.bar-fill.bar-cheapest { box-shadow: inset 0 0 0 2px var(--gold-strong); }
+.bar-row .value {
+  font-family: -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.bar-row.flagged .name::after {
+  content: " ⚠";
+  color: var(--vermilion);
+}
+@media (prefers-reduced-motion: reduce) { .bar-fill { transition: none !important; } }
+
+.dotplot { display: flex; flex-direction: column; gap: 0.5rem; position: relative; padding-top: 0.4rem; }
+.dot-row { display: grid; grid-template-columns: 152px 1fr 92px; align-items: center; gap: 0.8rem; position: relative; z-index: 1; }
+.dot-row .name {
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+.dot-row.flagged .name::after {
+  content: "⚠";
+  color: var(--vermilion);
+}
+.cheapest-chip {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--gold-strong);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+}
+
+.dot-track {
+  position: relative;
+  height: 26px;
+}
+.dot-line {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: var(--line);
+  border-radius: 1px;
+}
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  border: 2px solid var(--paper);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transform: translate(-50%, -50%);
+  transition: left 0.9s cubic-bezier(.16,.8,.24,1);
+  cursor: default;
+}
+.dot-cheapest {
+  width: 16px; height: 16px;
+  background: var(--gold-strong);
+  box-shadow: 0 0 0 1px var(--gold-strong), 0 0 0 5px color-mix(in oklch, var(--gold-strong) 20%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { .dot { transition: none !important; } }
+
+.dot-row .value {
+  font-family: -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.dot-grid {
+  position: absolute;
+  left: calc(152px + 0.8rem); right: calc(92px + 0.8rem); top: 0.4rem; bottom: 1.6rem;
+  pointer-events: none;
+}
+.dot-grid-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--line);
+  transform: translateX(-0.5px);
+}
+
+.dot-axis {
+  display: grid;
+  grid-template-columns: 152px 1fr 92px;
+  gap: 0.8rem;
+  margin-top: 0.3rem;
+}
+.dot-axis-ticks {
+  display: flex;
+  justify-content: space-between;
+}
+.dot-axis-tick {
+  font-family: -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+.chart-caption { font-size: 0.78rem; color: var(--ink-faint); margin-top: 1rem; line-height: 1.6; }
+.chart-caption code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em; background: var(--paper-2); border-radius: 3px; padding: 0.05em 0.35em; }
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+.view-toggle button {
+  background: var(--paper-2);
+  border: none;
+  color: var(--ink-soft);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+.view-toggle button.active { background: var(--gold); color: var(--paper); }
+
+table.cost-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+table.cost-table th, table.cost-table td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.cost-table th { font-family: -apple-system, sans-serif; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+table.cost-table td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--paper-2); }
+.table-wrap table.cost-table { margin: 0; }
+.table-wrap td, .table-wrap th { border-color: var(--line); }
+
+.anomaly-callout {
+  margin-top: 1.6rem;
+  padding: 1rem 1.2rem;
+  border-left: 3px solid var(--gold);
+  background: var(--paper-2);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  border-radius: 0 6px 6px 0;
+}
+.anomaly-callout b { color: var(--ink); }
+
+/* ---------- Compare ---------- */
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
+}
+.tab {
+  font-family: "Fraunces Sub", serif;
+  font-size: 0.92rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-faint);
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  position: relative;
+  top: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--gold-strong); border-color: var(--gold); }
+.tab .flag-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--vermilion);
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+.panel-shell { position: relative; min-height: 200px; }
+.panel {
+  display: none;
+  animation: fadeslide 0.38s cubic-bezier(.2,.8,.3,1);
+}
+.panel.active { display: block; }
+@keyframes fadeslide { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .panel { animation: none !important; } }
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.panel-head h3 { font-family: var(--font-display, "Fraunces Display"), serif; font-size: 1.3rem; }
+.panel-head .engine { font-size: 0.78rem; color: var(--ink-faint); font-family: -apple-system, sans-serif; }
+
+.flag-banner {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  background: color-mix(in oklch, var(--vermilion) 10%, var(--paper-2));
+  border: 1px solid color-mix(in oklch, var(--vermilion) 35%, var(--line));
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 1rem;
+}
+.flag-banner b { color: var(--vermilion); }
+
+.ocr-text {
+  font-family: "Amiri", "Fraunces Sub", serif;
+  font-size: 1.18rem;
+  line-height: 2.05;
+  direction: rtl;
+  text-align: right;
+  padding: 1.4rem 1.6rem;
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.ocr-text h3.doc-heading {
+  font-size: 1.32rem;
+  margin: 1.1rem 0 0.5rem;
+  color: var(--gold-strong);
+}
+.ocr-text h3.doc-heading:first-child { margin-top: 0; }
+.ocr-text p { margin: 0 0 0.9rem; }
+.ocr-text hr { border: none; border-top: 1px solid var(--line-strong); margin: 1rem 0; }
+.figure-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  direction: ltr;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+  background: var(--paper-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  margin: 0.15rem 0.2rem;
+  vertical-align: middle;
+}
+
+/* ---------- Why TypeScript section ---------- */
+.ts-block { background: var(--paper-2); }
+.ts-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.4rem;
+}
+.ts-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.3rem 1.4rem;
+}
+.ts-card h3 {
+  font-family: var(--font-display, "Fraunces Display"), serif;
+  font-size: 1.05rem;
+  font-weight: 680;
+  color: var(--lapis);
+  margin-bottom: 0.55rem;
+}
+.ts-card p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.8rem;
+}
+.ts-card p:last-child { margin-bottom: 0; }
+.ts-card code, footer code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85em; color: var(--ink); background: var(--paper-3); border-radius: 3px; padding: 0.1em 0.35em; }
+
+.code-block {
+  background: var(--code-bg, #241f16);
+  color: var(--code-fg, #eee4cc);
+  border-radius: 6px;
+  padding: 0.9rem 1.05rem;
+  overflow-x: auto;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0 0 0.9rem;
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+.code-block code { background: none; padding: 0; color: inherit; }
+
+.source-viewer {
+  margin-top: 1.8rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+}
+.source-viewer summary {
+  cursor: pointer;
+  padding: 0.9rem 1.2rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  list-style: none;
+}
+.source-viewer summary::-webkit-details-marker { display: none; }
+.source-viewer summary::before { content: "▸ "; color: var(--gold); }
+.source-viewer[open] summary::before { content: "▾ "; }
+.source-viewer summary code { font-size: 0.85em; }
+.source-code {
+  margin: 0 1.2rem 1.2rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  white-space: pre;
+}
+
+footer {
+  padding: 2.2rem 0 3rem;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+footer a { color: var(--ink-faint); text-decoration: underline; }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <span class="eyebrow">من رحلات ابن بطوطة</span>
+      <div class="hero-controls">
+        <div class="theme-swatches" id="themeSwatches">
+          <button data-theme="manuscript" class="active" title="Manuscript — parchment &amp; gold">
+            <span class="swatch swatch-manuscript"></span>Manuscript
+          </button>
+          <button data-theme="blueprint" title="Blueprint — cyanotype &amp; technical drawing">
+            <span class="swatch swatch-blueprint"></span>Blueprint
+          </button>
+          <button data-theme="terminal" title="Terminal — compiler console">
+            <span class="swatch swatch-terminal"></span>Terminal
+          </button>
+        </div>
+        <button class="theme-toggle" id="themeToggle">☀/☾</button>
+      </div>
+    </div>
+    <span class="ts-badge">TypeScript Edition</span>
+    <h1>Reading Ibn Battuta, Six Ways</h1>
+    <p class="sub">The same manuscript, the same six OCR engines — rebuilt with a strict TypeScript data layer instead of plain JS, specifically to model the messy pricing data honestly. See <a href="#why-ts">Why TypeScript, Here</a> for what that actually bought.</p>
+    <div class="meta-row">
+      <div><span class="stat">5</span><span class="stat-label">Pages</span></div>
+      <div><span class="stat">6</span><span class="stat-label">OCR engines</span></div>
+      <div><span class="stat">3</span><span class="stat-label">Pricing shapes</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="cost">
+  <div class="wrap">
+    <div class="block-head">
+      <div>
+        <span class="label">التكلفة · The Cost</span>
+        <h2>What it costs to OCR at scale</h2>
+        <p>Estimated dollars to OCR 50,000 pages on each vendor's hosted/managed API tier — the same basis <code>models/cost.md</code> itself uses.</p>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <span>⚠</span>
+      <span><b>Estimated, unverified pricing.</b> These numbers come from a research pass over public vendor pages, not from actual invoices or metered runs. Several vendors offer both a hosted API and a self-hosted option at very different price points — the dots below use each vendor's hosted/managed tier for a like-for-like comparison. Treat this as directional, not authoritative — and see below for exactly where to edit these numbers.</span>
+    </div>
+    <div class="view-toggle" id="viewToggle">
+      <button class="active" data-view="bar">Bar</button>
+      <button data-view="dot">Dot plot</button>
+      <button data-view="table">Table</button>
+    </div>
+    <div id="barView"></div>
+    <div id="dotView" style="display:none;"></div>
+    <div id="tableView" style="display:none;"></div>
+    <div id="anomalyCallouts"></div>
+  </div>
+</section>
+
+<section class="block" id="compare">
+  <div class="wrap">
+    <div class="block-head">
+      <div>
+        <span class="label">المخطوطة والنتائج · Source &amp; Results</span>
+        <h2>The page, next to what each engine read from it</h2>
+        <p>The source pages stay in view while you switch engines — click a page to zoom in. Text is full and unedited per engine; figures/images from the source appear as placeholder chips.</p>
+      </div>
+    </div>
+    <div class="resize-presets" id="resizePresets">
+      <span class="label">Panel width</span>
+      <button data-w="110" title="Show pages as a thin strip, results at full width">Min pages</button>
+      <button data-w="220" class="active" title="Reset to the default split">Balanced</button>
+      <button data-w="460" title="Show pages large, results narrower">Max pages</button>
+    </div>
+    <div class="compare-layout" id="compareLayout" style="--rail-w: 220px;">
+      <div class="page-rail" id="pageRail"></div>
+      <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Resize pages vs. results" tabindex="0"></div>
+      <div class="compare-main">
+        <div class="tabs" id="tabs"></div>
+        <div class="panel-shell" id="panels"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block ts-block" id="why-ts">
+  <div class="wrap">
+    <div class="block-head">
+      <div>
+        <span class="label">تحت الغطاء · Under the Hood</span>
+        <h2>Why TypeScript, here — with proof, not marketing</h2>
+        <p>Three concrete things strict TypeScript caught or enforced while building <em>this exact page</em> — not generic language-comparison talking points.</p>
+      </div>
+    </div>
+
+    <div class="ts-cards">
+      <div class="ts-card">
+        <h3>1. The pricing data is three shapes, not one number</h3>
+        <p><code>models/cost.md</code> mixes a metered per-page rate, FastOCR's flat $249.95 pack fee, and Besser OCR's monthly subscription into a single markdown table — which is exactly how it ended up self-contradictory (a "$249.95 per 50,000 pages" row that can't be reconciled with "$249.95 for this one 5-page run"). Modeling it as a discriminated union keeps each shape honest instead of forcing a misleading single <code>$/page</code> field:</p>
+        <pre class="code-block"><code>type CostTier =
+  | { kind: "metered"; low: number; high: number }
+  | { kind: "flatFee"; amount: number; forPages: number }
+  | { kind: "subscription"; monthlyAmount: number; pageCapPerMonth: number };</code></pre>
+      </div>
+
+      <div class="ts-card">
+        <h3>2. The compiler enforces every case is handled — forever</h3>
+        <p>The dot plot, the table, and the tooltip all normalize a <code>CostTier</code> through the same <code>assertNever</code>-guarded switch. To prove it's real, not aspirational, I added a fourth pricing shape to the type (<code>perCall</code>) without touching the switches — and <code>tsc --strict</code> refused to compile:</p>
+        <pre class="code-block"><code>src/app.ts(101,26): error TS2345: — costToChartBasis(), converts
+  a CostTier to the chart's $-per-50,000-pages figure
+src/app.ts(116,26): error TS2345: — same error, costRangeLabel()
+src/app.ts(125,33): error TS2345: — same error, costKindLabel()
+  Argument of type '{ kind: "perCall"; amountPerCall: number; }'
+  is not assignable to parameter of type 'never'.</code></pre>
+        <p>Three exact locations, found before the page ever loaded in a browser. The equivalent plain-JS version would just silently render <code>NaN</code> for the new tier's dot position and ship it.</p>
+      </div>
+
+      <div class="ts-card">
+        <h3>3. It caught a real bug in this page's own code</h3>
+        <p>The generic DOM helper below failed to compile on the first pass — strict mode rejected casting a plain <code>HTMLElement</code> straight to an arbitrary generic <code>T</code>, since nothing guarantees <code>T</code> is actually a subtype of what <code>createElement</code> returns:</p>
+        <pre class="code-block"><code>function must&lt;T extends Element = Element&gt;(id: string): T {
+  const found = document.getElementById(id);
+  if (!found) throw new Error(`#${id} is missing from the DOM`);
+  return found as unknown as T; // ← tsc forced the honest "as unknown as" step
+}</code></pre>
+        <p>Small, but it's the same class of mistake (an unchecked cast papering over a real type mismatch) that causes real runtime crashes — caught here at compile time instead of during a demo.</p>
+      </div>
+
+      <div class="ts-card">
+        <h3>4. Model ids are a closed, typo-proof set</h3>
+        <p><code>type ModelId = "lighton" | "datalab" | "paddleocr" | "fastocr" | "baseerocr" | "glmocr"</code> — every lookup, tab, and DOM binding is checked against this union. Typing <code>"glm_ocr"</code> instead of <code>"glmocr"</code> anywhere is a compile error, not a silently-<code>undefined</code> panel at runtime.</p>
+      </div>
+
+      <div class="ts-card">
+        <h3>5. The three themes above can't ship half-finished</h3>
+        <p>The Manuscript / Blueprint / Terminal picker is backed by <code>Record&lt;ThemeName, Record&lt;ThemeMode, ThemeTokens&gt;&gt;</code> — a mapped type, not a switch. Delete the <code>dark</code> entry for <code>"terminal"</code>, or drop one field from <code>ThemeTokens</code>, and every theme instantly fails to compile until it's filled back in:</p>
+        <pre class="code-block"><code>type ThemeName = "manuscript" | "blueprint" | "terminal";
+type ThemeMode = "light" | "dark";
+
+const THEMES: Record&lt;ThemeName, Record&lt;ThemeMode, ThemeTokens&gt;&gt; = {
+  manuscript: { light: {...}, dark: {...} },
+  blueprint:  { light: {...}, dark: {...} },
+  terminal:   { light: {...}, dark: {...} }, // ← miss this and tsc refuses to build
+};</code></pre>
+        <p>There is no code path where "Blueprint, dark mode" quietly falls back to undefined CSS variables and unstyled text — it either exists at compile time, or the page never ships.</p>
+      </div>
+    </div>
+
+    <details class="source-viewer">
+      <summary>View the full TypeScript source (<code>data.ts</code> + <code>app.ts</code>, compiled with <code>tsc --strict --noUncheckedIndexedAccess</code>)</summary>
+      <pre class="code-block source-code"><code id="tsSource"></code></pre>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Manuscript pages rendered directly from <code>assets/Ibn_Battuta_in_Egypt.pdf</code>. OCR outputs are shown verbatim aside from stripped image references and cost blocks. Cost figures are estimates, not verified vendor invoices. Interactive layer written in TypeScript, compiled with <code>tsc</code>, and inlined as plain JS below (Artifacts run static HTML — there's no in-browser TS runtime to ship instead).
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lightbox-nav prev" id="lbPrev" aria-label="Previous page">&#8249;</button>
+  <img id="lbImg" alt="Manuscript page" />
+  <button class="lightbox-nav next" id="lbNext" aria-label="Next page">&#8250;</button>
+</div>
+
+<script>
+__COMPILED_JS__
+</script>

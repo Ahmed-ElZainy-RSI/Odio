@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# TypeScript build tooling for demo/
+demo/typescript-src/node_modules/
+demo/typescript-src/package-lock.json

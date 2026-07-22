@@ -1,0 +1,7 @@
+{
+  "name": "ocr-benchmark-typescript-src",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
