@@ -1,0 +1,57 @@
+{
+  "index": 12,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 0,
+      "topLeftY": 0,
+      "bottomRightX": 791,
+      "bottomRightY": 752,
+      "content": "![img-10.jpeg](img-10.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-10.jpeg"
+    },
+    {
+      "topLeftX": 447,
+      "topLeftY": 767,
+      "bottomRightX": 675,
+      "bottomRightY": 803,
+      "content": "## مصطلحات عن الحيتان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 441,
+      "topLeftY": 806,
+      "bottomRightX": 702,
+      "bottomRightY": 864,
+      "content": "العنبرية: هي مادةٌ زيتيةٌ شمعيةٌ توجدُ\nداخلَ رءوسِ حيتانِ العنبرِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 60,
+      "topLeftY": 818,
+      "bottomRightX": 367,
+      "bottomRightY": 942,
+      "content": "تُسمى حيتانُ العنبرِ بهذا الاسمِ\nنسبةً إلى مادةٍ شمعيةٍ توجدُ\nداخلَ رءوسِها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 675,
+      "topLeftY": 960,
+      "bottomRightX": 709,
+      "bottomRightY": 982,
+      "content": "12",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

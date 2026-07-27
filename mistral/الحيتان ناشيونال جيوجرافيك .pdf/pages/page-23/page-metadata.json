@@ -1,0 +1,47 @@
+{
+  "index": 22,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 73,
+      "topLeftY": 43,
+      "bottomRightX": 738,
+      "bottomRightY": 218,
+      "content": "# يا الطامئ وليست!",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 59,
+      "topLeftY": 285,
+      "bottomRightX": 334,
+      "bottomRightY": 813,
+      "content": "تتناول حيتانُ العنبرِ قدرًا كبيرًا من الطعام؛ نحوَ طَنٍّ من الطعامِ في كلِّ يوم. وهذا يساوي تقريبًا 2000 رطل! وطعامُها المفضل هو الحبارُ العملاقُ الذي يوجدُ في المياه العميقة. ويمكنُ لحيتانِ العنبرِ تناولُ نحو 700 حبارٍ في اليوم الواحد! كما تأكل حيتانُ العنبرِ أيضًا الأخطبوط، والأسماكُ الأخرى، وأسماكُ القرش، وأسماكُ الورنك.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 409,
+      "topLeftY": 917,
+      "bottomRightX": 444,
+      "bottomRightY": 939,
+      "content": "حبارٌ",
+      "confidenceScores": null,
+      "type": "footer"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 712,
+      "bottomRightY": 982,
+      "content": "22",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

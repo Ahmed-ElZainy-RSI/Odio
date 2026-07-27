@@ -1,0 +1,92 @@
+{
+  "index": 45,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 61,
+      "topLeftY": 276,
+      "bottomRightX": 725,
+      "bottomRightY": 409,
+      "content": "تعملُ هذه المجموعاتُ التالي ذكرُها على مساعدةِ الحيتانِ وغيرها من الحيواناتِ لتعيشَ بسلامٍ على كوكبنا:\nمنظمةُ ناشيونال جيوجرافيك",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 63,
+      "topLeftY": 420,
+      "bottomRightX": 706,
+      "bottomRightY": 442,
+      "content": "http://animals.nationalgeographic.com/animals/mammals/sperm-whale.html",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 473,
+      "topLeftY": 462,
+      "bottomRightX": 724,
+      "bottomRightY": 497,
+      "content": "الصندوقُ العالميُّ للطبيعة",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 63,
+      "topLeftY": 511,
+      "bottomRightX": 697,
+      "bottomRightY": 532,
+      "content": "http://wwf.panda.org/what_we_do/endangered_species/ cetaceans/about/",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 417,
+      "topLeftY": 553,
+      "bottomRightX": 724,
+      "bottomRightY": 588,
+      "content": "الصندوقُ الدوليُّ للرفقِ بالحيوان",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 63,
+      "topLeftY": 602,
+      "bottomRightX": 569,
+      "bottomRightY": 624,
+      "content": "http://www.ifaw.org/ifaw_asia_pacific/save_animals/whales/",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 462,
+      "topLeftY": 643,
+      "bottomRightX": 724,
+      "bottomRightY": 676,
+      "content": "مجموعةُ أبحاثِ المحيطات",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 63,
+      "topLeftY": 693,
+      "bottomRightX": 662,
+      "bottomRightY": 714,
+      "content": "http://www.oceanicresearch.org/education/wonders/spermwhales.htm",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 982,
+      "content": "45",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

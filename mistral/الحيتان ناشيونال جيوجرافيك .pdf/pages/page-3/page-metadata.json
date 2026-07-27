@@ -1,0 +1,174 @@
+{
+  "index": 2,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 239,
+      "topLeftY": 113,
+      "bottomRightX": 538,
+      "bottomRightY": 187,
+      "content": "![img-2.jpeg](img-2.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-2.jpeg"
+    },
+    {
+      "topLeftX": 272,
+      "topLeftY": 211,
+      "bottomRightX": 514,
+      "bottomRightY": 319,
+      "content": "العنوان: الحيتان\nالسلسلة: اقرأ مع ناشيونال جيوجرافيك\nتأليف: لورا مارش\nترجمة: إدارة الترجمة والنشر\nإشراف عام: داليا محمد إبراهيم",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 170,
+      "topLeftY": 350,
+      "bottomRightX": 680,
+      "bottomRightY": 474,
+      "content": "مارش، لورا\nالحيتان/ ترجمة دار نهضة مصر، إدارة الترجمة والنشر. - القاهرة: دار نهضة مصر، 2021\n48 ص. 15 * 22.5 سم\nالمستوى الثالث\nتدمك: 978-977-14-6029-9\n1 - تعليم الأطفال.\nأ - دار نهضة مصر، إدارة الترجمة والنشر\n2 - قصص الأطفال.\n(مترجم)",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 107,
+      "topLeftY": 475,
+      "bottomRightX": 156,
+      "bottomRightY": 489,
+      "content": "372.218",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 252,
+      "topLeftY": 506,
+      "bottomRightX": 534,
+      "bottomRightY": 524,
+      "content": "Original English title: Whales (NG Readers)",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 156,
+      "topLeftY": 530,
+      "bottomRightX": 630,
+      "bottomRightY": 549,
+      "content": "Copyright © 2010 National Geographic Partners, LLC. All rights reserved.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 93,
+      "topLeftY": 555,
+      "bottomRightX": 694,
+      "bottomRightY": 597,
+      "content": "National Geographic Kids and Yellow Border Design are trademarks of National Geographic Society, used under license.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 209,
+      "topLeftY": 604,
+      "bottomRightX": 577,
+      "bottomRightY": 646,
+      "content": "Published in Arabic by Nahdet Misr Publishing House,\nupon agreement with National Geographic Partners, LLC.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 331,
+      "topLeftY": 653,
+      "bottomRightX": 454,
+      "bottomRightY": 670,
+      "content": "All rights reserved.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 333,
+      "topLeftY": 678,
+      "bottomRightX": 454,
+      "bottomRightY": 696,
+      "content": "ترجمة كتاب Whales",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 154,
+      "topLeftY": 696,
+      "bottomRightX": 632,
+      "bottomRightY": 715,
+      "content": "تصدرها دار نهضة مصر للنشر بترخيص من شركة National Geographic Partners, LLC.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 211,
+      "topLeftY": 719,
+      "bottomRightX": 575,
+      "bottomRightY": 756,
+      "content": "يحظر طبع أو تصوير أو تخزين أي جزء من هذا الكتاب سواء النص أو الصور\nبأية وسيلة من وسائل تسجيل البيانات، إلا بإذن كتابي صريح من الناشر.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 232,
+      "topLeftY": 786,
+      "bottomRightX": 422,
+      "bottomRightY": 835,
+      "content": "الترقيم الدولي: 978-977-14-6029-9\nرقم الإيداع: 19144 / 2021\nطبعة: إبريل 2025",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 222,
+      "topLeftY": 848,
+      "bottomRightX": 422,
+      "bottomRightY": 879,
+      "content": "تليفون: 33466434 - 33472864\nفاكس: 02 33462576",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 232,
+      "topLeftY": 884,
+      "bottomRightX": 422,
+      "bottomRightY": 928,
+      "content": "خدمة العملاء: 16766\nWebsite: www.nahdetmisr.com\nE-mail: publishing@nahdetmisr.com",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 469,
+      "topLeftY": 846,
+      "bottomRightX": 523,
+      "bottomRightY": 872,
+      "content": "نهضة مصر\nللنشر",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 449,
+      "topLeftY": 872,
+      "bottomRightX": 543,
+      "bottomRightY": 884,
+      "content": "أسسها أحمد محمد إبراهيم سنة 1938",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 449,
+      "topLeftY": 899,
+      "bottomRightX": 543,
+      "bottomRightY": 928,
+      "content": "21 شارع أحمد عرابي -\nالمهندسين - الجيزة",
+      "confidenceScores": null,
+      "type": "text"
+    }
+  ]
+}

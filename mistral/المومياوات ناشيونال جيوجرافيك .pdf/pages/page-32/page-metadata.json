@@ -1,0 +1,57 @@
+{
+  "index": 31,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 150,
+      "topLeftY": 102,
+      "bottomRightX": 692,
+      "bottomRightY": 415,
+      "content": "![img-28.jpeg](img-28.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-28.jpeg"
+    },
+    {
+      "topLeftX": 86,
+      "topLeftY": 460,
+      "bottomRightX": 698,
+      "bottomRightY": 541,
+      "content": "تخبرنا بقايا الطعام الموجودة داخل معدة المومياء عن نوع الطعام الذي كان الناس يتناولونه في ذلك الوقت.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 86,
+      "topLeftY": 577,
+      "bottomRightX": 698,
+      "bottomRightY": 702,
+      "content": "كما تخبرنا العظام المكسورة عن طبيعة حياة هذا الشخص، وأحياناً عن الطريقة التي مات أو ماتت بها. وكذلك يدرس العلماء ملابس المومياء والأشياء المدفونة معها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 86,
+      "topLeftY": 739,
+      "bottomRightX": 698,
+      "bottomRightY": 865,
+      "content": "فكل هذه الأشياء تحمل أدلة على الطقوس الدينية لهذه الشعوب وطريقة حياتها. فالمومياوات تشبه إلى حد ما آلة الزمن؛ فهي تمكننا من رؤية الماضي والتعرف عليه.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 34,
+      "topLeftY": 970,
+      "bottomRightX": 58,
+      "bottomRightY": 990,
+      "content": "31",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

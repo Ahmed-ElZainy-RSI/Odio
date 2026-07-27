@@ -1,0 +1,47 @@
+{
+  "index": 41,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 59,
+      "topLeftY": 164,
+      "bottomRightX": 725,
+      "bottomRightY": 245,
+      "content": "تتعرض الحيتان للخطر أيضاً عندما تقترب كثيراً من الشاطئ؛ فقد تعجز عن الحركة في المياه الضحلة الموجودة بالقرب من الشواطئ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 285,
+      "topLeftY": 297,
+      "bottomRightX": 576,
+      "bottomRightY": 334,
+      "content": "### **الاقتراب من الشواطئ:**",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 73,
+      "topLeftY": 348,
+      "bottomRightX": 565,
+      "bottomRightY": 443,
+      "content": "لا يستطيع العلماء تفسير سبب سباحة بعض الحيتان أحياناً بالقرب من السواحل. والأسباب المحتملة لهذا إما الضوضاء العالية أو التلوث أو حالات الطقس غير المعتادة.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 78,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 983,
+      "content": "41",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

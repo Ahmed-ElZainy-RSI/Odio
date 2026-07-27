@@ -223,3 +223,7 @@ demo/typescript-src/node_modules/
 demo/typescript-src/package-lock.json
 assets/PDF Samples/
 assets/pages_png/
+
+.DS_Store
+.qodo/
+.ipynb_checkpoints/

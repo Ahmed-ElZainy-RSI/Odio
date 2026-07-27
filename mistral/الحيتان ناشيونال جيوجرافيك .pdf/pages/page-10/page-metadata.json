@@ -1,0 +1,75 @@
+{
+  "index": 9,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 64,
+      "topLeftY": 252,
+      "bottomRightX": 294,
+      "bottomRightY": 287,
+      "content": "## مصطلحات عن الحيتان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 64,
+      "topLeftY": 301,
+      "bottomRightX": 317,
+      "bottomRightY": 356,
+      "content": "حيوانٌ مفترشٌ: هو حيوانٌ يأكلُ غيره\nمن الحيواناتِ الأخرى.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 59,
+      "topLeftY": 427,
+      "bottomRightX": 390,
+      "bottomRightY": 728,
+      "content": "حوتُ العنبرِ مخلوقٌ مذهلٌ؛ فهو\nأكبرُ حيوانٍ مفترسٍ له أسنانٌ على\nكوكبِ الأرضِ. ويزيدُ حجمُ ذكورِ\nحيتانِ العنبرِ على الإناثِ؛ إذ يصلُ\nوزنُ الذكرِ 50 طنًّا ويبلغُ طولُهُ حين\nيكبرُ 60 قدمًا، لذا فحجمهُ ضخمٌ\nللغايةِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 311,
+      "topLeftY": 763,
+      "bottomRightX": 664,
+      "bottomRightY": 815,
+      "content": "## كيفَ نقارنُ الأحجامَ؟",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 228,
+      "topLeftY": 816,
+      "bottomRightX": 664,
+      "bottomRightY": 881,
+      "content": "حوتُ العنبرِ حجمهُ كبيرٌ للغايةِ، فيبدو الإنسانُ البالغُ\nبجوارهِ ضئيلَ الحجمِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 181,
+      "topLeftY": 881,
+      "bottomRightX": 635,
+      "bottomRightY": 964,
+      "content": "![img-7.jpeg](img-7.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-7.jpeg"
+    },
+    {
+      "topLeftX": 82,
+      "topLeftY": 960,
+      "bottomRightX": 99,
+      "bottomRightY": 980,
+      "content": "9",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

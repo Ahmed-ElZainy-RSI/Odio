@@ -1,0 +1,67 @@
+{
+  "index": 23,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 420,
+      "topLeftY": 32,
+      "bottomRightX": 682,
+      "bottomRightY": 222,
+      "content": "![img-22.jpeg](img-22.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-22.jpeg"
+    },
+    {
+      "topLeftX": 108,
+      "topLeftY": 181,
+      "bottomRightX": 396,
+      "bottomRightY": 262,
+      "content": "عقب اكتشاف مقبرة الملك\nتوت، أراد الناس في جميع",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 108,
+      "topLeftY": 269,
+      "bottomRightX": 695,
+      "bottomRightY": 350,
+      "content": "أنحاء العالم معرفة المزيد عن هذا الملك الشاب. ومع ذلك لم\nيكن كل ما ذكر عن الملك توت حقيقيًا.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 108,
+      "topLeftY": 386,
+      "bottomRightX": 695,
+      "bottomRightY": 510,
+      "content": "فبعد فترة قصيرة من فتح مقبرة الملك توت توفي أحد مكتشفيها؛\nولهذا قال بعض الناس إن هذا الملك الشاب وضع لعنة على\nالمقبرة.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 108,
+      "topLeftY": 617,
+      "bottomRightX": 682,
+      "bottomRightY": 985,
+      "content": "![img-23.jpeg](img-23.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-23.jpeg"
+    },
+    {
+      "topLeftX": 32,
+      "topLeftY": 970,
+      "bottomRightX": 61,
+      "bottomRightY": 990,
+      "content": "23",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

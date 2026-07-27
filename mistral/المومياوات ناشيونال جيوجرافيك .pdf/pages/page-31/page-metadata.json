@@ -1,0 +1,48 @@
+{
+  "index": 30,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 242,
+      "topLeftY": 34,
+      "bottomRightX": 692,
+      "bottomRightY": 309,
+      "content": "# الكشف عن الأسرار",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 91,
+      "topLeftY": 331,
+      "bottomRightX": 704,
+      "bottomRightY": 460,
+      "content": "لا تستطيعُ المومياواتُ الكلامَ، ولكنها مع ذلك تستطيعُ إخبارنا بالكثيرِ من الأسرارِ عن الماضي؛ إذ يدرشُ العلماءُ كلَّ شيءٍ موجودٍ داخلَ جسمِ المومياءِ وحولهِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 0,
+      "topLeftY": 501,
+      "bottomRightX": 791,
+      "bottomRightY": 994,
+      "content": "![img-27.jpeg](img-27.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-27.jpeg"
+    },
+    {
+      "topLeftX": 724,
+      "topLeftY": 969,
+      "bottomRightX": 755,
+      "bottomRightY": 990,
+      "content": "30",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

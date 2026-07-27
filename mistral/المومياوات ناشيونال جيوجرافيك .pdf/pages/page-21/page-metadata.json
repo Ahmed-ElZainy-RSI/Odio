@@ -1,0 +1,47 @@
+{
+  "index": 20,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 245,
+      "topLeftY": 47,
+      "bottomRightX": 750,
+      "bottomRightY": 317,
+      "content": "# مقبرة مليئة بالكنوز",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 64,
+      "topLeftY": 321,
+      "bottomRightX": 714,
+      "bottomRightY": 532,
+      "content": "ترك قُدماء المصريين ملايين المومياوات. وفي عام 1922 عثر عالم آثار يُدعى هاورد كارتر على مُومياء مميزة في مصر. فحين نظر كارتر إلى داخل مقبرة معتمة أصابه الذهول. فقد كانت مليئة بالذهب الذي يلمع في كل مكان.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 333,
+      "topLeftY": 544,
+      "bottomRightX": 760,
+      "bottomRightY": 818,
+      "content": "للمنشرة في مصر",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 726,
+      "topLeftY": 970,
+      "bottomRightX": 755,
+      "bottomRightY": 987,
+      "content": "20",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

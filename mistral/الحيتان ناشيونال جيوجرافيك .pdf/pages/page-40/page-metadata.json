@@ -1,0 +1,174 @@
+{
+  "index": 39,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 33,
+      "topLeftY": 98,
+      "bottomRightX": 333,
+      "bottomRightY": 174,
+      "content": "![img-36.jpeg](img-36.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-36.jpeg"
+    },
+    {
+      "topLeftX": 65,
+      "topLeftY": 189,
+      "bottomRightX": 290,
+      "bottomRightY": 221,
+      "content": "## مصطلحات عن الحيتان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 117,
+      "topLeftY": 226,
+      "bottomRightX": 211,
+      "bottomRightY": 249,
+      "content": "صيد الحيتان:",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 73,
+      "topLeftY": 257,
+      "bottomRightX": 252,
+      "bottomRightY": 283,
+      "content": "البحث عن الحيتان لقتلها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 375,
+      "topLeftY": 206,
+      "bottomRightX": 723,
+      "bottomRightY": 240,
+      "content": "تعرض عددٌ هائلٌ من الحيتان للقتل",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 373,
+      "topLeftY": 252,
+      "bottomRightX": 723,
+      "bottomRightY": 285,
+      "content": "على يد البشر في القرن الثامن عشر",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 344,
+      "topLeftY": 296,
+      "bottomRightX": 723,
+      "bottomRightY": 329,
+      "content": "والتاسع عشر والعشرين. فكانت حيتان",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 241,
+      "topLeftY": 341,
+      "bottomRightX": 723,
+      "bottomRightY": 374,
+      "content": "العنبر تتعرض للصيد من أجل الحصول على مادة",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 61,
+      "topLeftY": 385,
+      "bottomRightX": 723,
+      "bottomRightY": 419,
+      "content": "العنبرية والزيت المستخلص من أجسامها، وهي أشياء كانت تستخدم",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 61,
+      "topLeftY": 430,
+      "bottomRightX": 723,
+      "bottomRightY": 464,
+      "content": "في إضاءة المصابيح وصنع الشموع. كما كان الصيادون يصطادون حيتان",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 104,
+      "topLeftY": 475,
+      "bottomRightX": 723,
+      "bottomRightY": 512,
+      "content": "العنبر من أجل استخراج مادة العنبر لاستخدامها في صناعة العطور.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 61,
+      "topLeftY": 547,
+      "bottomRightX": 723,
+      "bottomRightY": 581,
+      "content": "حلّ الكيروسين فيما بعد محلّ زيت الحوت في إضاءة المصابيح. وأصبح",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 61,
+      "topLeftY": 592,
+      "bottomRightX": 723,
+      "bottomRightY": 626,
+      "content": "صيد الحيتان محظورًا بمقتضى القانون في ثمانينيات القرن العشرين.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 61,
+      "topLeftY": 637,
+      "bottomRightX": 723,
+      "bottomRightY": 671,
+      "content": "وهكذا زاد عدد حيتان العنبر مرة أخرى، والآن.. يوجد الكثير منها في",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 217,
+      "topLeftY": 682,
+      "bottomRightX": 723,
+      "bottomRightY": 716,
+      "content": "المحيطات، ولكنها مازالت تتعرض للصيد غير الشرعي.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 104,
+      "topLeftY": 816,
+      "bottomRightX": 194,
+      "bottomRightY": 895,
+      "content": "مغلومة\nعربية",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 238,
+      "topLeftY": 808,
+      "bottomRightX": 511,
+      "bottomRightY": 902,
+      "content": "يقدر العلماء أن صيد الحيتان\nأدى إلى قتل نحو مليون حوت من\nحيتان العنبر.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 981,
+      "content": "39",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "index": 5,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 82,
+      "topLeftY": 176,
+      "bottomRightX": 166,
+      "bottomRightY": 201,
+      "content": "حيوان النو",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 64,
+      "topLeftY": 549,
+      "bottomRightX": 293,
+      "bottomRightY": 584,
+      "content": "## مصطلحات عن الديتان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 47,
+      "topLeftY": 585,
+      "bottomRightX": 308,
+      "bottomRightY": 672,
+      "content": "الهجرة: الانتقال من منطقة إلى أخرى\nأو من موطن لآخر من أجل الطعام\nأو التزاوج.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 59,
+      "topLeftY": 677,
+      "bottomRightX": 296,
+      "bottomRightY": 734,
+      "content": "التزاوج: تحتاج معظم الحيوانات إلى\nالزواج من أجل إنجاب الأطفال.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 555,
+      "topLeftY": 639,
+      "bottomRightX": 708,
+      "bottomRightY": 666,
+      "content": "سرطان البحر الأحمر",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 82,
+      "topLeftY": 960,
+      "bottomRightX": 101,
+      "bottomRightY": 981,
+      "content": "5",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

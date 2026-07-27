@@ -1,0 +1,57 @@
+{
+  "index": 21,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 67,
+      "topLeftY": 24,
+      "bottomRightX": 381,
+      "bottomRightY": 958,
+      "content": "![img-21.jpeg](img-21.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-21.jpeg"
+    },
+    {
+      "topLeftX": 363,
+      "topLeftY": 225,
+      "bottomRightX": 724,
+      "bottomRightY": 584,
+      "content": "لقد عثرَ كارتر على مقبرة توت عنخ\nآمون! توفي الملكُ توت منذ أكثر من\n3300 عام، وكان في الثامنة عشرة\nفقط من عمره. ومع ذلك، دفن هذا\nالملك الشاب ومعه كنوز لا تقدر\nبثمن. وقد جعلت هذه المقبرة الملك\nتوت أشهر مومياء في العالم.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 313,
+      "topLeftY": 654,
+      "bottomRightX": 734,
+      "bottomRightY": 801,
+      "content": "للتأثيث\nمصطلحات عن المومياوات",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 401,
+      "topLeftY": 808,
+      "bottomRightX": 667,
+      "bottomRightY": 880,
+      "content": "مقبرة: تعني قبراً.. وهي عبارة عن\nحجرة أو بناء لدفن المتوفى.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 35,
+      "topLeftY": 970,
+      "bottomRightX": 58,
+      "bottomRightY": 988,
+      "content": "21",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

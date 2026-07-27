@@ -1,0 +1,57 @@
+{
+  "index": 25,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 118,
+      "topLeftY": 153,
+      "bottomRightX": 454,
+      "bottomRightY": 325,
+      "content": "حَنَّطَ الْمِصْرِيُّونَ الْقُدَمَاءُ أَيْضًا\nالْكِلَابَ وَالتَّمَاسِيحَ وَالْقُرُودَ\nوَالطُّيُورَ، وَكَانُوا يَعْتَقِدُونَ أَنَّ هَذِهِ\nالْحَيَوَانَاتِ تُرْضِي الْأَلِهَةَ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 73,
+      "topLeftY": 404,
+      "bottomRightX": 466,
+      "bottomRightY": 471,
+      "content": "# مصطلحات عن المومياوات",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 147,
+      "topLeftY": 479,
+      "bottomRightX": 420,
+      "bottomRightY": 547,
+      "content": "الجداد: هو الشعور بالحزن الشديد\nوالتعبير عنه.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 0,
+      "topLeftY": 593,
+      "bottomRightX": 791,
+      "bottomRightY": 1023,
+      "content": "![img-25.jpeg](img-25.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-25.jpeg"
+    },
+    {
+      "topLeftX": 32,
+      "topLeftY": 970,
+      "bottomRightX": 61,
+      "bottomRightY": 990,
+      "content": "25",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

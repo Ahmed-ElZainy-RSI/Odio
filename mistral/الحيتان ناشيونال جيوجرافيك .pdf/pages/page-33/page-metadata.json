@@ -1,0 +1,158 @@
+{
+  "index": 32,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 365,
+      "topLeftY": 0,
+      "bottomRightX": 593,
+      "bottomRightY": 175,
+      "content": "# 10",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 474,
+      "topLeftY": 175,
+      "bottomRightX": 735,
+      "bottomRightY": 368,
+      "content": "## أشياء رائعة عن حيتان العنبر",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 230,
+      "topLeftY": 33,
+      "bottomRightX": 259,
+      "bottomRightY": 82,
+      "content": "1",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 78,
+      "topLeftY": 167,
+      "bottomRightX": 248,
+      "bottomRightY": 240,
+      "content": "يبلغ وزن الحيتان حديثة الولادة طناً واحداً، ويبلغ طولها 13 قدماً.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 57,
+      "topLeftY": 317,
+      "bottomRightX": 109,
+      "bottomRightY": 383,
+      "content": "3",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 44,
+      "topLeftY": 307,
+      "bottomRightX": 392,
+      "bottomRightY": 537,
+      "content": "![img-23.jpeg](img-23.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-23.jpeg"
+    },
+    {
+      "topLeftX": 119,
+      "topLeftY": 539,
+      "bottomRightX": 321,
+      "bottomRightY": 613,
+      "content": "يبلغ طول أسنان حيتان العنبر 10 بوصات، ويبلغ وزن السنّ الواحدة رطلين.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 698,
+      "topLeftY": 417,
+      "bottomRightX": 741,
+      "bottomRightY": 465,
+      "content": "2",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 470,
+      "topLeftY": 581,
+      "bottomRightX": 721,
+      "bottomRightY": 655,
+      "content": "يتخفض معدل نبضات قلب الحيتان عند الغوص في الأعماق حتى لا تستهلك كماً كبيراً من الأكسجين.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 63,
+      "topLeftY": 671,
+      "bottomRightX": 115,
+      "bottomRightY": 735,
+      "content": "5",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 32,
+      "topLeftY": 660,
+      "bottomRightX": 420,
+      "bottomRightY": 873,
+      "content": "![img-24.jpeg](img-24.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-24.jpeg"
+    },
+    {
+      "topLeftX": 87,
+      "topLeftY": 875,
+      "bottomRightX": 371,
+      "bottomRightY": 975,
+      "content": "يصدر حوت العنبر صوتاً عاليًا عند ضرب ذيله على سطح الماء. لا نعلم لماذا يفعل هذا، فربما تكون هذه إحدى وسائل التواصل مع الحيتان الأخرى.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 696,
+      "topLeftY": 712,
+      "bottomRightX": 749,
+      "bottomRightY": 775,
+      "content": "4",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 462,
+      "topLeftY": 704,
+      "bottomRightX": 751,
+      "bottomRightY": 873,
+      "content": "![img-25.jpeg](img-25.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-25.jpeg"
+    },
+    {
+      "topLeftX": 507,
+      "topLeftY": 872,
+      "bottomRightX": 708,
+      "bottomRightY": 948,
+      "content": "تتخذ فتحة التنفس عند حوت العنبر شكل حرف S باللغة الإنجليزية.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 675,
+      "topLeftY": 960,
+      "bottomRightX": 712,
+      "bottomRightY": 982,
+      "content": "32",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}
