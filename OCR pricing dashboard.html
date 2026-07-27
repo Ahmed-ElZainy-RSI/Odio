@@ -1,0 +1,201 @@
+<!doctype html><html lang=en><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>OCR Pricing Review</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:40px 24px}
+.pg{max-width:1080px;margin:0 auto}
+.head{margin-bottom:28px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7a8290;font-weight:700;margin-bottom:8px}
+h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;font-weight:680;margin-bottom:8px}
+.dek{color:#5c646e;font-size:15px}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:14px;padding:26px 28px;margin-bottom:20px}
+h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7a8290;font-weight:700;margin-bottom:18px}
+h3{font-size:17px;font-weight:640;margin-bottom:8px;letter-spacing:-.01em}
+p+p{margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid #dfe3e8;border-radius:14px;padding:20px}
+.kpi .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#7a8290;font-weight:700;
+margin-bottom:10px;min-height:26px}
+.kpi .v{font-size:30px;font-weight:660;letter-spacing:-.03em;line-height:1}
+.kpi .d{font-size:12.5px;color:#5c646e;margin-top:8px;line-height:1.45}
+.summary{background:#14233a;color:#fff;border-radius:14px;padding:30px 32px;margin-bottom:20px}
+.summary h2{color:#8ea6c8}
+.find{display:flex;gap:16px;padding:15px 0;border-top:1px solid #ffffff1f}
+.find:first-of-type{border-top:none;padding-top:0}
+.find .num{flex:none;width:26px;height:26px;border-radius:50%;background:#ffffff1a;color:#a9c0dd;
+font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.find h3{color:#fff;margin-bottom:4px}
+.find p{color:#c3cedd;font-size:14px;margin:0}
+.find b{color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #eef1f4}
+.lg{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5c646e}
+.lg i{width:11px;height:11px;border-radius:3px;flex:none}
+.brow{display:flex;align-items:center;gap:16px;padding:7px 0}
+.bname{flex:none;width:250px;font-size:13.5px;text-align:right;color:#3c434c;line-height:1.35}
+.btrack{flex:1;display:flex;align-items:center;height:26px;position:relative}
+.bfill{height:26px;border-radius:5px;display:flex;align-items:center;justify-content:flex-end;
+padding-right:11px;min-width:5px}
+.bv{font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:640;white-space:nowrap}
+.bv.in{color:#fff}
+.bv.out{color:#3c434c;padding-left:11px}
+.scalenote{font-size:12px;color:#8a8f96;margin-top:16px;padding-top:14px;border-top:1px solid #eef1f4}
+.bar2{display:flex;height:34px;border-radius:7px;overflow:hidden;margin-bottom:18px}
+.seg{transition:none}
+.segrow{display:flex;align-items:center;gap:11px;padding:7px 0;font-size:13.5px}
+.sd{width:11px;height:11px;border-radius:3px;flex:none}
+.sl{flex:1;color:#3c434c}
+.sc{font-variant-numeric:tabular-nums;font-weight:640;color:#1a1d21}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7a8290;
+font-weight:700;padding:0 12px 12px;border-bottom:2px solid #e6eaee}
+th.n,td.n{text-align:right}
+td{padding:14px 12px;border-bottom:1px solid #f1f3f5;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tr.mist td{background:#f2f7ff}
+tr.dots td{background:#f1f9f4}
+.r{color:#a4abb4;font-variant-numeric:tabular-nums;width:30px}
+.nm{font-weight:640;min-width:180px;line-height:1.35}
+.nm2{font-weight:600}
+.sub{font-weight:400;color:#8a8f96;font-size:11.5px;margin-top:3px;line-height:1.4}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{color:#5c646e;font-size:12px;line-height:1.5;max-width:330px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;background:#f0f2f5;color:#4b5259;
+font-size:11px;white-space:nowrap}
+.cf{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:650;
+border:1px solid;white-space:nowrap}
+.fix{display:flex;gap:14px;padding:14px 0;border-top:1px solid #f1f3f5}
+.fix:first-of-type{border-top:none;padding-top:0}
+.tag{flex:none;font-size:10px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;
+padding:4px 9px;border-radius:5px;margin-top:2px;height:fit-content}
+.tag.c{background:#fdeceb;color:#b3401f}
+.tag.a{background:#eaf6ef;color:#0f7b4a}
+.fix .bd{flex:1}
+.fix .bd b{font-size:13.5px;display:block;margin-bottom:3px}
+.fix .bd span{color:#5c646e;font-size:13px}
+.foot{font-size:12px;color:#8a8f96;line-height:1.7;padding-top:8px}
+.foot b{color:#5c646e}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.bname{width:140px;font-size:12px}}
+@media print{body{background:#fff;padding:0}.card,.kpi{break-inside:avoid}}
+</style>
+<div class=pg>
+
+<div class=head>
+<div class=eyebrow>Vendor cost review &middot; 27 July 2026</div>
+<h1>OCR Pricing Ceiling Analysis</h1>
+<p class=dek>16 model and hosting configurations, priced at 1,000 and 50,000 pages per month.
+Four arithmetic corrections applied to the source sheet; every rate re-checked against its vendor.</p>
+</div>
+
+<div class=summary>
+<h2>What stakeholders need to know</h2>
+
+<div class=find><div class=num>1</div><div>
+<h3>The cheapest defensible rate is $2.00 per 1,000 pages</h3>
+<p>Mistral OCR 4 on the Batch API is the lowest price here that comes from a vendor's own published
+page. <b>All 5 commercial options priced below it are unverified or contradict the vendor's
+published rate</b> &mdash; the cheap end of the table is the part with the least evidence behind it.</p>
+</div></div>
+
+<div class=find><div class=num>2</div><div>
+<h3>Only 5 of 16 rates are traceable to a primary source</h3>
+<p>Three PaddleOCR rows assume a per-token price for a model that neither Novita nor Fireworks
+sells serverless at all. DeepSeek is priced ~16x above its published rate. Two vendors could not be
+identified from any public source.</p>
+</div></div>
+
+<div class=find><div class=num>3</div><div>
+<h3>dots.mocr is the best-performing model and has no price at all</h3>
+<p>It tops olmOCR-Bench at 83.9 with no hosted API in existence &mdash; MIT-licensed open weights you
+run yourself. The <b>$0.46 per 1,000 pages</b> shown is your own GPU cost, not a quote, and rests
+on a throughput figure nobody has published.</p>
+</div></div>
+
+<div class=find><div class=num>4</div><div>
+<h3>Besser's flat fee only pays off above ~89,000 pages a month</h3>
+<p>At the 50,000-page benchmark it is $0.0267 per page &mdash; the most expensive option on the list.
+The decision turns entirely on committed monthly volume.</p>
+</div></div>
+</div>
+
+<div class=kpis>
+<div class=kpi><div class=k>Verified floor</div><div class=v>$2.00</div>
+<div class=d>per 1,000 pages<br>Mistral OCR 4, Batch API</div></div>
+<div class=kpi><div class=k>Priced below it</div><div class=v>5</div>
+<div class=d>commercial rows, none of them verified</div></div>
+<div class=kpi><div class=k>Self-host estimate</div><div class=v>$0.46</div>
+<div class=d>per 1,000 pages<br>dots.mocr on your own GPU</div></div>
+<div class=kpi><div class=k>Traceable rates</div><div class=v>5 / 16</div>
+<div class=d>confirmed against a vendor source</div></div>
+</div>
+
+<div class=card>
+<h2>Cost per 50,000 pages per month</h2>
+<div class=legend><span class=lg><i style="background:#0f7b4a"></i>Vendor published</span><span class=lg><i style="background:#1c4f8f"></i>Self-hosted estimate</span><span class=lg><i style="background:#b07d10"></i>Derived, not published</span><span class=lg><i style="background:#b3401f"></i>Disputed - above published rate</span><span class=lg><i style="background:#8a8f96"></i>No source found</span></div>
+<div class=brow><div class=bname>GLM-OCR</div><div class=btrack><div class=bfill style="width:7.7%;background:#8a8f96"></div><span class="bv out">$15.00</span></div></div><div class=brow><div class=bname>dots.mocr (self-hosted)</div><div class=btrack><div class=bfill style="width:15.6%;background:#1c4f8f"></div><span class="bv out">$22.85</span></div></div><div class=brow><div class=bname>PaddleOCR-VL-1.6 (Token Standard)</div><div class=btrack><div class=bfill style="width:17.3%;background:#b3401f"></div><span class="bv out">$25.00</span></div></div><div class=brow><div class=bname>DeepSeek OCR 2</div><div class=btrack><div class=bfill style="width:19.4%;background:#b3401f"></div><span class="bv out">$28.00</span></div></div><div class=brow><div class=bname>Unlimited OCR (Serverless)</div><div class=btrack><div class=bfill style="width:30.4%;background:#8a8f96"><span class="bv in">$50.00</span></div></div></div><div class=brow><div class=bname>PaddleOCR-VL-1.6 (Token Dense)</div><div class=btrack><div class=bfill style="width:41.5%;background:#b3401f"><span class="bv in">$90.00</span></div></div></div><div class=brow><div class=bname>PaddleOCR-VL-1.6 (Flat Page)</div><div class=btrack><div class=bfill style="width:43.5%;background:#8a8f96"><span class="bv in">$100.00</span></div></div></div><div class=brow><div class=bname>FastOCR</div><div class=btrack><div class=bfill style="width:43.5%;background:#8a8f96"><span class="bv in">$100.00</span></div></div></div><div class=brow><div class=bname>Mistral OCR 4 (Batch API)</div><div class=btrack><div class=bfill style="width:43.5%;background:#0f7b4a"><span class="bv in">$100.00</span></div></div></div><div class=brow><div class=bname>LightOnOCR-2-1B</div><div class=btrack><div class=bfill style="width:45.9%;background:#0f7b4a"><span class="bv in">$113.97</span></div></div></div><div class=brow><div class=bname>Mistral OCR 4 (Standard API)</div><div class=btrack><div class=bfill style="width:56.5%;background:#0f7b4a"><span class="bv in">$200.00</span></div></div></div><div class=brow><div class=bname>MinerU Extractor</div><div class=btrack><div class=bfill style="width:60.8%;background:#8a8f96"><span class="bv in">$250.00</span></div></div></div><div class=brow><div class=bname>Mistral Document AI</div><div class=btrack><div class=bfill style="width:60.8%;background:#0f7b4a"><span class="bv in">$250.00</span></div></div></div><div class=brow><div class=bname>Surya 2 OCR (Balanced)</div><div class=btrack><div class=bfill style="width:73.8%;background:#b07d10"><span class="bv in">$500.00</span></div></div></div><div class=brow><div class=bname>Chandra 2 OCR (Structured)</div><div class=btrack><div class=bfill style="width:81.5%;background:#b07d10"><span class="bv in">$750.00</span></div></div></div><div class=brow><div class=bname>Besser OCR</div><div class=btrack><div class=bfill style="width:92.3%;background:#0f7b4a"><span class="bv in">$1,333.33</span></div></div></div>
+<p class=scalenote>Bars use a logarithmic scale so the full 89&times; range stays legible; the figure
+on each bar is the actual monthly cost. Colour indicates how well the underlying rate is sourced,
+not how good the model is.</p>
+</div>
+
+<div class=card>
+<h2>How well sourced is this table?</h2>
+<div class=bar2><div class=seg style="flex:5;background:#0f7b4a" title="Vendor published: 5"></div><div class=seg style="flex:1;background:#1c4f8f" title="Self-hosted estimate: 1"></div><div class=seg style="flex:2;background:#b07d10" title="Derived, not published: 2"></div><div class=seg style="flex:3;background:#b3401f" title="Disputed - above published rate: 3"></div><div class=seg style="flex:5;background:#8a8f96" title="No source found: 5"></div></div>
+<div class=segrow><span class=sd style="background:#0f7b4a"></span><span class=sl>Vendor published</span><span class=sc>5</span></div><div class=segrow><span class=sd style="background:#1c4f8f"></span><span class=sl>Self-hosted estimate</span><span class=sc>1</span></div><div class=segrow><span class=sd style="background:#b07d10"></span><span class=sl>Derived, not published</span><span class=sc>2</span></div><div class=segrow><span class=sd style="background:#b3401f"></span><span class=sl>Disputed - above published rate</span><span class=sc>3</span></div><div class=segrow><span class=sd style="background:#8a8f96"></span><span class=sl>No source found</span><span class=sc>5</span></div>
+<p class=scalenote>Rates rated <b>Disputed</b> or <b>No source found</b> should be treated as
+planning placeholders, not as figures to budget against.</p>
+</div>
+
+<div class=card>
+<h2>Besser OCR flat fee &mdash; break-even volume</h2>
+<p style="color:#5c646e;font-size:13.5px;margin-bottom:20px;max-width:78ch">Besser is a flat
+SAR&nbsp;5,000 (~$1,333) monthly subscription, so its cost per page falls as volume rises.
+Below each threshold the metered option is cheaper; above it, Besser wins. The right-hand column
+shows how far past the current 50,000-page benchmark you would need to go.</p>
+<table><thead><tr><th>Metered option</th><th class=n>Cost per page</th>
+<th class=n>Break-even volume</th><th class=n>vs. 50,000-page benchmark</th></tr></thead>
+<tbody><tr><td class=nm2>Chandra 2 OCR (Structured)</td><td class=n>$0.01500</td><td class=n><b>88,889</b></td><td class=n>1.8x</td></tr><tr><td class=nm2>Surya 2 OCR (Balanced)</td><td class=n>$0.01000</td><td class=n><b>133,333</b></td><td class=n>2.7x</td></tr><tr><td class=nm2>MinerU Extractor</td><td class=n>$0.00500</td><td class=n><b>266,667</b></td><td class=n>5.3x</td></tr><tr><td class=nm2>Mistral Document AI</td><td class=n>$0.00500</td><td class=n><b>266,667</b></td><td class=n>5.3x</td></tr><tr><td class=nm2>Mistral OCR 4 (Standard API)</td><td class=n>$0.00400</td><td class=n><b>333,333</b></td><td class=n>6.7x</td></tr><tr><td class=nm2>LightOnOCR-2-1B</td><td class=n>$0.00228</td><td class=n><b>584,949</b></td><td class=n>11.7x</td></tr><tr><td class=nm2>PaddleOCR-VL-1.6 (Flat Page)</td><td class=n>$0.00200</td><td class=n><b>666,667</b></td><td class=n>13.3x</td></tr><tr><td class=nm2>FastOCR</td><td class=n>$0.00200</td><td class=n><b>666,667</b></td><td class=n>13.3x</td></tr><tr><td class=nm2>Mistral OCR 4 (Batch API)</td><td class=n>$0.00200</td><td class=n><b>666,667</b></td><td class=n>13.3x</td></tr><tr><td class=nm2>PaddleOCR-VL-1.6 (Token Dense)</td><td class=n>$0.00180</td><td class=n><b>740,741</b></td><td class=n>14.8x</td></tr><tr><td class=nm2>Unlimited OCR (Serverless)</td><td class=n>$0.00100</td><td class=n><b>1,333,333</b></td><td class=n>26.7x</td></tr><tr><td class=nm2>DeepSeek OCR 2</td><td class=n>$0.00056</td><td class=n><b>2,380,952</b></td><td class=n>47.6x</td></tr><tr><td class=nm2>PaddleOCR-VL-1.6 (Token Standard)</td><td class=n>$0.00050</td><td class=n><b>2,666,667</b></td><td class=n>53.3x</td></tr><tr><td class=nm2>dots.mocr (self-hosted)</td><td class=n>$0.00046</td><td class=n><b>2,917,933</b></td><td class=n>58.4x</td></tr><tr><td class=nm2>GLM-OCR</td><td class=n>$0.00030</td><td class=n><b>4,444,444</b></td><td class=n>88.9x</td></tr></tbody></table>
+</div>
+
+<div class=card>
+<h2>Full comparison</h2>
+<table><thead><tr><th>#</th><th>Model / host</th><th>Pricing model</th>
+<th class=n>1,000 pages</th><th class=n>50,000 pages</th><th class=n>$/page</th>
+<th>Source</th><th>Review note</th></tr></thead><tbody><tr class=""><td class=r>1</td><td class=nm>GLM-OCR<div class=sub>Z.ai / Alternative Premium Hosts</div></td><td><span class=pill>Per-token</span></td><td class=n>$0.30</td><td class=n><b>$15.00</b></td><td class=n>$0.00030</td><td><span class=cf style="color:#8a8f96;border-color:#8a8f9633;background:#8a8f9614">No source found</span></td><td class=note>CORRECTED: source sheet said $3.00/$150 - a 10x arithmetic error against its own inputs. Z.ai's per-token rate for an OCR endpoint could not be confirmed from any published page.</td></tr><tr class="dots"><td class=r>2</td><td class=nm>dots.mocr (self-hosted)<div class=sub>Own GPU - vLLM / SGLang (no API exists)</div></td><td><span class=pill>Self-hosted GPU</span></td><td class=n>$0.46</td><td class=n><b>$22.85</b></td><td class=n>$0.00046</td><td><span class=cf style="color:#1c4f8f;border-color:#1c4f8f33;background:#1c4f8f14">Self-hosted estimate</span></td><td class=note>NOT AN API PRICE. HuggingFace states plainly: 'This model isn't deployed by any Inference Provider.' MIT-licensed 3B open weights (dots-studio/dots.mocr, rednote-hilab). The figure is rented-GPU compute from the Assumptions tab, not a rate anyone charges. Tops olmOCR-Bench at 83.9 and leads OmniDocBench v1.5 text-edit at 0.031.</td></tr><tr class=""><td class=r>3</td><td class=nm>PaddleOCR-VL-1.6 (Token Standard)<div class=sub>Novita AI / Fireworks AI (Surge Rate)</div></td><td><span class=pill>Per-token</span></td><td class=n>$0.50</td><td class=n><b>$25.00</b></td><td class=n>$0.00050</td><td><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">Disputed - above published rate</span></td><td class=note>Arithmetic OK. But Fireworks and Novita both list this model 'Serverless: Not supported' (on-demand GPU only), so neither publishes a per-token rate. Aggregators quote Novita at ~$0.02/1M - 5x below this ceiling.</td></tr><tr class=""><td class=r>4</td><td class=nm>DeepSeek OCR 2<div class=sub>SiliconFlow / Official API (Peak Pricing)</div></td><td><span class=pill>Per-token</span></td><td class=n>$0.56</td><td class=n><b>$28.00</b></td><td class=n>$0.00056</td><td><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">Disputed - above published rate</span></td><td class=note>CORRECTED: source sheet said $2.80/$140 - a 5x arithmetic error. Rate is also ~16x published: DeepSeek-OCR is free on SiliconFlow and ~$0.03/1M on DeepInfra. No public model named 'DeepSeek OCR 2' was found.</td></tr><tr class=""><td class=r>5</td><td class=nm>Unlimited OCR (Serverless)<div class=sub>Managed Third-Party (Unoptimized A100 node)</div></td><td><span class=pill>Compute-time</span></td><td class=n>$1.00</td><td class=n><b>$50.00</b></td><td class=n>$0.00100</td><td><span class=cf style="color:#8a8f96;border-color:#8a8f9633;background:#8a8f9614">No source found</span></td><td class=note>Arithmetic OK but the whole row rests on the 1 compute-second/page assumption on the Assumptions tab. No identifiable vendor.</td></tr><tr class=""><td class=r>6</td><td class=nm>PaddleOCR-VL-1.6 (Token Dense)<div class=sub>Novita AI / Fireworks AI (Surge Rate)</div></td><td><span class=pill>Per-token</span></td><td class=n>$1.80</td><td class=n><b>$90.00</b></td><td class=n>$0.00180</td><td><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">Disputed - above published rate</span></td><td class=note>Arithmetic OK. Same serverless caveat. Also note 18,000 tokens/page exceeds Novita's 16,384 context window for this model, so this scenario is not reachable on that host.</td></tr><tr class=""><td class=r>7</td><td class=nm>PaddleOCR-VL-1.6 (Flat Page)<div class=sub>Premium Boutique API Wrappers</div></td><td><span class=pill>Per-page</span></td><td class=n>$2.00</td><td class=n><b>$100.00</b></td><td class=n>$0.00200</td><td><span class=cf style="color:#8a8f96;border-color:#8a8f9633;background:#8a8f9614">No source found</span></td><td class=note>Arithmetic OK. No named vendor, so the rate cannot be checked against anything.</td></tr><tr class=""><td class=r>8</td><td class=nm>FastOCR<div class=sub>Developer API (Asynchronous Flow)</div></td><td><span class=pill>Per-page (assumed)</span></td><td class=n>$2.00</td><td class=n><b>$100.00</b></td><td class=n>$0.00200</td><td><span class=cf style="color:#8a8f96;border-color:#8a8f9633;background:#8a8f9614">No source found</span></td><td class=note>The $2.00 is an assumption, not a quote - and a custom business tier is precisely what does not scale linearly at 50x. The public FastOCR is a consumer tool at $3.99-$10.99/mo with monthly page allowances.</td></tr><tr class="mist"><td class=r>9</td><td class=nm>Mistral OCR 4 (Batch API)<div class=sub>Mistral Studio / Batch endpoint</div></td><td><span class=pill>Per-page</span></td><td class=n>$2.00</td><td class=n><b>$100.00</b></td><td class=n>$0.00200</td><td><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">Vendor published</span></td><td class=note>$4/1,000 pages less the standard 50% Batch-API discount = $2/1,000. Source: mistral.ai/pricing/api and the OCR 4 launch post, 23 Jun 2026. Model string mistral-ocr-4-0.</td></tr><tr class=""><td class=r>10</td><td class=nm>LightOnOCR-2-1B<div class=sub>LightOn Platform (FX Rate Fluctuations)</div></td><td><span class=pill>Per-page</span></td><td class=n>$2.28</td><td class=n><b>$113.97</b></td><td class=n>$0.00228</td><td><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">Vendor published</span></td><td class=note>CORRECTED FX: source sheet converted EUR 0.0020 at 1.25. Spot was 1.1397 on 27 Jul 2026, giving $2.28 not $2.50. Keep 1.25 only if you intend a deliberate FX stress ceiling, and label it as one.</td></tr><tr class="mist"><td class=r>11</td><td class=nm>Mistral OCR 4 (Standard API)<div class=sub>Mistral Studio / Sync endpoint</div></td><td><span class=pill>Per-page</span></td><td class=n>$4.00</td><td class=n><b>$200.00</b></td><td class=n>$0.00400</td><td><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">Vendor published</span></td><td class=note>$4 per 1,000 pages, list. Source: mistral.ai/pricing/api. Returns bounding boxes, block classification and per-word confidence scores; 170 languages; self-hosting available to enterprise.</td></tr><tr class=""><td class=r>12</td><td class=nm>MinerU Extractor<div class=sub>OpenDataLab (Paid SLA / Over-quota Priority)</div></td><td><span class=pill>Per-page</span></td><td class=n>$5.00</td><td class=n><b>$250.00</b></td><td class=n>$0.00500</td><td><span class=cf style="color:#8a8f96;border-color:#8a8f9633;background:#8a8f9614">No source found</span></td><td class=note>Arithmetic OK. MinerU documents a 2,000-page/day high-priority quota with degraded priority beyond it, but publishes no paid per-page rate.</td></tr><tr class="mist"><td class=r>13</td><td class=nm>Mistral Document AI<div class=sub>Mistral Studio (OCR 4 + schema pass)</div></td><td><span class=pill>Per-page</span></td><td class=n>$5.00</td><td class=n><b>$250.00</b></td><td class=n>$0.00500</td><td><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">Vendor published</span></td><td class=note>$5 per 1,000 pages. Wraps OCR 4 with a mistral-small-2603 call that reshapes output to a JSON schema you define. Source: mistral.ai/pricing/api. The Agent API 'Libraries' tool prices OCR separately at $3/1K pages.</td></tr><tr class=""><td class=r>14</td><td class=nm>Surya 2 OCR (Balanced)<div class=sub>Dedicated Replicate Deployment (Low Volume)</div></td><td><span class=pill>Per-page (derived)</span></td><td class=n>$10.00</td><td class=n><b>$500.00</b></td><td class=n>$0.01000</td><td><span class=cf style="color:#b07d10;border-color:#b07d1033;background:#b07d1014">Derived, not published</span></td><td class=note>Replicate dedicated deployments bill per GPU-second, not per page. This is an effective rate at an unstated throughput assumption - state the pages/sec it implies.</td></tr><tr class=""><td class=r>15</td><td class=nm>Chandra 2 OCR (Structured)<div class=sub>Dedicated Replicate Deployment (Low Volume)</div></td><td><span class=pill>Per-page (derived)</span></td><td class=n>$15.00</td><td class=n><b>$750.00</b></td><td class=n>$0.01500</td><td><span class=cf style="color:#b07d10;border-color:#b07d1033;background:#b07d1014">Derived, not published</span></td><td class=note>Same GPU-second caveat as Surya. Datalab's own hosted pricing page did not render for confirmation.</td></tr><tr class=""><td class=r>16</td><td class=nm>Besser OCR<div class=sub>Web / API Portal Ingestion Dashboard</div></td><td><span class=pill>Flat subscription</span></td><td class=n>$1,333.33</td><td class=n><b>$1,333.33</b></td><td class=n>$0.02667</td><td><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">Vendor published</span></td><td class=note>Confirmed by the user via direct correspondence with the vendor. Flat monthly fee, so cost does not scale with volume - see the Crossover tab for the volume at which it starts to win.</td></tr></tbody></table>
+</div>
+
+<div class=card>
+<h2>Changes applied to the source sheet</h2>
+<div class=fix><span class="tag c">Fixed</span><div class=bd><b>DeepSeek OCR 2 &mdash; $2.80 to $0.56 per 1,000 pages</b>
+<span>1,120 tokens &times; $0.50/1M = $0.00056 per page. The stated cost was 5&times; the sheet's own inputs.</span></div></div>
+<div class=fix><span class="tag c">Fixed</span><div class=bd><b>GLM-OCR &mdash; $3.00 to $0.30 per 1,000 pages</b>
+<span>1,500 tokens &times; $0.20/1M = $0.00030 per page. The stated cost was 10&times; the sheet's own inputs.</span></div></div>
+<div class=fix><span class="tag c">Fixed</span><div class=bd><b>LightOnOCR-2-1B &mdash; $2.50 to $2.28 per 1,000 pages</b>
+<span>&euro;0.0020 per page had been converted at 1.25. EUR/USD spot was 1.1397 on 27 July 2026.</span></div></div>
+<div class=fix><span class="tag c">Fixed</span><div class=bd><b>Besser OCR &mdash; $1,333.00 to $1,333.33</b>
+<span>SAR 5,000 at the 3.75 riyal peg. Keep the original if Besser quoted in USD directly.</span></div></div>
+<div class=fix><span class="tag a">Added</span><div class=bd><b>Mistral OCR 4 &mdash; three tiers</b>
+<span>Standard API $4, Batch API $2, Document AI $5 per 1,000 pages, read from mistral.ai/pricing/api.</span></div></div>
+<div class=fix><span class="tag a">Added</span><div class=bd><b>dots.mocr &mdash; self-hosted</b>
+<span>No API exists at any price. Modelled as rented-GPU compute: H100 SXM5 at $3.29/hr and a
+conservative 2.0 pages/sec, at full utilisation. Excludes engineering time, idle capacity and retries.</span></div></div>
+</div>
+
+<div class=card><h2>Method and caveats</h2>
+<p class=foot>
+<b>Figures are worst-case ceilings, not quotes.</b> They are designed to bound the downside, so they
+sit above what most vendors would invoice.<br><br>
+<b>Vendor published</b> &mdash; read directly from the vendor's own pricing page, or supplied by the
+user from vendor correspondence.<br>
+<b>Self-hosted estimate</b> &mdash; no hosted API exists; the figure is your own infrastructure cost
+and moves with the GPU rate and throughput assumptions.<br>
+<b>Derived</b> &mdash; the vendor bills on GPU-seconds, not pages; the per-page figure rests on an
+unstated throughput assumption.<br>
+<b>Disputed</b> &mdash; a published rate exists and the ceiling used here sits materially above it.<br>
+<b>No source found</b> &mdash; no published rate, or no identifiable vendor.<br><br>
+All inputs &mdash; FX rates, the riyal peg, benchmark volumes, GPU rate and throughput &mdash; are
+editable on the Assumptions tab of the accompanying workbook, and every figure recalculates from them.
+</p></div>
+
+</div></html>
