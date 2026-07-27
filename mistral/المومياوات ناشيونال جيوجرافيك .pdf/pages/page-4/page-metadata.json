@@ -1,0 +1,29 @@
+{
+  "index": 3,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 214,
+      "topLeftY": 163,
+      "bottomRightX": 572,
+      "bottomRightY": 251,
+      "content": "# المحتويات",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 67,
+      "topLeftY": 299,
+      "bottomRightX": 724,
+      "bottomRightY": 939,
+      "content": "4...العثور على مومياء!\n6...تحنيط المومياء.\n8...مومياوات طبيعية.\n14...مومياوات من تحنيط الإنسان\n18...طريقة التحنيط عند المصريين القدماء.\n20...مقبرة مليئة بالكنوز\n22...لعنة المومياء\n24...حيوانات محنطة\n26...مومياء السيدة الجميلة.\n28...مومياوات في الحاضر\n30...الكشف عن الأسرار.\n32...مصطلحات مصورة",
+      "confidenceScores": null,
+      "type": "list"
+    }
+  ]
+}

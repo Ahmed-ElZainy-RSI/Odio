@@ -1,0 +1,75 @@
+{
+  "index": 15,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 62,
+      "topLeftY": 137,
+      "bottomRightX": 454,
+      "bottomRightY": 178,
+      "content": "## نَحْنُ نَعْلَمُ الْكَثِيرَ عَنْ حَبْتَانِ الْعَنْبَرِ",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 62,
+      "topLeftY": 190,
+      "bottomRightX": 284,
+      "bottomRightY": 340,
+      "content": "- الوزن: 35-50 طناً\n- الطول: 49 - 60 قدماً\n- العمر: نحو 70 عاماً",
+      "confidenceScores": null,
+      "type": "list"
+    },
+    {
+      "topLeftX": 452,
+      "topLeftY": 201,
+      "bottomRightX": 637,
+      "bottomRightY": 312,
+      "content": "**الجلد:** لونه رمادي\nداكن أو أسود، ومجعد\nكأنه ثمرة خوخ مجففة.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 87,
+      "topLeftY": 580,
+      "bottomRightX": 369,
+      "bottomRightY": 778,
+      "content": "**زَعْنَفَةُ الذيل:** تمكّن حوت\nالعنبر من السباحة بسرعة تصل\nإلى 23 ميلاً في الساعة. ويبلغ عرض\nالزعنفة 16 قدماً تقريباً من الطرف\nإلى الطرف الآخر.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 536,
+      "topLeftY": 761,
+      "bottomRightX": 701,
+      "bottomRightY": 920,
+      "content": "يبلغ وزن قلب حوت\nالعنبر 277 رطلاً في\nالمتوسط، وهذا\nيساوي وزن شخصين\nبالغين تقريباً.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 412,
+      "topLeftY": 799,
+      "bottomRightX": 511,
+      "bottomRightY": 884,
+      "content": "![img-12.jpeg](img-12.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-12.jpeg"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 982,
+      "content": "15",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

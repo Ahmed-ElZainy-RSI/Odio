@@ -1,0 +1,47 @@
+{
+  "index": 40,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 60,
+      "topLeftY": 164,
+      "bottomRightX": 725,
+      "bottomRightY": 289,
+      "content": "إن المواد الكيميائية التي تُنتج من المصانع والسفن وغيرها من الأنشطة البشرية تُمثل خطرًا على الحيتان والبيئة بأكملها. ويعرف هذا باسم التلوث، ويمكن أن يؤدي إلى مرض الحيتان أو قتلها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 483,
+      "topLeftY": 521,
+      "bottomRightX": 712,
+      "bottomRightY": 555,
+      "content": "### مصطلحات عن الحيتان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 458,
+      "topLeftY": 558,
+      "bottomRightX": 739,
+      "bottomRightY": 613,
+      "content": "التلوث: هو تعريض البيئة للضرر بسبب ما يلقبه البشر فيها من مخلفات.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 709,
+      "bottomRightY": 982,
+      "content": "40",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

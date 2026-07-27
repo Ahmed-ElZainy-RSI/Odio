@@ -1,0 +1,38 @@
+{
+  "index": 22,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 160,
+      "topLeftY": 46,
+      "bottomRightX": 705,
+      "bottomRightY": 230,
+      "content": "# لعنة الموصل",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 494,
+      "topLeftY": 829,
+      "bottomRightX": 698,
+      "bottomRightY": 886,
+      "content": "هاورد كارتر في مقبرة الملك\nقوت عنخ آمون",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 726,
+      "topLeftY": 970,
+      "bottomRightX": 755,
+      "bottomRightY": 987,
+      "content": "22",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

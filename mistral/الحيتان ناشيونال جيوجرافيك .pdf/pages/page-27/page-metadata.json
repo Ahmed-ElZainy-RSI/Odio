@@ -1,0 +1,29 @@
+{
+  "index": 26,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 137,
+      "topLeftY": 161,
+      "bottomRightX": 725,
+      "bottomRightY": 292,
+      "content": "يمكنُ لحيثانِ العنبرِ أن تحبسَ أنفاسَها لنحو 45 دقيقةً خلالَ غوصِها في المعتادِ، ثم ترتاحَ على سطحِ الماءِ لعشرِ دقائقَ، ثم تغوصَ مرةً أخرى. تواصلُ الحيتانُ فعلَ هذا طوالَ اليومِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 712,
+      "bottomRightY": 983,
+      "content": "26",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

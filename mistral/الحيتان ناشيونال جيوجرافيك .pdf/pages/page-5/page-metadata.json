@@ -1,0 +1,56 @@
+{
+  "index": 4,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 258,
+      "topLeftY": 43,
+      "bottomRightX": 721,
+      "bottomRightY": 190,
+      "content": "# رحلة طويلة",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 154,
+      "topLeftY": 216,
+      "bottomRightX": 725,
+      "bottomRightY": 389,
+      "content": "حين تنتقل الحيوانات من منطقة إلى أخرى أو من موطنٍ لآخر، يُعرف هذا باسم الهجرة. وتهاجر الحيوانات بحثاً عن الطعام أو للتزاوج. وتساعد الهجرة الحيوانات في البقاء على قيد الحياة على سطح الأرض.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 250,
+      "topLeftY": 446,
+      "bottomRightX": 724,
+      "bottomRightY": 481,
+      "content": "يهاجر الكثير من الحيوانات، وحوث العنبر من بينها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 610,
+      "topLeftY": 580,
+      "bottomRightX": 708,
+      "bottomRightY": 606,
+      "content": "حيثانُ العنبر",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 685,
+      "topLeftY": 960,
+      "bottomRightX": 704,
+      "bottomRightY": 981,
+      "content": "4",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

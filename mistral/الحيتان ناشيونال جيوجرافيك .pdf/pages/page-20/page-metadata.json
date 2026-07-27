@@ -1,0 +1,48 @@
+{
+  "index": 19,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 60,
+      "topLeftY": 164,
+      "bottomRightX": 725,
+      "bottomRightY": 291,
+      "content": "تدعمُ حيتانُ العنبرِ بعضَها داخلَ السربِ في أثناءِ تنقلِها؛ فهي تحمي الحيتانَ المريضةَ والصغيرةَ والمصابةَ وتعتني بها، كما تتأكدُ من تناولِ الجميعِ الطعامَ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 65,
+      "topLeftY": 361,
+      "bottomRightX": 718,
+      "bottomRightY": 734,
+      "content": "![img-14.jpeg](img-14.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-14.jpeg"
+    },
+    {
+      "topLeftX": 60,
+      "topLeftY": 812,
+      "bottomRightX": 725,
+      "bottomRightY": 940,
+      "content": "وهذا النوعُ من الحمايةِ مهمٌّ للغاية؛ نظرًا لهجرةِ حيتانِ العنبرِ لمسافاتٍ طويلةٍ جدًا. فبعضُها يسبحُ عددًا من الأميالِ طوالَ حياته يماثلُ دورانَها حولَ الأرضِ عدةَ مراتٍ! كما أنها تهاجرُ وفقًا للموسمِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 106,
+      "bottomRightY": 982,
+      "content": "19",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

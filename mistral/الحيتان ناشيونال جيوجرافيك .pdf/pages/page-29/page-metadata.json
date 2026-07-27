@@ -1,0 +1,48 @@
+{
+  "index": 28,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 67,
+      "topLeftY": 46,
+      "bottomRightX": 735,
+      "bottomRightY": 251,
+      "content": "# الحياة الصغرى",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 197,
+      "topLeftY": 307,
+      "bottomRightX": 498,
+      "bottomRightY": 716,
+      "content": "![img-19.jpeg](img-19.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-19.jpeg"
+    },
+    {
+      "topLeftX": 625,
+      "topLeftY": 654,
+      "bottomRightX": 759,
+      "bottomRightY": 767,
+      "content": "للتفتيش",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 675,
+      "topLeftY": 960,
+      "bottomRightX": 712,
+      "bottomRightY": 982,
+      "content": "23",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

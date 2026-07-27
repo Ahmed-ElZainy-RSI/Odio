@@ -1,0 +1,57 @@
+{
+  "index": 43,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 101,
+      "topLeftY": 53,
+      "bottomRightX": 206,
+      "bottomRightY": 78,
+      "content": "التوصية",
+      "confidenceScores": null,
+      "type": "header"
+    },
+    {
+      "topLeftX": 290,
+      "topLeftY": 43,
+      "bottomRightX": 438,
+      "bottomRightY": 89,
+      "content": "ماذا يسمى صغيراً  \nالحوت؟",
+      "confidenceScores": null,
+      "type": "header"
+    },
+    {
+      "topLeftX": 60,
+      "topLeftY": 163,
+      "bottomRightX": 725,
+      "bottomRightY": 246,
+      "content": "الخبرُ الرائعُ أن حيتانَ العنبرِ أصبحت تنمو وتتكاثر بحريةٍ في المحيطاتِ  \nفي عصرنا الحاليّ .",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 0,
+      "topLeftY": 145,
+      "bottomRightX": 791,
+      "bottomRightY": 1023,
+      "content": "![img-37.jpeg](img-37.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-37.jpeg"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 980,
+      "content": "43",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

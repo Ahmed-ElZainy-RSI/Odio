@@ -1,0 +1,57 @@
+{
+  "index": 14,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 154,
+      "topLeftY": 46,
+      "bottomRightX": 761,
+      "bottomRightY": 309,
+      "content": "# موصولات من\n# تحنيط الإنسان",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 171,
+      "topLeftY": 380,
+      "bottomRightX": 649,
+      "bottomRightY": 552,
+      "content": "عرف البشر حفظ الجثث منذ آلاف السنين. فقد\nكانت الكثير من الحضارات تؤمن بأن روح الإنسان\nلا تفنى بعد الموت. فيما عُرف باسم «التحنيط»\nوكان المصريون القدماء أشهر من عرف التحنيط.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 560,
+      "topLeftY": 546,
+      "bottomRightX": 715,
+      "bottomRightY": 660,
+      "content": "نعم.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 0,
+      "topLeftY": 566,
+      "bottomRightX": 791,
+      "bottomRightY": 1023,
+      "content": "![img-13.jpeg](img-13.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-13.jpeg"
+    },
+    {
+      "topLeftX": 728,
+      "topLeftY": 969,
+      "bottomRightX": 754,
+      "bottomRightY": 990,
+      "content": "14",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

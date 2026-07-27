@@ -1,0 +1,65 @@
+{
+  "index": 21,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 550,
+      "topLeftY": 105,
+      "bottomRightX": 628,
+      "bottomRightY": 133,
+      "content": "جرينلاند",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 104,
+      "topLeftY": 171,
+      "bottomRightX": 274,
+      "bottomRightY": 205,
+      "content": "## مفتاحُ الفريحة:",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 124,
+      "topLeftY": 212,
+      "bottomRightX": 230,
+      "bottomRightY": 274,
+      "content": "مناطقُ هجرةِ\nحيتانِ العنبرِ",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 101,
+      "topLeftY": 293,
+      "bottomRightX": 230,
+      "bottomRightY": 354,
+      "content": "مناطقُ لا تذهبُ\nإليها الحيتانُ",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 86,
+      "topLeftY": 613,
+      "bottomRightX": 246,
+      "bottomRightY": 768,
+      "content": "في الخريفِ\nتُهاجرُ حيتانُ\nالعنبرِ تجاهَ خطِّ\nالاستواءِ للتزاوجِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 78,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 983,
+      "content": "21",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

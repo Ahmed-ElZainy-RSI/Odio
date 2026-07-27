@@ -220,3 +220,10 @@ __marimo__/
 # TypeScript build tooling for demo/
 demo/typescript-src/node_modules/
 demo/typescript-src/package-lock.json
+
+.DS_Store
+.qodo/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.env

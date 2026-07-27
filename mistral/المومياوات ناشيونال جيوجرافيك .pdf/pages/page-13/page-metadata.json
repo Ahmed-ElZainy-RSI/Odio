@@ -1,0 +1,29 @@
+{
+  "index": 12,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 0,
+      "topLeftY": 0,
+      "bottomRightX": 791,
+      "bottomRightY": 1023,
+      "content": "مُومِياءُ أَوْتَزِي",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 728,
+      "topLeftY": 967,
+      "bottomRightX": 755,
+      "bottomRightY": 987,
+      "content": "12",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "index": 46,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 351,
+      "topLeftY": 95,
+      "bottomRightX": 718,
+      "bottomRightY": 287,
+      "content": "# مصطلحات مصورة",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 98,
+      "topLeftY": 232,
+      "bottomRightX": 374,
+      "bottomRightY": 322,
+      "content": "**الهجرة:** السفر من منطقة إلى أخرى\nأو من موطنٍ لآخر بحثًا عن الطعام\nأو للتزاوج.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 87,
+      "topLeftY": 583,
+      "bottomRightX": 374,
+      "bottomRightY": 644,
+      "content": "**حيوانٌ لاحم:** حيوانٌ لا يتغذى إلا على\nلحوم الحيوانات الأخرى.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 427,
+      "topLeftY": 583,
+      "bottomRightX": 724,
+      "bottomRightY": 643,
+      "content": "**العنبرية:** مادةٌ زيتيةٌ شمعيةٌ توجد داخل\nرءوس حيتان العنبر.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 82,
+      "topLeftY": 928,
+      "bottomRightX": 629,
+      "bottomRightY": 958,
+      "content": "**تحديد الموقع بالصدى:** استخدام الموجات الصوتية في تحديد مكان الأشياء.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 712,
+      "bottomRightY": 983,
+      "content": "46",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

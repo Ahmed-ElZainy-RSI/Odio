@@ -1,0 +1,111 @@
+{
+  "index": 2,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 278,
+      "topLeftY": 50,
+      "bottomRightX": 519,
+      "bottomRightY": 160,
+      "content": "العنوان: المومياوات\nالسلسلة: اقرأ مع ناشيونال جيوجرافيك\nتأليف: إليزابيث كارني\nترجمة: إدارة الترجمة والنشر\nإشراف عام: داليا محمد إبراهيم",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 197,
+      "topLeftY": 166,
+      "bottomRightX": 553,
+      "bottomRightY": 451,
+      "content": "![img-2.jpeg](img-2.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-2.jpeg"
+    },
+    {
+      "topLeftX": 137,
+      "topLeftY": 465,
+      "bottomRightX": 672,
+      "bottomRightY": 590,
+      "content": "كارني، إليزابيث\nالمومياوات/ ترجمة دار نهضة مصر، إدارة الترجمة والنشر. - القاهرة: دار نهضة مصر، 2021\n32 ص. 15 * 22.5 سم\nالمستوى الثاني\nتدمك: 978-977-14-6026-8\n1 - تعليم الأطفال.\nأ - دار نهضة مصر للنشر، إدارة الترجمة والنشر\n2 - المومياوات.\n(مترجم)",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 115,
+      "topLeftY": 590,
+      "bottomRightX": 165,
+      "bottomRightY": 605,
+      "content": "372.218",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 89,
+      "topLeftY": 616,
+      "bottomRightX": 675,
+      "bottomRightY": 740,
+      "content": "Original English Title: Mummies (NG Readers)\nCopyright © 2010 National Geographic Partners, LLC.\nAll rights reserved. National Geographic Kids and Yellow Border Design are trademarks of\nNational Geographic Society, used under license.\nPublished in Arabic by Nahdet Misr Publishing House\nupon agreement with National Geographic Partners, LLC.\nAll rights reserved.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 143,
+      "topLeftY": 754,
+      "bottomRightX": 620,
+      "bottomRightY": 829,
+      "content": "ترجمة كتاب Mummies\nتصدرها دار نهضة مصر للنشر بترخيص من شركة National Geographic Partners, LLC.\nيحظر طبع أو تصوير أو تخزين أي جزء من هذا الكتاب سواء النص أو الصور\nبأية وسيلة من وسائل تسجيل البيانات، إلا بإذن كتابي صريح من الناشر.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 211,
+      "topLeftY": 833,
+      "bottomRightX": 401,
+      "bottomRightY": 882,
+      "content": "الترقيم الدولي: 978-977-14-6026-8\nرقم الإيداع: 2021/19141\nطبعة: إبريل 2025",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 201,
+      "topLeftY": 898,
+      "bottomRightX": 401,
+      "bottomRightY": 928,
+      "content": "تليفون: 33466434 - 33472864 02\nفاكس: 33462576 02",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 211,
+      "topLeftY": 932,
+      "bottomRightX": 401,
+      "bottomRightY": 976,
+      "content": "خدمة العملاء: 16766\nWebsite: www.nahdetmisr.com\nE-mail: publishing@nahdetmisr.com",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 428,
+      "topLeftY": 892,
+      "bottomRightX": 519,
+      "bottomRightY": 930,
+      "content": "نهضة مصر\nللنشر\nأسسها أحمد محمد إبراهيم سنة 1939",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 428,
+      "topLeftY": 947,
+      "bottomRightX": 522,
+      "bottomRightY": 976,
+      "content": "21 شارع أحمد عرابي -\nالمهندسين - الجيزة",
+      "confidenceScores": null,
+      "type": "text"
+    }
+  ]
+}

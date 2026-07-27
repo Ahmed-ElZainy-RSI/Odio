@@ -1,0 +1,65 @@
+{
+  "index": 24,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 280,
+      "topLeftY": 47,
+      "bottomRightX": 739,
+      "bottomRightY": 344,
+      "content": "# الغوص في الغمام",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 389,
+      "topLeftY": 359,
+      "bottomRightX": 662,
+      "bottomRightY": 624,
+      "content": "حان وقتُ الغوصِ من أجلِ\nالبحثِ عن الطعامِ! تغوصُ\nحيتانُ العنبرِ إلى أعماقٍ أكبرَ\nمن أي نوعٍ آخرَ من الحيتانِ.\nفيمكنُها الغوصُ إلى عمقٍ\nيزيدُ على 9 آلافِ قدمٍ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 449,
+      "topLeftY": 678,
+      "bottomRightX": 652,
+      "bottomRightY": 718,
+      "content": "## كم يبلغُ العمقُ؟",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 287,
+      "topLeftY": 731,
+      "bottomRightX": 641,
+      "bottomRightY": 823,
+      "content": "كم يبلغُ عمقُ 9 آلافِ قدمٍ؟ إنه يساوي\n1.7 ميلٍ تقريباً، وهو ارتفاعُ نحوِ ستةِ أبراجٍ\nفوقَ بعضها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 485,
+      "bottomRightX": 107,
+      "bottomRightY": 577,
+      "content": "9 آلافِ قدمٍ",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 711,
+      "bottomRightY": 982,
+      "content": "24",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

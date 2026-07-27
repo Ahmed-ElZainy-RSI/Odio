@@ -1,0 +1,66 @@
+{
+  "index": 26,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 61,
+      "topLeftY": 57,
+      "bottomRightX": 663,
+      "bottomRightY": 297,
+      "content": "# 99\n# السيدة الجميلة",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 112,
+      "topLeftY": 392,
+      "bottomRightX": 549,
+      "bottomRightY": 477,
+      "content": "منذ أكثر من ألفي سنةٍ تُوفيت سيدةٌ صينيةٌ\nغنيةٌ عُرفت باسم السيدة «داي».",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 112,
+      "topLeftY": 534,
+      "bottomRightX": 562,
+      "bottomRightY": 702,
+      "content": "حُفظت جثةُ السيدة «داي» باستخدام الملح؛\nوذلك لأنه يمتض الماء من الجثة، مما يمنعُها من\nالتعفُّن. وقد كان الجثمانُ ملفوفاً في 20 طبقةً\nمن الحرير.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 112,
+      "topLeftY": 766,
+      "bottomRightX": 702,
+      "bottomRightY": 891,
+      "content": "وُضع جثمانُ السيدة «داي» داخل ستة توابيت متداخلة مزخرفة\nبرسومات رائعة الجمال. وقد دفنها عمالُ الدفن في قاع نفقٍ حُفر\nعلى عمقٍ كبيرٍ في الأرض.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 562,
+      "topLeftY": 182,
+      "bottomRightX": 741,
+      "bottomRightY": 689,
+      "content": "![img-26.jpeg](img-26.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-26.jpeg"
+    },
+    {
+      "topLeftX": 725,
+      "topLeftY": 968,
+      "bottomRightX": 755,
+      "bottomRightY": 989,
+      "content": "26",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

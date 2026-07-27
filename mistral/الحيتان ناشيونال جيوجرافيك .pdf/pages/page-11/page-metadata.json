@@ -1,0 +1,39 @@
+{
+  "index": 10,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 0,
+      "topLeftY": 0,
+      "bottomRightX": 791,
+      "bottomRightY": 818,
+      "content": "![img-8.jpeg](img-8.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-8.jpeg"
+    },
+    {
+      "topLeftX": 177,
+      "topLeftY": 843,
+      "bottomRightX": 713,
+      "bottomRightY": 925,
+      "content": "إن رأسَ حوتِ العنبرِ كبيرٌ للغاية؛ فهو يمثّلُ ثلثَ طولِ\nجسمه بالكاملِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 679,
+      "topLeftY": 960,
+      "bottomRightX": 709,
+      "bottomRightY": 982,
+      "content": "10",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

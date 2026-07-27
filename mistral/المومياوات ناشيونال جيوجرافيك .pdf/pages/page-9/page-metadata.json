@@ -1,0 +1,38 @@
+{
+  "index": 8,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 49,
+      "topLeftY": 43,
+      "bottomRightX": 507,
+      "bottomRightY": 278,
+      "content": "# مومياوات طبيعية",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 353,
+      "topLeftY": 924,
+      "bottomRightX": 565,
+      "bottomRightY": 980,
+      "content": "مومياء عُثِرَ عليها في مُستنقع\nتُعرف باسم «ليندو مان»",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 732,
+      "topLeftY": 967,
+      "bottomRightX": 747,
+      "bottomRightY": 987,
+      "content": "8",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "index": 1,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 73,
+      "topLeftY": 32,
+      "bottomRightX": 724,
+      "bottomRightY": 248,
+      "content": "# المومياوات",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 168,
+      "topLeftY": 219,
+      "bottomRightX": 610,
+      "bottomRightY": 1023,
+      "content": "![img-0.jpeg](img-0.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-0.jpeg"
+    },
+    {
+      "topLeftX": 280,
+      "topLeftY": 815,
+      "bottomRightX": 485,
+      "bottomRightY": 855,
+      "content": "اليزابيث كارني",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 297,
+      "topLeftY": 882,
+      "bottomRightX": 485,
+      "bottomRightY": 931,
+      "content": "![img-1.jpeg](img-1.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-1.jpeg"
+    }
+  ]
+}

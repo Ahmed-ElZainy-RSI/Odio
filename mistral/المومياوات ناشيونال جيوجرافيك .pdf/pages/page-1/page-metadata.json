@@ -1,0 +1,56 @@
+{
+  "index": 0,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 338,
+      "topLeftY": 69,
+      "bottomRightX": 544,
+      "bottomRightY": 171,
+      "content": "NATIONAL\nGEOGRAPHIC\nKiDS",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 663,
+      "topLeftY": 57,
+      "bottomRightX": 728,
+      "bottomRightY": 75,
+      "content": "المستوى",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 671,
+      "topLeftY": 75,
+      "bottomRightX": 718,
+      "bottomRightY": 123,
+      "content": "2",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 116,
+      "topLeftY": 174,
+      "bottomRightX": 706,
+      "bottomRightY": 299,
+      "content": "# المومياوات",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 349,
+      "topLeftY": 920,
+      "bottomRightX": 462,
+      "bottomRightY": 948,
+      "content": "دار نهضة مصر",
+      "confidenceScores": null,
+      "type": "text"
+    }
+  ]
+}

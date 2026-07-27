@@ -1,0 +1,47 @@
+{
+  "index": 4,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 260,
+      "topLeftY": 47,
+      "bottomRightX": 703,
+      "bottomRightY": 303,
+      "content": "# العثور على مومياء!",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 220,
+      "topLeftY": 389,
+      "bottomRightX": 704,
+      "bottomRightY": 514,
+      "content": "كان أحدُ المزارعين يعملُ في أرضٍ مُستنقعاتٍ، ثمَّ اصطدمت مجرِفَتُهُ بشيءٍ صلبٍ، فأخرج جسداً أسودَ اللونِ.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 220,
+      "topLeftY": 552,
+      "bottomRightX": 704,
+      "bottomRightY": 765,
+      "content": "وُجِدَ أنَّ لهذا الجسدِ شعراً، وأسناناً وحتى بصماتٍ أصابع. اتصل المزارعُ بالشرطةِ على الفورِ. فقد بدا له هذا الإنسانُ قد ماتَ في وقتٍ قريبٍ. إلَّا أنَّ هذا الجثمانَ كانَ لإنسانٍ توفِّي منذ أكثرَ من ألفي عامٍ! إنَّهُ مومياءُ!",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 732,
+      "topLeftY": 969,
+      "bottomRightX": 749,
+      "bottomRightY": 990,
+      "content": "4",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

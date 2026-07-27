@@ -1,0 +1,102 @@
+{
+  "index": 15,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 127,
+      "topLeftY": 46,
+      "bottomRightX": 268,
+      "bottomRightY": 89,
+      "content": "س\nتأليف من الشّات\nوالمُحجّمة",
+      "confidenceScores": null,
+      "type": "header"
+    },
+    {
+      "topLeftX": 308,
+      "topLeftY": 46,
+      "bottomRightX": 463,
+      "bottomRightY": 91,
+      "content": "لماذا اتصلت\nالمُوميّاة بالطبيب؟",
+      "confidenceScores": null,
+      "type": "header"
+    },
+    {
+      "topLeftX": 473,
+      "topLeftY": 54,
+      "bottomRightX": 515,
+      "bottomRightY": 82,
+      "content": "س",
+      "confidenceScores": null,
+      "type": "header"
+    },
+    {
+      "topLeftX": 176,
+      "topLeftY": 159,
+      "bottomRightX": 670,
+      "bottomRightY": 329,
+      "content": "لقد اعتقدت هذه الحضارات أنَّ الأرواح قد تحتاج\nإلى بعض الأشياء في الحياة الآخرة؛ ولهذا أحياناً\nكانت المومياوات تُدفن ومعها أسلحة، أو مجوهرات،\nأو طعام، أو حتى حيواناتها المفضلة محنطة.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 176,
+      "topLeftY": 366,
+      "bottomRightX": 670,
+      "bottomRightY": 536,
+      "content": "تنوعت طرق التحنيط في الحضارات المختلفة.\nفبعض الحضارات كانت تُجفف الجثث باستخدام\nالرمل أو الدخان، في حين استخدم البعض الآخر مواد\nكيميائية لحفظ الجثث، مثل ملح النطرون.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 51,
+      "topLeftY": 787,
+      "bottomRightX": 190,
+      "bottomRightY": 828,
+      "content": "المومياوات",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 197,
+      "topLeftY": 770,
+      "bottomRightX": 269,
+      "bottomRightY": 835,
+      "content": "![img-14.jpeg](img-14.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-14.jpeg"
+    },
+    {
+      "topLeftX": 280,
+      "topLeftY": 773,
+      "bottomRightX": 440,
+      "bottomRightY": 815,
+      "content": "مصطلحات عن",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 138,
+      "topLeftY": 838,
+      "bottomRightX": 401,
+      "bottomRightY": 923,
+      "content": "حضارة: نظام اجتماعي يُعين\nالإنسان على زيادة إنتاجه في كافة\nالمجالات.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 33,
+      "topLeftY": 970,
+      "bottomRightX": 58,
+      "bottomRightY": 990,
+      "content": "15",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}

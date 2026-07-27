@@ -1,0 +1,93 @@
+{
+  "index": 13,
+  "dimensions": {
+    "dpi": 93,
+    "height": 1023,
+    "width": 791
+  },
+  "confidenceScores": null,
+  "blocks": [
+    {
+      "topLeftX": 56,
+      "topLeftY": 55,
+      "bottomRightX": 82,
+      "bottomRightY": 82,
+      "content": "C",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 101,
+      "topLeftY": 43,
+      "bottomRightX": 268,
+      "bottomRightY": 88,
+      "content": "يعيش في بيئة مختلفة.\nلا يمكن، فكرهما",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 282,
+      "topLeftY": 43,
+      "bottomRightX": 436,
+      "bottomRightY": 88,
+      "content": "ماذا يحدث لو التقى\nالحوت بالفيل؟",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 451,
+      "topLeftY": 55,
+      "bottomRightX": 489,
+      "bottomRightY": 82,
+      "content": "نحن",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 103,
+      "topLeftY": 191,
+      "bottomRightX": 353,
+      "bottomRightY": 237,
+      "content": "## الحيتان في الصناعة",
+      "confidenceScores": null,
+      "type": "title"
+    },
+    {
+      "topLeftX": 113,
+      "topLeftY": 247,
+      "bottomRightX": 340,
+      "bottomRightY": 375,
+      "content": "استُخدمت مادة العنبرية في\nوقت من الأوقات في صناعة\nمستحضرات التجميل،\nوالشموع.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 113,
+      "topLeftY": 404,
+      "bottomRightX": 346,
+      "bottomRightY": 648,
+      "content": "![img-11.jpeg](img-11.jpeg)",
+      "confidenceScores": null,
+      "type": "image",
+      "imageId": "img-11.jpeg"
+    },
+    {
+      "topLeftX": 247,
+      "topLeftY": 818,
+      "bottomRightX": 724,
+      "bottomRightY": 943,
+      "content": "تُعرف هذه المادة باسم «العنبرية». ومنها جاء اسم\n«حيتان العنبر»، ولكن العلماء لم يتوصلوا بعد إلى\nمعرفة الغرض منها.",
+      "confidenceScores": null,
+      "type": "text"
+    },
+    {
+      "topLeftX": 76,
+      "topLeftY": 960,
+      "bottomRightX": 108,
+      "bottomRightY": 982,
+      "content": "13",
+      "confidenceScores": null,
+      "type": "footer"
+    }
+  ]
+}
