@@ -690,6 +690,118 @@ table.cost-table td.num { font-variant-numeric: tabular-nums; white-space: nowra
 }
 .anomaly-callout b { color: var(--ink); }
 
+/* ---------- Cost: confidence, volume + trust controls ---------- */
+.cost-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+.cost-stat {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-2);
+  padding: 0.8rem 0.95rem;
+}
+.cost-stat b {
+  display: block;
+  font-family: -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.35rem;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.cost-stat span {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.cost-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+.control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.control-group .label { margin: 0; }
+.control-group .view-toggle { margin-bottom: 0; }
+
+.trust-filter {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.75rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.trust-filter.active {
+  background: var(--lapis);
+  border-color: var(--lapis);
+  color: var(--paper-2);
+}
+
+.conf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+.conf-legend-label { letter-spacing: 0.04em; text-transform: uppercase; }
+.conf-legend-item { display: inline-flex; align-items: center; gap: 0.35rem; cursor: help; }
+.conf-legend-item i { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+.conf-badge {
+  display: inline-block;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  color: var(--conf);
+  border: 1px solid var(--conf);
+  background: color-mix(in oklch, var(--conf) 12%, transparent);
+  cursor: help;
+}
+
+.run-chip, .corrected-chip {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  margin-left: 0.3rem;
+  white-space: nowrap;
+  cursor: help;
+}
+.run-chip { color: var(--lapis); border: 1px solid color-mix(in oklch, var(--lapis) 45%, transparent); }
+.corrected-chip { color: var(--vermilion); border: 1px solid color-mix(in oklch, var(--vermilion) 45%, transparent); }
+
+table.cost-table td.note { font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; min-width: 260px; }
+table.cost-table .ceiling { font-size: 0.72rem; color: var(--ink-faint); }
+table.cost-table tr.row-corrected td:first-child { box-shadow: inset 3px 0 0 var(--vermilion); }
+
+.panel-note {
+  font-size: 0.83rem;
+  color: var(--ink-faint);
+  line-height: 1.6;
+  margin: 0 0 1.1rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--line);
+}
+
 /* ---------- Compare ---------- */
 .tabs {
   display: flex;
@@ -889,11 +1001,13 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
     </div>
     <span class="ts-badge">TypeScript Edition</span>
     <h1>Reading Ibn Battuta, Six Ways</h1>
-    <p class="sub">The same manuscript, the same six OCR engines — rebuilt with a strict TypeScript data layer instead of plain JS, specifically to model the messy pricing data honestly. See <a href="#why-ts">Why TypeScript, Here</a> for what that actually bought.</p>
+    <p class="sub">The same manuscript through six OCR engines, priced against an audited list of twelve options — with a strict TypeScript data layer that keeps five different billing shapes honest instead of flattening them into one misleading <code>$/page</code> column. See <a href="#why-ts">Why TypeScript, Here</a> for what that actually bought.</p>
     <div class="meta-row">
       <div><span class="stat">5</span><span class="stat-label">Pages</span></div>
-      <div><span class="stat">6</span><span class="stat-label">OCR engines</span></div>
-      <div><span class="stat">3</span><span class="stat-label">Pricing shapes</span></div>
+      <div><span class="stat">6</span><span class="stat-label">Engines run</span></div>
+      <div><span class="stat">12</span><span class="stat-label">Priced options</span></div>
+      <div><span class="stat">2</span><span class="stat-label">Vendor-confirmed</span></div>
+      <div><span class="stat">5</span><span class="stat-label">Pricing shapes</span></div>
     </div>
   </div>
 </header>
@@ -903,18 +1017,35 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
     <div class="block-head">
       <div>
         <span class="label">التكلفة · The Cost</span>
-        <h2>What it costs to OCR at scale</h2>
-        <p>Estimated dollars to OCR 50,000 pages on each vendor's hosted/managed API tier — the same basis <code>models/cost.md</code> itself uses.</p>
+        <h2>What it costs to OCR at scale — and what each figure is worth</h2>
+        <p>Twelve priced options from the audited price list (<code>OCR pricing - final.csv</code>), normalized from four different billing units to one dollar figure at your choice of volume. Six of the twelve were actually run against the document below; the rest are priced but untested.</p>
       </div>
     </div>
     <div class="disclaimer">
       <span>⚠</span>
-      <span><b>Estimated, unverified pricing.</b> These numbers come from a research pass over public vendor pages, not from actual invoices or metered runs. Several vendors offer both a hosted API and a self-hosted option at very different price points — the dots below use each vendor's hosted/managed tier for a like-for-like comparison. Treat this as directional, not authoritative — and see below for exactly where to edit these numbers.</span>
+      <span><b>Only two of these twelve figures are vendor-confirmed.</b> The rest are unverified, disputed by a published rate, or derived from a different billing unit at an assumed throughput — and the seven cheapest rows are <em>all</em> in that untrustworthy group. The review also caught a 10× and a 5× arithmetic error, and one stale FX rate, in the source table. Colour below encodes confidence, not price: read the cheap end of this chart as "unconfirmed", not "cheap".</span>
     </div>
-    <div class="view-toggle" id="viewToggle">
-      <button class="active" data-view="bar">Bar</button>
-      <button data-view="dot">Dot plot</button>
-      <button data-view="table">Table</button>
+    <div class="cost-stats" id="costStats"></div>
+    <div class="cost-controls">
+      <div class="control-group">
+        <span class="label">Volume</span>
+        <div class="view-toggle" id="volumeToggle">
+          <button data-volume="1000">1,000 pages</button>
+          <button class="active" data-volume="50000">50,000 pages</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="label">View</span>
+        <div class="view-toggle" id="viewToggle">
+          <button class="active" data-view="bar">Bar</button>
+          <button data-view="dot">Dot plot</button>
+          <button data-view="table">Table</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="label">Trust</span>
+        <button class="trust-filter" id="trustFilter" aria-pressed="false">Show vendor-confirmed only</button>
+      </div>
     </div>
     <div id="barView"></div>
     <div id="dotView" style="display:none;"></div>
@@ -961,24 +1092,30 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
 
     <div class="ts-cards">
       <div class="ts-card">
-        <h3>1. The pricing data is three shapes, not one number</h3>
-        <p><code>models/cost.md</code> mixes a metered per-page rate, FastOCR's flat $249.95 pack fee, and Besser OCR's monthly subscription into a single markdown table — which is exactly how it ended up self-contradictory (a "$249.95 per 50,000 pages" row that can't be reconciled with "$249.95 for this one 5-page run"). Modeling it as a discriminated union keeps each shape honest instead of forcing a misleading single <code>$/page</code> field:</p>
+        <h3>1. The pricing data is five shapes, not one number</h3>
+        <p>The audited price list bills in four different units at once — per page, per million tokens, per compute-second, and a flat monthly subscription — plus FastOCR's flat $249.95 pack fee for one 5-page run. Flattening that to a single <code>$/page</code> column is exactly how the source table ended up self-contradictory, and how it carried a 10× and a 5× arithmetic error through several revisions. A discriminated union keeps each shape in its native unit and derives the dollar figures instead:</p>
         <pre class="code-block"><code>type CostTier =
-  | { kind: "metered"; low: number; high: number }
+  | { kind: "metered"; low: number; high: number }       // $ / 1,000 pages
   | { kind: "flatFee"; amount: number; forPages: number }
-  | { kind: "subscription"; monthlyAmount: number; pageCapPerMonth: number };</code></pre>
+  | { kind: "subscription"; monthlyAmount: number;
+      pageCapPerMonth: number | null }                   // null = uncapped
+  | { kind: "perToken"; usdPerMillionTokens: number;
+      tokensPerPage: number }
+  | { kind: "computeTime"; usdPerComputeSecond: number;
+      secondsPerPage: number };</code></pre>
+        <p>The payoff is <code>costAtVolume(tier, pages)</code>: one function, and <code>subscription</code> is the only branch that ignores <code>pages</code>. That asymmetry is the finding — Besser OCR bills the same at 1,000 and 50,000 pages — and it is visible in the type, not buried in a spreadsheet cell.</p>
       </div>
 
       <div class="ts-card">
         <h3>2. The compiler enforces every case is handled — forever</h3>
-        <p>The dot plot, the table, and the tooltip all normalize a <code>CostTier</code> through the same <code>assertNever</code>-guarded switch. To prove it's real, not aspirational, I added a fourth pricing shape to the type (<code>perCall</code>) without touching the switches — and <code>tsc --strict</code> refused to compile:</p>
-        <pre class="code-block"><code>src/app.ts(101,26): error TS2345: — costToChartBasis(), converts
-  a CostTier to the chart's $-per-50,000-pages figure
-src/app.ts(116,26): error TS2345: — same error, costRangeLabel()
-src/app.ts(125,33): error TS2345: — same error, costKindLabel()
+        <p>The bar chart, the dot plot, the table, and the tooltip all normalize a <code>CostTier</code> through the same <code>assertNever</code>-guarded switches. This was not a hypothetical: the audited CSV genuinely introduced <code>perToken</code> and <code>computeTime</code>, and adding them to the union is what listed every switch needing a new branch. Re-running the same proof today with a sixth shape (<code>perCall</code>), untouched switches and all:</p>
+        <pre class="code-block"><code>app.ts(163,26): error TS2345: — costAtVolume(), converts a
+  CostTier to a total bill at a given page count
+app.ts(188,26): error TS2345: — same error, costRangeLabel()
+app.ts(199,33): error TS2345: — same error, costKindLabel()
   Argument of type '{ kind: "perCall"; amountPerCall: number; }'
   is not assignable to parameter of type 'never'.</code></pre>
-        <p>Three exact locations, found before the page ever loaded in a browser. The equivalent plain-JS version would just silently render <code>NaN</code> for the new tier's dot position and ship it.</p>
+        <p>Three exact locations, found before the page ever loaded in a browser. The equivalent plain-JS version would silently render <code>NaN</code> for the new tier's bar width and ship it. The same guard runs over <code>SourceConfidence</code>, so adding a sixth confidence level breaks the build until the badge colour, the label, and the "is this trustworthy" predicate all account for it.</p>
       </div>
 
       <div class="ts-card">
@@ -1021,7 +1158,7 @@ const THEMES: Record&lt;ThemeName, Record&lt;ThemeMode, ThemeTokens&gt;&gt; = {
 
 <footer>
   <div class="wrap">
-    Manuscript pages rendered directly from <code>assets/Ibn_Battuta_in_Egypt.pdf</code>. OCR outputs are shown verbatim aside from stripped image references and cost blocks. Cost figures are estimates, not verified vendor invoices. Interactive layer written in TypeScript, compiled with <code>tsc</code>, and inlined as plain JS below (Artifacts run static HTML — there's no in-browser TS runtime to ship instead).
+    Manuscript pages rendered directly from <code>assets/Ibn_Battuta_in_Egypt.pdf</code>. OCR outputs are shown verbatim aside from stripped image references and cost blocks. Pricing transcribed from <code>OCR pricing - final.csv</code>, each row carrying the reviewer's own confidence rating — ten of the twelve are unverified, disputed, or derived, and are labelled as such rather than presented as quotes. Interactive layer written in TypeScript, compiled with <code>tsc</code>, and inlined as plain JS below (Artifacts run static HTML — there's no in-browser TS runtime to ship instead).
   </div>
 </footer>
 

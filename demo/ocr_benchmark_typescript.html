@@ -696,6 +696,118 @@ table.cost-table td.num { font-variant-numeric: tabular-nums; white-space: nowra
 }
 .anomaly-callout b { color: var(--ink); }
 
+/* ---------- Cost: confidence, volume + trust controls ---------- */
+.cost-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
+}
+.cost-stat {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-2);
+  padding: 0.8rem 0.95rem;
+}
+.cost-stat b {
+  display: block;
+  font-family: -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.35rem;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.cost-stat span {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--ink-faint);
+}
+
+.cost-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  align-items: flex-end;
+  margin-bottom: 1.2rem;
+}
+.control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.control-group .label { margin: 0; }
+.control-group .view-toggle { margin-bottom: 0; }
+
+.trust-filter {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.75rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--paper-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.trust-filter.active {
+  background: var(--lapis);
+  border-color: var(--lapis);
+  color: var(--paper-2);
+}
+
+.conf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+.conf-legend-label { letter-spacing: 0.04em; text-transform: uppercase; }
+.conf-legend-item { display: inline-flex; align-items: center; gap: 0.35rem; cursor: help; }
+.conf-legend-item i { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+
+.conf-badge {
+  display: inline-block;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  color: var(--conf);
+  border: 1px solid var(--conf);
+  background: color-mix(in oklch, var(--conf) 12%, transparent);
+  cursor: help;
+}
+
+.run-chip, .corrected-chip {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  margin-left: 0.3rem;
+  white-space: nowrap;
+  cursor: help;
+}
+.run-chip { color: var(--lapis); border: 1px solid color-mix(in oklch, var(--lapis) 45%, transparent); }
+.corrected-chip { color: var(--vermilion); border: 1px solid color-mix(in oklch, var(--vermilion) 45%, transparent); }
+
+table.cost-table td.note { font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; min-width: 260px; }
+table.cost-table .ceiling { font-size: 0.72rem; color: var(--ink-faint); }
+table.cost-table tr.row-corrected td:first-child { box-shadow: inset 3px 0 0 var(--vermilion); }
+
+.panel-note {
+  font-size: 0.83rem;
+  color: var(--ink-faint);
+  line-height: 1.6;
+  margin: 0 0 1.1rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--line);
+}
+
 /* ---------- Compare ---------- */
 .tabs {
   display: flex;
@@ -895,11 +1007,13 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
     </div>
     <span class="ts-badge">TypeScript Edition</span>
     <h1>Reading Ibn Battuta, Six Ways</h1>
-    <p class="sub">The same manuscript, the same six OCR engines — rebuilt with a strict TypeScript data layer instead of plain JS, specifically to model the messy pricing data honestly. See <a href="#why-ts">Why TypeScript, Here</a> for what that actually bought.</p>
+    <p class="sub">The same manuscript through six OCR engines, priced against an audited list of twelve options — with a strict TypeScript data layer that keeps five different billing shapes honest instead of flattening them into one misleading <code>$/page</code> column. See <a href="#why-ts">Why TypeScript, Here</a> for what that actually bought.</p>
     <div class="meta-row">
       <div><span class="stat">5</span><span class="stat-label">Pages</span></div>
-      <div><span class="stat">6</span><span class="stat-label">OCR engines</span></div>
-      <div><span class="stat">3</span><span class="stat-label">Pricing shapes</span></div>
+      <div><span class="stat">6</span><span class="stat-label">Engines run</span></div>
+      <div><span class="stat">12</span><span class="stat-label">Priced options</span></div>
+      <div><span class="stat">2</span><span class="stat-label">Vendor-confirmed</span></div>
+      <div><span class="stat">5</span><span class="stat-label">Pricing shapes</span></div>
     </div>
   </div>
 </header>
@@ -909,18 +1023,35 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
     <div class="block-head">
       <div>
         <span class="label">التكلفة · The Cost</span>
-        <h2>What it costs to OCR at scale</h2>
-        <p>Estimated dollars to OCR 50,000 pages on each vendor's hosted/managed API tier — the same basis <code>models/cost.md</code> itself uses.</p>
+        <h2>What it costs to OCR at scale — and what each figure is worth</h2>
+        <p>Twelve priced options from the audited price list (<code>OCR pricing - final.csv</code>), normalized from four different billing units to one dollar figure at your choice of volume. Six of the twelve were actually run against the document below; the rest are priced but untested.</p>
       </div>
     </div>
     <div class="disclaimer">
       <span>⚠</span>
-      <span><b>Estimated, unverified pricing.</b> These numbers come from a research pass over public vendor pages, not from actual invoices or metered runs. Several vendors offer both a hosted API and a self-hosted option at very different price points — the dots below use each vendor's hosted/managed tier for a like-for-like comparison. Treat this as directional, not authoritative — and see below for exactly where to edit these numbers.</span>
+      <span><b>Only two of these twelve figures are vendor-confirmed.</b> The rest are unverified, disputed by a published rate, or derived from a different billing unit at an assumed throughput — and the seven cheapest rows are <em>all</em> in that untrustworthy group. The review also caught a 10× and a 5× arithmetic error, and one stale FX rate, in the source table. Colour below encodes confidence, not price: read the cheap end of this chart as "unconfirmed", not "cheap".</span>
     </div>
-    <div class="view-toggle" id="viewToggle">
-      <button class="active" data-view="bar">Bar</button>
-      <button data-view="dot">Dot plot</button>
-      <button data-view="table">Table</button>
+    <div class="cost-stats" id="costStats"></div>
+    <div class="cost-controls">
+      <div class="control-group">
+        <span class="label">Volume</span>
+        <div class="view-toggle" id="volumeToggle">
+          <button data-volume="1000">1,000 pages</button>
+          <button class="active" data-volume="50000">50,000 pages</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="label">View</span>
+        <div class="view-toggle" id="viewToggle">
+          <button class="active" data-view="bar">Bar</button>
+          <button data-view="dot">Dot plot</button>
+          <button data-view="table">Table</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <span class="label">Trust</span>
+        <button class="trust-filter" id="trustFilter" aria-pressed="false">Show vendor-confirmed only</button>
+      </div>
     </div>
     <div id="barView"></div>
     <div id="dotView" style="display:none;"></div>
@@ -967,24 +1098,30 @@ footer a { color: var(--ink-faint); text-decoration: underline; }
 
     <div class="ts-cards">
       <div class="ts-card">
-        <h3>1. The pricing data is three shapes, not one number</h3>
-        <p><code>models/cost.md</code> mixes a metered per-page rate, FastOCR's flat $249.95 pack fee, and Besser OCR's monthly subscription into a single markdown table — which is exactly how it ended up self-contradictory (a "$249.95 per 50,000 pages" row that can't be reconciled with "$249.95 for this one 5-page run"). Modeling it as a discriminated union keeps each shape honest instead of forcing a misleading single <code>$/page</code> field:</p>
+        <h3>1. The pricing data is five shapes, not one number</h3>
+        <p>The audited price list bills in four different units at once — per page, per million tokens, per compute-second, and a flat monthly subscription — plus FastOCR's flat $249.95 pack fee for one 5-page run. Flattening that to a single <code>$/page</code> column is exactly how the source table ended up self-contradictory, and how it carried a 10× and a 5× arithmetic error through several revisions. A discriminated union keeps each shape in its native unit and derives the dollar figures instead:</p>
         <pre class="code-block"><code>type CostTier =
-  | { kind: "metered"; low: number; high: number }
+  | { kind: "metered"; low: number; high: number }       // $ / 1,000 pages
   | { kind: "flatFee"; amount: number; forPages: number }
-  | { kind: "subscription"; monthlyAmount: number; pageCapPerMonth: number };</code></pre>
+  | { kind: "subscription"; monthlyAmount: number;
+      pageCapPerMonth: number | null }                   // null = uncapped
+  | { kind: "perToken"; usdPerMillionTokens: number;
+      tokensPerPage: number }
+  | { kind: "computeTime"; usdPerComputeSecond: number;
+      secondsPerPage: number };</code></pre>
+        <p>The payoff is <code>costAtVolume(tier, pages)</code>: one function, and <code>subscription</code> is the only branch that ignores <code>pages</code>. That asymmetry is the finding — Besser OCR bills the same at 1,000 and 50,000 pages — and it is visible in the type, not buried in a spreadsheet cell.</p>
       </div>
 
       <div class="ts-card">
         <h3>2. The compiler enforces every case is handled — forever</h3>
-        <p>The dot plot, the table, and the tooltip all normalize a <code>CostTier</code> through the same <code>assertNever</code>-guarded switch. To prove it's real, not aspirational, I added a fourth pricing shape to the type (<code>perCall</code>) without touching the switches — and <code>tsc --strict</code> refused to compile:</p>
-        <pre class="code-block"><code>src/app.ts(101,26): error TS2345: — costToChartBasis(), converts
-  a CostTier to the chart's $-per-50,000-pages figure
-src/app.ts(116,26): error TS2345: — same error, costRangeLabel()
-src/app.ts(125,33): error TS2345: — same error, costKindLabel()
+        <p>The bar chart, the dot plot, the table, and the tooltip all normalize a <code>CostTier</code> through the same <code>assertNever</code>-guarded switches. This was not a hypothetical: the audited CSV genuinely introduced <code>perToken</code> and <code>computeTime</code>, and adding them to the union is what listed every switch needing a new branch. Re-running the same proof today with a sixth shape (<code>perCall</code>), untouched switches and all:</p>
+        <pre class="code-block"><code>app.ts(163,26): error TS2345: — costAtVolume(), converts a
+  CostTier to a total bill at a given page count
+app.ts(188,26): error TS2345: — same error, costRangeLabel()
+app.ts(199,33): error TS2345: — same error, costKindLabel()
   Argument of type '{ kind: "perCall"; amountPerCall: number; }'
   is not assignable to parameter of type 'never'.</code></pre>
-        <p>Three exact locations, found before the page ever loaded in a browser. The equivalent plain-JS version would just silently render <code>NaN</code> for the new tier's dot position and ship it.</p>
+        <p>Three exact locations, found before the page ever loaded in a browser. The equivalent plain-JS version would silently render <code>NaN</code> for the new tier's bar width and ship it. The same guard runs over <code>SourceConfidence</code>, so adding a sixth confidence level breaks the build until the badge colour, the label, and the "is this trustworthy" predicate all account for it.</p>
       </div>
 
       <div class="ts-card">
@@ -1027,7 +1164,7 @@ const THEMES: Record&lt;ThemeName, Record&lt;ThemeMode, ThemeTokens&gt;&gt; = {
 
 <footer>
   <div class="wrap">
-    Manuscript pages rendered directly from <code>assets/Ibn_Battuta_in_Egypt.pdf</code>. OCR outputs are shown verbatim aside from stripped image references and cost blocks. Cost figures are estimates, not verified vendor invoices. Interactive layer written in TypeScript, compiled with <code>tsc</code>, and inlined as plain JS below (Artifacts run static HTML — there's no in-browser TS runtime to ship instead).
+    Manuscript pages rendered directly from <code>assets/Ibn_Battuta_in_Egypt.pdf</code>. OCR outputs are shown verbatim aside from stripped image references and cost blocks. Pricing transcribed from <code>OCR pricing - final.csv</code>, each row carrying the reviewer's own confidence rating — ten of the twelve are unverified, disputed, or derived, and are labelled as such rather than presented as quotes. Interactive layer written in TypeScript, compiled with <code>tsc</code>, and inlined as plain JS below (Artifacts run static HTML — there's no in-browser TS runtime to ship instead).
   </div>
 </footer>
 
@@ -1041,20 +1178,37 @@ const THEMES: Record&lt;ThemeName, Record&lt;ThemeMode, ThemeTokens&gt;&gt; = {
 <script>
 "use strict";
 // ============================================================================
-// Model manifest — EDIT THIS FILE to add engines or change prices.
+// Model manifest + audited price list — EDIT THIS FILE to add engines or
+// change prices.
 //
-// This is the file you actually touch. It has no `text` field on purpose:
-// the OCR output shown in each tab is read straight from `file` (a filename
-// inside models/) and cleaned by the build script, so "modifying results"
-// means editing or replacing that .md file directly — not this one.
+// Two separate datasets live here, on purpose:
+//
+//   MODEL_META   the engines actually RUN against the source document. Drives
+//                the OCR-output tabs. Has no `text` field: the output shown in
+//                each tab is read straight from `file` (a filename inside
+//                models/) and cleaned by the build script, so "modifying
+//                results" means editing that .md file, not this one.
+//
+//   PRICING_ROWS the audited price list, transcribed from
+//                `OCR pricing - final.csv`. Drives the cost chart/table. It is
+//                DELIBERATELY not 1:1 with MODEL_META: it prices 12 rows,
+//                including four engines never benchmarked here, and three
+//                separate pricing scenarios for the single PaddleOCR run.
+//                Collapsing the two would mean either dropping real priced
+//                options or inventing OCR output that was never produced.
+//
+// Every figure carries a `confidence` and the reviewer's `note` verbatim.
+// That is the point of this table: only two of the twelve rows are
+// vendor-confirmed, and the cheapest seven are all unverified or disputed.
 //
 // After editing, rebuild with:
 //   python3 demo/build.py
 //
-// tsc type-checks this file against ModelMeta/CostTier/ModelId (defined in
-// app.ts) before anything is built — a missing field, a misspelled CostTier
-// `kind`, or a ModelId not yet added to app.ts's union all fail the build
-// with a specific error, rather than shipping a broken card silently.
+// tsc type-checks this file against ModelMeta/PricingRow/CostTier/ModelId/
+// SourceConfidence (defined in app.ts) before anything is built — a missing
+// field, a misspelled CostTier `kind`, or a ModelId not yet added to app.ts's
+// union all fail the build with a specific error, rather than shipping a
+// broken card silently.
 // ============================================================================
 const MODEL_META = [
     {
@@ -1062,8 +1216,7 @@ const MODEL_META = [
         name: "LightOn",
         engine: "lighting-2-ocr-1b (LightOnOCR-2-1B)",
         file: "lighton-output-Ibn_Battuta_in_Egypt.pdf.md",
-        cost: { kind: "metered", low: 4.30, high: 4.30 },
-        costQuote: "LightOn Console: flat metered rate ≈$4.30 per 1,000 pages (~$0.0043/page). Pay-as-you-go minimum top-up is €5 (~3,000 pages).",
+        note: "Pay-as-you-go minimum top-up is €5 (~3,000 pages), so the smallest real spend is well above a single-document job.",
         flags: [],
     },
     {
@@ -1071,8 +1224,7 @@ const MODEL_META = [
         name: "Datalab",
         engine: "Surya OCR 2",
         file: "datalab-output-Ibn_Battuta_in_Egypt.pdf.md",
-        cost: { kind: "metered", low: 2.00, high: 4.00 },
-        costQuote: "Replicate Managed API: $2.00–$4.00 per 1,000 pages ($0.002–$0.004/page). Note: a separate research pass quoted $300–$1,250 per 50,000 pages for this same tier, which computes to $6–$25/1,000 pages — inconsistent with the figure above by 3–6×. Shown here rather than silently resolved; the $2–$4/1k figure is used for the chart.",
+        note: "Priced here as the Surya 2 (Balanced) row. Replicate bills dedicated deployments per GPU-second, not per page — the per-page figure is derived at an unstated throughput assumption, which is why it carries `derived` confidence rather than a vendor rate.",
         flags: [],
     },
     {
@@ -1080,8 +1232,7 @@ const MODEL_META = [
         name: "PaddleOCR VL 1.6",
         engine: "PP-OCR-VL 1.6",
         file: "Ibn_Battuta_in_Egypt.pdf_by_PaddleOCR-VL-1.6.md",
-        cost: { kind: "metered", low: 1.50, high: 5.00 },
-        costQuote: "AWS Marketplace: $2.00 per 1,000 pages ($0.002/page). WaveSpeedAI: $5.00 per 1,000 pages ($0.005/page).",
+        note: "The one engine with three separate priced scenarios in the table below — token-standard, token-dense, and a flat per-page wrapper — spanning a 4× spread for the same model.",
         flags: [],
     },
     {
@@ -1089,9 +1240,10 @@ const MODEL_META = [
         name: "FastOCR",
         engine: "Business API tier",
         file: "Ibn_Battuta_in_Egypt-ocr-fastocr.md",
-        cost: { kind: "metered", low: 1.50, high: 2.00 },
-        costQuote: "Business API Tier (quoted): $1.50–$2.00 per 1,000 pages (est., requires an emailed sales quote). Business/Enterprise tiers appear to enforce a base account minimum regardless of document size — see the run anomaly below.",
+        // A real invoice for this exact 5-page run — not a rate card, and not in
+        // the CSV. Kept because it contradicts the quoted tier by ~1,000×.
         actualRunCost: { kind: "flatFee", amount: 249.95, forPages: 5 },
+        note: "Business/Enterprise tiers appear to enforce a base account minimum regardless of document size — see the run anomaly below.",
         flags: ["anomaly"],
     },
     {
@@ -1099,9 +1251,8 @@ const MODEL_META = [
         name: "Besser OCR",
         engine: "Enterprise tier",
         file: "Ibn_Battuta_in_Egypt_baseerocr.md",
-        cost: { kind: "subscription", monthlyAmount: 66.0, pageCapPerMonth: 2000 },
-        costQuote: "249 SAR/month (≈$66/month) subscription capped at 2,000 pages/month — $33.00 per 1,000 pages at full capacity (66/2000), but the fee doesn't scale down: a one-off small job still bills the full month.",
         actualRunCost: { kind: "flatFee", amount: 66.0, forPages: 5 },
+        note: "Unresolved tier discrepancy: this run was billed on a 249 SAR/month (~$66) plan capped at 2,000 pages/month, while the vendor-confirmed row in the table below prices the flat SAR 5,000 Enterprise subscription (~$1,333/month, no stated cap). Both are shown rather than silently reconciled — confirm which tier applies before quoting either.",
         flags: ["anomaly"],
     },
     {
@@ -1109,8 +1260,7 @@ const MODEL_META = [
         name: "GLM-OCR",
         engine: "GLM-4V (Z.ai API)",
         file: "glm_ocr_Ibn_Battuta_in_Egypt-2026-07-21_05-35-48.md",
-        cost: { kind: "metered", low: 0.20, high: 0.70 },
-        costQuote: "Z.ai Developer API: $0.20–$0.70 per 1,000 pages ($0.0002–$0.0007/page) — cheapest of the six, but requires converting PDFs to image arrays client-side before submission.",
+        note: "Cheapest row in the table, but requires converting PDFs to image arrays client-side before submission — and the rate itself could not be confirmed.",
         flags: ["low-quality"],
     },
     // --------------------------------------------------------------------
@@ -1118,24 +1268,170 @@ const MODEL_META = [
     //   1. Drop the OCR output file in models/ (any filename).
     //   2. Add its id to the ModelId union near the top of app.ts.
     //   3. Uncomment and fill in a copy of this block.
-    //   4. Run `python3 demo/build.py`.
+    //   4. Add a matching PRICING_ROWS entry with `benchmarked: "yourEngineId"`.
+    //   5. Run `python3 demo/build.py`.
     //
     // {
     //   id: "yourEngineId",                 // must match a ModelId in app.ts
     //   name: "Display Name",
     //   engine: "model / version label",
     //   file: "your-output-file.md",        // must exist in models/
-    //
-    //   // Pick exactly one CostTier shape:
-    //   cost: { kind: "metered", low: 0, high: 0 },                       // $/1,000 pages, a range or flat (low === high)
-    //   // cost: { kind: "flatFee", amount: 0, forPages: 0 },             // a fixed price for a fixed page count
-    //   // cost: { kind: "subscription", monthlyAmount: 0, pageCapPerMonth: 0 }, // monthly plan with a page cap
-    //
-    //   costQuote: "One-line source note for the pricing above.",
-    //   actualRunCost: undefined,           // optional: a real one-off CostTier for this exact document
+    //   note: "Operational note for this engine (not pricing).",
+    //   actualRunCost: undefined,           // optional: real invoice for THIS document
     //   flags: [],                          // "low-quality" and/or "anomaly", or leave empty
     // },
     // --------------------------------------------------------------------
+];
+// ============================================================================
+// Audited price list — transcribed from `OCR pricing - final.csv`.
+//
+// Rates are stored in each vendor's NATIVE unit (per-million-tokens, per-page,
+// per-compute-second, per-month) and the $-at-volume figures are computed from
+// them by costAtVolume() in app.ts. Nothing here stores "cost at 1k" and "cost
+// at 50k" as two hand-typed numbers — that is precisely how the source table
+// accumulated the 10× and 5× arithmetic errors called out in the notes below.
+//
+// `note` is the reviewer's verbatim finding. `confidence` is what the figure is
+// actually worth. `benchmarked` links a row to an OCR tab when that engine was
+// genuinely run; null means the price is listed but no output was produced.
+// ============================================================================
+const PRICING_ROWS = [
+    {
+        model: "GLM-OCR",
+        provider: "Z.ai / Alternative Premium Hosts",
+        cost: { kind: "perToken", usdPerMillionTokens: 0.2, tokensPerPage: 1500 },
+        ceiling: "$0.20 USD / 1M tokens",
+        worstCase: "~1,500 tokens/page",
+        confidence: "unverified",
+        corrected: true,
+        note: "CORRECTED: was $3.00/$150 (10x arithmetic error). Z.ai per-token OCR rate could not be confirmed.",
+        benchmarked: "glmocr",
+    },
+    {
+        model: "PaddleOCR-VL-1.6 (Token Standard)",
+        provider: "Novita AI / Fireworks AI (Surge Rate)",
+        cost: { kind: "perToken", usdPerMillionTokens: 0.1, tokensPerPage: 5000 },
+        ceiling: "$0.10 USD / 1M tokens",
+        worstCase: "~5,000 tokens/page",
+        confidence: "disputed",
+        corrected: false,
+        note: "Math OK. Both Novita and Fireworks list this model as 'Serverless: Not supported' (on-demand GPU only) - no per-token serverless rate is published. Aggregators quote Novita ~$0.02/1M, 5x below the ceiling used.",
+        benchmarked: "paddleocr",
+    },
+    {
+        model: "DeepSeek OCR 2",
+        provider: "SiliconFlow / Official API (Peak Pricing)",
+        cost: { kind: "perToken", usdPerMillionTokens: 0.5, tokensPerPage: 1120 },
+        ceiling: "$0.50 USD / 1M tokens",
+        worstCase: "~1,120 tokens/page",
+        confidence: "disputed",
+        corrected: true,
+        note: "CORRECTED: was $2.80/$140 (5x arithmetic error). DeepSeek-OCR is free on SiliconFlow and ~$0.03/1M on DeepInfra; $0.50/1M is ~16x published. No public model named 'DeepSeek OCR 2' found.",
+        benchmarked: null,
+    },
+    {
+        model: "Unlimited OCR (Serverless)",
+        provider: "Managed Third-Party (Unoptimized A100 node)",
+        cost: { kind: "computeTime", usdPerComputeSecond: 0.001, secondsPerPage: 1 },
+        ceiling: "$0.0010 USD / compute-sec",
+        worstCase: "N/A (Heavy document lag)",
+        confidence: "unverified",
+        corrected: false,
+        note: "Math OK but assumes exactly 1 compute-second per page - an assumption, not a rate. No identifiable vendor.",
+        benchmarked: null,
+    },
+    {
+        model: "PaddleOCR-VL-1.6 (Token Dense)",
+        provider: "Novita AI / Fireworks AI (Surge Rate)",
+        cost: { kind: "perToken", usdPerMillionTokens: 0.1, tokensPerPage: 18000 },
+        ceiling: "$0.10 USD / 1M tokens",
+        worstCase: "~18,000 tokens/page",
+        confidence: "disputed",
+        corrected: false,
+        note: "Math OK. Same serverless caveat. Note 18,000 tokens/page exceeds Novita's 16,384 context window for this model - not achievable on that host.",
+        benchmarked: "paddleocr",
+    },
+    {
+        model: "PaddleOCR-VL-1.6 (Flat Page)",
+        provider: "Premium Boutique API Wrappers",
+        cost: { kind: "metered", low: 2.0, high: 2.0 },
+        ceiling: "$0.0020 USD / page",
+        worstCase: "N/A (Fixed cap)",
+        confidence: "unverified",
+        corrected: false,
+        note: "Math OK. No named vendor, so the rate cannot be checked.",
+        benchmarked: "paddleocr",
+    },
+    {
+        model: "FastOCR",
+        provider: "Developer API (Asynchronous Flow)",
+        cost: { kind: "metered", low: 2.0, high: 2.0 },
+        ceiling: "Custom Business Tier Quote",
+        worstCase: "N/A (Loop script layout)",
+        confidence: "unverified",
+        corrected: false,
+        note: "The $2.00 is an assumption, not a quote - and a custom business tier is exactly what does not scale linearly at 50x. Public FastOCR is a consumer tool at $3.99-$10.99/mo with page allowances.",
+        benchmarked: "fastocr",
+    },
+    {
+        model: "LightOnOCR-2-1B",
+        provider: "LightOn Platform (FX Rate Fluctuations)",
+        // EUR 0.0020/page at EUR/USD 1.1397 → $0.00227940/page → $2.2794 per 1,000.
+        cost: { kind: "metered", low: 2.2794, high: 2.2794 },
+        ceiling: "EUR 0.0020 (~$0.00228 USD) / page",
+        worstCase: "N/A (Fixed rate)",
+        confidence: "verified",
+        corrected: true,
+        note: "CORRECTED FX: was ~$0.00250 (implied EUR/USD 1.25). Actual rate 1.1397 on 2026-07-27. Use 1.25 only as a deliberate FX stress ceiling, labelled as such.",
+        benchmarked: "lighton",
+    },
+    {
+        model: "MinerU Extractor",
+        provider: "OpenDataLab (Paid SLA / Over-quota Priority)",
+        cost: { kind: "metered", low: 5.0, high: 5.0 },
+        ceiling: "$0.0050 USD / page",
+        worstCase: "N/A (Fixed priority)",
+        confidence: "unverified",
+        corrected: false,
+        note: "Math OK. MinerU documents a 2,000-page/day priority quota with degraded priority beyond it, but no published paid per-page rate was found.",
+        benchmarked: null,
+    },
+    {
+        model: "Surya 2 OCR (Balanced)",
+        provider: "Dedicated Replicate Deployment (Low Volume)",
+        cost: { kind: "metered", low: 10.0, high: 10.0 },
+        ceiling: "$0.0100 USD / page",
+        worstCase: "N/A (Fixed cap)",
+        confidence: "derived",
+        corrected: false,
+        note: "Replicate dedicated deployments bill per GPU-second, not per page. This is an effective rate at an unstated throughput assumption.",
+        benchmarked: "datalab",
+    },
+    {
+        model: "Chandra 2 OCR (Structured)",
+        provider: "Dedicated Replicate Deployment (Low Volume)",
+        cost: { kind: "metered", low: 15.0, high: 15.0 },
+        ceiling: "$0.0150 USD / page",
+        worstCase: "N/A (Fixed cap)",
+        confidence: "derived",
+        corrected: false,
+        note: "Same GPU-second caveat. Datalab's own pricing page did not render for confirmation.",
+        benchmarked: null,
+    },
+    {
+        model: "Besser OCR",
+        provider: "Web / API Portal Ingestion Dashboard",
+        // The only non-linear row: a flat monthly fee with no stated page cap, so
+        // the bill is identical at 1,000 and 50,000 pages and the effective
+        // $/page falls 50× across that range.
+        cost: { kind: "subscription", monthlyAmount: 1333.0, pageCapPerMonth: null },
+        ceiling: "Flat SAR 5,000 Enterprise Sub",
+        worstCase: "N/A (Month-over-month target)",
+        confidence: "vendor-email",
+        corrected: false,
+        note: "Confirmed by user via direct vendor correspondence. Flat monthly fee - does not scale with volume. SAR 5,000 at the 3.75 riyal peg = $1,333.33; table uses $1,333.00. Confirm whether Besser quoted USD directly.",
+        benchmarked: "baseerocr",
+    },
 ];
 
 const MODEL_TEXT = {"lighton": "# ابن بطبوطة في مصّر\n\n## مُعْلَمٌ فَنَيْمٍ\n\n### مُؤسسة حُورِس الدَّوْلِيَّة\n\nمن رحلات ابن بطبوطة\n\nأبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم اللوّاق الطنّجي المُعروف بابن بطبوطة.. أشهر الرحلة المسلمين في تاريخ الحضارة الإسلامية، وبلقيه الفريبون باسم \" أمير الرحلة \".\n\nخرج ابن بطبوطة من بلدته \" طبجة \" في المغرب عام ١٣٢٥ م وظل يجوب بلاد العام الإسلامي مدة ٢٥ سنة قطع خلالها ٧٥ ألف ميل، وهي مسافة لم يقطعها مسافر قبله. في هذا الجزء من رحلات ابن بطبوطة سنصحبه في رحلته عبر أراضي مصر منذ دخلها من الإسكندرية، وطاف بكبير من مدنها وقرها حتى وصل إلى ميناء عيذاب على البحر الأحمر.\n\n---\n\n**مُؤسسة حُورِس الدَّوْلِيَّة**\n\n**سجدة شير . تجسيد**\n\n**رقم: ٢٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠\n\n# مدينة طنجة\n\n⟦FIGURE⟧\n\nتعتبر مدينة طنجة من بين أكبر خمس مدن مغربية، ويسكنها حوالي ٧٠٠ ألف نسمة.\n\nولله المدينة موقع متميز، فهي تقع عند التقاء الحيط الأطلنطي والبحر المتوسط من جهة، وبين قارتي أفريقيا وأوروبا من جهة. وهي مركز صناعي وتجاري هام في المغرب.\n\nوطنجة من أقدم مدن المغرب ولها تاريخ طويل، ويرتبط اسمها برحالتنا الشهير ابن بطوطة.\n\n---\n\n# فتر من طنجة\n\nعلى شاطع بحر الظلمات الذي نسميه الآن الحيط الأطلنطي وقف الفتى الصغير ينظر إلى السفن القادمة إلى ميناء طنجة، مسقط رأسه، ويُني نفسه بلقاء أحد التجار القادمين من بلاد بعيدة.\n\nلقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدوها والمغامرات التي عاشوها.\n\nأفاق الفتى من شروده على شاطع البحر على صوت صديقه عبد الرحمن يناديه ويخبره\n\nأَنْ أَحَدَ التَّجار العائدين من رحلة الحج قد ذهب لزيارة والده وعليه أن يُسرع بالعودة إلى البيت.\n\nكان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطُّنْجِي المعروف بابن بطوطة، ووالده كان فقيها يشتغل بالقضاء وله مكانة في المدينة، ويقصدُه الناس انتفاعًا بعلمه وحكمته.\n\nوكان ابن بطوطة يستمع إلى ما يُحْكِيه أصدقاء أبيه عن رحلات الحج، فيستعجل الأيام لكي يكبر ويحقق حُلمَه بالذهاب إلى بيت الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها.\n\nوكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلد ينزل فيه حتى يُصبح في مثل علم أبيه ويصبح قاضيًا كبيرًا.\n\n<div style=\"text-align: center; background-color: #6699ff; color: white; padding: 10px; border-radius: 20px; font-weight: bold; margin: 20px 0;\">\nبداية الرحلة\n\n</div>\n\nما إنْ بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق حُلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودع أهله وأصحابه وتأثر تأثرًا بالغًا بفراق والديه ولكن رغبتِه في السفر كانت قوية وعزمُه كان شديدًا.\n\nكانت مكة المكرمة التي يُنوي زياراتها على بُعْدِ ثلاثة آلاف ميل من بلده،\n\nفي القاهرة.\n\n\" مدينة مصر هي أمّ البلد وفرارة فرعون دك الأوناد، ذاتُ الأقالبهم العربضخ والبلد الأربيض، امتنانخب في كثرة العمارة، امتنانخب بالحسن والنظارة . ابن بطوطخ\n\nوصل ابن بطوطخ إلى القاهرة التي يسمّيها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي، وقد انبرهّ بما شاهدّ فيها ورأها - كما يقولُ موجُ موجُ البحر بسكانها.\n\nويذكر ابن بطوطخ النيلَ الذي يمرُّ في القاهرة وأن به ستة وثلاثين ألفا من المراكب التي تحملُ البضائع من أخاء مصر إلى القاهرة.\n\n17\n\nويتجولُ ابن بطوطة في المدينة الكبيرة فيعجبه مسجدُ عمرو ابن العاص،\n\nويذكرُ أنَّ المدارسَ بصر لا يُصَى عددها من كثرتها، ويندهشُ من روعة اليمارستان (المستشفى) الذي زارهُ والذي يُقدِمُ العلاجَ والدواءَ للمرضى. ويذكرُ الأهرامَ ويصِفُها وصفًا دقيقًا، ويصفُ كيف قام الخليفةُ العباسيُ المأمونُ بِلِحْداثِ الفتحةِ الحالية في الهرم.\n\nولا ينسى ابن بطوطة أن يتحدث عن علماء مصرَ وقُضَاتِها وشيوخِها الذين قابلهم واستفاد من علمهم.\n\n⟦FIGURE⟧\n\n18", "datalab": "## من رحلات ابن بطوطة\n\n# ابن بطوطة في مصر\n\nمصطفیٰ خنیم\n\nمؤسسة كورس الدولية\n\n⟦FIGURE⟧\n\nA cartoon illustration of a man in a brown robe and a woman in a blue dress standing in a desert landscape. The man is holding a staff and looking at the woman. The woman is looking down at her hands. The background shows a green field and a blue sky with a sun. There is Arabic text at the top and bottom of the image.\n\n⟦FIGURE⟧\n\nA cartoon illustration of a grey elephant wearing a red turban and a red sash, standing in a green field with a castle in the background. The text 'برای مطالعه بیشتر' is written in the top left corner.\n\n⟦FIGURE⟧\n\nA colorful illustration of a man in a black coat and yellow shirt, holding a sword, standing next to a woman in a purple dress. They are in a stylized, possibly Japanese, setting with a large green lantern and a pink background.\n\n⟦FIGURE⟧\n\nA cartoon illustration of a man in a red robe and turban standing next to a man in a white and blue striped dhoti. The man in the red robe is holding a staff and has a speech bubble that says 'میں نے تم کو سزا دی ہے' (I have given you a punishment). The man in the striped dhoti is looking at him with a speech bubble that says 'میں نے تم کو سزا دی ہے' (I have given you a punishment). The background is a simple landscape with a blue sky and green ground.\n\nأبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم  \nاللوائي الطنجي المعروف بابن بطوطة.. أشهر الرحالة  \nالمسلمين في تاريخ الحضارة الإسلامية ، وبلغه الغربيون  \nباسم  \n\"أمير الرحالة\".\n\nخرج ابن بطوطة من بلدته \" طنجة \" في المغرب عام ١٣٢٥  \n وظل يجهز رحلاته في بلاد العالم الإسلامي مدة ٢٥ سنة قطع  \n خلالها ٧٥ ألف ميل ، وهي مسافة لم يقطعها مسافر قبله.  \n في هذا الجزء من رحلات ابن بطوطة سنسببه في رحلته عبر  \n أراضي **مصر** منذ دخلها من الإسكندرية ، وطاف بكثير من  \n مدنها وفراها حتى وصل إلى ميناء عيذاب على البحر  \n الأحمر.\n\n⟦FIGURE⟧\n\nThe Arabian Nights  \nN. S. Ghalib\n\nBook cover for 'The Arabian Nights' by N. S. Ghalib, featuring a man on a horse.\n\n⟦FIGURE⟧\n\nA cartoon illustration of a man in a white thobe and ghutra, carrying a large bundle on his back, walking towards the right. The background is a simple landscape with a yellow sky and green ground. There is Arabic text in the top left corner.\n\n⟦FIGURE⟧\n\nA cartoon illustration of a woman in a green bikini and a man in a green shirt and shorts swimming underwater. The woman is holding a large green plant. The background is blue with bubbles and a small fish.\n\n⟦FIGURE⟧\n\nA painting of a man in a green robe riding a brown horse through a snowy landscape. The man is wearing a white turban and has a beard. The background shows a snowy field with some trees and a small building in the distance. The painting is signed 'M. F. 1302' in the bottom right corner.\n\n⟦FIGURE⟧\n\nISBN  \n0-7645-9854-3\n\n0-7645-9854-3\n\nBarcode for ISBN 0-7645-9854-3\n\nمؤسسة حقوق الدولية  \nشعبة نشر - توزيع\n\nتوزيع: بيروت، لبنان  \n Email: [nasr.ase@att.net.lb](mailto:nasr.ase@att.net.lb) [nasr.ase@hotmail.com](mailto:nasr.ase@hotmail.com)\n\n## مدينة طنجة\n\n⟦FIGURE⟧\n\nA scenic view of the city of Tangier, Morocco, showing the city built on a hillside overlooking the Mediterranean Sea, with palm trees in the foreground.\n\nتعتبر مدينة طنجة من بين أكبر خمس مدن مغربية ، ويسكنها حوالي ٧٠٠ ألف نسمة.\n\nولهذه المدينة موقعٌ متميزٌ، فهي تقع عند التقاء المحيط الأطلسي والبحر المتوسط من جهة، وبين قارتي أفريقيا وأوروبا من جهة. وهي مركزٌ صناعي وتجاري هام في المغرب.\n\nوطنجة من أقدم مدن المغرب ولها تاريخٌ طويلٌ، ويرتبط اسمها برحالتنا الشهير ابن بطوطة .\n\n### فتى من طنجة\n\nعلى شاطئ بحر الظلمات الذي نسميه الآن المحيط الأطلسي وقف الفتى الصغيرُ ينظر إلى السفن القادمة إلى ميناء طنجة، مسقط رأسه ، ويمني نفسه بلقاء أحد التجار القادمين من بلاد بعيدة.\n\nلقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدها والمغامرات التي عاشوها.\n\nأفاق الفتى من شروده على شاطئ البحر على صوت صديقه عبد الرحمن يناديه ويخبره\n\nأنَّ أحدَ التجار العائدين من رحلة الحج قد ذهبَ لزيارة والده وعليه أن يُسرِعَ بالعودة إلى البيت.\n\nكان الفتى هو محمدُ بنُ عبدِ الله بن محمدٍ بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيهاً يشتغل بالقضاء وله مكانة في المدينة ، ويقصده الناس انتفاعاً بعلمه وحكمته .\n\nوكان ابنُ بطوطة يستمعُ إلى ما يُحكىه أصدقاء أبيه عن رحلات الحج ، فيستعجل الأيام لكي يكبرَ ويحققَ حلمه بالذهابِ إلى بيتِ الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها .\n\nوكان يتمنى أن يزدادَ علماً بمقابلة علماء كل بلدٍ ينزلُ فيه حتى يُصبحَ في مثل علم أبيه ويصبحَ قاضياً كبيراً.\n\n## بداية الرحلة\n\nما إن بلغ ابنُ بطوطة الثانية والعشرين من عمره حتى عزمَ على تحقيق حلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودّع أهله وأصحابه وتأثر تأثراً بالغاً بفراق والديه ولكنَّ رغبته في السفر كانت قويةً وعزمه كان شديداً.\n\nكانت مكة المكرمة التي ينوي زيارتها على بُعد ثلاثة آلاف ميلٍ من بلده ،\n\n### في القاهرة .\n\n\" .. مدينة مصر هي أم البلاد وفرار فرعون ذي الأوتاد ،  \nذات الأقاليم العريضة والبلاد الأريضة ، امتناهيته في كثرة  \nالعمارة ، امتناهيته بالحسن والنضارة . \"  \nابن بطوطة\n\nوصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد  \nالسلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها - كما  \nيقول تموج موج البحر بسكانها.\n\nويذكر ابن بطوطة النيل الذي يمر في القاهرة وأن به ستة وثلاثين ألفاً من  \nالمراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.\n\nويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ،\n\nويذكر أن المدارس بمصر لا يُحصى عددها من كثرتها ، ويندهش من روعة  \nالبيمارستان ( المستشفى ) الذي زاره والذي يُقدّم العلاج والدواء للمرضى .  \nويذكر الأهرام ويصفها وصفًا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمون  \nبإحداث الفتحة الحالية في الهرم.\n\nولا ينسى ابن بطوطة أن يتحدث عن علماء مصر وقضايتها وشيوخها الذين  \nقابلهم واستفاد من علمهم.\n\n⟦FIGURE⟧\n\nA photograph of the Great Pyramids of Giza in Egypt, showing three large pyramids in a desert landscape under a clear blue sky. In the foreground, there are some small figures of people and camels, suggesting a tourist area.", "paddleocr": "⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\nأبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم\n\nاللواقي الطنجي المعروف بابز بطوطة.. أشهر الرحالة\n\nالمسلمين في تاريخ الحضارة الإسلامية، ويلقبه الغربيون\n\n1770 عام في المغرب \" طنجة \" من بلدته \" طرح ابن بطوطة من وظل يجوب بلاد العالم الإسلامي مدة 20 سنة قطع\n\nخلاها 20 ألف ميل، وهي مسافة لم يقطعها مسافر قبله.\n\nفي هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر\n\nأراضي مصر منذ دخلها من الإسكندية، وطاف بكثير من\n\nمدنها وقراها ختي وصل إلى ميتاء عيداب على البحر\n\nالأصمر.\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n### مدينة طنجة\n\n⟦FIGURE⟧\n\nتعتبر مدينة طنجة من بين أكبر خمس مدن\n\nمغربية، ويسكنها حوالي ٧٠٧ ألف\n\nنسمقه.\n\nوَهَذِهَا المَدِينَة مَوْقَعُ مَتْمِيزٍ، فِهِي تَقَعَ عند التَقَاءِ الْحِيْطِ الْأَطْلِنَطِيِ وَالْبِحْرِ المَتُوسَطِ مِنَ جَهَذِهَ، وَبَيْنَ قَارَتِي أَمْرِيَ قِيَا وَأَوْرِوْبِا مِنَ جَهَذِهِ. وَهِيَ مَرِكْزُ صَناَعِيْ وَتَجَاريُ هَامِ فِي المَغْرِبِ.\n\nوطنجة من أقدم مدن المغرب وها تاريخ\n\nطويل، ويرتبط اسمها برحالتنا الشهير ابن\n\nبطوطة.\n\n## فتى من طنجة\n\nعلى شاطي بحر الظلمات الذي\n\nنسميه الآن الخيط الأطلنطي وقف\n\nالفتي الصغيرٍ ينظر إلى السفن\n\nالقادمة إلى ميناء طنجة، مسقط راسه\n\nويمنيُ نفسه بلقاء أحد التجار\n\nالقادمين من بالادعي\n\nلقد اعتاد الفتي أن يعرف أن ينزل\n\nهولاء التجار ويذهب لكي يستمع\n\nإلى ما يقصونه من اخبار الناس\n\nوحكاياتهم في البلاد التي مروا بها،\n\nوعن العجاب التي شاهدومها\n\nوالمغامرات التي عاشوها.\n\nأفاق الفتي من شروده على شاطي\n\nالبحر على صوت صديقه عبد\n\nالرحمن يناديه ويخبره\n\nأنّ أحد التجار العائدين من رحلقة الحج قد ذهب لزيارة والدو وعليه أن يسرع بالعودة إلى البيت.\n\nكان الفتي هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيها يشتغل بالقضاء وله مكانة في المدينة، ويقصده الناس انتفاعاً بعلمه وحكمته.\n\nوكانِ ابنُ بطوَطةِ يستمعُ إلى مَا يَحْكِيهِ أصدقَاءُ أبِيهِ عن رحلاتِ الحج،\n\nفيستعجلُ الأيامَ لَكِي يَكِبْرَ وِيْحَقَقَ حَلَّمَهَ بالذهابِ إِلَى بِيتِ اللهِ الحرامِ فِي مَكَهَ\n\nوزيارِة قبر رسولِهِ الكريمِ في المدينَةِ المنورَةِ، ويتعرفُ على أخبار الناس ويرى\n\nديارَ الاسلامَ وما فيها.\n\nوكان يتمنى أن يزدادَ علماً بمقابلة علماء كل بلد ينزلُ فيه حتي يصبحَ في مثل\n\nعلم أبيه ويصبحَ قاضيًا كبيراً.\n\n⟦FIGURE⟧\n\nما إِنْ بلغَ ابْنَ بطوَطَة الثانية والعشرين من عمره حتي عزمُ على تحقيق\n\nحُلمِهَ بالسفرهِ إلى مكةِ المكرمة لأداءِ فريضة الحجَ، فودَعَ أهله وأصحابه وتأثر\n\nتأثَّرًا بالغَاِ بفراقِ والديهِ وَلَكِنَّ رَغَبَتهِ فِي السفرَ كانت قويةِ وعزمُهَ كان\n\nشديدًا.\n\nكانت مكثة المكرمة التي ينوي زيارتها على بغد ثلاثة آلاف ميل من بليه،\n\nفي القاهرة.\n\nمدينة مصر هي أهم البلاد وفراره فرعون دكي الأوتاد، \"ذاً الأفالببع العربيضَى والبلاد الأربضَى، المشاهية في كثرة العمارة، المنتاهبية بالعسن والنضارة\". ابن بطوطة\n\nوصل ابن بطوظة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي، وقد انبهراً بما شاهد فيها وراها – كما يقولُ تموجّ موج البحر بسكانها.\n\nويذكر أبن بطوطة النيل الذي يمرّ في القاهرة وأن به سّتة وثلاثين الفا من المراكب التي تحمل البضائع من أخاعد مصر إلى القاهرة.\n\nويتجول أبن بطوطة في المدينة الكبيره فيعجبه مسجد عمرو ابن العاص،\n\nويذكر أنّ المدارس بمصر لا يحصى عدها من كثرتها، ويندهش من روعة البيمارستان (المستشفى) الذي زاره والذي يقدم العلاج والدواء للمرضى. ويذكر الأهرام ويصيفها وصفا دقيقاً، ويصف كيف قام الخليفة العباسي المامون بإحدائث الفتحة الحالية في الهرم.\n\nولا ينسي ابن بطوظة أن يتحدث عن علماء مصر وُقضاتها وشيوخها الذين قابلهم واستفاد من عليهم.\n\n⟦FIGURE⟧", "fastocr": "أبو عبد الله محمد بن عبد الله بن محمد\n بن إبراهيم\nاللواتي الطنجي المعروف بابن بطوطة.. أشهر الرحالة\nالمسلمين في تاريخ الحضارة الإسلامية ، ويلقبه الغربيون\nباسم\n\" أمير الرحالة\nخرج ابن بطوطة من بلدته \" طنجة \" في المغرب عام ١٣٢٥\nم وظل يجوب بلاد العالم الإسلامي مدة ٢٥ سنة قطع\nخلالها ٧٥ ألف ميل ، وهي مسافة لم يقطعها مسافر قبله.\nفي هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر\nأراضي مصر منذ دخلها من الإسكندرية ، وطاف بكثير من\nمدنها وقراها حتى وصل إلى ميناء عيذاب على البحر\nمن رحلات ابن بطوطة\nالأحمر.\nمؤسسة حورس الدولية سياسة نشر.\nازنية موقع الحضرية : 28\n1000\n+78-71-168\nابن بطوطة\nفي مصر\nمؤسسة حورس الدولية\nمصطفی غنیمفتى من طنجة\nعلى شاطئ بحر الظلمات الذي\nنسميه الآن المحيط الأطلنطي وقف\nالفتى الصغير ينظر إلى السفن\nالقادمة إلى ميناء طنجة ، مسقط رأسه\n، ويُمني نفسه بلقاء أحد التجار\nالقادمين من بلادٍ بعيدة\nلقد اعتاد الفتى أن يعرف أين ينزل\nمدينة طنجة\nتعتبر مدينة طنجة من بين أكبر خمس مدن\nمغربية ، ويسكنها حوالي ٧٠٠ ألف\nنسمة.\nولهذه المدينة موقع متميز ، فهي تقع عند\nهؤلاء التجار ويذهب لكي يستمع التقاء المحيط الأطلنطي والبحر المتوسط\nإلى ما يقصونه من أخبار الناس من جهة ، وبين قارتي أفريقيا وأوروبا من\nوحكاياتهم في البلاد التي مروا بها ، جهة . وهي مركز صناعي وتجاري هام في\nوعن العجائب التي شاهدوها المغرب.\nوالمغامرات التي عاشوها.\nأفاق الفتى من شرودهِ على شاطئ طويل ، ويرتبط اسمها برحالتنا الشهير ابن\nبطوطة .\nالبحر على صوتِ صديقه عبدِ\nالرحمن يناديه ويخبره\nوطنجة من أقدم مدن المغرب ولها تاريخأنَّ أحد التجار العائدين من رحلة الحج قد ذهب لزيارة والله وعليه أن\nيُسرع بالعودة إلى البيت.\nور\nعبد الله\nكان الفتى هو محمد\nبن بن محمد بن إبراهيم اللواتي الطنجي\nالمعروف بابن بطوطة، وواللهُ كانَ فقيها يشتغل بالقضاء وله مكانة في المدينة\n، ويقصده الناسُ انتفاعًا بعلمه وحكمته\nوكان ابن بطوطة يستمع إلى ما يحكيه أصدقاء أبيه عن رحلات الحج ،\nفيستعجل الأيام لكي يكبر ويحقق حلمه بالذهاب إلى بيت الله الحرام في مكة\nوزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى\nديار الإسلام وما فيها .\nوكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلد ينزل فيه حتى يُصبح في مثل\nعلم أبيه ويصبح قاضيًا كبيرًا.\nبداية الرحلة\nما إن بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق\nحلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودعَ أهله وأصحابه وتأثر\nتأثراً بالغا بفراق والديه ولكن رغبته في السفر كانت قويةً وعزمه كان\nشديدًا.\nكانت مكة المكرمة التي ينوي زيارَتَها على بُعْدِ ثلاثةِ آلافِ مَيل من بلدِهِ ،١٧\nفي القاهرة .\nمدينة مصر هى أم البلاد وقرارة فرعون دي الأوتاد\nذات الأقاليم العريضة والبلاد الأريضة ، المتناهية في كثرة\nالعمارة ، المتناهية بالحسن والنضارة . \"\nابن بطوطة\nوصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهدِ\nالسلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها - كما\nيقولُ تموج موج البحرِ بسكانها.\nويذكر ابن بطوطة النيل الذي يمرُّ في القاهرة وأن به ستة وثلاثين ألفا من\nالمراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.ويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ،\nويذكرُ أنَّ المدارس بمصر لا يُحصَى عددها من كثرتها ، ويندهش من روعة\nالبيمارستان ( المستشفى) الذي زاره والذي يُقدِّم العلاج والدواء للمرضى\nويذكرُ الأهرام ويصفها وصفا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمونُ\nبإحداث الفتحة الحالية في الهرم.\nولا ينسى ابن بطوطة أن يتحدث عن علماء مصرَ وقُضاتِها وشيوخها الذين\nقابلهم واستفاد من علمهم.\n۱۸", "baseerocr": "⟦FIGURE⟧\n\nمن رحلات ابن بطوطة\n\nابن بطوطة\n\nفي مصر\n\nمصطفى فنيم\n\nمؤسسة كوربس الدولية\n\nأبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة.. أشهر الرحالة المسلمين في تاريخ الحضارة الإسلامية ، وبإسمه الغربيون باسم \" أمير الرحالة \".\n\nخرج ابن بطوطة من بلدته \" طنجة \" في المغرب عام ١٣٢٥ م وظل يجوب بلاد العالم الإسلامي مدة ٢٥ سنة قطع خلالها ٧٥ ألف ميل، وهي مسافة لم يقطعها مسافر قبله.\n\nفي هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر أراضي مصر منذ دخلها من الإسكندرية ، وطاف بكثير من مدنها وقراها حتى وصل إلى ميناء عيداب على البحر الأحمر.\n\n⟦FIGURE⟧\n\nمؤسسة جوتنس الدولية لطباعة المصحف الشريف\n\nالأردن - صرح الرباط - شارع الملك حسين - تلفاكس 00962-6-5837999 - E-mail: [horehaj@joe.net.jo](mailto:horehaj@joe.net.jo)\n\n[www.joan.com.lb](http://www.joan.com.lb)\n\n**فتى من طنجة**\n\nعلى شاطئ بحر الظلمات الذي نسميه الآن المحيط الأطلنطي وقف الفتى الصغير ينظر إلى السفن القادمة إلى ميناء طنجة ، مسقط رأسه ، ويميني نفسه بلقاء أحد التجار القادمين من بلاد بعيلة.\n\nلقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدوها والمغامرات التي عاشوها.\n\nأفاق الفتى من شروده على شاطئ البحر على صوت صديقه عبد الرحمن يناديه ويخبره\n\n⟦FIGURE⟧  \n**مدينة طنجة**\n\nتعتبر مدينة طنجة من بين أكبر خمس مدن مغربية ، ويسكنها حوالي ٧٠٠ ألف نسمة.\n\nوهذه المدينة موقع متميز، فهي تقع عند التقاء المحيط الأطلنطي والبحر المتوسط من جهة ، وبين قارتي أفريقيا وأوروبا من جهة . وهي مركز صناعي وتجاري هام في المغرب.\n\nوطنجة من أقدم مدن المغرب ولها تاريخ طويل ، ويرتبط اسمها برحالتنا الشهير ابن بطوطة .\n\n&lt;page_number&gt;٣&lt;/page_number&gt;\n\nأن أحد التجار العائدين من رحلة الحج قد ذهب لزيارة والده وعليه أن يُسرع بالعودة إلى البيت.\n\nكان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيهاً يشتغل بالقضاء وله مكانة في المدينة ، ويقصله الناس انتفاعًا بعلمه وحكمته .\n\nوكان ابن بطوطة يستمع إلى ما يحكيه أصدقاء أبيه عن رحلات الحج ، فيستعجل الأيام لكي يكبر ويحقق حلمه بالذهاب إلى بيت الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها .\n\nوكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلدٍ ينزل فيه حتى يصبح في مثل علم أبيه ويصبح قاضيا كبيرا .\n\n**بداية الرحلة**\n\nما إن بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق حلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودع أهله وأصحابه وتأثر تأثرا بالغا بفراق والديه ولكن رغبته في السفر كانت قوية وعزمه كان شديدًا.\n\nكانت مكة المكرمة التي ينوي زيارتها على بعد ثلاثة آلاف ميل من بلده ،\n\nفي القاهرة .\n\n\" .. مدينة مصر هي أم البلاد وفرارة فرعون دي الأوتاد ، ذات الأقاليم العريضة والبلاد الأرضية ، المتناهبة في كثرته العمارة ، المتناهبة بالحسن والنضارة . \"\n\nابن بطوطة\n\nوصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها – كما يقول تموج موج البحر بسكانها.\n\nويذكر ابن بطوطة النيل الذي يمر في القاهرة وأن به ستة وثلاثين ألفا من المراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.\n\n&lt;page_number&gt;١١٧&lt;/page_number&gt;\n\nويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ، ويذكر أن المدارس بمصر لا يحصى عددها من كثرتها ، ويندهش من روعة البيمارستان ( المستشفى) الذي زاره والذي يُقدم العلاج والدواء للمرضى . ويذكر الأهرام ويصفها وصفًا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمون بإحداث الفتحة الحالية في الهرم.\n\nولا ينسى ابن بطوطة أن يتحدث عن علماء مصر وقضاتها وشيوخها الذين قابلهم واستفاد من علمهم.\n\n⟦FIGURE⟧\n\n&lt;page_number&gt;١٨&lt;/page_number&gt;", "glmocr": "⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\nإذا كان النقطة معلومة بنفس النقطة بنفس معلومة بنفس الإرشادات\n\nالوالقية المطلوبة للمعروف ببنفس الإرشادات. أعطي الرابط\n\nالحاصلين في تبرن المعلومات البرمجية ، وبيانها المعلومات\n\n\"أمير البراءة.\"\n\n11740 ألف البريد المذكور \"حالة\" في الإنترنت من 1974م\n\nوفي البريد الإلكتروني باللغة العربية من 80 سنة قادرة\n\nحالة 10 ألف سنة ، وفي سلسلة بيانات سلسلة قادرة\n\nفي حالة الالتزام من رحلات البريد الإلكتروني سلسلة في رحلة عبر\n\nأراضي مسار من دخول البريد الإلكتروني ، وكانت بكرة من\n\nمسافة وطوله حين وصل إلى مكان. كان البريد على الإنترنت\n\nالأصلي.\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\n⟦FIGURE⟧\n\nتشير مسمى نصيب من نصين أكبر حسب مدن\n\nمشاربها ، وسيكون الحوالي ٧٠٠٠ ألف\n\nسنة.\n\nوقد نص المبينة من قولهم صحيح ، فهو قوله عليه\n\nالنصبي الحكيم الأعظم الحكيم والبيحي الحكيم\n\nمن جوازه ، وبينن قوله عليه أقوله عليه واوروما من\n\nجوازه . وقد نص مكرر صحيح وكشفري مامور في\n\nالنصبي.\n\nوحيثة من أقصى مكان المقارن وما تليه يبين\n\nحروب البلان ، وبرنامج المقارن برحلة المقارن إبر\n\nصابوحا .\n\n## فنموذج خاص\n\nعلى شيء في القلعة الصادرة\n\nسيمكن الإنكار الحقيق الألوانية وقد\n\nالنظر في المسؤولية بصورة أخرى في المسؤول\n\nالنظرية إلا منصور بصورة أخرى، مسؤول رئيس\n\nوالكفاية نفسها بصورة أخرى المسؤول\n\nالنظرية من بين البعض بصورة أخرى.\n\nلأننا أخذنا النصوص أين بشرنا أين بشرنا\n\nحيث لا يوجد النصوص وبيانهم لكيف بشرنا\n\nإلا ما يشتريون من أخذار النصوص\n\nوحكامتين في النصات التي مرتا بشرا,\n\nوكلنا الحكامتين في النصات بشرنا بشرنا\n\nوالشاعر أستر الريف حينيما.\n\nأتأكد الريف من شيء ووده على شيء\n\nالبيحي على شيء حينيما على شيء\n\nالرجي بسادديه وكبره\n\n⟦FIGURE⟧\n\nإن أحسن الشيخ الرئيسي من رحلة الأخيرة لبنان والصم وغيرها أين\n\nبصر في البلاد ذكرا إليه الشيخ.\n\nكان الضيق من كمعا بين عبيد الله بن كمعا بين !برام المؤمن الليلين في الملائكة\n\nالحرور وفي بين عبيد الله وفي الملائكة كان فضيق بينستين لليلين في الملائكة\n\nوفيستين الملائكة فضيق بينستين بعسى وخلقه .\n\nوكان ابن إبراهيم يسكن بصورة أخرى في رحلة إلى الماء ،\n\nتستطيع الليل بابا لكبر بكبر وكفاية لكبر بكفاية لكبر الليل بابا في مكان\n\nوتربطه في رحلة إلى الماء المريوب ، وتربطه في مكان أخرى في الماء المريوب وتربطه\n\nدراير الليل بابا وما يجعل .\n\nوكان يشمس في نزدنا على السماء كفيلباء عالمية كالنبي صلى الله عليه وسلم\n\n⟦FIGURE⟧\n\nما أن باب أبرن بابوحلة النباتية والعالمية بباب عابرة من حمامة خزين خزين\n\nكنت么ك المكريمة العقلية بشرية على نفس الشيء المختلف من بالعق ،\n\nفي الشركة .\n\n\"... معنى صدق في كل الأنبياء والسورة من قوله تعالى: \"إن الاكلباء والسورة والسورة الاكلباء\n\nوحسنا أن بن سعيد قال لنا القصة التي مضت منذها معنا ودعنا في قوله\n\nالسعيد في القصة التي قالوا ودعنا في القصة ، وقد أشار إلى شاعر قيل له شاعر قيل له\n\nبشاعر قيل له شاعر القصة بسكاكان.\n\nوينبغي أن يكون هناك طريقة لإيجاد القيمة الموجودة وأن يكون هناك سعة وطريقة للإيجاد القيمة الموجودة في\n\nوستجيب لإبرة بكثير في الملكية في مجتمعهم منسوجات أبرة الملكية ،\n\nوينبغي أن الناس المصرين يكشفوا عن كثير من كثيرين ، وينبغي أن الناس المصرين ( المصرين زراعي والمصرين نجاحي والالمصرين المصرين )\n\nو بنتسى ابن بابور طفلة أين يستخدم منه فيحملها وشهدوها النبي\n\nقابليهم واستخدمه منه فيحملها.\n\n⟦FIGURE⟧"};
@@ -1148,6 +1444,12 @@ const DATA = {
     models: MODEL_META.map((m) => ({ ...m, text: MODEL_TEXT[m.id] ?? "" })),
     pages: PAGES,
 };
+// The representative priced row for an engine, for the tabs. PaddleOCR has
+// three (token-standard / token-dense / flat-page), so "first match in table
+// order" is the documented rule rather than an accident of iteration.
+function primaryPricingRow(id) {
+    return PRICING_ROWS.find((r) => r.benchmarked === id);
+}
 // ============================================================================
 // Exhaustiveness — the actual TypeScript "superpower" for this case
 // ============================================================================
@@ -1157,22 +1459,42 @@ const DATA = {
 function assertNever(x) {
     throw new Error("Unhandled case: " + JSON.stringify(x));
 }
-const CHART_PAGE_BASIS = 50000; // matches models/cost.md's own "Total Cost for 50k Pages" framing
-// Normalizes any pricing shape to a single comparable $-per-50,000-pages
-// figure for the chart. This is the one function allowed to collapse the
-// union to a number — everywhere else keeps the real shape (see
-// costRangeLabel, which reports each tier in its own native unit).
-function costToChartBasis(tier) {
+// The audited CSV prices every row at two volumes, and the gap between them is
+// the whole point: eleven rows scale linearly and one (Besser's flat
+// subscription) does not, so its effective $/page falls 50× across this range
+// while nothing else moves. A single hardcoded basis would hide that entirely.
+const VOLUME_BASES = [1000, 50000];
+const DEFAULT_VOLUME = 50000;
+// Normalizes any pricing shape to a total bill at a given page count. This is
+// the one function allowed to collapse the union to a number — everywhere else
+// keeps the real shape (see costRangeLabel, which reports each tier in its own
+// native unit).
+//
+// Note this takes `pages` rather than closing over a constant: `subscription`
+// is the one shape where cost is NOT proportional to volume, and that only
+// shows up if volume is an input.
+function costAtVolume(tier, pages) {
     switch (tier.kind) {
         case "metered":
-            return ((tier.low + tier.high) / 2 / 1000) * CHART_PAGE_BASIS;
+            return ((tier.low + tier.high) / 2 / 1000) * pages;
         case "flatFee":
-            return (tier.amount / tier.forPages) * CHART_PAGE_BASIS;
+            return (tier.amount / tier.forPages) * pages;
         case "subscription":
-            return (tier.monthlyAmount / tier.pageCapPerMonth) * CHART_PAGE_BASIS;
+            // No cap: one flat monthly fee, whatever the volume. Capped: as many
+            // months as it takes to clear the pages.
+            return tier.pageCapPerMonth === null
+                ? tier.monthlyAmount
+                : tier.monthlyAmount * Math.ceil(pages / tier.pageCapPerMonth);
+        case "perToken":
+            return (tier.usdPerMillionTokens / 1000000) * tier.tokensPerPage * pages;
+        case "computeTime":
+            return tier.usdPerComputeSecond * tier.secondsPerPage * pages;
         default:
             return assertNever(tier);
     }
+}
+function costPerPageAtVolume(tier, pages) {
+    return costAtVolume(tier, pages) / pages;
 }
 function costRangeLabel(tier) {
     switch (tier.kind) {
@@ -1183,17 +1505,75 @@ function costRangeLabel(tier) {
         case "flatFee":
             return `$${tier.amount.toFixed(2)} flat for ${tier.forPages} page${tier.forPages === 1 ? "" : "s"}`;
         case "subscription":
-            return `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;
+            return tier.pageCapPerMonth === null
+                ? `$${tier.monthlyAmount.toLocaleString()}/mo, no stated cap`
+                : `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;
+        case "perToken":
+            return `$${tier.usdPerMillionTokens.toFixed(2)}/1M tok × ${tier.tokensPerPage.toLocaleString()} tok/pg`;
+        case "computeTime":
+            return `$${tier.usdPerComputeSecond.toFixed(4)}/compute-sec × ${tier.secondsPerPage}s/pg`;
         default:
             return assertNever(tier);
     }
 }
 function costKindLabel(tier) {
     switch (tier.kind) {
-        case "metered": return "Metered API";
+        case "metered": return "Per page";
         case "flatFee": return "Flat fee";
         case "subscription": return "Subscription";
+        case "perToken": return "Per token";
+        case "computeTime": return "Compute time";
         default: return assertNever(tier);
+    }
+}
+// ============================================================================
+// Confidence — the dimension the price alone doesn't show
+// ============================================================================
+function confidenceLabel(c) {
+    switch (c) {
+        case "verified": return "Verified";
+        case "vendor-email": return "Vendor email";
+        case "derived": return "Derived";
+        case "disputed": return "Rate disputed";
+        case "unverified": return "Unverified";
+        default: return assertNever(c);
+    }
+}
+// Longer-form, for the badge tooltip — what the label actually means about
+// how much weight the number can carry.
+function confidenceMeaning(c) {
+    switch (c) {
+        case "verified": return "Checked against the vendor's own published rate.";
+        case "vendor-email": return "Confirmed directly by the vendor in writing, not from a public page.";
+        case "derived": return "Arithmetic from a different billing unit (e.g. GPU-seconds) at an assumed throughput — not a rate the vendor quotes.";
+        case "disputed": return "A real published rate exists and materially disagrees with the figure used.";
+        case "unverified": return "No vendor source could be found to confirm this figure at all.";
+        default: return assertNever(c);
+    }
+}
+// Only the first two are figures you could defend in a budget review.
+function isTrustworthy(c) {
+    switch (c) {
+        case "verified":
+        case "vendor-email":
+            return true;
+        case "derived":
+        case "disputed":
+        case "unverified":
+            return false;
+        default: return assertNever(c);
+    }
+}
+// A CSS custom property per confidence level, reusing the page's existing
+// semantic palette rather than introducing new theme tokens.
+function confidenceTone(c) {
+    switch (c) {
+        case "verified": return "var(--lapis)";
+        case "vendor-email": return "var(--lapis-soft)";
+        case "derived": return "var(--gold)";
+        case "disputed": return "var(--vermilion)";
+        case "unverified": return "var(--ink-faint)";
+        default: return assertNever(c);
     }
 }
 // ============================================================================
@@ -1451,11 +1831,17 @@ function detectSystemMode() {
     });
 })();
 // ============================================================================
-// Cost dot plot + table — both driven entirely through costToChartBasis /
-// costRangeLabel, so the chart and the table are guaranteed to agree (no
-// separate "chart number" vs "table number" that can silently drift apart,
-// which is exactly what happened across the plain-JS cost.md / fastocr.md
-// files this data was extracted from).
+// Cost bar chart / dot plot / table — all three driven entirely through
+// costAtVolume / costRangeLabel, so they are guaranteed to agree (no separate
+// "chart number" vs "table number" that can silently drift apart, which is
+// exactly what happened across the plain-JS cost.md / fastocr.md files this
+// data was extracted from).
+//
+// The $-at-volume figures are computed from each row's native rate on every
+// render. The source CSV stored "cost at 1k" and "cost at 50k" as two typed-in
+// columns and accumulated a 10× error on one row and a 5× error on another —
+// both of which are now impossible to reproduce here, because there is only
+// one number per row and the rest is arithmetic.
 // ============================================================================
 // Small, boring, and reused only here: rounds an axis max up to a "nice"
 // step count so gridlines land on 0 / 500 / 1000 / ... instead of whatever
@@ -1480,26 +1866,41 @@ function niceTicks(max, targetCount = 4) {
 function formatUSD(n) {
     return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-function buildBarChart(models, values, cheapestValue) {
-    const ramp = ["--ramp-1", "--ramp-2", "--ramp-3", "--ramp-4", "--ramp-5", "--ramp-6"];
+// A compact "how much is this number worth" badge, used in every view so the
+// price and its credibility are never shown apart.
+function confidenceBadge(c) {
+    return `<span class="conf-badge" style="--conf: ${confidenceTone(c)}" title="${confidenceLabel(c)} — ${confidenceMeaning(c)}">${confidenceLabel(c)}</span>`;
+}
+function rowTooltip(row, value, pages) {
+    return `${row.model} · ${costKindLabel(row.cost)}: ${costRangeLabel(row.cost)} → ${formatUSD(value)} per ${pages.toLocaleString()} pages (${confidenceLabel(row.confidence)})`;
+}
+// Marks that ride along with a row's name in both charts: the engine was
+// actually run here, and/or the review changed its number.
+function rowChips(row, isCheapest) {
+    return ((isCheapest ? '<span class="cheapest-chip">cheapest</span>' : "") +
+        (row.benchmarked ? '<span class="run-chip" title="This engine was actually run against the source document — see its OCR output below">run</span>' : "") +
+        (row.corrected ? '<span class="corrected-chip" title="The review corrected this figure from the original table">corrected</span>' : ""));
+}
+function buildBarChart(rows, values, cheapestValue, pages) {
     const max = Math.max(...values);
     const chart = el("div", "chart");
-    models.forEach((m, i) => {
+    rows.forEach((row, i) => {
         const value = values[i];
         const isCheapest = value === cheapestValue;
         const pct = Math.max(2, (value / max) * 100);
-        const row = el("div", "bar-row" + (m.flags.includes("anomaly") ? " flagged" : ""));
-        row.innerHTML = `
-      <div class="name">${m.name}${isCheapest ? '<span class="cheapest-chip">cheapest</span>' : ""}</div>
-      <div class="bar-track"><div class="bar-fill${isCheapest ? " bar-cheapest" : ""}" data-pct="${pct}" style="background: var(${ramp[i]})"
-           title="${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages"></div></div>
+        const barRow = el("div", "bar-row");
+        barRow.innerHTML = `
+      <div class="name">${row.model}${rowChips(row, isCheapest)}</div>
+      <div class="bar-track"><div class="bar-fill${isCheapest ? " bar-cheapest" : ""}" data-pct="${pct}"
+           style="background: ${confidenceTone(row.confidence)}"
+           title="${rowTooltip(row, value, pages)}"></div></div>
       <div class="value">${formatUSD(value)}</div>
     `;
-        chart.appendChild(row);
+        chart.appendChild(barRow);
     });
     return chart;
 }
-function buildDotPlot(models, values, cheapestValue) {
+function buildDotPlot(rows, values, cheapestValue, pages) {
     const ticks = niceTicks(Math.max(...values), 4);
     const axisMax = ticks[ticks.length - 1];
     const plot = el("div", "dotplot");
@@ -1510,21 +1911,22 @@ function buildDotPlot(models, values, cheapestValue) {
         grid.appendChild(line);
     });
     plot.appendChild(grid);
-    models.forEach((m, i) => {
+    rows.forEach((row, i) => {
         const value = values[i];
         const isCheapest = value === cheapestValue;
         const pct = Math.min(100, (value / axisMax) * 100);
-        const row = el("div", "dot-row" + (m.flags.includes("anomaly") ? " flagged" : ""));
-        row.innerHTML = `
-      <div class="name">${m.name}${isCheapest ? '<span class="cheapest-chip">cheapest</span>' : ""}</div>
+        const dotRow = el("div", "dot-row");
+        dotRow.innerHTML = `
+      <div class="name">${row.model}${rowChips(row, isCheapest)}</div>
       <div class="dot-track">
         <div class="dot-line"></div>
         <div class="dot${isCheapest ? " dot-cheapest" : ""}" data-pct="${pct}"
-             title="${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages"></div>
+             style="background: ${confidenceTone(row.confidence)}"
+             title="${rowTooltip(row, value, pages)}"></div>
       </div>
       <div class="value">${formatUSD(value)}</div>
     `;
-        plot.appendChild(row);
+        plot.appendChild(dotRow);
     });
     const axis = el("div", "dot-axis");
     axis.appendChild(el("div")); // spacer, mirrors the name column
@@ -1537,31 +1939,132 @@ function buildDotPlot(models, values, cheapestValue) {
     plot.appendChild(axis);
     return plot;
 }
+function buildCostTable(rows, values, cheapestValue, pages) {
+    const table = el("table", "cost-table", `<thead><tr>
+       <th>Model</th><th>Provider / hosting</th><th>Billing shape</th>
+       <th>$ per ${pages.toLocaleString()} pages</th><th>Effective $/page</th>
+       <th>Native rate</th><th>Confidence</th><th>Review note</th>
+     </tr></thead>`);
+    const tbody = el("tbody");
+    rows.forEach((row, i) => {
+        const value = values[i];
+        const perPage = costPerPageAtVolume(row.cost, pages);
+        tbody.appendChild(el("tr", row.corrected ? "row-corrected" : undefined, `<td>${row.model}${value === cheapestValue ? " 🏆" : ""}${row.benchmarked ? '<span class="run-chip">run</span>' : ""}</td>
+         <td>${row.provider}</td>
+         <td>${costKindLabel(row.cost)}</td>
+         <td class="num">${formatUSD(value)}</td>
+         <td class="num">$${perPage.toFixed(5)}</td>
+         <td>${costRangeLabel(row.cost)}<br><span class="ceiling">ceiling: ${row.ceiling} · ${row.worstCase}</span></td>
+         <td>${confidenceBadge(row.confidence)}</td>
+         <td class="note">${row.note}</td>`));
+    });
+    table.appendChild(tbody);
+    const wrap = el("div", "table-wrap");
+    wrap.appendChild(table);
+    return wrap;
+}
+function buildConfidenceLegend() {
+    const order = ["verified", "vendor-email", "derived", "disputed", "unverified"];
+    const legend = el("div", "conf-legend");
+    legend.innerHTML =
+        `<span class="conf-legend-label">Bar colour = confidence in the figure</span>` +
+            order
+                .map((c) => `<span class="conf-legend-item" title="${confidenceMeaning(c)}"><i style="background:${confidenceTone(c)}"></i>${confidenceLabel(c)}</span>`)
+                .join("");
+    return legend;
+}
 (function initCost() {
-    const models = [...DATA.models].sort((a, b) => costToChartBasis(a.cost) - costToChartBasis(b.cost));
-    const values = models.map((m) => costToChartBasis(m.cost));
-    const cheapestValue = Math.min(...values);
-    const captionText = `Sorted cheapest → most expensive, normalized to $ per ${CHART_PAGE_BASIS.toLocaleString()} pages regardless of pricing shape (metered / flat fee / subscription) — hover a mark for the real shape behind the number. To change these figures, edit the \`cost\` field for each model in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;
-    const barChart = buildBarChart(models, values, cheapestValue);
+    // Section state. Volume is a real axis here, not a constant: it is the only
+    // way the flat-subscription row's behaviour becomes visible.
+    let volume = DEFAULT_VOLUME;
+    let trustedOnly = false;
+    let currentView = "bar";
+    let revealed = false;
     const barView = must("barView");
-    barView.appendChild(barChart);
-    barView.appendChild(el("div", "chart-caption", captionText));
-    const dotPlot = buildDotPlot(models, values, cheapestValue);
     const dotView = must("dotView");
-    dotView.appendChild(dotPlot);
-    dotView.appendChild(el("div", "chart-caption", captionText));
-    // Both charts' fills are revealed together, the first time either becomes
-    // visible, by observing the section itself (always in the layout, unlike
-    // its currently-hidden sibling view) rather than each chart individually.
-    const revealed = { done: false };
-    function reveal() {
-        if (revealed.done)
-            return;
-        revealed.done = true;
-        barChart.querySelectorAll(".bar-fill").forEach((f) => { f.style.width = f.dataset.pct + "%"; });
-        dotPlot.querySelectorAll(".dot").forEach((d) => { d.style.left = d.dataset.pct + "%"; });
+    const tableView = must("tableView");
+    const statsHost = must("costStats");
+    const anomalyHost = must("anomalyCallouts");
+    function visibleRows() {
+        const rows = trustedOnly ? PRICING_ROWS.filter((r) => isTrustworthy(r.confidence)) : [...PRICING_ROWS];
+        return rows.sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));
     }
-    const costSection = must("cost");
+    // Headline numbers, computed rather than written down, so they can't drift
+    // out of sync with the table the way the source CSV's own totals did.
+    function renderStats() {
+        const trusted = PRICING_ROWS.filter((r) => isTrustworthy(r.confidence));
+        const corrected = PRICING_ROWS.filter((r) => r.corrected);
+        const all = [...PRICING_ROWS].sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));
+        const cheapest = all[0];
+        const dearest = all[all.length - 1];
+        const spread = costAtVolume(dearest.cost, volume) / costAtVolume(cheapest.cost, volume);
+        statsHost.innerHTML = [
+            { n: `${trusted.length} of ${PRICING_ROWS.length}`, l: "figures vendor-confirmed" },
+            { n: `${corrected.length}`, l: "corrected during review" },
+            { n: `${spread < 10 ? spread.toFixed(1) : Math.round(spread).toLocaleString()}×`, l: `spread, cheapest → dearest at ${volume.toLocaleString()} pages` },
+            { n: formatUSD(costAtVolume(cheapest.cost, volume)), l: `cheapest (${cheapest.model})` },
+        ]
+            .map((s) => `<div class="cost-stat"><b>${s.n}</b><span>${s.l}</span></div>`)
+            .join("");
+    }
+    function renderAnomalies() {
+        anomalyHost.innerHTML = "";
+        // Rows whose bill does not scale with volume at all — the reason this
+        // section has a volume toggle in the first place.
+        PRICING_ROWS.filter((r) => r.cost.kind === "subscription").forEach((r) => {
+            const at1k = costPerPageAtVolume(r.cost, 1000);
+            const at50k = costPerPageAtVolume(r.cost, 50000);
+            anomalyHost.appendChild(el("div", "anomaly-callout", `<b>${r.model} is the only row that doesn't scale.</b> It bills a flat ${costRangeLabel(r.cost)}, so the invoice is identical at 1,000 and 50,000 pages — the same fee spread over 50× the work. Effective cost falls from <b>$${at1k.toFixed(5)}/page</b> to <b>$${at50k.toFixed(5)}/page</b> across that range. Every other row is linear, so at low volume this is the most expensive option on the table by a wide margin, and at high volume it stops being an outlier. Flip the volume toggle above to watch it move.`));
+        });
+        // Real invoices for this specific document, where the quoted tier and what
+        // was actually charged disagree. Generated from data rather than
+        // hand-written, so a 7th engine with the same story needs no new prose.
+        DATA.models
+            .filter((m) => m.actualRunCost !== undefined)
+            .forEach((m) => {
+            const row = primaryPricingRow(m.id);
+            const listed = row
+                ? `the ${costKindLabel(row.cost).toLowerCase()} rate listed above (${costRangeLabel(row.cost)} ≈ ${formatUSD(costAtVolume(row.cost, volume))} per ${volume.toLocaleString()} pages)`
+                : "the rate listed above";
+            anomalyHost.appendChild(el("div", "anomaly-callout", `<b>What ${m.name} actually charged for this document: ${costRangeLabel(m.actualRunCost)}.</b> That is a real invoice for the exact 5-page file in this demo, not a rate card — which is why it isn't what the chart plots. The chart uses ${listed} so all twelve rows compare on one basis. ${m.note}`));
+        });
+    }
+    function renderCharts() {
+        const rows = visibleRows();
+        const values = rows.map((r) => costAtVolume(r.cost, volume));
+        const cheapestValue = Math.min(...values);
+        const captionText = `Sorted cheapest → most expensive at <b>${volume.toLocaleString()} pages</b>, normalized from each vendor's native billing unit (per page / per token / per compute-second / flat subscription) — hover a mark for the real shape behind the number. Colour encodes how much the figure can be trusted, not how big it is. Figures transcribed from <code>OCR pricing - final.csv</code>; to change them, edit <code>PRICING_ROWS</code> in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;
+        barView.innerHTML = "";
+        const barChart = buildBarChart(rows, values, cheapestValue, volume);
+        barView.appendChild(buildConfidenceLegend());
+        barView.appendChild(barChart);
+        barView.appendChild(el("div", "chart-caption", captionText));
+        dotView.innerHTML = "";
+        const dotPlot = buildDotPlot(rows, values, cheapestValue, volume);
+        dotView.appendChild(buildConfidenceLegend());
+        dotView.appendChild(dotPlot);
+        dotView.appendChild(el("div", "chart-caption", captionText));
+        tableView.innerHTML = "";
+        tableView.appendChild(buildCostTable(rows, values, cheapestValue, volume));
+        if (revealed)
+            reveal();
+    }
+    // Fills start at width 0 / left 0 and are released once the section is on
+    // screen. After the first reveal, re-renders animate from 0 again on the
+    // next frame, which reads as the bars re-settling to the new volume.
+    function reveal() {
+        revealed = true;
+        requestAnimationFrame(() => {
+            barView.querySelectorAll(".bar-fill").forEach((f) => { f.style.width = f.dataset.pct + "%"; });
+            dotView.querySelectorAll(".dot").forEach((d) => { d.style.left = d.dataset.pct + "%"; });
+        });
+    }
+    function renderAll() {
+        renderStats();
+        renderCharts();
+        renderAnomalies();
+    }
+    renderAll();
     const io = new IntersectionObserver((entries) => {
         entries.forEach((e) => {
             if (e.isIntersecting) {
@@ -1570,48 +2073,44 @@ function buildDotPlot(models, values, cheapestValue) {
             }
         });
     }, { threshold: 0.15 });
-    io.observe(costSection);
-    const table = el("table", "cost-table", `<thead><tr><th>Engine</th><th>Pricing shape</th><th>Est. $ per ${CHART_PAGE_BASIS.toLocaleString()} pages</th><th>Native rate</th><th>Source note</th></tr></thead>`);
-    const tbody = el("tbody");
-    models.forEach((m, i) => {
-        const tr = el("tr", undefined, `<td>${m.name}${m.flags.includes("low-quality") ? " ⚠" : ""}${values[i] === cheapestValue ? " 🏆" : ""}</td>
-       <td>${costKindLabel(m.cost)}</td>
-       <td class="num">${formatUSD(values[i])}</td>
-       <td>${costRangeLabel(m.cost)}</td>
-       <td>${m.costQuote}</td>`);
-        tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    const tableWrap = el("div", "table-wrap");
-    tableWrap.appendChild(table);
-    must("tableView").appendChild(tableWrap);
-    // One callout per model with a real one-off actualRunCost — generated
-    // from the data rather than hand-written per model, so a 7th model with
-    // its own "quoted rate vs. what I actually paid" story doesn't need a
-    // matching hand-written paragraph here to show up.
-    const anomalyHost = must("anomalyCallouts");
-    models
-        .filter((m) => m.actualRunCost !== undefined)
-        .forEach((m) => {
-        const chartFigure = formatUSD(costToChartBasis(m.cost));
-        anomalyHost.appendChild(el("div", "anomaly-callout", `<b>Why isn't ${m.name}'s ${costRangeLabel(m.actualRunCost)} in the chart above?</b> That figure is the actual cost of running this specific document through ${m.name} (${costKindLabel(m.actualRunCost).toLowerCase()}) — not a metered per-page rate. The chart instead uses ${m.name}'s ${costKindLabel(m.cost).toLowerCase()} tier (${costRangeLabel(m.cost)} ≈ ${chartFigure} per ${CHART_PAGE_BASIS.toLocaleString()} pages) so all engines are compared on the same basis. See the ${m.name} tab for the full detail.`));
-    });
-    const views = {
-        bar: barView,
-        dot: dotView,
-        table: must("tableView"),
-    };
+    io.observe(must("cost"));
+    const views = { bar: barView, dot: dotView, table: tableView };
+    function applyView() {
+        for (const [key, view] of Object.entries(views)) {
+            view.style.display = key === currentView ? "" : "none";
+        }
+    }
+    applyView();
     must("viewToggle").addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn)
             return;
-        const target = btn.dataset.view ?? "";
-        document.querySelectorAll("#viewToggle button").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        currentView = btn.dataset.view ?? "bar";
+        document.querySelectorAll("#viewToggle button").forEach((b) => b.classList.toggle("active", b === btn));
         reveal(); // in case the section never scrolled past the observer threshold
-        for (const [key, view] of Object.entries(views)) {
-            view.style.display = key === target ? "" : "none";
-        }
+        applyView();
+    });
+    must("volumeToggle").addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn)
+            return;
+        const picked = Number(btn.dataset.volume);
+        const match = VOLUME_BASES.find((v) => v === picked);
+        if (match === undefined)
+            return;
+        volume = match;
+        document.querySelectorAll("#volumeToggle button").forEach((b) => b.classList.toggle("active", b === btn));
+        renderAll();
+        applyView();
+    });
+    const trustBtn = must("trustFilter");
+    trustBtn.addEventListener("click", () => {
+        trustedOnly = !trustedOnly;
+        trustBtn.classList.toggle("active", trustedOnly);
+        trustBtn.setAttribute("aria-pressed", String(trustedOnly));
+        trustBtn.textContent = trustedOnly ? "Showing vendor-confirmed only" : "Show vendor-confirmed only";
+        renderAll();
+        applyView();
     });
 })();
 // ============================================================================
@@ -1649,12 +2148,18 @@ function renderText(md) {
     const tabsHost = must("tabs");
     const panelsHost = must("panels");
     createTabGroup(tabsHost, panelsHost, DATA.models, (m) => m.name + (m.flags.includes("low-quality") ? `<span class="flag-dot" title="Flagged: low quality"></span>` : ""), (m) => {
+        const row = primaryPricingRow(m.id);
         let flagBanner = "";
         if (m.flags.includes("low-quality")) {
             flagBanner = `<div class="flag-banner">⚠ <span><b>Flagged: low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.</span></div>`;
         }
+        // Every panel states what the engine's price is worth, not just what it
+        // is — the same confidence the chart colours by.
+        if (row) {
+            flagBanner += `<div class="flag-banner">🏷 <span><b>Listed at ${costRangeLabel(row.cost)}</b> (${costKindLabel(row.cost).toLowerCase()}, ${row.provider}) — ${confidenceBadge(row.confidence)} ${confidenceMeaning(row.confidence)}${row.corrected ? " This figure was corrected during review." : ""}</span></div>`;
+        }
         if (m.actualRunCost) {
-            flagBanner += `<div class="flag-banner">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses ${m.name}'s programmatic API tier instead (${costRangeLabel(m.cost)}) so all six engines compare on the same basis.</span></div>`;
+            flagBanner += `<div class="flag-banner">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses the listed rate instead so all twelve priced rows compare on the same basis.</span></div>`;
         }
         return el("div", undefined, `
         <div class="panel-head">
@@ -1662,6 +2167,7 @@ function renderText(md) {
           <span class="engine">${m.engine} · source: <code>${m.file}</code></span>
         </div>
         ${flagBanner}
+        <p class="panel-note">${m.note}</p>
         <div class="ocr-text">${renderText(m.text)}</div>
       `);
     });
@@ -1669,7 +2175,7 @@ function renderText(md) {
 
 (function () {
   const host = document.getElementById("tsSource");
-  host.textContent = "// ============================== data.ts ==============================\n\n// ============================================================================\n// Model manifest — EDIT THIS FILE to add engines or change prices.\n//\n// This is the file you actually touch. It has no `text` field on purpose:\n// the OCR output shown in each tab is read straight from `file` (a filename\n// inside models/) and cleaned by the build script, so \"modifying results\"\n// means editing or replacing that .md file directly — not this one.\n//\n// After editing, rebuild with:\n//   python3 demo/build.py\n//\n// tsc type-checks this file against ModelMeta/CostTier/ModelId (defined in\n// app.ts) before anything is built — a missing field, a misspelled CostTier\n// `kind`, or a ModelId not yet added to app.ts's union all fail the build\n// with a specific error, rather than shipping a broken card silently.\n// ============================================================================\n\nconst MODEL_META: ModelMeta[] = [\n  {\n    id: \"lighton\",\n    name: \"LightOn\",\n    engine: \"lighting-2-ocr-1b (LightOnOCR-2-1B)\",\n    file: \"lighton-output-Ibn_Battuta_in_Egypt.pdf.md\",\n    cost: { kind: \"metered\", low: 4.30, high: 4.30 },\n    costQuote: \"LightOn Console: flat metered rate ≈$4.30 per 1,000 pages (~$0.0043/page). Pay-as-you-go minimum top-up is €5 (~3,000 pages).\",\n    flags: [],\n  },\n  {\n    id: \"datalab\",\n    name: \"Datalab\",\n    engine: \"Surya OCR 2\",\n    file: \"datalab-output-Ibn_Battuta_in_Egypt.pdf.md\",\n    cost: { kind: \"metered\", low: 2.00, high: 4.00 },\n    costQuote: \"Replicate Managed API: $2.00–$4.00 per 1,000 pages ($0.002–$0.004/page). Note: a separate research pass quoted $300–$1,250 per 50,000 pages for this same tier, which computes to $6–$25/1,000 pages — inconsistent with the figure above by 3–6×. Shown here rather than silently resolved; the $2–$4/1k figure is used for the chart.\",\n    flags: [],\n  },\n  {\n    id: \"paddleocr\",\n    name: \"PaddleOCR VL 1.6\",\n    engine: \"PP-OCR-VL 1.6\",\n    file: \"Ibn_Battuta_in_Egypt.pdf_by_PaddleOCR-VL-1.6.md\",\n    cost: { kind: \"metered\", low: 1.50, high: 5.00 },\n    costQuote: \"AWS Marketplace: $2.00 per 1,000 pages ($0.002/page). WaveSpeedAI: $5.00 per 1,000 pages ($0.005/page).\",\n    flags: [],\n  },\n  {\n    id: \"fastocr\",\n    name: \"FastOCR\",\n    engine: \"Business API tier\",\n    file: \"Ibn_Battuta_in_Egypt-ocr-fastocr.md\",\n    cost: { kind: \"metered\", low: 1.50, high: 2.00 },\n    costQuote: \"Business API Tier (quoted): $1.50–$2.00 per 1,000 pages (est., requires an emailed sales quote). Business/Enterprise tiers appear to enforce a base account minimum regardless of document size — see the run anomaly below.\",\n    actualRunCost: { kind: \"flatFee\", amount: 249.95, forPages: 5 },\n    flags: [\"anomaly\"],\n  },\n  {\n    id: \"baseerocr\",\n    name: \"Besser OCR\",\n    engine: \"Enterprise tier\",\n    file: \"Ibn_Battuta_in_Egypt_baseerocr.md\",\n    cost: { kind: \"subscription\", monthlyAmount: 66.0, pageCapPerMonth: 2000 },\n    costQuote: \"249 SAR/month (≈$66/month) subscription capped at 2,000 pages/month — $33.00 per 1,000 pages at full capacity (66/2000), but the fee doesn't scale down: a one-off small job still bills the full month.\",\n    actualRunCost: { kind: \"flatFee\", amount: 66.0, forPages: 5 },\n    flags: [\"anomaly\"],\n  },\n  {\n    id: \"glmocr\",\n    name: \"GLM-OCR\",\n    engine: \"GLM-4V (Z.ai API)\",\n    file: \"glm_ocr_Ibn_Battuta_in_Egypt-2026-07-21_05-35-48.md\",\n    cost: { kind: \"metered\", low: 0.20, high: 0.70 },\n    costQuote: \"Z.ai Developer API: $0.20–$0.70 per 1,000 pages ($0.0002–$0.0007/page) — cheapest of the six, but requires converting PDFs to image arrays client-side before submission.\",\n    flags: [\"low-quality\"],\n  },\n\n  // --------------------------------------------------------------------\n  // TEMPLATE — copy this block to add a new engine. Steps:\n  //   1. Drop the OCR output file in models/ (any filename).\n  //   2. Add its id to the ModelId union near the top of app.ts.\n  //   3. Uncomment and fill in a copy of this block.\n  //   4. Run `python3 demo/build.py`.\n  //\n  // {\n  //   id: \"yourEngineId\",                 // must match a ModelId in app.ts\n  //   name: \"Display Name\",\n  //   engine: \"model / version label\",\n  //   file: \"your-output-file.md\",        // must exist in models/\n  //\n  //   // Pick exactly one CostTier shape:\n  //   cost: { kind: \"metered\", low: 0, high: 0 },                       // $/1,000 pages, a range or flat (low === high)\n  //   // cost: { kind: \"flatFee\", amount: 0, forPages: 0 },             // a fixed price for a fixed page count\n  //   // cost: { kind: \"subscription\", monthlyAmount: 0, pageCapPerMonth: 0 }, // monthly plan with a page cap\n  //\n  //   costQuote: \"One-line source note for the pricing above.\",\n  //   actualRunCost: undefined,           // optional: a real one-off CostTier for this exact document\n  //   flags: [],                          // \"low-quality\" and/or \"anomaly\", or leave empty\n  // },\n  // --------------------------------------------------------------------\n];\n\n\n// ============================== app.ts ===============================\n\n// ============================================================================\n// Domain types\n// ============================================================================\n\n// The engines are a closed set. Every place an id is used — data lookups,\n// tab wiring, DOM ids — is checked against this union, so a typo like\n// \"glm_ocr\" instead of \"glmocr\" is a compile error, not a silent `undefined`\n// at 2am during a demo. This stays a strict union on purpose (see \"Why\n// TypeScript, Here\" #4) — to add a model, add its id HERE first, then add\n// the matching entry to data.ts's MODEL_META. Forget this step and tsc\n// rejects the new entry in data.ts with exactly which id is unrecognized.\ntype ModelId = \"lighton\" | \"datalab\" | \"paddleocr\" | \"fastocr\" | \"baseerocr\" | \"glmocr\";\n\ntype ModelFlag = \"low-quality\" | \"anomaly\";\n\n// The real pricing data (models/cost.md) is NOT one shape. It's three\n// different pricing models mashed into one markdown table:\n//   - a metered per-page rate (a range, since vendors quote low/high)\n//   - a flat fixed fee regardless of page count (FastOCR's manual dashboard run)\n//   - a monthly subscription with a page cap (Besser OCR)\n// Forcing all three into a single \"$/page\" number is exactly how the\n// original cost.md ended up self-contradictory (see the FastOCR anomaly).\n// A discriminated union keeps each shape honest, and the compiler forces\n// every consumer to handle all three — including any new shape added later.\ntype CostTier =\n  | { kind: \"metered\"; low: number; high: number }\n  | { kind: \"flatFee\"; amount: number; forPages: number }\n  | { kind: \"subscription\"; monthlyAmount: number; pageCapPerMonth: number };\n\n// The hand-edited part — see data.ts. Deliberately has NO `text` field:\n// OCR output is the actual content of models/<file>, so it's read and\n// cleaned by the build script rather than pasted into TypeScript source.\ninterface ModelMeta {\n  id: ModelId;\n  name: string;\n  engine: string;\n  file: string; // filename inside models/\n  flags: ModelFlag[];\n  cost: CostTier; // the comparable, hosted/managed-tier figure used in the chart\n  costQuote: string;\n  actualRunCost?: CostTier; // a real one-off figure for *this* document, when known\n}\n\ninterface ModelResult extends ModelMeta {\n  text: string;\n}\n\ninterface PageImage {\n  n: number;\n  thumb: string;\n  full: string;\n}\n\ninterface DemoData {\n  models: ModelResult[];\n  pages: PageImage[];\n}\n\n// MODEL_META is real, compiled TypeScript defined in data.ts (compiled\n// together with this file, so it's globally visible with no import needed —\n// see the `const MODEL_META: ModelMeta[]` there).\n// MODEL_TEXT and PAGES are supplied by the build script: MODEL_TEXT from\n// reading + cleaning each MODEL_META entry's `file` out of models/, and\n// PAGES from rendering the source PDF. Neither belongs in hand-edited\n// source — one is derived, the other is binary image data.\ndeclare const MODEL_TEXT: Record<string, string>;\ndeclare const PAGES: PageImage[];\n\nconst DATA: DemoData = {\n  models: MODEL_META.map((m) => ({ ...m, text: MODEL_TEXT[m.id] ?? \"\" })),\n  pages: PAGES,\n};\n\n// ============================================================================\n// Exhaustiveness — the actual TypeScript \"superpower\" for this case\n// ============================================================================\n\n// If a fourth CostTier variant is ever added and a switch below forgets to\n// handle it, `assertNever` makes that a compile error at every call site,\n// not a silent NaN in production.\nfunction assertNever(x: never): never {\n  throw new Error(\"Unhandled case: \" + JSON.stringify(x));\n}\n\nconst CHART_PAGE_BASIS = 50_000; // matches models/cost.md's own \"Total Cost for 50k Pages\" framing\n\n// Normalizes any pricing shape to a single comparable $-per-50,000-pages\n// figure for the chart. This is the one function allowed to collapse the\n// union to a number — everywhere else keeps the real shape (see\n// costRangeLabel, which reports each tier in its own native unit).\nfunction costToChartBasis(tier: CostTier): number {\n  switch (tier.kind) {\n    case \"metered\":\n      return ((tier.low + tier.high) / 2 / 1000) * CHART_PAGE_BASIS;\n    case \"flatFee\":\n      return (tier.amount / tier.forPages) * CHART_PAGE_BASIS;\n    case \"subscription\":\n      return (tier.monthlyAmount / tier.pageCapPerMonth) * CHART_PAGE_BASIS;\n    default:\n      return assertNever(tier);\n  }\n}\n\nfunction costRangeLabel(tier: CostTier): string {\n  switch (tier.kind) {\n    case \"metered\":\n      return tier.low === tier.high\n        ? `$${tier.low.toFixed(2)}/1k (flat rate)`\n        : `$${tier.low.toFixed(2)}–$${tier.high.toFixed(2)}/1k`;\n    case \"flatFee\":\n      return `$${tier.amount.toFixed(2)} flat for ${tier.forPages} page${tier.forPages === 1 ? \"\" : \"s\"}`;\n    case \"subscription\":\n      return `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;\n    default:\n      return assertNever(tier);\n  }\n}\n\nfunction costKindLabel(tier: CostTier): string {\n  switch (tier.kind) {\n    case \"metered\": return \"Metered API\";\n    case \"flatFee\": return \"Flat fee\";\n    case \"subscription\": return \"Subscription\";\n    default: return assertNever(tier);\n  }\n}\n\n// ============================================================================\n// Small typed DOM helpers — strict null checks catch a missing element at\n// compile time (well, at first run against real markup) instead of a\n// \"Cannot read properties of null\" three interactions later.\n// ============================================================================\n\nfunction must<T extends Element = Element>(id: string): T {\n  const el = document.getElementById(id);\n  if (!el) throw new Error(`#${id} is missing from the DOM`);\n  return el as unknown as T;\n}\n\nfunction el<K extends keyof HTMLElementTagNameMap>(\n  tag: K,\n  className?: string,\n  html?: string\n): HTMLElementTagNameMap[K] {\n  const node = document.createElement(tag);\n  if (className) node.className = className;\n  if (html !== undefined) node.innerHTML = html;\n  return node;\n}\n\n// A tiny generic tab component: T just needs an id, so it works for models,\n// or for anything else with the same shape, without rewriting the wiring.\nfunction createTabGroup<T extends { id: string }>(\n  tabsHost: HTMLElement,\n  panelsHost: HTMLElement,\n  items: T[],\n  renderTabLabel: (item: T) => string,\n  renderPanel: (item: T) => HTMLElement\n): void {\n  items.forEach((item, i) => {\n    const tab = el(\"button\", \"tab\" + (i === 0 ? \" active\" : \"\"), renderTabLabel(item));\n    tab.dataset.id = item.id;\n    tab.addEventListener(\"click\", () => activate(item.id));\n    tabsHost.appendChild(tab);\n\n    const panel = renderPanel(item);\n    panel.classList.add(\"panel\");\n    if (i === 0) panel.classList.add(\"active\");\n    panel.dataset.id = item.id;\n    panelsHost.appendChild(panel);\n  });\n\n  function activate(id: string): void {\n    tabsHost.querySelectorAll<HTMLElement>(\".tab\").forEach((t) => t.classList.toggle(\"active\", t.dataset.id === id));\n    panelsHost.querySelectorAll<HTMLElement>(\".panel\").forEach((p) => p.classList.toggle(\"active\", p.dataset.id === id));\n  }\n}\n\n// ============================================================================\n// Theme engine\n// ============================================================================\n// Three visual identities, each with a light and dark variant. Modeled as a\n// `Record<ThemeName, Record<ThemeMode, ThemeTokens>>` rather than a switch of\n// string literals — TypeScript's mapped-object checking means leaving out a\n// theme, or a mode within a theme, or a single token within a mode, is a\n// compile error. There is no runtime code path where \"blueprint dark\" can\n// silently fall back to undefined colors; it either exists at compile time\n// or the build fails.\n\ntype ThemeName = \"manuscript\" | \"blueprint\" | \"terminal\";\ntype ThemeMode = \"light\" | \"dark\";\n\ninterface ThemeTokens {\n  paper: string;\n  paper2: string;\n  paper3: string;\n  ink: string;\n  inkSoft: string;\n  inkFaint: string;\n  accent1: string; // primary accent (bar-chart hue, resizer grip)\n  accent1Strong: string; // emphasis variant for headings/active-state text\n  accent2: string; // secondary accent (links, tabs)\n  status: string;  // reserved: warnings/flags only, never decorative\n  line: string;\n  lineStrong: string;\n  ramp: readonly [string, string, string, string, string, string];\n  fontDisplay: string;\n}\n\nconst THEMES: Record<ThemeName, Record<ThemeMode, ThemeTokens>> = {\n  manuscript: {\n    light: {\n      paper: \"#eae2cc\", paper2: \"#f4efe0\", paper3: \"#ddd2ae\",\n      ink: \"#241f16\", inkSoft: \"#5f5645\", inkFaint: \"#8a8069\",\n      accent1: \"#a97b2f\", accent1Strong: \"#7a5511\", accent2: \"#1f4e63\", status: \"#9c3b2e\",\n      line: \"#cabf9c\", lineStrong: \"#b0a37a\",\n      ramp: [\"#ecd9a8\", \"#ddbf7c\", \"#c99f52\", \"#b4842f\", \"#966816\", \"#7a5511\"],\n      fontDisplay: '\"Fraunces Display\", Georgia, \"Iowan Old Style\", serif',\n    },\n    dark: {\n      paper: \"#1b1712\", paper2: \"#221e17\", paper3: \"#2c261c\",\n      ink: \"#ece3cc\", inkSoft: \"#bcb195\", inkFaint: \"#8a8069\",\n      accent1: \"#d1a44e\", accent1Strong: \"#e8c079\", accent2: \"#7bb6d1\", status: \"#e08a72\",\n      line: \"#3c3527\", lineStrong: \"#4d442f\",\n      ramp: [\"#4a3d20\", \"#675328\", \"#866c30\", \"#a98639\", \"#cca24a\", \"#eec573\"],\n      fontDisplay: '\"Fraunces Display\", Georgia, \"Iowan Old Style\", serif',\n    },\n  },\n  blueprint: {\n    light: {\n      paper: \"#dbe6f0\", paper2: \"#eaf1f8\", paper3: \"#c7d7e6\",\n      ink: \"#0f2438\", inkSoft: \"#3c5872\", inkFaint: \"#7996ac\",\n      accent1: \"#c9781f\", accent1Strong: \"#8f550f\", accent2: \"#1f6fa8\", status: \"#b5432e\",\n      line: \"#b7c9da\", lineStrong: \"#9bb3c9\",\n      ramp: [\"#cfe4f5\", \"#a9cdec\", \"#7bb0dd\", \"#4f8fc9\", \"#2f6fac\", \"#1a4f85\"],\n      fontDisplay: '\"Fraunces Sub\", -apple-system, \"Segoe UI\", sans-serif',\n    },\n    dark: {\n      paper: \"#0b2a4a\", paper2: \"#0f3559\", paper3: \"#154572\",\n      ink: \"#eaf3ff\", inkSoft: \"#b9d3ea\", inkFaint: \"#7fa2c2\",\n      accent1: \"#f2a65a\", accent1Strong: \"#ffc98a\", accent2: \"#6fc3ff\", status: \"#ff8f73\",\n      line: \"#1f4d78\", lineStrong: \"#2c5f8f\",\n      ramp: [\"#123a5c\", \"#1a4d78\", \"#256792\", \"#3684ab\", \"#59a8cc\", \"#8ecdea\"],\n      fontDisplay: '\"Fraunces Sub\", -apple-system, \"Segoe UI\", sans-serif',\n    },\n  },\n  terminal: {\n    light: {\n      paper: \"#f4f6f1\", paper2: \"#ffffff\", paper3: \"#e6ebe0\",\n      ink: \"#16241a\", inkSoft: \"#3f5c46\", inkFaint: \"#7a8f7c\",\n      accent1: \"#b6790a\", accent1Strong: \"#8a5c08\", accent2: \"#0f8a4c\", status: \"#c23b3b\",\n      line: \"#d7e0d2\", lineStrong: \"#c0cdb9\",\n      ramp: [\"#cdead0\", \"#a3d6a8\", \"#79c081\", \"#4fa85c\", \"#2f8a3f\", \"#1c6b2c\"],\n      fontDisplay: 'ui-monospace, \"SF Mono\", Menlo, monospace',\n    },\n    dark: {\n      paper: \"#0c0e0c\", paper2: \"#12140f\", paper3: \"#1a1d16\",\n      ink: \"#c9f2c0\", inkSoft: \"#8fbf86\", inkFaint: \"#5b7a55\",\n      accent1: \"#ffcf6b\", accent1Strong: \"#ffe19a\", accent2: \"#7bffb0\", status: \"#ff6b6b\",\n      line: \"#20281c\", lineStrong: \"#2c3824\",\n      ramp: [\"#163a1c\", \"#1f5228\", \"#2c6d34\", \"#3f8f44\", \"#63b95c\", \"#93e08a\"],\n      fontDisplay: 'ui-monospace, \"SF Mono\", Menlo, monospace',\n    },\n  },\n};\n\nfunction applyTheme(name: ThemeName, mode: ThemeMode): void {\n  const tokens = THEMES[name][mode];\n  const root = document.documentElement;\n  root.style.setProperty(\"--paper\", tokens.paper);\n  root.style.setProperty(\"--paper-2\", tokens.paper2);\n  root.style.setProperty(\"--paper-3\", tokens.paper3);\n  root.style.setProperty(\"--ink\", tokens.ink);\n  root.style.setProperty(\"--ink-soft\", tokens.inkSoft);\n  root.style.setProperty(\"--ink-faint\", tokens.inkFaint);\n  root.style.setProperty(\"--gold\", tokens.accent1);\n  root.style.setProperty(\"--gold-strong\", tokens.accent1Strong);\n  root.style.setProperty(\"--lapis\", tokens.accent2);\n  root.style.setProperty(\"--vermilion\", tokens.status);\n  root.style.setProperty(\"--line\", tokens.line);\n  root.style.setProperty(\"--line-strong\", tokens.lineStrong);\n  root.style.setProperty(\"--font-display\", tokens.fontDisplay);\n  tokens.ramp.forEach((c, i) => root.style.setProperty(`--ramp-${i + 1}`, c));\n\n  // Code blocks always read as a dark console pane, regardless of the\n  // active light/dark mode — pulled from this theme's *dark* variant so\n  // each family (manuscript/blueprint/terminal) still gets its own tint.\n  const darkTokens = THEMES[name].dark;\n  root.style.setProperty(\"--code-bg\", darkTokens.paper2);\n  root.style.setProperty(\"--code-fg\", darkTokens.ink);\n\n  root.dataset.themeName = name;\n  root.style.colorScheme = mode;\n}\n\nfunction detectSystemMode(): ThemeMode {\n  return matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"dark\" : \"light\";\n}\n\n(function initTheme(): void {\n  let themeName: ThemeName = \"manuscript\";\n  let mode: ThemeMode = detectSystemMode();\n\n  applyTheme(themeName, mode);\n\n  const modeBtn = must<HTMLButtonElement>(\"themeToggle\");\n  modeBtn.addEventListener(\"click\", () => {\n    mode = mode === \"dark\" ? \"light\" : \"dark\";\n    applyTheme(themeName, mode);\n  });\n\n  const swatches = must<HTMLElement>(\"themeSwatches\");\n  swatches.querySelectorAll<HTMLButtonElement>(\"button\").forEach((btn) => {\n    btn.addEventListener(\"click\", () => {\n      const name = btn.dataset.theme as ThemeName;\n      themeName = name;\n      applyTheme(themeName, mode);\n      swatches.querySelectorAll(\"button\").forEach((b) => b.classList.toggle(\"active\", b === btn));\n      btn.classList.add(\"pulse\");\n      btn.addEventListener(\"animationend\", () => btn.classList.remove(\"pulse\"), { once: true });\n    });\n  });\n})();\n\n// ============================================================================\n// Manuscript rail + lightbox\n// ============================================================================\n\n(function initGallery(): void {\n  const rail = must<HTMLElement>(\"pageRail\");\n  const lb = must<HTMLElement>(\"lightbox\");\n  const lbImg = must<HTMLImageElement>(\"lbImg\");\n  let idx = 0;\n\n  DATA.pages.forEach((p, i) => {\n    const card = el(\"div\", \"page-card\", `<img src=\"data:image/jpeg;base64,${p.thumb}\" alt=\"Page ${p.n}\" loading=\"lazy\" /><div class=\"num\">Page ${p.n}</div>`);\n    card.addEventListener(\"click\", () => open(i));\n    rail.appendChild(card);\n  });\n\n  function open(i: number): void {\n    idx = i;\n    render();\n    lb.classList.add(\"open\");\n  }\n  function render(): void {\n    lbImg.src = `data:image/jpeg;base64,${DATA.pages[idx]!.full}`;\n    lbImg.style.animation = \"none\";\n    void lbImg.offsetWidth;\n    lbImg.style.animation = \"\";\n  }\n  must<HTMLButtonElement>(\"lbClose\").addEventListener(\"click\", () => lb.classList.remove(\"open\"));\n  must<HTMLButtonElement>(\"lbPrev\").addEventListener(\"click\", () => {\n    idx = (idx - 1 + DATA.pages.length) % DATA.pages.length;\n    render();\n  });\n  must<HTMLButtonElement>(\"lbNext\").addEventListener(\"click\", () => {\n    idx = (idx + 1) % DATA.pages.length;\n    render();\n  });\n  lb.addEventListener(\"click\", (e) => {\n    if (e.target === lb) lb.classList.remove(\"open\");\n  });\n  document.addEventListener(\"keydown\", (e) => {\n    if (!lb.classList.contains(\"open\")) return;\n    if (e.key === \"Escape\") lb.classList.remove(\"open\");\n    if (e.key === \"ArrowLeft\") must<HTMLButtonElement>(\"lbPrev\").click();\n    if (e.key === \"ArrowRight\") must<HTMLButtonElement>(\"lbNext\").click();\n  });\n})();\n\n// ============================================================================\n// Resizable pages/results split\n// ============================================================================\n\n(function initResizer(): void {\n  const layout = must<HTMLElement>(\"compareLayout\");\n  const resizer = must<HTMLElement>(\"resizer\");\n  const presets = must<HTMLElement>(\"resizePresets\");\n  const MIN = 100, MAX = 560;\n\n  function setWidth(px: number, animate: boolean): void {\n    const clamped = Math.max(MIN, Math.min(MAX, px));\n    layout.classList.toggle(\"dragging\", !animate);\n    layout.style.setProperty(\"--rail-w\", clamped + \"px\");\n    presets.querySelectorAll<HTMLButtonElement>(\"button\").forEach((b) => {\n      b.classList.toggle(\"active\", Math.abs(Number(b.dataset.w) - clamped) < 15);\n    });\n  }\n\n  presets.addEventListener(\"click\", (e) => {\n    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(\"button\");\n    if (!btn) return;\n    setWidth(Number(btn.dataset.w), true);\n  });\n\n  let dragging = false;\n  resizer.addEventListener(\"pointerdown\", (e) => {\n    dragging = true;\n    resizer.setPointerCapture(e.pointerId);\n    layout.classList.add(\"dragging\");\n  });\n  resizer.addEventListener(\"pointermove\", (e) => {\n    if (!dragging) return;\n    const rect = layout.getBoundingClientRect();\n    setWidth(e.clientX - rect.left, false);\n  });\n  function endDrag(): void {\n    dragging = false;\n    layout.classList.remove(\"dragging\");\n  }\n  resizer.addEventListener(\"pointerup\", endDrag);\n  resizer.addEventListener(\"pointercancel\", endDrag);\n  resizer.addEventListener(\"dblclick\", () => setWidth(220, true));\n  resizer.addEventListener(\"keydown\", (e) => {\n    const cur = parseFloat(getComputedStyle(layout).getPropertyValue(\"--rail-w\")) || 220;\n    if (e.key === \"ArrowLeft\") { setWidth(cur - 20, true); e.preventDefault(); }\n    if (e.key === \"ArrowRight\") { setWidth(cur + 20, true); e.preventDefault(); }\n    if (e.key === \"Home\") { setWidth(MIN, true); e.preventDefault(); }\n    if (e.key === \"End\") { setWidth(MAX, true); e.preventDefault(); }\n  });\n})();\n\n// ============================================================================\n// Cost dot plot + table — both driven entirely through costToChartBasis /\n// costRangeLabel, so the chart and the table are guaranteed to agree (no\n// separate \"chart number\" vs \"table number\" that can silently drift apart,\n// which is exactly what happened across the plain-JS cost.md / fastocr.md\n// files this data was extracted from).\n// ============================================================================\n\n// Small, boring, and reused only here: rounds an axis max up to a \"nice\"\n// step count so gridlines land on 0 / 500 / 1000 / ... instead of whatever\n// the data happens to produce.\nfunction niceTicks(max: number, targetCount = 4): number[] {\n  if (max <= 0) return [0];\n  const rawStep = max / targetCount;\n  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));\n  const residual = rawStep / magnitude;\n  const niceResidual = residual >= 5 ? 10 : residual >= 2 ? 5 : residual >= 1 ? 2 : 1;\n  const step = niceResidual * magnitude;\n  // Keep adding ticks until one actually reaches max — a fixed iteration\n  // count can stop one step short (e.g. max=1650, step=500 → last tick\n  // 1500 < max), which would silently clip the highest dot to 100%.\n  const ticks: number[] = [0];\n  while (ticks[ticks.length - 1]! < max) {\n    ticks.push(Math.round((ticks[ticks.length - 1]! + step) * 100) / 100);\n  }\n  return ticks;\n}\n\nfunction formatUSD(n: number): string {\n  return \"$\" + n.toLocaleString(\"en-US\", { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nfunction buildBarChart(models: ModelResult[], values: number[], cheapestValue: number): HTMLElement {\n  const ramp = [\"--ramp-1\", \"--ramp-2\", \"--ramp-3\", \"--ramp-4\", \"--ramp-5\", \"--ramp-6\"];\n  const max = Math.max(...values);\n  const chart = el(\"div\", \"chart\");\n  models.forEach((m, i) => {\n    const value = values[i]!;\n    const isCheapest = value === cheapestValue;\n    const pct = Math.max(2, (value / max) * 100);\n    const row = el(\"div\", \"bar-row\" + (m.flags.includes(\"anomaly\") ? \" flagged\" : \"\"));\n    row.innerHTML = `\n      <div class=\"name\">${m.name}${isCheapest ? '<span class=\"cheapest-chip\">cheapest</span>' : \"\"}</div>\n      <div class=\"bar-track\"><div class=\"bar-fill${isCheapest ? \" bar-cheapest\" : \"\"}\" data-pct=\"${pct}\" style=\"background: var(${ramp[i]!})\"\n           title=\"${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages\"></div></div>\n      <div class=\"value\">${formatUSD(value)}</div>\n    `;\n    chart.appendChild(row);\n  });\n  return chart;\n}\n\nfunction buildDotPlot(models: ModelResult[], values: number[], cheapestValue: number): HTMLElement {\n  const ticks = niceTicks(Math.max(...values), 4);\n  const axisMax = ticks[ticks.length - 1]!;\n\n  const plot = el(\"div\", \"dotplot\");\n\n  const grid = el(\"div\", \"dot-grid\");\n  ticks.forEach((t) => {\n    const line = el(\"div\", \"dot-grid-line\");\n    line.style.left = (t / axisMax) * 100 + \"%\";\n    grid.appendChild(line);\n  });\n  plot.appendChild(grid);\n\n  models.forEach((m, i) => {\n    const value = values[i]!;\n    const isCheapest = value === cheapestValue;\n    const pct = Math.min(100, (value / axisMax) * 100);\n    const row = el(\"div\", \"dot-row\" + (m.flags.includes(\"anomaly\") ? \" flagged\" : \"\"));\n    row.innerHTML = `\n      <div class=\"name\">${m.name}${isCheapest ? '<span class=\"cheapest-chip\">cheapest</span>' : \"\"}</div>\n      <div class=\"dot-track\">\n        <div class=\"dot-line\"></div>\n        <div class=\"dot${isCheapest ? \" dot-cheapest\" : \"\"}\" data-pct=\"${pct}\"\n             title=\"${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages\"></div>\n      </div>\n      <div class=\"value\">${formatUSD(value)}</div>\n    `;\n    plot.appendChild(row);\n  });\n\n  const axis = el(\"div\", \"dot-axis\");\n  axis.appendChild(el(\"div\")); // spacer, mirrors the name column\n  const axisTicks = el(\"div\", \"dot-axis-ticks\");\n  ticks.forEach((t) => {\n    axisTicks.appendChild(el(\"span\", \"dot-axis-tick\", \"$\" + t.toLocaleString()));\n  });\n  axis.appendChild(axisTicks);\n  axis.appendChild(el(\"div\")); // spacer, mirrors the value column\n  plot.appendChild(axis);\n\n  return plot;\n}\n\n(function initCost(): void {\n  const models = [...DATA.models].sort((a, b) => costToChartBasis(a.cost) - costToChartBasis(b.cost));\n  const values = models.map((m) => costToChartBasis(m.cost));\n  const cheapestValue = Math.min(...values);\n\n  const captionText = `Sorted cheapest → most expensive, normalized to $ per ${CHART_PAGE_BASIS.toLocaleString()} pages regardless of pricing shape (metered / flat fee / subscription) — hover a mark for the real shape behind the number. To change these figures, edit the \\`cost\\` field for each model in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;\n\n  const barChart = buildBarChart(models, values, cheapestValue);\n  const barView = must<HTMLElement>(\"barView\");\n  barView.appendChild(barChart);\n  barView.appendChild(el(\"div\", \"chart-caption\", captionText));\n\n  const dotPlot = buildDotPlot(models, values, cheapestValue);\n  const dotView = must<HTMLElement>(\"dotView\");\n  dotView.appendChild(dotPlot);\n  dotView.appendChild(el(\"div\", \"chart-caption\", captionText));\n\n  // Both charts' fills are revealed together, the first time either becomes\n  // visible, by observing the section itself (always in the layout, unlike\n  // its currently-hidden sibling view) rather than each chart individually.\n  const revealed = { done: false };\n  function reveal(): void {\n    if (revealed.done) return;\n    revealed.done = true;\n    barChart.querySelectorAll<HTMLElement>(\".bar-fill\").forEach((f) => { f.style.width = f.dataset.pct + \"%\"; });\n    dotPlot.querySelectorAll<HTMLElement>(\".dot\").forEach((d) => { d.style.left = d.dataset.pct + \"%\"; });\n  }\n  const costSection = must<HTMLElement>(\"cost\");\n  const io = new IntersectionObserver((entries) => {\n    entries.forEach((e) => {\n      if (e.isIntersecting) {\n        reveal();\n        io.unobserve(e.target);\n      }\n    });\n  }, { threshold: 0.15 });\n  io.observe(costSection);\n\n  const table = el(\"table\", \"cost-table\", `<thead><tr><th>Engine</th><th>Pricing shape</th><th>Est. $ per ${CHART_PAGE_BASIS.toLocaleString()} pages</th><th>Native rate</th><th>Source note</th></tr></thead>`);\n  const tbody = el(\"tbody\");\n  models.forEach((m, i) => {\n    const tr = el(\n      \"tr\",\n      undefined,\n      `<td>${m.name}${m.flags.includes(\"low-quality\") ? \" ⚠\" : \"\"}${values[i] === cheapestValue ? \" 🏆\" : \"\"}</td>\n       <td>${costKindLabel(m.cost)}</td>\n       <td class=\"num\">${formatUSD(values[i]!)}</td>\n       <td>${costRangeLabel(m.cost)}</td>\n       <td>${m.costQuote}</td>`\n    );\n    tbody.appendChild(tr);\n  });\n  table.appendChild(tbody);\n  const tableWrap = el(\"div\", \"table-wrap\");\n  tableWrap.appendChild(table);\n  must<HTMLElement>(\"tableView\").appendChild(tableWrap);\n\n  // One callout per model with a real one-off actualRunCost — generated\n  // from the data rather than hand-written per model, so a 7th model with\n  // its own \"quoted rate vs. what I actually paid\" story doesn't need a\n  // matching hand-written paragraph here to show up.\n  const anomalyHost = must<HTMLElement>(\"anomalyCallouts\");\n  models\n    .filter((m): m is ModelResult & { actualRunCost: CostTier } => m.actualRunCost !== undefined)\n    .forEach((m) => {\n      const chartFigure = formatUSD(costToChartBasis(m.cost));\n      anomalyHost.appendChild(\n        el(\n          \"div\",\n          \"anomaly-callout\",\n          `<b>Why isn't ${m.name}'s ${costRangeLabel(m.actualRunCost)} in the chart above?</b> That figure is the actual cost of running this specific document through ${m.name} (${costKindLabel(m.actualRunCost).toLowerCase()}) — not a metered per-page rate. The chart instead uses ${m.name}'s ${costKindLabel(m.cost).toLowerCase()} tier (${costRangeLabel(m.cost)} ≈ ${chartFigure} per ${CHART_PAGE_BASIS.toLocaleString()} pages) so all engines are compared on the same basis. See the ${m.name} tab for the full detail.`\n        )\n      );\n    });\n\n  const views: Record<string, HTMLElement> = {\n    bar: barView,\n    dot: dotView,\n    table: must<HTMLElement>(\"tableView\"),\n  };\n  must<HTMLElement>(\"viewToggle\").addEventListener(\"click\", (e) => {\n    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(\"button\");\n    if (!btn) return;\n    const target = btn.dataset.view ?? \"\";\n    document.querySelectorAll<HTMLButtonElement>(\"#viewToggle button\").forEach((b) => b.classList.remove(\"active\"));\n    btn.classList.add(\"active\");\n    reveal(); // in case the section never scrolled past the observer threshold\n    for (const [key, view] of Object.entries(views)) {\n      view.style.display = key === target ? \"\" : \"none\";\n    }\n  });\n})();\n\n// ============================================================================\n// Markdown-ish -> HTML\n// ============================================================================\n\nfunction escapeHtml(s: string): string {\n  return s.replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\");\n}\n\nfunction renderText(md: string): string {\n  const blocks = md.split(/\\n\\s*\\n/);\n  return blocks\n    .map((block) => {\n      const t = block.trim();\n      if (!t) return \"\";\n      if (t === \"⟦FIGURE⟧\") return `<span class=\"figure-chip\">🖼 figure</span>`;\n      if (/^---+$/.test(t)) return \"<hr />\";\n      if (/^#{1,6}\\s+/.test(t)) {\n        return `<h3 class=\"doc-heading\">${escapeHtml(t.replace(/^#{1,6}\\s+/, \"\"))}</h3>`;\n      }\n      const html = escapeHtml(t)\n        .replace(/⟦FIGURE⟧/g, `</p><span class=\"figure-chip\">🖼 figure</span><p>`)\n        .replace(/\\*\\*(.+?)\\*\\*/g, \"<strong>$1</strong>\")\n        .replace(/\\n/g, \"<br/>\");\n      return `<p>${html}</p>`;\n    })\n    .join(\"\\n\");\n}\n\n// ============================================================================\n// Tabs\n// ============================================================================\n\n(function initTabs(): void {\n  const tabsHost = must<HTMLElement>(\"tabs\");\n  const panelsHost = must<HTMLElement>(\"panels\");\n\n  createTabGroup(\n    tabsHost,\n    panelsHost,\n    DATA.models,\n    (m) => m.name + (m.flags.includes(\"low-quality\") ? `<span class=\"flag-dot\" title=\"Flagged: low quality\"></span>` : \"\"),\n    (m) => {\n      let flagBanner = \"\";\n      if (m.flags.includes(\"low-quality\")) {\n        flagBanner = `<div class=\"flag-banner\">⚠ <span><b>Flagged: low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.</span></div>`;\n      }\n      if (m.actualRunCost) {\n        flagBanner += `<div class=\"flag-banner\">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses ${m.name}'s programmatic API tier instead (${costRangeLabel(m.cost)}) so all six engines compare on the same basis.</span></div>`;\n      }\n      return el(\n        \"div\",\n        undefined,\n        `\n        <div class=\"panel-head\">\n          <h3>${m.name}</h3>\n          <span class=\"engine\">${m.engine} · source: <code>${m.file}</code></span>\n        </div>\n        ${flagBanner}\n        <div class=\"ocr-text\">${renderText(m.text)}</div>\n      `\n      );\n    }\n  );\n})();\n";
+  host.textContent = "// ============================== data.ts ==============================\n\n// ============================================================================\n// Model manifest + audited price list — EDIT THIS FILE to add engines or\n// change prices.\n//\n// Two separate datasets live here, on purpose:\n//\n//   MODEL_META   the engines actually RUN against the source document. Drives\n//                the OCR-output tabs. Has no `text` field: the output shown in\n//                each tab is read straight from `file` (a filename inside\n//                models/) and cleaned by the build script, so \"modifying\n//                results\" means editing that .md file, not this one.\n//\n//   PRICING_ROWS the audited price list, transcribed from\n//                `OCR pricing - final.csv`. Drives the cost chart/table. It is\n//                DELIBERATELY not 1:1 with MODEL_META: it prices 12 rows,\n//                including four engines never benchmarked here, and three\n//                separate pricing scenarios for the single PaddleOCR run.\n//                Collapsing the two would mean either dropping real priced\n//                options or inventing OCR output that was never produced.\n//\n// Every figure carries a `confidence` and the reviewer's `note` verbatim.\n// That is the point of this table: only two of the twelve rows are\n// vendor-confirmed, and the cheapest seven are all unverified or disputed.\n//\n// After editing, rebuild with:\n//   python3 demo/build.py\n//\n// tsc type-checks this file against ModelMeta/PricingRow/CostTier/ModelId/\n// SourceConfidence (defined in app.ts) before anything is built — a missing\n// field, a misspelled CostTier `kind`, or a ModelId not yet added to app.ts's\n// union all fail the build with a specific error, rather than shipping a\n// broken card silently.\n// ============================================================================\n\nconst MODEL_META: ModelMeta[] = [\n  {\n    id: \"lighton\",\n    name: \"LightOn\",\n    engine: \"lighting-2-ocr-1b (LightOnOCR-2-1B)\",\n    file: \"lighton-output-Ibn_Battuta_in_Egypt.pdf.md\",\n    note: \"Pay-as-you-go minimum top-up is €5 (~3,000 pages), so the smallest real spend is well above a single-document job.\",\n    flags: [],\n  },\n  {\n    id: \"datalab\",\n    name: \"Datalab\",\n    engine: \"Surya OCR 2\",\n    file: \"datalab-output-Ibn_Battuta_in_Egypt.pdf.md\",\n    note: \"Priced here as the Surya 2 (Balanced) row. Replicate bills dedicated deployments per GPU-second, not per page — the per-page figure is derived at an unstated throughput assumption, which is why it carries `derived` confidence rather than a vendor rate.\",\n    flags: [],\n  },\n  {\n    id: \"paddleocr\",\n    name: \"PaddleOCR VL 1.6\",\n    engine: \"PP-OCR-VL 1.6\",\n    file: \"Ibn_Battuta_in_Egypt.pdf_by_PaddleOCR-VL-1.6.md\",\n    note: \"The one engine with three separate priced scenarios in the table below — token-standard, token-dense, and a flat per-page wrapper — spanning a 4× spread for the same model.\",\n    flags: [],\n  },\n  {\n    id: \"fastocr\",\n    name: \"FastOCR\",\n    engine: \"Business API tier\",\n    file: \"Ibn_Battuta_in_Egypt-ocr-fastocr.md\",\n    // A real invoice for this exact 5-page run — not a rate card, and not in\n    // the CSV. Kept because it contradicts the quoted tier by ~1,000×.\n    actualRunCost: { kind: \"flatFee\", amount: 249.95, forPages: 5 },\n    note: \"Business/Enterprise tiers appear to enforce a base account minimum regardless of document size — see the run anomaly below.\",\n    flags: [\"anomaly\"],\n  },\n  {\n    id: \"baseerocr\",\n    name: \"Besser OCR\",\n    engine: \"Enterprise tier\",\n    file: \"Ibn_Battuta_in_Egypt_baseerocr.md\",\n    actualRunCost: { kind: \"flatFee\", amount: 66.0, forPages: 5 },\n    note: \"Unresolved tier discrepancy: this run was billed on a 249 SAR/month (~$66) plan capped at 2,000 pages/month, while the vendor-confirmed row in the table below prices the flat SAR 5,000 Enterprise subscription (~$1,333/month, no stated cap). Both are shown rather than silently reconciled — confirm which tier applies before quoting either.\",\n    flags: [\"anomaly\"],\n  },\n  {\n    id: \"glmocr\",\n    name: \"GLM-OCR\",\n    engine: \"GLM-4V (Z.ai API)\",\n    file: \"glm_ocr_Ibn_Battuta_in_Egypt-2026-07-21_05-35-48.md\",\n    note: \"Cheapest row in the table, but requires converting PDFs to image arrays client-side before submission — and the rate itself could not be confirmed.\",\n    flags: [\"low-quality\"],\n  },\n\n  // --------------------------------------------------------------------\n  // TEMPLATE — copy this block to add a new engine. Steps:\n  //   1. Drop the OCR output file in models/ (any filename).\n  //   2. Add its id to the ModelId union near the top of app.ts.\n  //   3. Uncomment and fill in a copy of this block.\n  //   4. Add a matching PRICING_ROWS entry with `benchmarked: \"yourEngineId\"`.\n  //   5. Run `python3 demo/build.py`.\n  //\n  // {\n  //   id: \"yourEngineId\",                 // must match a ModelId in app.ts\n  //   name: \"Display Name\",\n  //   engine: \"model / version label\",\n  //   file: \"your-output-file.md\",        // must exist in models/\n  //   note: \"Operational note for this engine (not pricing).\",\n  //   actualRunCost: undefined,           // optional: real invoice for THIS document\n  //   flags: [],                          // \"low-quality\" and/or \"anomaly\", or leave empty\n  // },\n  // --------------------------------------------------------------------\n];\n\n// ============================================================================\n// Audited price list — transcribed from `OCR pricing - final.csv`.\n//\n// Rates are stored in each vendor's NATIVE unit (per-million-tokens, per-page,\n// per-compute-second, per-month) and the $-at-volume figures are computed from\n// them by costAtVolume() in app.ts. Nothing here stores \"cost at 1k\" and \"cost\n// at 50k\" as two hand-typed numbers — that is precisely how the source table\n// accumulated the 10× and 5× arithmetic errors called out in the notes below.\n//\n// `note` is the reviewer's verbatim finding. `confidence` is what the figure is\n// actually worth. `benchmarked` links a row to an OCR tab when that engine was\n// genuinely run; null means the price is listed but no output was produced.\n// ============================================================================\n\nconst PRICING_ROWS: PricingRow[] = [\n  {\n    model: \"GLM-OCR\",\n    provider: \"Z.ai / Alternative Premium Hosts\",\n    cost: { kind: \"perToken\", usdPerMillionTokens: 0.2, tokensPerPage: 1_500 },\n    ceiling: \"$0.20 USD / 1M tokens\",\n    worstCase: \"~1,500 tokens/page\",\n    confidence: \"unverified\",\n    corrected: true,\n    note: \"CORRECTED: was $3.00/$150 (10x arithmetic error). Z.ai per-token OCR rate could not be confirmed.\",\n    benchmarked: \"glmocr\",\n  },\n  {\n    model: \"PaddleOCR-VL-1.6 (Token Standard)\",\n    provider: \"Novita AI / Fireworks AI (Surge Rate)\",\n    cost: { kind: \"perToken\", usdPerMillionTokens: 0.1, tokensPerPage: 5_000 },\n    ceiling: \"$0.10 USD / 1M tokens\",\n    worstCase: \"~5,000 tokens/page\",\n    confidence: \"disputed\",\n    corrected: false,\n    note: \"Math OK. Both Novita and Fireworks list this model as 'Serverless: Not supported' (on-demand GPU only) - no per-token serverless rate is published. Aggregators quote Novita ~$0.02/1M, 5x below the ceiling used.\",\n    benchmarked: \"paddleocr\",\n  },\n  {\n    model: \"DeepSeek OCR 2\",\n    provider: \"SiliconFlow / Official API (Peak Pricing)\",\n    cost: { kind: \"perToken\", usdPerMillionTokens: 0.5, tokensPerPage: 1_120 },\n    ceiling: \"$0.50 USD / 1M tokens\",\n    worstCase: \"~1,120 tokens/page\",\n    confidence: \"disputed\",\n    corrected: true,\n    note: \"CORRECTED: was $2.80/$140 (5x arithmetic error). DeepSeek-OCR is free on SiliconFlow and ~$0.03/1M on DeepInfra; $0.50/1M is ~16x published. No public model named 'DeepSeek OCR 2' found.\",\n    benchmarked: null,\n  },\n  {\n    model: \"Unlimited OCR (Serverless)\",\n    provider: \"Managed Third-Party (Unoptimized A100 node)\",\n    cost: { kind: \"computeTime\", usdPerComputeSecond: 0.001, secondsPerPage: 1 },\n    ceiling: \"$0.0010 USD / compute-sec\",\n    worstCase: \"N/A (Heavy document lag)\",\n    confidence: \"unverified\",\n    corrected: false,\n    note: \"Math OK but assumes exactly 1 compute-second per page - an assumption, not a rate. No identifiable vendor.\",\n    benchmarked: null,\n  },\n  {\n    model: \"PaddleOCR-VL-1.6 (Token Dense)\",\n    provider: \"Novita AI / Fireworks AI (Surge Rate)\",\n    cost: { kind: \"perToken\", usdPerMillionTokens: 0.1, tokensPerPage: 18_000 },\n    ceiling: \"$0.10 USD / 1M tokens\",\n    worstCase: \"~18,000 tokens/page\",\n    confidence: \"disputed\",\n    corrected: false,\n    note: \"Math OK. Same serverless caveat. Note 18,000 tokens/page exceeds Novita's 16,384 context window for this model - not achievable on that host.\",\n    benchmarked: \"paddleocr\",\n  },\n  {\n    model: \"PaddleOCR-VL-1.6 (Flat Page)\",\n    provider: \"Premium Boutique API Wrappers\",\n    cost: { kind: \"metered\", low: 2.0, high: 2.0 },\n    ceiling: \"$0.0020 USD / page\",\n    worstCase: \"N/A (Fixed cap)\",\n    confidence: \"unverified\",\n    corrected: false,\n    note: \"Math OK. No named vendor, so the rate cannot be checked.\",\n    benchmarked: \"paddleocr\",\n  },\n  {\n    model: \"FastOCR\",\n    provider: \"Developer API (Asynchronous Flow)\",\n    cost: { kind: \"metered\", low: 2.0, high: 2.0 },\n    ceiling: \"Custom Business Tier Quote\",\n    worstCase: \"N/A (Loop script layout)\",\n    confidence: \"unverified\",\n    corrected: false,\n    note: \"The $2.00 is an assumption, not a quote - and a custom business tier is exactly what does not scale linearly at 50x. Public FastOCR is a consumer tool at $3.99-$10.99/mo with page allowances.\",\n    benchmarked: \"fastocr\",\n  },\n  {\n    model: \"LightOnOCR-2-1B\",\n    provider: \"LightOn Platform (FX Rate Fluctuations)\",\n    // EUR 0.0020/page at EUR/USD 1.1397 → $0.00227940/page → $2.2794 per 1,000.\n    cost: { kind: \"metered\", low: 2.2794, high: 2.2794 },\n    ceiling: \"EUR 0.0020 (~$0.00228 USD) / page\",\n    worstCase: \"N/A (Fixed rate)\",\n    confidence: \"verified\",\n    corrected: true,\n    note: \"CORRECTED FX: was ~$0.00250 (implied EUR/USD 1.25). Actual rate 1.1397 on 2026-07-27. Use 1.25 only as a deliberate FX stress ceiling, labelled as such.\",\n    benchmarked: \"lighton\",\n  },\n  {\n    model: \"MinerU Extractor\",\n    provider: \"OpenDataLab (Paid SLA / Over-quota Priority)\",\n    cost: { kind: \"metered\", low: 5.0, high: 5.0 },\n    ceiling: \"$0.0050 USD / page\",\n    worstCase: \"N/A (Fixed priority)\",\n    confidence: \"unverified\",\n    corrected: false,\n    note: \"Math OK. MinerU documents a 2,000-page/day priority quota with degraded priority beyond it, but no published paid per-page rate was found.\",\n    benchmarked: null,\n  },\n  {\n    model: \"Surya 2 OCR (Balanced)\",\n    provider: \"Dedicated Replicate Deployment (Low Volume)\",\n    cost: { kind: \"metered\", low: 10.0, high: 10.0 },\n    ceiling: \"$0.0100 USD / page\",\n    worstCase: \"N/A (Fixed cap)\",\n    confidence: \"derived\",\n    corrected: false,\n    note: \"Replicate dedicated deployments bill per GPU-second, not per page. This is an effective rate at an unstated throughput assumption.\",\n    benchmarked: \"datalab\",\n  },\n  {\n    model: \"Chandra 2 OCR (Structured)\",\n    provider: \"Dedicated Replicate Deployment (Low Volume)\",\n    cost: { kind: \"metered\", low: 15.0, high: 15.0 },\n    ceiling: \"$0.0150 USD / page\",\n    worstCase: \"N/A (Fixed cap)\",\n    confidence: \"derived\",\n    corrected: false,\n    note: \"Same GPU-second caveat. Datalab's own pricing page did not render for confirmation.\",\n    benchmarked: null,\n  },\n  {\n    model: \"Besser OCR\",\n    provider: \"Web / API Portal Ingestion Dashboard\",\n    // The only non-linear row: a flat monthly fee with no stated page cap, so\n    // the bill is identical at 1,000 and 50,000 pages and the effective\n    // $/page falls 50× across that range.\n    cost: { kind: \"subscription\", monthlyAmount: 1333.0, pageCapPerMonth: null },\n    ceiling: \"Flat SAR 5,000 Enterprise Sub\",\n    worstCase: \"N/A (Month-over-month target)\",\n    confidence: \"vendor-email\",\n    corrected: false,\n    note: \"Confirmed by user via direct vendor correspondence. Flat monthly fee - does not scale with volume. SAR 5,000 at the 3.75 riyal peg = $1,333.33; table uses $1,333.00. Confirm whether Besser quoted USD directly.\",\n    benchmarked: \"baseerocr\",\n  },\n];\n\n\n// ============================== app.ts ===============================\n\n// ============================================================================\n// Domain types\n// ============================================================================\n\n// The engines are a closed set. Every place an id is used — data lookups,\n// tab wiring, DOM ids — is checked against this union, so a typo like\n// \"glm_ocr\" instead of \"glmocr\" is a compile error, not a silent `undefined`\n// at 2am during a demo. This stays a strict union on purpose (see \"Why\n// TypeScript, Here\" #4) — to add a model, add its id HERE first, then add\n// the matching entry to data.ts's MODEL_META. Forget this step and tsc\n// rejects the new entry in data.ts with exactly which id is unrecognized.\ntype ModelId = \"lighton\" | \"datalab\" | \"paddleocr\" | \"fastocr\" | \"baseerocr\" | \"glmocr\";\n\ntype ModelFlag = \"low-quality\" | \"anomaly\";\n\n// The real pricing data is NOT one shape. The audited price list\n// (`OCR pricing - final.csv`) mixes five genuinely different billing models\n// into one table:\n//   - a metered per-page rate (a range, since vendors quote low/high)\n//   - a flat fixed fee regardless of page count (FastOCR's manual dashboard run)\n//   - a monthly subscription, capped or uncapped (Besser OCR)\n//   - a per-token rate, where cost/page depends on tokens the page happens to emit\n//   - a per-compute-second rate, where cost/page depends on how slow the node is\n// Forcing all five into a single \"$/page\" number is exactly how the source\n// table ended up self-contradictory (see the FastOCR anomaly, and the 10×/5×\n// arithmetic errors the review caught). A discriminated union keeps each shape\n// honest, and the compiler forces every consumer to handle all of them.\n//\n// `perToken` and `computeTime` are not hypothetical: they arrived with the\n// audited CSV, and adding them to this union is what surfaced every switch\n// that needed a new branch — see \"Why TypeScript, here\" #2 on the page.\ntype CostTier =\n  | { kind: \"metered\"; low: number; high: number } // $ per 1,000 pages\n  | { kind: \"flatFee\"; amount: number; forPages: number }\n  | { kind: \"subscription\"; monthlyAmount: number; pageCapPerMonth: number | null }\n  | { kind: \"perToken\"; usdPerMillionTokens: number; tokensPerPage: number }\n  | { kind: \"computeTime\"; usdPerComputeSecond: number; secondsPerPage: number };\n\n// What a price figure is actually worth. The audited CSV's central finding is\n// that most of these numbers are not confirmable, so confidence is modeled as\n// a first-class closed set rather than a free-text column nobody reads: it\n// drives the badge, the sort order, and the \"verified only\" filter.\ntype SourceConfidence =\n  | \"verified\" // vendor's own published rate, checked\n  | \"vendor-email\" // confirmed by direct vendor correspondence\n  | \"derived\" // arithmetic from a different billing unit, at an assumed rate\n  | \"disputed\" // a real published rate exists and materially disagrees\n  | \"unverified\"; // no vendor source could be found at all\n\n// One row of the audited price list — see PRICING_ROWS in data.ts. Priced\n// independently of whether the engine was ever run: `benchmarked` is the only\n// link back to an OCR tab, and it is null for engines listed but not tested.\ninterface PricingRow {\n  model: string;\n  provider: string;\n  cost: CostTier;\n  ceiling: string; // the vendor's own worst-case metric, verbatim\n  worstCase: string; // tokens/page or why that's N/A, verbatim\n  confidence: SourceConfidence;\n  corrected: boolean; // review changed this figure from the original table\n  note: string; // the reviewer's finding, verbatim\n  benchmarked: ModelId | null;\n}\n\n// The hand-edited part — see data.ts. Deliberately has NO `text` field:\n// OCR output is the actual content of models/<file>, so it's read and\n// cleaned by the build script rather than pasted into TypeScript source.\n// Also deliberately has no `cost`: pricing lives in PRICING_ROWS, which is a\n// different length and a different shape (12 priced rows, 6 tested engines).\ninterface ModelMeta {\n  id: ModelId;\n  name: string;\n  engine: string;\n  file: string; // filename inside models/\n  flags: ModelFlag[];\n  note: string; // operational note about the engine, not its price\n  actualRunCost?: CostTier; // a real invoice for *this* document, when known\n}\n\ninterface ModelResult extends ModelMeta {\n  text: string;\n}\n\ninterface PageImage {\n  n: number;\n  thumb: string;\n  full: string;\n}\n\ninterface DemoData {\n  models: ModelResult[];\n  pages: PageImage[];\n}\n\n// MODEL_META is real, compiled TypeScript defined in data.ts (compiled\n// together with this file, so it's globally visible with no import needed —\n// see the `const MODEL_META: ModelMeta[]` there).\n// MODEL_TEXT and PAGES are supplied by the build script: MODEL_TEXT from\n// reading + cleaning each MODEL_META entry's `file` out of models/, and\n// PAGES from rendering the source PDF. Neither belongs in hand-edited\n// source — one is derived, the other is binary image data.\ndeclare const MODEL_TEXT: Record<string, string>;\ndeclare const PAGES: PageImage[];\n\nconst DATA: DemoData = {\n  models: MODEL_META.map((m) => ({ ...m, text: MODEL_TEXT[m.id] ?? \"\" })),\n  pages: PAGES,\n};\n\n// The representative priced row for an engine, for the tabs. PaddleOCR has\n// three (token-standard / token-dense / flat-page), so \"first match in table\n// order\" is the documented rule rather than an accident of iteration.\nfunction primaryPricingRow(id: ModelId): PricingRow | undefined {\n  return PRICING_ROWS.find((r) => r.benchmarked === id);\n}\n\n// ============================================================================\n// Exhaustiveness — the actual TypeScript \"superpower\" for this case\n// ============================================================================\n\n// If a fourth CostTier variant is ever added and a switch below forgets to\n// handle it, `assertNever` makes that a compile error at every call site,\n// not a silent NaN in production.\nfunction assertNever(x: never): never {\n  throw new Error(\"Unhandled case: \" + JSON.stringify(x));\n}\n\n// The audited CSV prices every row at two volumes, and the gap between them is\n// the whole point: eleven rows scale linearly and one (Besser's flat\n// subscription) does not, so its effective $/page falls 50× across this range\n// while nothing else moves. A single hardcoded basis would hide that entirely.\nconst VOLUME_BASES = [1_000, 50_000] as const;\ntype VolumeBasis = (typeof VOLUME_BASES)[number];\n\nconst DEFAULT_VOLUME: VolumeBasis = 50_000;\n\n// Normalizes any pricing shape to a total bill at a given page count. This is\n// the one function allowed to collapse the union to a number — everywhere else\n// keeps the real shape (see costRangeLabel, which reports each tier in its own\n// native unit).\n//\n// Note this takes `pages` rather than closing over a constant: `subscription`\n// is the one shape where cost is NOT proportional to volume, and that only\n// shows up if volume is an input.\nfunction costAtVolume(tier: CostTier, pages: number): number {\n  switch (tier.kind) {\n    case \"metered\":\n      return ((tier.low + tier.high) / 2 / 1000) * pages;\n    case \"flatFee\":\n      return (tier.amount / tier.forPages) * pages;\n    case \"subscription\":\n      // No cap: one flat monthly fee, whatever the volume. Capped: as many\n      // months as it takes to clear the pages.\n      return tier.pageCapPerMonth === null\n        ? tier.monthlyAmount\n        : tier.monthlyAmount * Math.ceil(pages / tier.pageCapPerMonth);\n    case \"perToken\":\n      return (tier.usdPerMillionTokens / 1_000_000) * tier.tokensPerPage * pages;\n    case \"computeTime\":\n      return tier.usdPerComputeSecond * tier.secondsPerPage * pages;\n    default:\n      return assertNever(tier);\n  }\n}\n\nfunction costPerPageAtVolume(tier: CostTier, pages: number): number {\n  return costAtVolume(tier, pages) / pages;\n}\n\nfunction costRangeLabel(tier: CostTier): string {\n  switch (tier.kind) {\n    case \"metered\":\n      return tier.low === tier.high\n        ? `$${tier.low.toFixed(2)}/1k (flat rate)`\n        : `$${tier.low.toFixed(2)}–$${tier.high.toFixed(2)}/1k`;\n    case \"flatFee\":\n      return `$${tier.amount.toFixed(2)} flat for ${tier.forPages} page${tier.forPages === 1 ? \"\" : \"s\"}`;\n    case \"subscription\":\n      return tier.pageCapPerMonth === null\n        ? `$${tier.monthlyAmount.toLocaleString()}/mo, no stated cap`\n        : `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;\n    case \"perToken\":\n      return `$${tier.usdPerMillionTokens.toFixed(2)}/1M tok × ${tier.tokensPerPage.toLocaleString()} tok/pg`;\n    case \"computeTime\":\n      return `$${tier.usdPerComputeSecond.toFixed(4)}/compute-sec × ${tier.secondsPerPage}s/pg`;\n    default:\n      return assertNever(tier);\n  }\n}\n\nfunction costKindLabel(tier: CostTier): string {\n  switch (tier.kind) {\n    case \"metered\": return \"Per page\";\n    case \"flatFee\": return \"Flat fee\";\n    case \"subscription\": return \"Subscription\";\n    case \"perToken\": return \"Per token\";\n    case \"computeTime\": return \"Compute time\";\n    default: return assertNever(tier);\n  }\n}\n\n// ============================================================================\n// Confidence — the dimension the price alone doesn't show\n// ============================================================================\n\nfunction confidenceLabel(c: SourceConfidence): string {\n  switch (c) {\n    case \"verified\": return \"Verified\";\n    case \"vendor-email\": return \"Vendor email\";\n    case \"derived\": return \"Derived\";\n    case \"disputed\": return \"Rate disputed\";\n    case \"unverified\": return \"Unverified\";\n    default: return assertNever(c);\n  }\n}\n\n// Longer-form, for the badge tooltip — what the label actually means about\n// how much weight the number can carry.\nfunction confidenceMeaning(c: SourceConfidence): string {\n  switch (c) {\n    case \"verified\": return \"Checked against the vendor's own published rate.\";\n    case \"vendor-email\": return \"Confirmed directly by the vendor in writing, not from a public page.\";\n    case \"derived\": return \"Arithmetic from a different billing unit (e.g. GPU-seconds) at an assumed throughput — not a rate the vendor quotes.\";\n    case \"disputed\": return \"A real published rate exists and materially disagrees with the figure used.\";\n    case \"unverified\": return \"No vendor source could be found to confirm this figure at all.\";\n    default: return assertNever(c);\n  }\n}\n\n// Only the first two are figures you could defend in a budget review.\nfunction isTrustworthy(c: SourceConfidence): boolean {\n  switch (c) {\n    case \"verified\":\n    case \"vendor-email\":\n      return true;\n    case \"derived\":\n    case \"disputed\":\n    case \"unverified\":\n      return false;\n    default: return assertNever(c);\n  }\n}\n\n// A CSS custom property per confidence level, reusing the page's existing\n// semantic palette rather than introducing new theme tokens.\nfunction confidenceTone(c: SourceConfidence): string {\n  switch (c) {\n    case \"verified\": return \"var(--lapis)\";\n    case \"vendor-email\": return \"var(--lapis-soft)\";\n    case \"derived\": return \"var(--gold)\";\n    case \"disputed\": return \"var(--vermilion)\";\n    case \"unverified\": return \"var(--ink-faint)\";\n    default: return assertNever(c);\n  }\n}\n\n// ============================================================================\n// Small typed DOM helpers — strict null checks catch a missing element at\n// compile time (well, at first run against real markup) instead of a\n// \"Cannot read properties of null\" three interactions later.\n// ============================================================================\n\nfunction must<T extends Element = Element>(id: string): T {\n  const el = document.getElementById(id);\n  if (!el) throw new Error(`#${id} is missing from the DOM`);\n  return el as unknown as T;\n}\n\nfunction el<K extends keyof HTMLElementTagNameMap>(\n  tag: K,\n  className?: string,\n  html?: string\n): HTMLElementTagNameMap[K] {\n  const node = document.createElement(tag);\n  if (className) node.className = className;\n  if (html !== undefined) node.innerHTML = html;\n  return node;\n}\n\n// A tiny generic tab component: T just needs an id, so it works for models,\n// or for anything else with the same shape, without rewriting the wiring.\nfunction createTabGroup<T extends { id: string }>(\n  tabsHost: HTMLElement,\n  panelsHost: HTMLElement,\n  items: T[],\n  renderTabLabel: (item: T) => string,\n  renderPanel: (item: T) => HTMLElement\n): void {\n  items.forEach((item, i) => {\n    const tab = el(\"button\", \"tab\" + (i === 0 ? \" active\" : \"\"), renderTabLabel(item));\n    tab.dataset.id = item.id;\n    tab.addEventListener(\"click\", () => activate(item.id));\n    tabsHost.appendChild(tab);\n\n    const panel = renderPanel(item);\n    panel.classList.add(\"panel\");\n    if (i === 0) panel.classList.add(\"active\");\n    panel.dataset.id = item.id;\n    panelsHost.appendChild(panel);\n  });\n\n  function activate(id: string): void {\n    tabsHost.querySelectorAll<HTMLElement>(\".tab\").forEach((t) => t.classList.toggle(\"active\", t.dataset.id === id));\n    panelsHost.querySelectorAll<HTMLElement>(\".panel\").forEach((p) => p.classList.toggle(\"active\", p.dataset.id === id));\n  }\n}\n\n// ============================================================================\n// Theme engine\n// ============================================================================\n// Three visual identities, each with a light and dark variant. Modeled as a\n// `Record<ThemeName, Record<ThemeMode, ThemeTokens>>` rather than a switch of\n// string literals — TypeScript's mapped-object checking means leaving out a\n// theme, or a mode within a theme, or a single token within a mode, is a\n// compile error. There is no runtime code path where \"blueprint dark\" can\n// silently fall back to undefined colors; it either exists at compile time\n// or the build fails.\n\ntype ThemeName = \"manuscript\" | \"blueprint\" | \"terminal\";\ntype ThemeMode = \"light\" | \"dark\";\n\ninterface ThemeTokens {\n  paper: string;\n  paper2: string;\n  paper3: string;\n  ink: string;\n  inkSoft: string;\n  inkFaint: string;\n  accent1: string; // primary accent (bar-chart hue, resizer grip)\n  accent1Strong: string; // emphasis variant for headings/active-state text\n  accent2: string; // secondary accent (links, tabs)\n  status: string;  // reserved: warnings/flags only, never decorative\n  line: string;\n  lineStrong: string;\n  ramp: readonly [string, string, string, string, string, string];\n  fontDisplay: string;\n}\n\nconst THEMES: Record<ThemeName, Record<ThemeMode, ThemeTokens>> = {\n  manuscript: {\n    light: {\n      paper: \"#eae2cc\", paper2: \"#f4efe0\", paper3: \"#ddd2ae\",\n      ink: \"#241f16\", inkSoft: \"#5f5645\", inkFaint: \"#8a8069\",\n      accent1: \"#a97b2f\", accent1Strong: \"#7a5511\", accent2: \"#1f4e63\", status: \"#9c3b2e\",\n      line: \"#cabf9c\", lineStrong: \"#b0a37a\",\n      ramp: [\"#ecd9a8\", \"#ddbf7c\", \"#c99f52\", \"#b4842f\", \"#966816\", \"#7a5511\"],\n      fontDisplay: '\"Fraunces Display\", Georgia, \"Iowan Old Style\", serif',\n    },\n    dark: {\n      paper: \"#1b1712\", paper2: \"#221e17\", paper3: \"#2c261c\",\n      ink: \"#ece3cc\", inkSoft: \"#bcb195\", inkFaint: \"#8a8069\",\n      accent1: \"#d1a44e\", accent1Strong: \"#e8c079\", accent2: \"#7bb6d1\", status: \"#e08a72\",\n      line: \"#3c3527\", lineStrong: \"#4d442f\",\n      ramp: [\"#4a3d20\", \"#675328\", \"#866c30\", \"#a98639\", \"#cca24a\", \"#eec573\"],\n      fontDisplay: '\"Fraunces Display\", Georgia, \"Iowan Old Style\", serif',\n    },\n  },\n  blueprint: {\n    light: {\n      paper: \"#dbe6f0\", paper2: \"#eaf1f8\", paper3: \"#c7d7e6\",\n      ink: \"#0f2438\", inkSoft: \"#3c5872\", inkFaint: \"#7996ac\",\n      accent1: \"#c9781f\", accent1Strong: \"#8f550f\", accent2: \"#1f6fa8\", status: \"#b5432e\",\n      line: \"#b7c9da\", lineStrong: \"#9bb3c9\",\n      ramp: [\"#cfe4f5\", \"#a9cdec\", \"#7bb0dd\", \"#4f8fc9\", \"#2f6fac\", \"#1a4f85\"],\n      fontDisplay: '\"Fraunces Sub\", -apple-system, \"Segoe UI\", sans-serif',\n    },\n    dark: {\n      paper: \"#0b2a4a\", paper2: \"#0f3559\", paper3: \"#154572\",\n      ink: \"#eaf3ff\", inkSoft: \"#b9d3ea\", inkFaint: \"#7fa2c2\",\n      accent1: \"#f2a65a\", accent1Strong: \"#ffc98a\", accent2: \"#6fc3ff\", status: \"#ff8f73\",\n      line: \"#1f4d78\", lineStrong: \"#2c5f8f\",\n      ramp: [\"#123a5c\", \"#1a4d78\", \"#256792\", \"#3684ab\", \"#59a8cc\", \"#8ecdea\"],\n      fontDisplay: '\"Fraunces Sub\", -apple-system, \"Segoe UI\", sans-serif',\n    },\n  },\n  terminal: {\n    light: {\n      paper: \"#f4f6f1\", paper2: \"#ffffff\", paper3: \"#e6ebe0\",\n      ink: \"#16241a\", inkSoft: \"#3f5c46\", inkFaint: \"#7a8f7c\",\n      accent1: \"#b6790a\", accent1Strong: \"#8a5c08\", accent2: \"#0f8a4c\", status: \"#c23b3b\",\n      line: \"#d7e0d2\", lineStrong: \"#c0cdb9\",\n      ramp: [\"#cdead0\", \"#a3d6a8\", \"#79c081\", \"#4fa85c\", \"#2f8a3f\", \"#1c6b2c\"],\n      fontDisplay: 'ui-monospace, \"SF Mono\", Menlo, monospace',\n    },\n    dark: {\n      paper: \"#0c0e0c\", paper2: \"#12140f\", paper3: \"#1a1d16\",\n      ink: \"#c9f2c0\", inkSoft: \"#8fbf86\", inkFaint: \"#5b7a55\",\n      accent1: \"#ffcf6b\", accent1Strong: \"#ffe19a\", accent2: \"#7bffb0\", status: \"#ff6b6b\",\n      line: \"#20281c\", lineStrong: \"#2c3824\",\n      ramp: [\"#163a1c\", \"#1f5228\", \"#2c6d34\", \"#3f8f44\", \"#63b95c\", \"#93e08a\"],\n      fontDisplay: 'ui-monospace, \"SF Mono\", Menlo, monospace',\n    },\n  },\n};\n\nfunction applyTheme(name: ThemeName, mode: ThemeMode): void {\n  const tokens = THEMES[name][mode];\n  const root = document.documentElement;\n  root.style.setProperty(\"--paper\", tokens.paper);\n  root.style.setProperty(\"--paper-2\", tokens.paper2);\n  root.style.setProperty(\"--paper-3\", tokens.paper3);\n  root.style.setProperty(\"--ink\", tokens.ink);\n  root.style.setProperty(\"--ink-soft\", tokens.inkSoft);\n  root.style.setProperty(\"--ink-faint\", tokens.inkFaint);\n  root.style.setProperty(\"--gold\", tokens.accent1);\n  root.style.setProperty(\"--gold-strong\", tokens.accent1Strong);\n  root.style.setProperty(\"--lapis\", tokens.accent2);\n  root.style.setProperty(\"--vermilion\", tokens.status);\n  root.style.setProperty(\"--line\", tokens.line);\n  root.style.setProperty(\"--line-strong\", tokens.lineStrong);\n  root.style.setProperty(\"--font-display\", tokens.fontDisplay);\n  tokens.ramp.forEach((c, i) => root.style.setProperty(`--ramp-${i + 1}`, c));\n\n  // Code blocks always read as a dark console pane, regardless of the\n  // active light/dark mode — pulled from this theme's *dark* variant so\n  // each family (manuscript/blueprint/terminal) still gets its own tint.\n  const darkTokens = THEMES[name].dark;\n  root.style.setProperty(\"--code-bg\", darkTokens.paper2);\n  root.style.setProperty(\"--code-fg\", darkTokens.ink);\n\n  root.dataset.themeName = name;\n  root.style.colorScheme = mode;\n}\n\nfunction detectSystemMode(): ThemeMode {\n  return matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"dark\" : \"light\";\n}\n\n(function initTheme(): void {\n  let themeName: ThemeName = \"manuscript\";\n  let mode: ThemeMode = detectSystemMode();\n\n  applyTheme(themeName, mode);\n\n  const modeBtn = must<HTMLButtonElement>(\"themeToggle\");\n  modeBtn.addEventListener(\"click\", () => {\n    mode = mode === \"dark\" ? \"light\" : \"dark\";\n    applyTheme(themeName, mode);\n  });\n\n  const swatches = must<HTMLElement>(\"themeSwatches\");\n  swatches.querySelectorAll<HTMLButtonElement>(\"button\").forEach((btn) => {\n    btn.addEventListener(\"click\", () => {\n      const name = btn.dataset.theme as ThemeName;\n      themeName = name;\n      applyTheme(themeName, mode);\n      swatches.querySelectorAll(\"button\").forEach((b) => b.classList.toggle(\"active\", b === btn));\n      btn.classList.add(\"pulse\");\n      btn.addEventListener(\"animationend\", () => btn.classList.remove(\"pulse\"), { once: true });\n    });\n  });\n})();\n\n// ============================================================================\n// Manuscript rail + lightbox\n// ============================================================================\n\n(function initGallery(): void {\n  const rail = must<HTMLElement>(\"pageRail\");\n  const lb = must<HTMLElement>(\"lightbox\");\n  const lbImg = must<HTMLImageElement>(\"lbImg\");\n  let idx = 0;\n\n  DATA.pages.forEach((p, i) => {\n    const card = el(\"div\", \"page-card\", `<img src=\"data:image/jpeg;base64,${p.thumb}\" alt=\"Page ${p.n}\" loading=\"lazy\" /><div class=\"num\">Page ${p.n}</div>`);\n    card.addEventListener(\"click\", () => open(i));\n    rail.appendChild(card);\n  });\n\n  function open(i: number): void {\n    idx = i;\n    render();\n    lb.classList.add(\"open\");\n  }\n  function render(): void {\n    lbImg.src = `data:image/jpeg;base64,${DATA.pages[idx]!.full}`;\n    lbImg.style.animation = \"none\";\n    void lbImg.offsetWidth;\n    lbImg.style.animation = \"\";\n  }\n  must<HTMLButtonElement>(\"lbClose\").addEventListener(\"click\", () => lb.classList.remove(\"open\"));\n  must<HTMLButtonElement>(\"lbPrev\").addEventListener(\"click\", () => {\n    idx = (idx - 1 + DATA.pages.length) % DATA.pages.length;\n    render();\n  });\n  must<HTMLButtonElement>(\"lbNext\").addEventListener(\"click\", () => {\n    idx = (idx + 1) % DATA.pages.length;\n    render();\n  });\n  lb.addEventListener(\"click\", (e) => {\n    if (e.target === lb) lb.classList.remove(\"open\");\n  });\n  document.addEventListener(\"keydown\", (e) => {\n    if (!lb.classList.contains(\"open\")) return;\n    if (e.key === \"Escape\") lb.classList.remove(\"open\");\n    if (e.key === \"ArrowLeft\") must<HTMLButtonElement>(\"lbPrev\").click();\n    if (e.key === \"ArrowRight\") must<HTMLButtonElement>(\"lbNext\").click();\n  });\n})();\n\n// ============================================================================\n// Resizable pages/results split\n// ============================================================================\n\n(function initResizer(): void {\n  const layout = must<HTMLElement>(\"compareLayout\");\n  const resizer = must<HTMLElement>(\"resizer\");\n  const presets = must<HTMLElement>(\"resizePresets\");\n  const MIN = 100, MAX = 560;\n\n  function setWidth(px: number, animate: boolean): void {\n    const clamped = Math.max(MIN, Math.min(MAX, px));\n    layout.classList.toggle(\"dragging\", !animate);\n    layout.style.setProperty(\"--rail-w\", clamped + \"px\");\n    presets.querySelectorAll<HTMLButtonElement>(\"button\").forEach((b) => {\n      b.classList.toggle(\"active\", Math.abs(Number(b.dataset.w) - clamped) < 15);\n    });\n  }\n\n  presets.addEventListener(\"click\", (e) => {\n    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(\"button\");\n    if (!btn) return;\n    setWidth(Number(btn.dataset.w), true);\n  });\n\n  let dragging = false;\n  resizer.addEventListener(\"pointerdown\", (e) => {\n    dragging = true;\n    resizer.setPointerCapture(e.pointerId);\n    layout.classList.add(\"dragging\");\n  });\n  resizer.addEventListener(\"pointermove\", (e) => {\n    if (!dragging) return;\n    const rect = layout.getBoundingClientRect();\n    setWidth(e.clientX - rect.left, false);\n  });\n  function endDrag(): void {\n    dragging = false;\n    layout.classList.remove(\"dragging\");\n  }\n  resizer.addEventListener(\"pointerup\", endDrag);\n  resizer.addEventListener(\"pointercancel\", endDrag);\n  resizer.addEventListener(\"dblclick\", () => setWidth(220, true));\n  resizer.addEventListener(\"keydown\", (e) => {\n    const cur = parseFloat(getComputedStyle(layout).getPropertyValue(\"--rail-w\")) || 220;\n    if (e.key === \"ArrowLeft\") { setWidth(cur - 20, true); e.preventDefault(); }\n    if (e.key === \"ArrowRight\") { setWidth(cur + 20, true); e.preventDefault(); }\n    if (e.key === \"Home\") { setWidth(MIN, true); e.preventDefault(); }\n    if (e.key === \"End\") { setWidth(MAX, true); e.preventDefault(); }\n  });\n})();\n\n// ============================================================================\n// Cost bar chart / dot plot / table — all three driven entirely through\n// costAtVolume / costRangeLabel, so they are guaranteed to agree (no separate\n// \"chart number\" vs \"table number\" that can silently drift apart, which is\n// exactly what happened across the plain-JS cost.md / fastocr.md files this\n// data was extracted from).\n//\n// The $-at-volume figures are computed from each row's native rate on every\n// render. The source CSV stored \"cost at 1k\" and \"cost at 50k\" as two typed-in\n// columns and accumulated a 10× error on one row and a 5× error on another —\n// both of which are now impossible to reproduce here, because there is only\n// one number per row and the rest is arithmetic.\n// ============================================================================\n\n// Small, boring, and reused only here: rounds an axis max up to a \"nice\"\n// step count so gridlines land on 0 / 500 / 1000 / ... instead of whatever\n// the data happens to produce.\nfunction niceTicks(max: number, targetCount = 4): number[] {\n  if (max <= 0) return [0];\n  const rawStep = max / targetCount;\n  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));\n  const residual = rawStep / magnitude;\n  const niceResidual = residual >= 5 ? 10 : residual >= 2 ? 5 : residual >= 1 ? 2 : 1;\n  const step = niceResidual * magnitude;\n  // Keep adding ticks until one actually reaches max — a fixed iteration\n  // count can stop one step short (e.g. max=1650, step=500 → last tick\n  // 1500 < max), which would silently clip the highest dot to 100%.\n  const ticks: number[] = [0];\n  while (ticks[ticks.length - 1]! < max) {\n    ticks.push(Math.round((ticks[ticks.length - 1]! + step) * 100) / 100);\n  }\n  return ticks;\n}\n\nfunction formatUSD(n: number): string {\n  return \"$\" + n.toLocaleString(\"en-US\", { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\n// A compact \"how much is this number worth\" badge, used in every view so the\n// price and its credibility are never shown apart.\nfunction confidenceBadge(c: SourceConfidence): string {\n  return `<span class=\"conf-badge\" style=\"--conf: ${confidenceTone(c)}\" title=\"${confidenceLabel(c)} — ${confidenceMeaning(c)}\">${confidenceLabel(c)}</span>`;\n}\n\nfunction rowTooltip(row: PricingRow, value: number, pages: VolumeBasis): string {\n  return `${row.model} · ${costKindLabel(row.cost)}: ${costRangeLabel(row.cost)} → ${formatUSD(value)} per ${pages.toLocaleString()} pages (${confidenceLabel(row.confidence)})`;\n}\n\n// Marks that ride along with a row's name in both charts: the engine was\n// actually run here, and/or the review changed its number.\nfunction rowChips(row: PricingRow, isCheapest: boolean): string {\n  return (\n    (isCheapest ? '<span class=\"cheapest-chip\">cheapest</span>' : \"\") +\n    (row.benchmarked ? '<span class=\"run-chip\" title=\"This engine was actually run against the source document — see its OCR output below\">run</span>' : \"\") +\n    (row.corrected ? '<span class=\"corrected-chip\" title=\"The review corrected this figure from the original table\">corrected</span>' : \"\")\n  );\n}\n\nfunction buildBarChart(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {\n  const max = Math.max(...values);\n  const chart = el(\"div\", \"chart\");\n  rows.forEach((row, i) => {\n    const value = values[i]!;\n    const isCheapest = value === cheapestValue;\n    const pct = Math.max(2, (value / max) * 100);\n    const barRow = el(\"div\", \"bar-row\");\n    barRow.innerHTML = `\n      <div class=\"name\">${row.model}${rowChips(row, isCheapest)}</div>\n      <div class=\"bar-track\"><div class=\"bar-fill${isCheapest ? \" bar-cheapest\" : \"\"}\" data-pct=\"${pct}\"\n           style=\"background: ${confidenceTone(row.confidence)}\"\n           title=\"${rowTooltip(row, value, pages)}\"></div></div>\n      <div class=\"value\">${formatUSD(value)}</div>\n    `;\n    chart.appendChild(barRow);\n  });\n  return chart;\n}\n\nfunction buildDotPlot(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {\n  const ticks = niceTicks(Math.max(...values), 4);\n  const axisMax = ticks[ticks.length - 1]!;\n\n  const plot = el(\"div\", \"dotplot\");\n\n  const grid = el(\"div\", \"dot-grid\");\n  ticks.forEach((t) => {\n    const line = el(\"div\", \"dot-grid-line\");\n    line.style.left = (t / axisMax) * 100 + \"%\";\n    grid.appendChild(line);\n  });\n  plot.appendChild(grid);\n\n  rows.forEach((row, i) => {\n    const value = values[i]!;\n    const isCheapest = value === cheapestValue;\n    const pct = Math.min(100, (value / axisMax) * 100);\n    const dotRow = el(\"div\", \"dot-row\");\n    dotRow.innerHTML = `\n      <div class=\"name\">${row.model}${rowChips(row, isCheapest)}</div>\n      <div class=\"dot-track\">\n        <div class=\"dot-line\"></div>\n        <div class=\"dot${isCheapest ? \" dot-cheapest\" : \"\"}\" data-pct=\"${pct}\"\n             style=\"background: ${confidenceTone(row.confidence)}\"\n             title=\"${rowTooltip(row, value, pages)}\"></div>\n      </div>\n      <div class=\"value\">${formatUSD(value)}</div>\n    `;\n    plot.appendChild(dotRow);\n  });\n\n  const axis = el(\"div\", \"dot-axis\");\n  axis.appendChild(el(\"div\")); // spacer, mirrors the name column\n  const axisTicks = el(\"div\", \"dot-axis-ticks\");\n  ticks.forEach((t) => {\n    axisTicks.appendChild(el(\"span\", \"dot-axis-tick\", \"$\" + t.toLocaleString()));\n  });\n  axis.appendChild(axisTicks);\n  axis.appendChild(el(\"div\")); // spacer, mirrors the value column\n  plot.appendChild(axis);\n\n  return plot;\n}\n\nfunction buildCostTable(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {\n  const table = el(\n    \"table\",\n    \"cost-table\",\n    `<thead><tr>\n       <th>Model</th><th>Provider / hosting</th><th>Billing shape</th>\n       <th>$ per ${pages.toLocaleString()} pages</th><th>Effective $/page</th>\n       <th>Native rate</th><th>Confidence</th><th>Review note</th>\n     </tr></thead>`\n  );\n  const tbody = el(\"tbody\");\n  rows.forEach((row, i) => {\n    const value = values[i]!;\n    const perPage = costPerPageAtVolume(row.cost, pages);\n    tbody.appendChild(\n      el(\n        \"tr\",\n        row.corrected ? \"row-corrected\" : undefined,\n        `<td>${row.model}${value === cheapestValue ? \" 🏆\" : \"\"}${row.benchmarked ? '<span class=\"run-chip\">run</span>' : \"\"}</td>\n         <td>${row.provider}</td>\n         <td>${costKindLabel(row.cost)}</td>\n         <td class=\"num\">${formatUSD(value)}</td>\n         <td class=\"num\">$${perPage.toFixed(5)}</td>\n         <td>${costRangeLabel(row.cost)}<br><span class=\"ceiling\">ceiling: ${row.ceiling} · ${row.worstCase}</span></td>\n         <td>${confidenceBadge(row.confidence)}</td>\n         <td class=\"note\">${row.note}</td>`\n      )\n    );\n  });\n  table.appendChild(tbody);\n  const wrap = el(\"div\", \"table-wrap\");\n  wrap.appendChild(table);\n  return wrap;\n}\n\nfunction buildConfidenceLegend(): HTMLElement {\n  const order: SourceConfidence[] = [\"verified\", \"vendor-email\", \"derived\", \"disputed\", \"unverified\"];\n  const legend = el(\"div\", \"conf-legend\");\n  legend.innerHTML =\n    `<span class=\"conf-legend-label\">Bar colour = confidence in the figure</span>` +\n    order\n      .map(\n        (c) =>\n          `<span class=\"conf-legend-item\" title=\"${confidenceMeaning(c)}\"><i style=\"background:${confidenceTone(c)}\"></i>${confidenceLabel(c)}</span>`\n      )\n      .join(\"\");\n  return legend;\n}\n\n(function initCost(): void {\n  // Section state. Volume is a real axis here, not a constant: it is the only\n  // way the flat-subscription row's behaviour becomes visible.\n  let volume: VolumeBasis = DEFAULT_VOLUME;\n  let trustedOnly = false;\n  let currentView = \"bar\";\n  let revealed = false;\n\n  const barView = must<HTMLElement>(\"barView\");\n  const dotView = must<HTMLElement>(\"dotView\");\n  const tableView = must<HTMLElement>(\"tableView\");\n  const statsHost = must<HTMLElement>(\"costStats\");\n  const anomalyHost = must<HTMLElement>(\"anomalyCallouts\");\n\n  function visibleRows(): PricingRow[] {\n    const rows = trustedOnly ? PRICING_ROWS.filter((r) => isTrustworthy(r.confidence)) : [...PRICING_ROWS];\n    return rows.sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));\n  }\n\n  // Headline numbers, computed rather than written down, so they can't drift\n  // out of sync with the table the way the source CSV's own totals did.\n  function renderStats(): void {\n    const trusted = PRICING_ROWS.filter((r) => isTrustworthy(r.confidence));\n    const corrected = PRICING_ROWS.filter((r) => r.corrected);\n    const all = [...PRICING_ROWS].sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));\n    const cheapest = all[0]!;\n    const dearest = all[all.length - 1]!;\n    const spread = costAtVolume(dearest.cost, volume) / costAtVolume(cheapest.cost, volume);\n\n    statsHost.innerHTML = [\n      { n: `${trusted.length} of ${PRICING_ROWS.length}`, l: \"figures vendor-confirmed\" },\n      { n: `${corrected.length}`, l: \"corrected during review\" },\n      { n: `${spread < 10 ? spread.toFixed(1) : Math.round(spread).toLocaleString()}×`, l: `spread, cheapest → dearest at ${volume.toLocaleString()} pages` },\n      { n: formatUSD(costAtVolume(cheapest.cost, volume)), l: `cheapest (${cheapest.model})` },\n    ]\n      .map((s) => `<div class=\"cost-stat\"><b>${s.n}</b><span>${s.l}</span></div>`)\n      .join(\"\");\n  }\n\n  function renderAnomalies(): void {\n    anomalyHost.innerHTML = \"\";\n\n    // Rows whose bill does not scale with volume at all — the reason this\n    // section has a volume toggle in the first place.\n    PRICING_ROWS.filter((r) => r.cost.kind === \"subscription\").forEach((r) => {\n      const at1k = costPerPageAtVolume(r.cost, 1_000);\n      const at50k = costPerPageAtVolume(r.cost, 50_000);\n      anomalyHost.appendChild(\n        el(\n          \"div\",\n          \"anomaly-callout\",\n          `<b>${r.model} is the only row that doesn't scale.</b> It bills a flat ${costRangeLabel(r.cost)}, so the invoice is identical at 1,000 and 50,000 pages — the same fee spread over 50× the work. Effective cost falls from <b>$${at1k.toFixed(5)}/page</b> to <b>$${at50k.toFixed(5)}/page</b> across that range. Every other row is linear, so at low volume this is the most expensive option on the table by a wide margin, and at high volume it stops being an outlier. Flip the volume toggle above to watch it move.`\n        )\n      );\n    });\n\n    // Real invoices for this specific document, where the quoted tier and what\n    // was actually charged disagree. Generated from data rather than\n    // hand-written, so a 7th engine with the same story needs no new prose.\n    DATA.models\n      .filter((m): m is ModelResult & { actualRunCost: CostTier } => m.actualRunCost !== undefined)\n      .forEach((m) => {\n        const row = primaryPricingRow(m.id);\n        const listed = row\n          ? `the ${costKindLabel(row.cost).toLowerCase()} rate listed above (${costRangeLabel(row.cost)} ≈ ${formatUSD(costAtVolume(row.cost, volume))} per ${volume.toLocaleString()} pages)`\n          : \"the rate listed above\";\n        anomalyHost.appendChild(\n          el(\n            \"div\",\n            \"anomaly-callout\",\n            `<b>What ${m.name} actually charged for this document: ${costRangeLabel(m.actualRunCost)}.</b> That is a real invoice for the exact 5-page file in this demo, not a rate card — which is why it isn't what the chart plots. The chart uses ${listed} so all twelve rows compare on one basis. ${m.note}`\n          )\n        );\n      });\n  }\n\n  function renderCharts(): void {\n    const rows = visibleRows();\n    const values = rows.map((r) => costAtVolume(r.cost, volume));\n    const cheapestValue = Math.min(...values);\n\n    const captionText = `Sorted cheapest → most expensive at <b>${volume.toLocaleString()} pages</b>, normalized from each vendor's native billing unit (per page / per token / per compute-second / flat subscription) — hover a mark for the real shape behind the number. Colour encodes how much the figure can be trusted, not how big it is. Figures transcribed from <code>OCR pricing - final.csv</code>; to change them, edit <code>PRICING_ROWS</code> in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;\n\n    barView.innerHTML = \"\";\n    const barChart = buildBarChart(rows, values, cheapestValue, volume);\n    barView.appendChild(buildConfidenceLegend());\n    barView.appendChild(barChart);\n    barView.appendChild(el(\"div\", \"chart-caption\", captionText));\n\n    dotView.innerHTML = \"\";\n    const dotPlot = buildDotPlot(rows, values, cheapestValue, volume);\n    dotView.appendChild(buildConfidenceLegend());\n    dotView.appendChild(dotPlot);\n    dotView.appendChild(el(\"div\", \"chart-caption\", captionText));\n\n    tableView.innerHTML = \"\";\n    tableView.appendChild(buildCostTable(rows, values, cheapestValue, volume));\n\n    if (revealed) reveal();\n  }\n\n  // Fills start at width 0 / left 0 and are released once the section is on\n  // screen. After the first reveal, re-renders animate from 0 again on the\n  // next frame, which reads as the bars re-settling to the new volume.\n  function reveal(): void {\n    revealed = true;\n    requestAnimationFrame(() => {\n      barView.querySelectorAll<HTMLElement>(\".bar-fill\").forEach((f) => { f.style.width = f.dataset.pct + \"%\"; });\n      dotView.querySelectorAll<HTMLElement>(\".dot\").forEach((d) => { d.style.left = d.dataset.pct + \"%\"; });\n    });\n  }\n\n  function renderAll(): void {\n    renderStats();\n    renderCharts();\n    renderAnomalies();\n  }\n\n  renderAll();\n\n  const io = new IntersectionObserver((entries) => {\n    entries.forEach((e) => {\n      if (e.isIntersecting) {\n        reveal();\n        io.unobserve(e.target);\n      }\n    });\n  }, { threshold: 0.15 });\n  io.observe(must<HTMLElement>(\"cost\"));\n\n  const views: Record<string, HTMLElement> = { bar: barView, dot: dotView, table: tableView };\n  function applyView(): void {\n    for (const [key, view] of Object.entries(views)) {\n      view.style.display = key === currentView ? \"\" : \"none\";\n    }\n  }\n  applyView();\n\n  must<HTMLElement>(\"viewToggle\").addEventListener(\"click\", (e) => {\n    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(\"button\");\n    if (!btn) return;\n    currentView = btn.dataset.view ?? \"bar\";\n    document.querySelectorAll<HTMLButtonElement>(\"#viewToggle button\").forEach((b) => b.classList.toggle(\"active\", b === btn));\n    reveal(); // in case the section never scrolled past the observer threshold\n    applyView();\n  });\n\n  must<HTMLElement>(\"volumeToggle\").addEventListener(\"click\", (e) => {\n    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(\"button\");\n    if (!btn) return;\n    const picked = Number(btn.dataset.volume);\n    const match = VOLUME_BASES.find((v) => v === picked);\n    if (match === undefined) return;\n    volume = match;\n    document.querySelectorAll<HTMLButtonElement>(\"#volumeToggle button\").forEach((b) => b.classList.toggle(\"active\", b === btn));\n    renderAll();\n    applyView();\n  });\n\n  const trustBtn = must<HTMLButtonElement>(\"trustFilter\");\n  trustBtn.addEventListener(\"click\", () => {\n    trustedOnly = !trustedOnly;\n    trustBtn.classList.toggle(\"active\", trustedOnly);\n    trustBtn.setAttribute(\"aria-pressed\", String(trustedOnly));\n    trustBtn.textContent = trustedOnly ? \"Showing vendor-confirmed only\" : \"Show vendor-confirmed only\";\n    renderAll();\n    applyView();\n  });\n})();\n\n// ============================================================================\n// Markdown-ish -> HTML\n// ============================================================================\n\nfunction escapeHtml(s: string): string {\n  return s.replace(/&/g, \"&amp;\").replace(/</g, \"&lt;\").replace(/>/g, \"&gt;\");\n}\n\nfunction renderText(md: string): string {\n  const blocks = md.split(/\\n\\s*\\n/);\n  return blocks\n    .map((block) => {\n      const t = block.trim();\n      if (!t) return \"\";\n      if (t === \"⟦FIGURE⟧\") return `<span class=\"figure-chip\">🖼 figure</span>`;\n      if (/^---+$/.test(t)) return \"<hr />\";\n      if (/^#{1,6}\\s+/.test(t)) {\n        return `<h3 class=\"doc-heading\">${escapeHtml(t.replace(/^#{1,6}\\s+/, \"\"))}</h3>`;\n      }\n      const html = escapeHtml(t)\n        .replace(/⟦FIGURE⟧/g, `</p><span class=\"figure-chip\">🖼 figure</span><p>`)\n        .replace(/\\*\\*(.+?)\\*\\*/g, \"<strong>$1</strong>\")\n        .replace(/\\n/g, \"<br/>\");\n      return `<p>${html}</p>`;\n    })\n    .join(\"\\n\");\n}\n\n// ============================================================================\n// Tabs\n// ============================================================================\n\n(function initTabs(): void {\n  const tabsHost = must<HTMLElement>(\"tabs\");\n  const panelsHost = must<HTMLElement>(\"panels\");\n\n  createTabGroup(\n    tabsHost,\n    panelsHost,\n    DATA.models,\n    (m) => m.name + (m.flags.includes(\"low-quality\") ? `<span class=\"flag-dot\" title=\"Flagged: low quality\"></span>` : \"\"),\n    (m) => {\n      const row = primaryPricingRow(m.id);\n\n      let flagBanner = \"\";\n      if (m.flags.includes(\"low-quality\")) {\n        flagBanner = `<div class=\"flag-banner\">⚠ <span><b>Flagged: low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.</span></div>`;\n      }\n      // Every panel states what the engine's price is worth, not just what it\n      // is — the same confidence the chart colours by.\n      if (row) {\n        flagBanner += `<div class=\"flag-banner\">🏷 <span><b>Listed at ${costRangeLabel(row.cost)}</b> (${costKindLabel(row.cost).toLowerCase()}, ${row.provider}) — ${confidenceBadge(row.confidence)} ${confidenceMeaning(row.confidence)}${row.corrected ? \" This figure was corrected during review.\" : \"\"}</span></div>`;\n      }\n      if (m.actualRunCost) {\n        flagBanner += `<div class=\"flag-banner\">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses the listed rate instead so all twelve priced rows compare on the same basis.</span></div>`;\n      }\n      return el(\n        \"div\",\n        undefined,\n        `\n        <div class=\"panel-head\">\n          <h3>${m.name}</h3>\n          <span class=\"engine\">${m.engine} · source: <code>${m.file}</code></span>\n        </div>\n        ${flagBanner}\n        <p class=\"panel-note\">${m.note}</p>\n        <div class=\"ocr-text\">${renderText(m.text)}</div>\n      `\n      );\n    }\n  );\n})();\n";
 })();
 
 </script>

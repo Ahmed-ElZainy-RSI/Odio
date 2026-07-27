@@ -13,9 +13,11 @@ from pypdf import PdfReader, PdfWriter
 load_dotenv()
 
 MODEL_NAME = "lighton"  # provider/model label used in output filenames
-ASSETS_DIR = Path("assets")
-OUTPUT_DIR = Path("models")
+Folder_Dir = "national_geographic"
+ASSETS_DIR = Path(f"assets/{Folder_Dir}")
+OUTPUT_DIR = Path(f"models/{Folder_Dir}")
 SYNC_PAGE_LIMIT = 15  # LightOn's /parse sync endpoint limit per request
+SYNC_SIZE_LIMIT = 19 * 1024 * 1024  # stay under the API's 20MB sync limit
 
 OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -29,30 +31,54 @@ def parse_bytes(content: bytes, filename: str):
     return response.status_code, response
 
 
-def split_pdf_chunks(path: Path, chunk_size: int):
-    """Yield (filename, bytes) for each <=chunk_size-page slice of the PDF."""
+def _write_chunk(reader: PdfReader, start: int, count: int):
+    """Write pages [start, start+count) to a PDF and return (end, bytes)."""
+    writer = PdfWriter()
+    end = min(start + count, len(reader.pages))
+    for page in reader.pages[start:end]:
+        writer.add_page(page)
+    buf = io.BytesIO()
+    writer.write(buf)
+    return end, buf.getvalue()
+
+
+def split_pdf_chunks(path: Path, page_limit: int, size_limit: int):
+    """Yield (filename, bytes) slices of the PDF, each within page_limit pages
+    and size_limit bytes. Shrinks the page count when a chunk is still too
+    large in bytes (e.g. image-heavy scanned pages)."""
     reader = PdfReader(str(path))
     total_pages = len(reader.pages)
-    for start in range(0, total_pages, chunk_size):
-        writer = PdfWriter()
-        for page in reader.pages[start:start + chunk_size]:
-            writer.add_page(page)
-        buf = io.BytesIO()
-        writer.write(buf)
-        yield f"{path.stem}_p{start + 1}-{min(start + chunk_size, total_pages)}{path.suffix}", buf.getvalue()
+    start = 0
+    while start < total_pages:
+        count = min(page_limit, total_pages - start)
+        end, data = _write_chunk(reader, start, count)
+        while len(data) > size_limit and count > 1:
+            count = max(1, count // 2)
+            end, data = _write_chunk(reader, start, count)
+        yield f"{path.stem}_p{start + 1}-{end}{path.suffix}", data
+        start = end
 
 
 def parse_file_chunked(path: Path):
     """Return (status, pages_or_response). If the doc exceeds LightOn's sync
-    page limit, splits it into <=SYNC_PAGE_LIMIT-page PDFs and merges results."""
+    page or size limit, splits it into smaller PDFs and merges results."""
     status, response = parse_bytes(path.read_bytes(), path.name)
     if status == 200:
         return 200, response.json()["result"]["pages"]
-    if status != 400 or response.json().get("error") != "max_pages_exceeded":
+
+    try:
+        error = response.json().get("error")
+    except ValueError:
+        error = None
+
+    needs_split = (status == 400 and error == "max_pages_exceeded") or (
+        status == 413 and error == "file_too_large"
+    )
+    if not needs_split:
         return status, response
 
     all_pages = []
-    for chunk_name, chunk_bytes in split_pdf_chunks(path, SYNC_PAGE_LIMIT):
+    for chunk_name, chunk_bytes in split_pdf_chunks(path, SYNC_PAGE_LIMIT, SYNC_SIZE_LIMIT):
         chunk_status, chunk_response = parse_bytes(chunk_bytes, chunk_name)
         if chunk_status != 200:
             return chunk_status, chunk_response

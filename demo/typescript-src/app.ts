@@ -13,32 +13,68 @@ type ModelId = "lighton" | "datalab" | "paddleocr" | "fastocr" | "baseerocr" | "
 
 type ModelFlag = "low-quality" | "anomaly";
 
-// The real pricing data (models/cost.md) is NOT one shape. It's three
-// different pricing models mashed into one markdown table:
+// The real pricing data is NOT one shape. The audited price list
+// (`OCR pricing - final.csv`) mixes five genuinely different billing models
+// into one table:
 //   - a metered per-page rate (a range, since vendors quote low/high)
 //   - a flat fixed fee regardless of page count (FastOCR's manual dashboard run)
-//   - a monthly subscription with a page cap (Besser OCR)
-// Forcing all three into a single "$/page" number is exactly how the
-// original cost.md ended up self-contradictory (see the FastOCR anomaly).
-// A discriminated union keeps each shape honest, and the compiler forces
-// every consumer to handle all three — including any new shape added later.
+//   - a monthly subscription, capped or uncapped (Besser OCR)
+//   - a per-token rate, where cost/page depends on tokens the page happens to emit
+//   - a per-compute-second rate, where cost/page depends on how slow the node is
+// Forcing all five into a single "$/page" number is exactly how the source
+// table ended up self-contradictory (see the FastOCR anomaly, and the 10×/5×
+// arithmetic errors the review caught). A discriminated union keeps each shape
+// honest, and the compiler forces every consumer to handle all of them.
+//
+// `perToken` and `computeTime` are not hypothetical: they arrived with the
+// audited CSV, and adding them to this union is what surfaced every switch
+// that needed a new branch — see "Why TypeScript, here" #2 on the page.
 type CostTier =
-  | { kind: "metered"; low: number; high: number }
+  | { kind: "metered"; low: number; high: number } // $ per 1,000 pages
   | { kind: "flatFee"; amount: number; forPages: number }
-  | { kind: "subscription"; monthlyAmount: number; pageCapPerMonth: number };
+  | { kind: "subscription"; monthlyAmount: number; pageCapPerMonth: number | null }
+  | { kind: "perToken"; usdPerMillionTokens: number; tokensPerPage: number }
+  | { kind: "computeTime"; usdPerComputeSecond: number; secondsPerPage: number };
+
+// What a price figure is actually worth. The audited CSV's central finding is
+// that most of these numbers are not confirmable, so confidence is modeled as
+// a first-class closed set rather than a free-text column nobody reads: it
+// drives the badge, the sort order, and the "verified only" filter.
+type SourceConfidence =
+  | "verified" // vendor's own published rate, checked
+  | "vendor-email" // confirmed by direct vendor correspondence
+  | "derived" // arithmetic from a different billing unit, at an assumed rate
+  | "disputed" // a real published rate exists and materially disagrees
+  | "unverified"; // no vendor source could be found at all
+
+// One row of the audited price list — see PRICING_ROWS in data.ts. Priced
+// independently of whether the engine was ever run: `benchmarked` is the only
+// link back to an OCR tab, and it is null for engines listed but not tested.
+interface PricingRow {
+  model: string;
+  provider: string;
+  cost: CostTier;
+  ceiling: string; // the vendor's own worst-case metric, verbatim
+  worstCase: string; // tokens/page or why that's N/A, verbatim
+  confidence: SourceConfidence;
+  corrected: boolean; // review changed this figure from the original table
+  note: string; // the reviewer's finding, verbatim
+  benchmarked: ModelId | null;
+}
 
 // The hand-edited part — see data.ts. Deliberately has NO `text` field:
 // OCR output is the actual content of models/<file>, so it's read and
 // cleaned by the build script rather than pasted into TypeScript source.
+// Also deliberately has no `cost`: pricing lives in PRICING_ROWS, which is a
+// different length and a different shape (12 priced rows, 6 tested engines).
 interface ModelMeta {
   id: ModelId;
   name: string;
   engine: string;
   file: string; // filename inside models/
   flags: ModelFlag[];
-  cost: CostTier; // the comparable, hosted/managed-tier figure used in the chart
-  costQuote: string;
-  actualRunCost?: CostTier; // a real one-off figure for *this* document, when known
+  note: string; // operational note about the engine, not its price
+  actualRunCost?: CostTier; // a real invoice for *this* document, when known
 }
 
 interface ModelResult extends ModelMeta {
@@ -71,6 +107,13 @@ const DATA: DemoData = {
   pages: PAGES,
 };
 
+// The representative priced row for an engine, for the tabs. PaddleOCR has
+// three (token-standard / token-dense / flat-page), so "first match in table
+// order" is the documented rule rather than an accident of iteration.
+function primaryPricingRow(id: ModelId): PricingRow | undefined {
+  return PRICING_ROWS.find((r) => r.benchmarked === id);
+}
+
 // ============================================================================
 // Exhaustiveness — the actual TypeScript "superpower" for this case
 // ============================================================================
@@ -82,23 +125,46 @@ function assertNever(x: never): never {
   throw new Error("Unhandled case: " + JSON.stringify(x));
 }
 
-const CHART_PAGE_BASIS = 50_000; // matches models/cost.md's own "Total Cost for 50k Pages" framing
+// The audited CSV prices every row at two volumes, and the gap between them is
+// the whole point: eleven rows scale linearly and one (Besser's flat
+// subscription) does not, so its effective $/page falls 50× across this range
+// while nothing else moves. A single hardcoded basis would hide that entirely.
+const VOLUME_BASES = [1_000, 50_000] as const;
+type VolumeBasis = (typeof VOLUME_BASES)[number];
 
-// Normalizes any pricing shape to a single comparable $-per-50,000-pages
-// figure for the chart. This is the one function allowed to collapse the
-// union to a number — everywhere else keeps the real shape (see
-// costRangeLabel, which reports each tier in its own native unit).
-function costToChartBasis(tier: CostTier): number {
+const DEFAULT_VOLUME: VolumeBasis = 50_000;
+
+// Normalizes any pricing shape to a total bill at a given page count. This is
+// the one function allowed to collapse the union to a number — everywhere else
+// keeps the real shape (see costRangeLabel, which reports each tier in its own
+// native unit).
+//
+// Note this takes `pages` rather than closing over a constant: `subscription`
+// is the one shape where cost is NOT proportional to volume, and that only
+// shows up if volume is an input.
+function costAtVolume(tier: CostTier, pages: number): number {
   switch (tier.kind) {
     case "metered":
-      return ((tier.low + tier.high) / 2 / 1000) * CHART_PAGE_BASIS;
+      return ((tier.low + tier.high) / 2 / 1000) * pages;
     case "flatFee":
-      return (tier.amount / tier.forPages) * CHART_PAGE_BASIS;
+      return (tier.amount / tier.forPages) * pages;
     case "subscription":
-      return (tier.monthlyAmount / tier.pageCapPerMonth) * CHART_PAGE_BASIS;
+      // No cap: one flat monthly fee, whatever the volume. Capped: as many
+      // months as it takes to clear the pages.
+      return tier.pageCapPerMonth === null
+        ? tier.monthlyAmount
+        : tier.monthlyAmount * Math.ceil(pages / tier.pageCapPerMonth);
+    case "perToken":
+      return (tier.usdPerMillionTokens / 1_000_000) * tier.tokensPerPage * pages;
+    case "computeTime":
+      return tier.usdPerComputeSecond * tier.secondsPerPage * pages;
     default:
       return assertNever(tier);
   }
+}
+
+function costPerPageAtVolume(tier: CostTier, pages: number): number {
+  return costAtVolume(tier, pages) / pages;
 }
 
 function costRangeLabel(tier: CostTier): string {
@@ -110,7 +176,13 @@ function costRangeLabel(tier: CostTier): string {
     case "flatFee":
       return `$${tier.amount.toFixed(2)} flat for ${tier.forPages} page${tier.forPages === 1 ? "" : "s"}`;
     case "subscription":
-      return `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;
+      return tier.pageCapPerMonth === null
+        ? `$${tier.monthlyAmount.toLocaleString()}/mo, no stated cap`
+        : `$${tier.monthlyAmount.toFixed(2)}/mo, cap ${tier.pageCapPerMonth.toLocaleString()} pages`;
+    case "perToken":
+      return `$${tier.usdPerMillionTokens.toFixed(2)}/1M tok × ${tier.tokensPerPage.toLocaleString()} tok/pg`;
+    case "computeTime":
+      return `$${tier.usdPerComputeSecond.toFixed(4)}/compute-sec × ${tier.secondsPerPage}s/pg`;
     default:
       return assertNever(tier);
   }
@@ -118,10 +190,67 @@ function costRangeLabel(tier: CostTier): string {
 
 function costKindLabel(tier: CostTier): string {
   switch (tier.kind) {
-    case "metered": return "Metered API";
+    case "metered": return "Per page";
     case "flatFee": return "Flat fee";
     case "subscription": return "Subscription";
+    case "perToken": return "Per token";
+    case "computeTime": return "Compute time";
     default: return assertNever(tier);
+  }
+}
+
+// ============================================================================
+// Confidence — the dimension the price alone doesn't show
+// ============================================================================
+
+function confidenceLabel(c: SourceConfidence): string {
+  switch (c) {
+    case "verified": return "Verified";
+    case "vendor-email": return "Vendor email";
+    case "derived": return "Derived";
+    case "disputed": return "Rate disputed";
+    case "unverified": return "Unverified";
+    default: return assertNever(c);
+  }
+}
+
+// Longer-form, for the badge tooltip — what the label actually means about
+// how much weight the number can carry.
+function confidenceMeaning(c: SourceConfidence): string {
+  switch (c) {
+    case "verified": return "Checked against the vendor's own published rate.";
+    case "vendor-email": return "Confirmed directly by the vendor in writing, not from a public page.";
+    case "derived": return "Arithmetic from a different billing unit (e.g. GPU-seconds) at an assumed throughput — not a rate the vendor quotes.";
+    case "disputed": return "A real published rate exists and materially disagrees with the figure used.";
+    case "unverified": return "No vendor source could be found to confirm this figure at all.";
+    default: return assertNever(c);
+  }
+}
+
+// Only the first two are figures you could defend in a budget review.
+function isTrustworthy(c: SourceConfidence): boolean {
+  switch (c) {
+    case "verified":
+    case "vendor-email":
+      return true;
+    case "derived":
+    case "disputed":
+    case "unverified":
+      return false;
+    default: return assertNever(c);
+  }
+}
+
+// A CSS custom property per confidence level, reusing the page's existing
+// semantic palette rather than introducing new theme tokens.
+function confidenceTone(c: SourceConfidence): string {
+  switch (c) {
+    case "verified": return "var(--lapis)";
+    case "vendor-email": return "var(--lapis-soft)";
+    case "derived": return "var(--gold)";
+    case "disputed": return "var(--vermilion)";
+    case "unverified": return "var(--ink-faint)";
+    default: return assertNever(c);
   }
 }
 
@@ -422,11 +551,17 @@ function detectSystemMode(): ThemeMode {
 })();
 
 // ============================================================================
-// Cost dot plot + table — both driven entirely through costToChartBasis /
-// costRangeLabel, so the chart and the table are guaranteed to agree (no
-// separate "chart number" vs "table number" that can silently drift apart,
-// which is exactly what happened across the plain-JS cost.md / fastocr.md
-// files this data was extracted from).
+// Cost bar chart / dot plot / table — all three driven entirely through
+// costAtVolume / costRangeLabel, so they are guaranteed to agree (no separate
+// "chart number" vs "table number" that can silently drift apart, which is
+// exactly what happened across the plain-JS cost.md / fastocr.md files this
+// data was extracted from).
+//
+// The $-at-volume figures are computed from each row's native rate on every
+// render. The source CSV stored "cost at 1k" and "cost at 50k" as two typed-in
+// columns and accumulated a 10× error on one row and a 5× error on another —
+// both of which are now impossible to reproduce here, because there is only
+// one number per row and the rest is arithmetic.
 // ============================================================================
 
 // Small, boring, and reused only here: rounds an axis max up to a "nice"
@@ -453,27 +588,47 @@ function formatUSD(n: number): string {
   return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function buildBarChart(models: ModelResult[], values: number[], cheapestValue: number): HTMLElement {
-  const ramp = ["--ramp-1", "--ramp-2", "--ramp-3", "--ramp-4", "--ramp-5", "--ramp-6"];
+// A compact "how much is this number worth" badge, used in every view so the
+// price and its credibility are never shown apart.
+function confidenceBadge(c: SourceConfidence): string {
+  return `<span class="conf-badge" style="--conf: ${confidenceTone(c)}" title="${confidenceLabel(c)} — ${confidenceMeaning(c)}">${confidenceLabel(c)}</span>`;
+}
+
+function rowTooltip(row: PricingRow, value: number, pages: VolumeBasis): string {
+  return `${row.model} · ${costKindLabel(row.cost)}: ${costRangeLabel(row.cost)} → ${formatUSD(value)} per ${pages.toLocaleString()} pages (${confidenceLabel(row.confidence)})`;
+}
+
+// Marks that ride along with a row's name in both charts: the engine was
+// actually run here, and/or the review changed its number.
+function rowChips(row: PricingRow, isCheapest: boolean): string {
+  return (
+    (isCheapest ? '<span class="cheapest-chip">cheapest</span>' : "") +
+    (row.benchmarked ? '<span class="run-chip" title="This engine was actually run against the source document — see its OCR output below">run</span>' : "") +
+    (row.corrected ? '<span class="corrected-chip" title="The review corrected this figure from the original table">corrected</span>' : "")
+  );
+}
+
+function buildBarChart(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {
   const max = Math.max(...values);
   const chart = el("div", "chart");
-  models.forEach((m, i) => {
+  rows.forEach((row, i) => {
     const value = values[i]!;
     const isCheapest = value === cheapestValue;
     const pct = Math.max(2, (value / max) * 100);
-    const row = el("div", "bar-row" + (m.flags.includes("anomaly") ? " flagged" : ""));
-    row.innerHTML = `
-      <div class="name">${m.name}${isCheapest ? '<span class="cheapest-chip">cheapest</span>' : ""}</div>
-      <div class="bar-track"><div class="bar-fill${isCheapest ? " bar-cheapest" : ""}" data-pct="${pct}" style="background: var(${ramp[i]!})"
-           title="${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages"></div></div>
+    const barRow = el("div", "bar-row");
+    barRow.innerHTML = `
+      <div class="name">${row.model}${rowChips(row, isCheapest)}</div>
+      <div class="bar-track"><div class="bar-fill${isCheapest ? " bar-cheapest" : ""}" data-pct="${pct}"
+           style="background: ${confidenceTone(row.confidence)}"
+           title="${rowTooltip(row, value, pages)}"></div></div>
       <div class="value">${formatUSD(value)}</div>
     `;
-    chart.appendChild(row);
+    chart.appendChild(barRow);
   });
   return chart;
 }
 
-function buildDotPlot(models: ModelResult[], values: number[], cheapestValue: number): HTMLElement {
+function buildDotPlot(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {
   const ticks = niceTicks(Math.max(...values), 4);
   const axisMax = ticks[ticks.length - 1]!;
 
@@ -487,21 +642,22 @@ function buildDotPlot(models: ModelResult[], values: number[], cheapestValue: nu
   });
   plot.appendChild(grid);
 
-  models.forEach((m, i) => {
+  rows.forEach((row, i) => {
     const value = values[i]!;
     const isCheapest = value === cheapestValue;
     const pct = Math.min(100, (value / axisMax) * 100);
-    const row = el("div", "dot-row" + (m.flags.includes("anomaly") ? " flagged" : ""));
-    row.innerHTML = `
-      <div class="name">${m.name}${isCheapest ? '<span class="cheapest-chip">cheapest</span>' : ""}</div>
+    const dotRow = el("div", "dot-row");
+    dotRow.innerHTML = `
+      <div class="name">${row.model}${rowChips(row, isCheapest)}</div>
       <div class="dot-track">
         <div class="dot-line"></div>
         <div class="dot${isCheapest ? " dot-cheapest" : ""}" data-pct="${pct}"
-             title="${costKindLabel(m.cost)}: ${costRangeLabel(m.cost)} → ${formatUSD(value)} per ${CHART_PAGE_BASIS.toLocaleString()} pages"></div>
+             style="background: ${confidenceTone(row.confidence)}"
+             title="${rowTooltip(row, value, pages)}"></div>
       </div>
       <div class="value">${formatUSD(value)}</div>
     `;
-    plot.appendChild(row);
+    plot.appendChild(dotRow);
   });
 
   const axis = el("div", "dot-axis");
@@ -517,34 +673,175 @@ function buildDotPlot(models: ModelResult[], values: number[], cheapestValue: nu
   return plot;
 }
 
+function buildCostTable(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {
+  const table = el(
+    "table",
+    "cost-table",
+    `<thead><tr>
+       <th>Model</th><th>Provider / hosting</th><th>Billing shape</th>
+       <th>$ per ${pages.toLocaleString()} pages</th><th>Effective $/page</th>
+       <th>Native rate</th><th>Confidence</th><th>Review note</th>
+     </tr></thead>`
+  );
+  const tbody = el("tbody");
+  rows.forEach((row, i) => {
+    const value = values[i]!;
+    const perPage = costPerPageAtVolume(row.cost, pages);
+    tbody.appendChild(
+      el(
+        "tr",
+        row.corrected ? "row-corrected" : undefined,
+        `<td>${row.model}${value === cheapestValue ? " 🏆" : ""}${row.benchmarked ? '<span class="run-chip">run</span>' : ""}</td>
+         <td>${row.provider}</td>
+         <td>${costKindLabel(row.cost)}</td>
+         <td class="num">${formatUSD(value)}</td>
+         <td class="num">$${perPage.toFixed(5)}</td>
+         <td>${costRangeLabel(row.cost)}<br><span class="ceiling">ceiling: ${row.ceiling} · ${row.worstCase}</span></td>
+         <td>${confidenceBadge(row.confidence)}</td>
+         <td class="note">${row.note}</td>`
+      )
+    );
+  });
+  table.appendChild(tbody);
+  const wrap = el("div", "table-wrap");
+  wrap.appendChild(table);
+  return wrap;
+}
+
+function buildConfidenceLegend(): HTMLElement {
+  const order: SourceConfidence[] = ["verified", "vendor-email", "derived", "disputed", "unverified"];
+  const legend = el("div", "conf-legend");
+  legend.innerHTML =
+    `<span class="conf-legend-label">Bar colour = confidence in the figure</span>` +
+    order
+      .map(
+        (c) =>
+          `<span class="conf-legend-item" title="${confidenceMeaning(c)}"><i style="background:${confidenceTone(c)}"></i>${confidenceLabel(c)}</span>`
+      )
+      .join("");
+  return legend;
+}
+
 (function initCost(): void {
-  const models = [...DATA.models].sort((a, b) => costToChartBasis(a.cost) - costToChartBasis(b.cost));
-  const values = models.map((m) => costToChartBasis(m.cost));
-  const cheapestValue = Math.min(...values);
+  // Section state. Volume is a real axis here, not a constant: it is the only
+  // way the flat-subscription row's behaviour becomes visible.
+  let volume: VolumeBasis = DEFAULT_VOLUME;
+  let trustedOnly = false;
+  let currentView = "bar";
+  let revealed = false;
 
-  const captionText = `Sorted cheapest → most expensive, normalized to $ per ${CHART_PAGE_BASIS.toLocaleString()} pages regardless of pricing shape (metered / flat fee / subscription) — hover a mark for the real shape behind the number. To change these figures, edit the \`cost\` field for each model in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;
-
-  const barChart = buildBarChart(models, values, cheapestValue);
   const barView = must<HTMLElement>("barView");
-  barView.appendChild(barChart);
-  barView.appendChild(el("div", "chart-caption", captionText));
-
-  const dotPlot = buildDotPlot(models, values, cheapestValue);
   const dotView = must<HTMLElement>("dotView");
-  dotView.appendChild(dotPlot);
-  dotView.appendChild(el("div", "chart-caption", captionText));
+  const tableView = must<HTMLElement>("tableView");
+  const statsHost = must<HTMLElement>("costStats");
+  const anomalyHost = must<HTMLElement>("anomalyCallouts");
 
-  // Both charts' fills are revealed together, the first time either becomes
-  // visible, by observing the section itself (always in the layout, unlike
-  // its currently-hidden sibling view) rather than each chart individually.
-  const revealed = { done: false };
-  function reveal(): void {
-    if (revealed.done) return;
-    revealed.done = true;
-    barChart.querySelectorAll<HTMLElement>(".bar-fill").forEach((f) => { f.style.width = f.dataset.pct + "%"; });
-    dotPlot.querySelectorAll<HTMLElement>(".dot").forEach((d) => { d.style.left = d.dataset.pct + "%"; });
+  function visibleRows(): PricingRow[] {
+    const rows = trustedOnly ? PRICING_ROWS.filter((r) => isTrustworthy(r.confidence)) : [...PRICING_ROWS];
+    return rows.sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));
   }
-  const costSection = must<HTMLElement>("cost");
+
+  // Headline numbers, computed rather than written down, so they can't drift
+  // out of sync with the table the way the source CSV's own totals did.
+  function renderStats(): void {
+    const trusted = PRICING_ROWS.filter((r) => isTrustworthy(r.confidence));
+    const corrected = PRICING_ROWS.filter((r) => r.corrected);
+    const all = [...PRICING_ROWS].sort((a, b) => costAtVolume(a.cost, volume) - costAtVolume(b.cost, volume));
+    const cheapest = all[0]!;
+    const dearest = all[all.length - 1]!;
+    const spread = costAtVolume(dearest.cost, volume) / costAtVolume(cheapest.cost, volume);
+
+    statsHost.innerHTML = [
+      { n: `${trusted.length} of ${PRICING_ROWS.length}`, l: "figures vendor-confirmed" },
+      { n: `${corrected.length}`, l: "corrected during review" },
+      { n: `${spread < 10 ? spread.toFixed(1) : Math.round(spread).toLocaleString()}×`, l: `spread, cheapest → dearest at ${volume.toLocaleString()} pages` },
+      { n: formatUSD(costAtVolume(cheapest.cost, volume)), l: `cheapest (${cheapest.model})` },
+    ]
+      .map((s) => `<div class="cost-stat"><b>${s.n}</b><span>${s.l}</span></div>`)
+      .join("");
+  }
+
+  function renderAnomalies(): void {
+    anomalyHost.innerHTML = "";
+
+    // Rows whose bill does not scale with volume at all — the reason this
+    // section has a volume toggle in the first place.
+    PRICING_ROWS.filter((r) => r.cost.kind === "subscription").forEach((r) => {
+      const at1k = costPerPageAtVolume(r.cost, 1_000);
+      const at50k = costPerPageAtVolume(r.cost, 50_000);
+      anomalyHost.appendChild(
+        el(
+          "div",
+          "anomaly-callout",
+          `<b>${r.model} is the only row that doesn't scale.</b> It bills a flat ${costRangeLabel(r.cost)}, so the invoice is identical at 1,000 and 50,000 pages — the same fee spread over 50× the work. Effective cost falls from <b>$${at1k.toFixed(5)}/page</b> to <b>$${at50k.toFixed(5)}/page</b> across that range. Every other row is linear, so at low volume this is the most expensive option on the table by a wide margin, and at high volume it stops being an outlier. Flip the volume toggle above to watch it move.`
+        )
+      );
+    });
+
+    // Real invoices for this specific document, where the quoted tier and what
+    // was actually charged disagree. Generated from data rather than
+    // hand-written, so a 7th engine with the same story needs no new prose.
+    DATA.models
+      .filter((m): m is ModelResult & { actualRunCost: CostTier } => m.actualRunCost !== undefined)
+      .forEach((m) => {
+        const row = primaryPricingRow(m.id);
+        const listed = row
+          ? `the ${costKindLabel(row.cost).toLowerCase()} rate listed above (${costRangeLabel(row.cost)} ≈ ${formatUSD(costAtVolume(row.cost, volume))} per ${volume.toLocaleString()} pages)`
+          : "the rate listed above";
+        anomalyHost.appendChild(
+          el(
+            "div",
+            "anomaly-callout",
+            `<b>What ${m.name} actually charged for this document: ${costRangeLabel(m.actualRunCost)}.</b> That is a real invoice for the exact 5-page file in this demo, not a rate card — which is why it isn't what the chart plots. The chart uses ${listed} so all twelve rows compare on one basis. ${m.note}`
+          )
+        );
+      });
+  }
+
+  function renderCharts(): void {
+    const rows = visibleRows();
+    const values = rows.map((r) => costAtVolume(r.cost, volume));
+    const cheapestValue = Math.min(...values);
+
+    const captionText = `Sorted cheapest → most expensive at <b>${volume.toLocaleString()} pages</b>, normalized from each vendor's native billing unit (per page / per token / per compute-second / flat subscription) — hover a mark for the real shape behind the number. Colour encodes how much the figure can be trusted, not how big it is. Figures transcribed from <code>OCR pricing - final.csv</code>; to change them, edit <code>PRICING_ROWS</code> in <code>demo/typescript-src/data.ts</code> and rebuild with <code>python3 demo/build.py</code>.`;
+
+    barView.innerHTML = "";
+    const barChart = buildBarChart(rows, values, cheapestValue, volume);
+    barView.appendChild(buildConfidenceLegend());
+    barView.appendChild(barChart);
+    barView.appendChild(el("div", "chart-caption", captionText));
+
+    dotView.innerHTML = "";
+    const dotPlot = buildDotPlot(rows, values, cheapestValue, volume);
+    dotView.appendChild(buildConfidenceLegend());
+    dotView.appendChild(dotPlot);
+    dotView.appendChild(el("div", "chart-caption", captionText));
+
+    tableView.innerHTML = "";
+    tableView.appendChild(buildCostTable(rows, values, cheapestValue, volume));
+
+    if (revealed) reveal();
+  }
+
+  // Fills start at width 0 / left 0 and are released once the section is on
+  // screen. After the first reveal, re-renders animate from 0 again on the
+  // next frame, which reads as the bars re-settling to the new volume.
+  function reveal(): void {
+    revealed = true;
+    requestAnimationFrame(() => {
+      barView.querySelectorAll<HTMLElement>(".bar-fill").forEach((f) => { f.style.width = f.dataset.pct + "%"; });
+      dotView.querySelectorAll<HTMLElement>(".dot").forEach((d) => { d.style.left = d.dataset.pct + "%"; });
+    });
+  }
+
+  function renderAll(): void {
+    renderStats();
+    renderCharts();
+    renderAnomalies();
+  }
+
+  renderAll();
+
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       if (e.isIntersecting) {
@@ -553,60 +850,45 @@ function buildDotPlot(models: ModelResult[], values: number[], cheapestValue: nu
       }
     });
   }, { threshold: 0.15 });
-  io.observe(costSection);
+  io.observe(must<HTMLElement>("cost"));
 
-  const table = el("table", "cost-table", `<thead><tr><th>Engine</th><th>Pricing shape</th><th>Est. $ per ${CHART_PAGE_BASIS.toLocaleString()} pages</th><th>Native rate</th><th>Source note</th></tr></thead>`);
-  const tbody = el("tbody");
-  models.forEach((m, i) => {
-    const tr = el(
-      "tr",
-      undefined,
-      `<td>${m.name}${m.flags.includes("low-quality") ? " ⚠" : ""}${values[i] === cheapestValue ? " 🏆" : ""}</td>
-       <td>${costKindLabel(m.cost)}</td>
-       <td class="num">${formatUSD(values[i]!)}</td>
-       <td>${costRangeLabel(m.cost)}</td>
-       <td>${m.costQuote}</td>`
-    );
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  const tableWrap = el("div", "table-wrap");
-  tableWrap.appendChild(table);
-  must<HTMLElement>("tableView").appendChild(tableWrap);
+  const views: Record<string, HTMLElement> = { bar: barView, dot: dotView, table: tableView };
+  function applyView(): void {
+    for (const [key, view] of Object.entries(views)) {
+      view.style.display = key === currentView ? "" : "none";
+    }
+  }
+  applyView();
 
-  // One callout per model with a real one-off actualRunCost — generated
-  // from the data rather than hand-written per model, so a 7th model with
-  // its own "quoted rate vs. what I actually paid" story doesn't need a
-  // matching hand-written paragraph here to show up.
-  const anomalyHost = must<HTMLElement>("anomalyCallouts");
-  models
-    .filter((m): m is ModelResult & { actualRunCost: CostTier } => m.actualRunCost !== undefined)
-    .forEach((m) => {
-      const chartFigure = formatUSD(costToChartBasis(m.cost));
-      anomalyHost.appendChild(
-        el(
-          "div",
-          "anomaly-callout",
-          `<b>Why isn't ${m.name}'s ${costRangeLabel(m.actualRunCost)} in the chart above?</b> That figure is the actual cost of running this specific document through ${m.name} (${costKindLabel(m.actualRunCost).toLowerCase()}) — not a metered per-page rate. The chart instead uses ${m.name}'s ${costKindLabel(m.cost).toLowerCase()} tier (${costRangeLabel(m.cost)} ≈ ${chartFigure} per ${CHART_PAGE_BASIS.toLocaleString()} pages) so all engines are compared on the same basis. See the ${m.name} tab for the full detail.`
-        )
-      );
-    });
-
-  const views: Record<string, HTMLElement> = {
-    bar: barView,
-    dot: dotView,
-    table: must<HTMLElement>("tableView"),
-  };
   must<HTMLElement>("viewToggle").addEventListener("click", (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
     if (!btn) return;
-    const target = btn.dataset.view ?? "";
-    document.querySelectorAll<HTMLButtonElement>("#viewToggle button").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
+    currentView = btn.dataset.view ?? "bar";
+    document.querySelectorAll<HTMLButtonElement>("#viewToggle button").forEach((b) => b.classList.toggle("active", b === btn));
     reveal(); // in case the section never scrolled past the observer threshold
-    for (const [key, view] of Object.entries(views)) {
-      view.style.display = key === target ? "" : "none";
-    }
+    applyView();
+  });
+
+  must<HTMLElement>("volumeToggle").addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
+    if (!btn) return;
+    const picked = Number(btn.dataset.volume);
+    const match = VOLUME_BASES.find((v) => v === picked);
+    if (match === undefined) return;
+    volume = match;
+    document.querySelectorAll<HTMLButtonElement>("#volumeToggle button").forEach((b) => b.classList.toggle("active", b === btn));
+    renderAll();
+    applyView();
+  });
+
+  const trustBtn = must<HTMLButtonElement>("trustFilter");
+  trustBtn.addEventListener("click", () => {
+    trustedOnly = !trustedOnly;
+    trustBtn.classList.toggle("active", trustedOnly);
+    trustBtn.setAttribute("aria-pressed", String(trustedOnly));
+    trustBtn.textContent = trustedOnly ? "Showing vendor-confirmed only" : "Show vendor-confirmed only";
+    renderAll();
+    applyView();
   });
 })();
 
@@ -652,12 +934,19 @@ function renderText(md: string): string {
     DATA.models,
     (m) => m.name + (m.flags.includes("low-quality") ? `<span class="flag-dot" title="Flagged: low quality"></span>` : ""),
     (m) => {
+      const row = primaryPricingRow(m.id);
+
       let flagBanner = "";
       if (m.flags.includes("low-quality")) {
         flagBanner = `<div class="flag-banner">⚠ <span><b>Flagged: low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.</span></div>`;
       }
+      // Every panel states what the engine's price is worth, not just what it
+      // is — the same confidence the chart colours by.
+      if (row) {
+        flagBanner += `<div class="flag-banner">🏷 <span><b>Listed at ${costRangeLabel(row.cost)}</b> (${costKindLabel(row.cost).toLowerCase()}, ${row.provider}) — ${confidenceBadge(row.confidence)} ${confidenceMeaning(row.confidence)}${row.corrected ? " This figure was corrected during review." : ""}</span></div>`;
+      }
       if (m.actualRunCost) {
-        flagBanner += `<div class="flag-banner">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses ${m.name}'s programmatic API tier instead (${costRangeLabel(m.cost)}) so all six engines compare on the same basis.</span></div>`;
+        flagBanner += `<div class="flag-banner">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses the listed rate instead so all twelve priced rows compare on the same basis.</span></div>`;
       }
       return el(
         "div",
@@ -668,6 +957,7 @@ function renderText(md: string): string {
           <span class="engine">${m.engine} · source: <code>${m.file}</code></span>
         </div>
         ${flagBanner}
+        <p class="panel-note">${m.note}</p>
         <div class="ocr-text">${renderText(m.text)}</div>
       `
       );
