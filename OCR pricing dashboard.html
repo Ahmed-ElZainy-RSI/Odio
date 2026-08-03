@@ -1,6 +1,6 @@
 <!doctype html><html lang=en><meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<title>OCR Pricing Review</title>
+<title>OCR Pricing &amp; Accuracy Review</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
@@ -76,15 +76,69 @@ padding:4px 9px;border-radius:5px;margin-top:2px;height:fit-content}
 .fix .bd span{color:#5c646e;font-size:13px}
 .foot{font-size:12px;color:#8a8f96;line-height:1.7;padding-top:8px}
 .foot b{color:#5c646e}
-@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.bname{width:140px;font-size:12px}}
-@media print{body{background:#fff;padding:0}.card,.kpi{break-inside:avoid}}
+.qs{display:flex;align-items:center;gap:9px}
+.qbar{flex:1;min-width:46px;height:7px;border-radius:4px;background:#eef1f4;overflow:hidden}
+.qbar i{display:block;height:100%;border-radius:4px}
+.qn{font-variant-numeric:tabular-nums;font-weight:660;width:34px;text-align:right}
+.bad{color:#b3401f;font-weight:640}
+.good{color:#0f7b4a;font-weight:640}
+.arow{display:flex;gap:16px;align-items:flex-start;padding:13px 0;border-top:1px solid #f1f3f5}
+.arow:first-of-type{border-top:none;padding-top:0}
+.aname{flex:none;width:210px;font-size:13.5px;font-weight:600;color:#3c434c;padding-top:4px;line-height:1.35}
+.aname .sub{font-weight:400}
+.awords{flex:1;display:flex;flex-wrap:wrap;gap:7px;direction:rtl}
+.aw{font-size:15.5px;padding:2px 10px;border-radius:5px;color:#b3401f;background:#fdeceb;
+border:1px solid #f3d4d0;line-height:1.75}
+.gap{background:#fffdf5;border-color:#efe2c4}
+.gap h2{color:#9a7b2a}
+.otabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;padding-bottom:16px;
+border-bottom:1px solid #eef1f4}
+.otab{font:inherit;font-size:12.5px;line-height:1;display:flex;align-items:center;gap:8px;
+padding:8px 13px;border:1px solid #dfe3e8;background:#fff;color:#3c434c;border-radius:8px;cursor:pointer}
+.otab:hover{border-color:#b9c2cc}
+.otab.active{background:#14233a;border-color:#14233a;color:#fff}
+.oscore{font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;
+padding:2px 7px;border-radius:20px;background:#f0f2f5}
+.otab.active .oscore{background:#ffffff26!important;color:#fff!important}
+.opanel{display:none}
+.opanel.active{display:block}
+.ohead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+flex-wrap:wrap;margin-bottom:14px}
+.ohead b{font-size:15.5px;font-weight:640}
+.osrc{font-size:11px;color:#a4abb4;margin-top:5px;
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.otext{direction:rtl;text-align:right;
+font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro','Times New Roman',serif;
+font-size:17.5px;line-height:2.05;color:#1a1d21;background:#fafbfc;border:1px solid #eef1f4;
+border-radius:10px;padding:22px 26px;max-height:560px;overflow-y:auto}
+.otext h4{font-size:19px;font-weight:640;margin:20px 0 10px;line-height:1.5}
+.otext h4:first-child{margin-top:0}
+.otext p{margin:0 0 13px}
+.otext hr{border:none;border-top:1px solid #e6eaee;margin:20px 0}
+.ofig{display:inline-block;direction:ltr;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
+Helvetica,Arial,sans-serif;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+color:#8a8f96;background:#f0f2f5;border:1px solid #e6eaee;border-radius:5px;padding:2px 8px;
+margin:0 3px;vertical-align:middle;line-height:1.6}
+.opage{direction:ltr;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
+Helvetica,Arial,sans-serif;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+color:#a4abb4;margin:22px 0 14px;padding-top:14px;border-top:1px solid #e6eaee}
+.otext .opage:first-child{margin-top:0;padding-top:0;border-top:none}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.bname{width:140px;font-size:12px}
+.aname{width:100%}.arow{flex-direction:column;gap:8px}}
+/* Printing is for the record, so every transcript is emitted in full rather
+   than only whichever tab happened to be open on screen. */
+@media print{body{background:#fff;padding:0}.card,.kpi,.arow{break-inside:avoid}
+.otabs{display:none}.opanel{display:block!important;break-before:page}
+.opanel:first-child{break-before:auto}
+.otext{max-height:none;overflow:visible}}
 </style>
 <div class=pg>
 
 <div class=head>
 <div class=eyebrow>Vendor cost review &middot; 27 July 2026</div>
-<h1>OCR Pricing Ceiling Analysis</h1>
-<p class=dek>16 model and hosting configurations, priced at 1,000 and 50,000 pages per month.
+<h1>OCR Pricing &amp; Accuracy Review</h1>
+<p class=dek>16 model and hosting configurations, priced at 1,000 and 50,000 pages per month, with
+eight of them measured for Arabic transcription accuracy on the same five-page document.
 Four arithmetic corrections applied to the source sheet; every rate re-checked against its vendor.</p>
 </div>
 
@@ -117,6 +171,15 @@ on a throughput figure nobody has published.</p>
 <p>At the 50,000-page benchmark it is $0.0267 per page &mdash; the most expensive option on the list.
 The decision turns entirely on committed monthly volume.</p>
 </div></div>
+
+<div class=find><div class=num>5</div><div>
+<h3>Price does not predict accuracy, and the cheapest defensible option is untested</h3>
+<p>Across the eight models measured, the cheapest row scores worst and the most expensive scores
+best &mdash; but the order in between is set by defects pricing cannot see. Datalab transcribes at
+95.2% yet falls to sixth on 104 English fragments injected into Arabic text.
+<b>Mistral OCR 4 and dots.mocr &mdash; the cheapest verified rate and the strongest public benchmark
+&mdash; have no accuracy data on this document at all.</b></p>
+</div></div>
 </div>
 
 <div class=kpis>
@@ -145,6 +208,413 @@ not how good the model is.</p>
 <div class=segrow><span class=sd style="background:#0f7b4a"></span><span class=sl>Vendor published</span><span class=sc>5</span></div><div class=segrow><span class=sd style="background:#1c4f8f"></span><span class=sl>Self-hosted estimate</span><span class=sc>1</span></div><div class=segrow><span class=sd style="background:#b07d10"></span><span class=sl>Derived, not published</span><span class=sc>2</span></div><div class=segrow><span class=sd style="background:#b3401f"></span><span class=sl>Disputed - above published rate</span><span class=sc>3</span></div><div class=segrow><span class=sd style="background:#8a8f96"></span><span class=sl>No source found</span><span class=sc>5</span></div>
 <p class=scalenote>Rates rated <b>Disputed</b> or <b>No source found</b> should be treated as
 planning placeholders, not as figures to budget against.</p>
+</div>
+
+<div class=card>
+<h2>What the money actually buys &mdash; measured accuracy</h2>
+<p style="color:#5c646e;font-size:13.5px;margin-bottom:20px;max-width:82ch">Eight of these models
+were run against the same five-page Arabic document (Ibn Battuta in Egypt). Scored against a
+reference transcript read directly from the page images &mdash; 538 words, 355 distinct &mdash; with
+no vendor transcript used. <b>Price and accuracy are close to unrelated:</b> the cheapest row on the
+table scores worst, and the second-most-accurate model is dragged to sixth place by a defect that
+costs nothing to detect and everything to clean up.</p>
+<table><thead><tr><th>#</th><th>Model</th><th style="min-width:118px">Overall</th>
+<th class=n>Accuracy</th><th class=n>Bad Arabic</th><th class=n>Invented</th>
+<th class=n>English in&nbsp;Arabic</th><th class=n>Mixed script</th><th class=n>Numbers</th><th>Layout (RTL)</th>
+<th class=n>$ / 50k</th></tr></thead><tbody>
+<tr><td class=r>1</td><td class=nm>Baseer OCR</td><td><div class=qs><div class=qbar><i style="width:97.5%;background:#0f7b4a"></i></div><span class=qn>97.5</span></div></td><td class="n good">95.4%</td><td class=n>5.7%</td><td class=n>30</td><td class="n good">0</td><td class="n good">0</td><td class="n good">6/6</td><td class=good>Correct</td><td class=n>$1,333.33</td></tr>
+<tr><td class=r>2</td><td class=nm>LightOnOCR-2-1B</td><td><div class=qs><div class=qbar><i style="width:80.7%;background:#0f7b4a"></i></div><span class=qn>80.7</span></div></td><td class=n>84.2%</td><td class=n>15.5%</td><td class=n>70</td><td class="n good">0</td><td class="n good">0</td><td class=n>4/6</td><td>Heading missing</td><td class=n>$113.97</td></tr>
+<tr><td class=r>3</td><td class=nm>FastOCR</td><td><div class=qs><div class=qbar><i style="width:77.6%;background:#b07d10"></i></div><span class=qn>77.6</span></div></td><td class="n good">95.0%</td><td class=n>5.2%</td><td class=n>27</td><td class="n good">0</td><td class="n good">0</td><td class=n>5/6</td><td>Columns interleaved</td><td class=n>$100.00</td></tr>
+<tr><td class=r>4</td><td class=nm>PaddleOCR-VL-1.6</td><td><div class=qs><div class=qbar><i style="width:76.4%;background:#b07d10"></i></div><span class=qn>76.4</span></div></td><td class=n>77.7%</td><td class=n>15.4%</td><td class=n>66</td><td class="n good">0</td><td class="n good">0</td><td class="n bad">0/6</td><td>Sidebar first</td><td class=n>$25&ndash;$100</td></tr>
+<tr><td class=r>5</td><td class=nm>Unlimited OCR</td><td><div class=qs><div class=qbar><i style="width:71.1%;background:#b07d10"></i></div><span class=qn>71.1</span></div></td><td class=n>71.0%</td><td class="n bad">25.7%</td><td class="n bad">120</td><td class="n bad">6</td><td class="n good">0</td><td class="n bad">2/6</td><td>Sidebar first</td><td class=n>$50.00</td></tr>
+<tr><td class=r>6</td><td class=nm>Datalab<div class=sub>Surya 2 / Chandra 2</div></td><td><div class=qs><div class=qbar><i style="width:62.3%;background:#b3401f"></i></div><span class=qn>62.3</span></div></td><td class="n good">95.2%</td><td class=n>6.4%</td><td class=n>31</td><td class="n bad">104</td><td class="n good">0</td><td class=n>4/6</td><td>Sidebar first</td><td class=n>$500&ndash;$750</td></tr>
+<tr><td class=r>7</td><td class=nm>MinerU Extractor</td><td><div class=qs><div class=qbar><i style="width:51.4%;background:#b3401f"></i></div><span class=qn>51.4</span></div></td><td class=n>69.5%</td><td class="n bad">23.2%</td><td class="n bad">103</td><td class="n bad">22</td><td class="n bad">22</td><td class=n>4/6</td><td>Heading missing</td><td class=n>$250.00</td></tr>
+<tr><td class=r>8</td><td class=nm>GLM-OCR</td><td><div class=qs><div class=qbar><i style="width:50.7%;background:#b3401f"></i></div><span class=qn>50.7</span></div></td><td class="n bad">18.0%</td><td class="n bad">74.0%</td><td class="n bad">242</td><td class="n good">0</td><td class="n bad">1</td><td class="n bad">1/6</td><td>Heading missing</td><td class=n>$15.00</td></tr>
+</tbody></table>
+<p class=scalenote><b>Accuracy</b> is the share of reference words recovered, matched as a multiset
+so repetition counts. <b>Bad Arabic</b> is the share of output words absent from the source; a few
+will be transcription slips rather than model errors, so treat small differences as noise.
+<b>Invented</b> counts distinct word types that appear nowhere in the document.
+<b>English in Arabic</b> counts Latin fragments sitting inside Arabic running text and excludes
+standalone English image captions. <b>Layout</b> checks page 2, where correct right-to-left output
+places the main column (&#1601;&#1578;&#1609; &#1605;&#1606; &#1591;&#1606;&#1580;&#1577;) before the
+sidebar (&#1605;&#1583;&#1610;&#1606;&#1577; &#1591;&#1606;&#1580;&#1577;).</p>
+</div>
+
+<div class=card>
+<h2>Sample of malformed Arabic produced by each model</h2>
+<p style="color:#5c646e;font-size:13.5px;margin-bottom:20px;max-width:82ch">Words appearing in the
+output that exist nowhere in the source document. Some are simple character errors
+(&#1593;&#1610;&#1583;&#1575;&#1576; for &#1593;&#1610;&#1584;&#1575;&#1576;,
+&#1601;&#1606;&#1610;&#1605; for &#1594;&#1606;&#1610;&#1605;); others are not Arabic words at all.
+This is what a percentage-point difference in the table above actually looks like on the page.</p>
+<div class=arow><div class=aname>Baseer OCR<div class=sub>rank 1 &middot; 97.5</div></div><div class=awords><span class=aw>&#1575;&#1604;&#1605;&#1578;&#1606;&#1575;&#1607;&#1576;&#1607;</span><span class=aw>&#1601;&#1606;&#1610;&#1605;</span><span class=aw>&#1603;&#1608;&#1585;&#1576;&#1587;</span><span class=aw>&#1608;&#1576;&#1575;&#1587;&#1605;&#1607;</span><span class=aw>&#1593;&#1610;&#1583;&#1575;&#1576;</span><span class=aw>&#1580;&#1608;&#1578;&#1606;&#1587;</span><span class=aw>&#1604;&#1591;&#1576;&#1575;&#1593;&#1607;</span></div></div>
+<div class=arow><div class=aname>LightOnOCR-2-1B<div class=sub>rank 2 &middot; 80.7</div></div><div class=awords><span class=aw>&#1576;&#1591;&#1576;&#1608;&#1591;&#1607;</span><span class=aw>&#1576;&#1591;&#1608;&#1591;&#1582;</span><span class=aw>&#1607;&#1575;</span><span class=aw>&#1608;&#1587;&#1587;&#1607;</span><span class=aw>&#1608;&#1585;</span><span class=aw>&#1575;&#1604;&#1583;</span><span class=aw>&#1575;&#1604;&#1581;&#1610;&#1591;</span></div></div>
+<div class=arow><div class=aname>FastOCR<div class=sub>rank 3 &middot; 77.6</div></div><div class=awords><span class=aw>&#1607;&#1575;</span><span class=aw>&#1587;&#1610;&#1575;&#1587;&#1607;</span><span class=aw>&#1575;&#1586;&#1606;&#1610;&#1607;</span><span class=aw>&#1575;&#1604;&#1581;&#1590;&#1585;&#1610;&#1607;</span><span class=aw>&#1605;&#1589;&#1591;&#1601;</span><span class=aw>&#1594;&#1606;</span><span class=aw>&#1605;&#1601;&#1578;&#1610;</span></div></div>
+<div class=arow><div class=aname>PaddleOCR-VL-1.6<div class=sub>rank 4 &middot; 76.4</div></div><div class=awords><span class=aw>&#1575;&#1604;&#1605;</span><span class=aw>&#1575;&#1604;</span><span class=aw>&#1575;&#1569;</span><span class=aw>&#1576;&#1591;&#1608;</span><span class=aw>&#1610;&#1607;</span><span class=aw>&#1575;&#1576;</span><span class=aw>&#1578;&#1607;</span></div></div>
+<div class=arow><div class=aname>Unlimited OCR<div class=sub>rank 5 &middot; 71.1</div></div><div class=awords><span class=aw>&#1610;&#1604;</span><span class=aw>&#1576;&#1591;&#1608;&#1604;&#1607;</span><span class=aw>&#1608;&#1607;&#1575;</span><span class=aw>&#1576;&#1593;&#1610;&#1604;&#1610;</span><span class=aw>&#1575;&#1604;&#1575;</span><span class=aw>&#1575;&#1591;&#1606;&#1575;</span><span class=aw>&#1601;&#1610;&#1607;&#1607;</span></div></div>
+<div class=arow><div class=aname>Datalab (Surya / Chandra)<div class=sub>rank 6 &middot; 62.3</div></div><div class=awords><span class=aw>&#1578;&#1605;</span><span class=aw>&#1587;&#1586;&#1575;</span><span class=aw>&#1575;&#1604;&#1575;&#1591;&#1604;&#1587;&#1610;</span><span class=aw>&#1575;&#1605;&#1578;&#1606;&#1575;&#1607;&#1610;&#1578;&#1607;</span><span class=aw>&#1605;&#1589;&#1591;&#1601;</span><span class=aw>&#1582;&#1606;</span><span class=aw>&#1603;&#1608;&#1585;&#1587;</span></div></div>
+<div class=arow><div class=aname>MinerU Extractor<div class=sub>rank 7 &middot; 51.4</div></div><div class=awords><span class=aw>&#1575;&#1604;</span><span class=aw>&#1575;&#1583;</span><span class=aw>&#1575;&#1604;&#1581;&#1610;&#1591;</span><span class=aw>&#1608;&#1607;&#1575;</span><span class=aw>&#1610;&#1607;</span><span class=aw>&#1575;&#1605;&#1578;&#1606;&#1575;&#1607;&#1576;</span><span class=aw>&#1575;&#1607;</span></div></div>
+<div class=arow><div class=aname>GLM-OCR<div class=sub>rank 8 &middot; 50.7</div></div><div class=awords><span class=aw>&#1575;&#1582;&#1585;&#1610;</span><span class=aw>&#1575;&#1604;&#1576;&#1585;&#1610;&#1583;</span><span class=aw>&#1588;&#1610;&#1569;</span><span class=aw>&#1576;&#1589;&#1608;&#1585;&#1607;</span><span class=aw>&#1576;&#1588;&#1585;&#1606;&#1575;</span><span class=aw>&#1608;&#1601;&#1610;</span><span class=aw>&#1605;&#1603;&#1575;&#1606;</span></div></div>
+<p class=scalenote>GLM-OCR's sample looks like ordinary Arabic because its failure is different in
+kind: it returned a fluent document unrelated to the input. Well-formed words, wrong document
+&mdash; the one failure mode a spellchecker will never catch.</p>
+</div>
+
+<div class=card>
+<h2>Full transcription from every model</h2>
+<p style="color:#5c646e;font-size:13.5px;margin-bottom:20px;max-width:82ch">The complete output of each model on the same five pages, verbatim &mdash; not just its errors. Images in the source are replaced by <span class=ofig>figure</span> placeholders; nothing else is edited. Read alongside the scores above: the difference between 97.5 and 50.7 is legible in a few seconds of scrolling, and <b>GLM-OCR's panel is the clearest case &mdash; fluent, well-formed Arabic describing a document that is not this one.</b></p>
+<div class=otabs><button class="otab active" data-o=baseer>Baseer OCR<span class=oscore style="color:#0f7b4a">97.5</span></button><button class="otab" data-o=lighton>LightOnOCR-2-1B<span class=oscore style="color:#0f7b4a">80.7</span></button><button class="otab" data-o=fastocr>FastOCR<span class=oscore style="color:#b07d10">77.6</span></button><button class="otab" data-o=paddle>PaddleOCR-VL-1.6<span class=oscore style="color:#b07d10">76.4</span></button><button class="otab" data-o=unlimited>Unlimited OCR<span class=oscore style="color:#b07d10">71.1</span></button><button class="otab" data-o=datalab>Datalab<span class=oscore style="color:#b3401f">62.3</span></button><button class="otab" data-o=mineru>MinerU Extractor<span class=oscore style="color:#b3401f">51.4</span></button><button class="otab" data-o=glm>GLM-OCR<span class=oscore style="color:#b3401f">50.7</span></button></div>
+<div class=opanels><div class="opanel active" data-o=baseer><div class=ohead><div><b>Baseer OCR</b><div class=sub>Enterprise tier &middot; web / API portal</div></div><div style="text-align:right"><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">rank 1 of 8 &middot; 97.5</span><div class=osrc>Ibn_Battuta_in_Egypt_baseerocr.md</div></div></div><div class=otext><span class=ofig>figure</span>
+<p>من رحلات ابن بطوطة</p>
+<p>ابن بطوطة</p>
+<p>في مصر</p>
+<p>مصطفى فنيم</p>
+<p>مؤسسة كوربس الدولية</p>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة.. أشهر الرحالة المسلمين في تاريخ الحضارة الإسلامية ، وبإسمه الغربيون باسم &quot; أمير الرحالة &quot;.</p>
+<p>خرج ابن بطوطة من بلدته &quot; طنجة &quot; في المغرب عام ١٣٢٥ م وظل يجوب بلاد العالم الإسلامي مدة ٢٥ سنة قطع خلالها ٧٥ ألف ميل، وهي مسافة لم يقطعها مسافر قبله.</p>
+<p>في هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر أراضي مصر منذ دخلها من الإسكندرية ، وطاف بكثير من مدنها وقراها حتى وصل إلى ميناء عيداب على البحر الأحمر.</p>
+<span class=ofig>figure</span>
+<p>مؤسسة جوتنس الدولية لطباعة المصحف الشريف</p>
+<p>الأردن - صرح الرباط - شارع الملك حسين - تلفاكس 00962-6-5837999 - E-mail: [horehaj@joe.net.jo](mailto:horehaj@joe.net.jo)</p>
+<p>[www.joan.com.lb](http://www.joan.com.lb)</p>
+<p><b>فتى من طنجة</b></p>
+<p>على شاطئ بحر الظلمات الذي نسميه الآن المحيط الأطلنطي وقف الفتى الصغير ينظر إلى السفن القادمة إلى ميناء طنجة ، مسقط رأسه ، ويميني نفسه بلقاء أحد التجار القادمين من بلاد بعيلة.</p>
+<p>لقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدوها والمغامرات التي عاشوها.</p>
+<p>أفاق الفتى من شروده على شاطئ البحر على صوت صديقه عبد الرحمن يناديه ويخبره</p>
+<p><span class=ofig>figure</span>  <br><b>مدينة طنجة</b></p>
+<p>تعتبر مدينة طنجة من بين أكبر خمس مدن مغربية ، ويسكنها حوالي ٧٠٠ ألف نسمة.</p>
+<p>وهذه المدينة موقع متميز، فهي تقع عند التقاء المحيط الأطلنطي والبحر المتوسط من جهة ، وبين قارتي أفريقيا وأوروبا من جهة . وهي مركز صناعي وتجاري هام في المغرب.</p>
+<p>وطنجة من أقدم مدن المغرب ولها تاريخ طويل ، ويرتبط اسمها برحالتنا الشهير ابن بطوطة .</p>
+<p>&amp;lt;page_number&amp;gt;٣&amp;lt;/page_number&amp;gt;</p>
+<p>أن أحد التجار العائدين من رحلة الحج قد ذهب لزيارة والده وعليه أن يُسرع بالعودة إلى البيت.</p>
+<p>كان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيهاً يشتغل بالقضاء وله مكانة في المدينة ، ويقصله الناس انتفاعًا بعلمه وحكمته .</p>
+<p>وكان ابن بطوطة يستمع إلى ما يحكيه أصدقاء أبيه عن رحلات الحج ، فيستعجل الأيام لكي يكبر ويحقق حلمه بالذهاب إلى بيت الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها .</p>
+<p>وكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلدٍ ينزل فيه حتى يصبح في مثل علم أبيه ويصبح قاضيا كبيرا .</p>
+<p><b>بداية الرحلة</b></p>
+<p>ما إن بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق حلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودع أهله وأصحابه وتأثر تأثرا بالغا بفراق والديه ولكن رغبته في السفر كانت قوية وعزمه كان شديدًا.</p>
+<p>كانت مكة المكرمة التي ينوي زيارتها على بعد ثلاثة آلاف ميل من بلده ،</p>
+<p>في القاهرة .</p>
+<p>&quot; .. مدينة مصر هي أم البلاد وفرارة فرعون دي الأوتاد ، ذات الأقاليم العريضة والبلاد الأرضية ، المتناهبة في كثرته العمارة ، المتناهبة بالحسن والنضارة . &quot;</p>
+<p>ابن بطوطة</p>
+<p>وصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها – كما يقول تموج موج البحر بسكانها.</p>
+<p>ويذكر ابن بطوطة النيل الذي يمر في القاهرة وأن به ستة وثلاثين ألفا من المراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.</p>
+<p>&amp;lt;page_number&amp;gt;١١٧&amp;lt;/page_number&amp;gt;</p>
+<p>ويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ، ويذكر أن المدارس بمصر لا يحصى عددها من كثرتها ، ويندهش من روعة البيمارستان ( المستشفى) الذي زاره والذي يُقدم العلاج والدواء للمرضى . ويذكر الأهرام ويصفها وصفًا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمون بإحداث الفتحة الحالية في الهرم.</p>
+<p>ولا ينسى ابن بطوطة أن يتحدث عن علماء مصر وقضاتها وشيوخها الذين قابلهم واستفاد من علمهم.</p>
+<span class=ofig>figure</span>
+<p>&amp;lt;page_number&amp;gt;١٨&amp;lt;/page_number&amp;gt;</p></div></div>
+<div class="opanel" data-o=lighton><div class=ohead><div><b>LightOnOCR-2-1B</b><div class=sub>LightOn Platform &middot; /parse API</div></div><div style="text-align:right"><span class=cf style="color:#0f7b4a;border-color:#0f7b4a33;background:#0f7b4a14">rank 2 of 8 &middot; 80.7</span><div class=osrc>lighton-output-Ibn_Battuta_in_Egypt.pdf.md</div></div></div><div class=otext><h4>ابن بطبوطة في مصّر</h4>
+<h4>مُعْلَمٌ فَنَيْمٍ</h4>
+<h4>مُؤسسة حُورِس الدَّوْلِيَّة</h4>
+<p>من رحلات ابن بطبوطة</p>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم اللوّاق الطنّجي المُعروف بابن بطبوطة.. أشهر الرحلة المسلمين في تاريخ الحضارة الإسلامية، وبلقيه الفريبون باسم &quot; أمير الرحلة &quot;.</p>
+<p>خرج ابن بطبوطة من بلدته &quot; طبجة &quot; في المغرب عام ١٣٢٥ م وظل يجوب بلاد العام الإسلامي مدة ٢٥ سنة قطع خلالها ٧٥ ألف ميل، وهي مسافة لم يقطعها مسافر قبله. في هذا الجزء من رحلات ابن بطبوطة سنصحبه في رحلته عبر أراضي مصر منذ دخلها من الإسكندرية، وطاف بكبير من مدنها وقرها حتى وصل إلى ميناء عيذاب على البحر الأحمر.</p>
+<hr>
+<p><b>مُؤسسة حُورِس الدَّوْلِيَّة</b></p>
+<p><b>سجدة شير . تجسيد</b></p>
+<p>**رقم: ٢٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠٠</p>
+<h4>مدينة طنجة</h4>
+<span class=ofig>figure</span>
+<p>تعتبر مدينة طنجة من بين أكبر خمس مدن مغربية، ويسكنها حوالي ٧٠٠ ألف نسمة.</p>
+<p>ولله المدينة موقع متميز، فهي تقع عند التقاء الحيط الأطلنطي والبحر المتوسط من جهة، وبين قارتي أفريقيا وأوروبا من جهة. وهي مركز صناعي وتجاري هام في المغرب.</p>
+<p>وطنجة من أقدم مدن المغرب ولها تاريخ طويل، ويرتبط اسمها برحالتنا الشهير ابن بطوطة.</p>
+<hr>
+<h4>فتر من طنجة</h4>
+<p>على شاطع بحر الظلمات الذي نسميه الآن الحيط الأطلنطي وقف الفتى الصغير ينظر إلى السفن القادمة إلى ميناء طنجة، مسقط رأسه، ويُني نفسه بلقاء أحد التجار القادمين من بلاد بعيدة.</p>
+<p>لقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدوها والمغامرات التي عاشوها.</p>
+<p>أفاق الفتى من شروده على شاطع البحر على صوت صديقه عبد الرحمن يناديه ويخبره</p>
+<p>أَنْ أَحَدَ التَّجار العائدين من رحلة الحج قد ذهب لزيارة والده وعليه أن يُسرع بالعودة إلى البيت.</p>
+<p>كان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطُّنْجِي المعروف بابن بطوطة، ووالده كان فقيها يشتغل بالقضاء وله مكانة في المدينة، ويقصدُه الناس انتفاعًا بعلمه وحكمته.</p>
+<p>وكان ابن بطوطة يستمع إلى ما يُحْكِيه أصدقاء أبيه عن رحلات الحج، فيستعجل الأيام لكي يكبر ويحقق حُلمَه بالذهاب إلى بيت الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها.</p>
+<p>وكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلد ينزل فيه حتى يُصبح في مثل علم أبيه ويصبح قاضيًا كبيرًا.</p>
+<p>&lt;div style=&quot;text-align: center; background-color: #6699ff; color: white; padding: 10px; border-radius: 20px; font-weight: bold; margin: 20px 0;&quot;&gt;<br>بداية الرحلة</p>
+<p>&lt;/div&gt;</p>
+<p>ما إنْ بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق حُلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودع أهله وأصحابه وتأثر تأثرًا بالغًا بفراق والديه ولكن رغبتِه في السفر كانت قوية وعزمُه كان شديدًا.</p>
+<p>كانت مكة المكرمة التي يُنوي زياراتها على بُعْدِ ثلاثة آلاف ميل من بلده،</p>
+<p>في القاهرة.</p>
+<p>&quot; مدينة مصر هي أمّ البلد وفرارة فرعون دك الأوناد، ذاتُ الأقالبهم العربضخ والبلد الأربيض، امتنانخب في كثرة العمارة، امتنانخب بالحسن والنظارة . ابن بطوطخ</p>
+<p>وصل ابن بطوطخ إلى القاهرة التي يسمّيها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي، وقد انبرهّ بما شاهدّ فيها ورأها - كما يقولُ موجُ موجُ البحر بسكانها.</p>
+<p>ويذكر ابن بطوطخ النيلَ الذي يمرُّ في القاهرة وأن به ستة وثلاثين ألفا من المراكب التي تحملُ البضائع من أخاء مصر إلى القاهرة.</p>
+<p>17</p>
+<p>ويتجولُ ابن بطوطة في المدينة الكبيرة فيعجبه مسجدُ عمرو ابن العاص،</p>
+<p>ويذكرُ أنَّ المدارسَ بصر لا يُصَى عددها من كثرتها، ويندهشُ من روعة اليمارستان (المستشفى) الذي زارهُ والذي يُقدِمُ العلاجَ والدواءَ للمرضى. ويذكرُ الأهرامَ ويصِفُها وصفًا دقيقًا، ويصفُ كيف قام الخليفةُ العباسيُ المأمونُ بِلِحْداثِ الفتحةِ الحالية في الهرم.</p>
+<p>ولا ينسى ابن بطوطة أن يتحدث عن علماء مصرَ وقُضَاتِها وشيوخِها الذين قابلهم واستفاد من علمهم.</p>
+<span class=ofig>figure</span>
+<p>18</p></div></div>
+<div class="opanel" data-o=fastocr><div class=ohead><div><b>FastOCR</b><div class=sub>Developer API &middot; asynchronous flow</div></div><div style="text-align:right"><span class=cf style="color:#b07d10;border-color:#b07d1033;background:#b07d1014">rank 3 of 8 &middot; 77.6</span><div class=osrc>Ibn_Battuta_in_Egypt-ocr-fastocr.md</div></div></div><div class=otext><p>أبو عبد الله محمد بن عبد الله بن محمد<br> بن إبراهيم<br>اللواتي الطنجي المعروف بابن بطوطة.. أشهر الرحالة<br>المسلمين في تاريخ الحضارة الإسلامية ، ويلقبه الغربيون<br>باسم<br>&quot; أمير الرحالة<br>خرج ابن بطوطة من بلدته &quot; طنجة &quot; في المغرب عام ١٣٢٥<br>م وظل يجوب بلاد العالم الإسلامي مدة ٢٥ سنة قطع<br>خلالها ٧٥ ألف ميل ، وهي مسافة لم يقطعها مسافر قبله.<br>في هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر<br>أراضي مصر منذ دخلها من الإسكندرية ، وطاف بكثير من<br>مدنها وقراها حتى وصل إلى ميناء عيذاب على البحر<br>من رحلات ابن بطوطة<br>الأحمر.<br>مؤسسة حورس الدولية سياسة نشر.<br>ازنية موقع الحضرية : 28<br>1000<br>+78-71-168<br>ابن بطوطة<br>في مصر<br>مؤسسة حورس الدولية<br>مصطفی غنیمفتى من طنجة<br>على شاطئ بحر الظلمات الذي<br>نسميه الآن المحيط الأطلنطي وقف<br>الفتى الصغير ينظر إلى السفن<br>القادمة إلى ميناء طنجة ، مسقط رأسه<br>، ويُمني نفسه بلقاء أحد التجار<br>القادمين من بلادٍ بعيدة<br>لقد اعتاد الفتى أن يعرف أين ينزل<br>مدينة طنجة<br>تعتبر مدينة طنجة من بين أكبر خمس مدن<br>مغربية ، ويسكنها حوالي ٧٠٠ ألف<br>نسمة.<br>ولهذه المدينة موقع متميز ، فهي تقع عند<br>هؤلاء التجار ويذهب لكي يستمع التقاء المحيط الأطلنطي والبحر المتوسط<br>إلى ما يقصونه من أخبار الناس من جهة ، وبين قارتي أفريقيا وأوروبا من<br>وحكاياتهم في البلاد التي مروا بها ، جهة . وهي مركز صناعي وتجاري هام في<br>وعن العجائب التي شاهدوها المغرب.<br>والمغامرات التي عاشوها.<br>أفاق الفتى من شرودهِ على شاطئ طويل ، ويرتبط اسمها برحالتنا الشهير ابن<br>بطوطة .<br>البحر على صوتِ صديقه عبدِ<br>الرحمن يناديه ويخبره<br>وطنجة من أقدم مدن المغرب ولها تاريخأنَّ أحد التجار العائدين من رحلة الحج قد ذهب لزيارة والله وعليه أن<br>يُسرع بالعودة إلى البيت.<br>ور<br>عبد الله<br>كان الفتى هو محمد<br>بن بن محمد بن إبراهيم اللواتي الطنجي<br>المعروف بابن بطوطة، وواللهُ كانَ فقيها يشتغل بالقضاء وله مكانة في المدينة<br>، ويقصده الناسُ انتفاعًا بعلمه وحكمته<br>وكان ابن بطوطة يستمع إلى ما يحكيه أصدقاء أبيه عن رحلات الحج ،<br>فيستعجل الأيام لكي يكبر ويحقق حلمه بالذهاب إلى بيت الله الحرام في مكة<br>وزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى<br>ديار الإسلام وما فيها .<br>وكان يتمنى أن يزداد علمًا بمقابلة علماء كل بلد ينزل فيه حتى يُصبح في مثل<br>علم أبيه ويصبح قاضيًا كبيرًا.<br>بداية الرحلة<br>ما إن بلغ ابن بطوطة الثانية والعشرين من عمره حتى عزم على تحقيق<br>حلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودعَ أهله وأصحابه وتأثر<br>تأثراً بالغا بفراق والديه ولكن رغبته في السفر كانت قويةً وعزمه كان<br>شديدًا.<br>كانت مكة المكرمة التي ينوي زيارَتَها على بُعْدِ ثلاثةِ آلافِ مَيل من بلدِهِ ،١٧<br>في القاهرة .<br>مدينة مصر هى أم البلاد وقرارة فرعون دي الأوتاد<br>ذات الأقاليم العريضة والبلاد الأريضة ، المتناهية في كثرة<br>العمارة ، المتناهية بالحسن والنضارة . &quot;<br>ابن بطوطة<br>وصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهدِ<br>السلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها - كما<br>يقولُ تموج موج البحرِ بسكانها.<br>ويذكر ابن بطوطة النيل الذي يمرُّ في القاهرة وأن به ستة وثلاثين ألفا من<br>المراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.ويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ،<br>ويذكرُ أنَّ المدارس بمصر لا يُحصَى عددها من كثرتها ، ويندهش من روعة<br>البيمارستان ( المستشفى) الذي زاره والذي يُقدِّم العلاج والدواء للمرضى<br>ويذكرُ الأهرام ويصفها وصفا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمونُ<br>بإحداث الفتحة الحالية في الهرم.<br>ولا ينسى ابن بطوطة أن يتحدث عن علماء مصرَ وقُضاتِها وشيوخها الذين<br>قابلهم واستفاد من علمهم.<br>۱۸</p></div></div>
+<div class="opanel" data-o=paddle><div class=ohead><div><b>PaddleOCR-VL-1.6</b><div class=sub>Novita AI / Fireworks AI</div></div><div style="text-align:right"><span class=cf style="color:#b07d10;border-color:#b07d1033;background:#b07d1014">rank 4 of 8 &middot; 76.4</span><div class=osrc>Ibn_Battuta_in_Egypt.pdf_by_PaddleOCR-VL-1.6.md</div></div></div><div class=otext><span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم</p>
+<p>اللواقي الطنجي المعروف بابز بطوطة.. أشهر الرحالة</p>
+<p>المسلمين في تاريخ الحضارة الإسلامية، ويلقبه الغربيون</p>
+<p>1770 عام في المغرب &quot; طنجة &quot; من بلدته &quot; طرح ابن بطوطة من وظل يجوب بلاد العالم الإسلامي مدة 20 سنة قطع</p>
+<p>خلاها 20 ألف ميل، وهي مسافة لم يقطعها مسافر قبله.</p>
+<p>في هذا الجزء من رحلات ابن بطوطة سنصحبه في رحلته عبر</p>
+<p>أراضي مصر منذ دخلها من الإسكندية، وطاف بكثير من</p>
+<p>مدنها وقراها ختي وصل إلى ميتاء عيداب على البحر</p>
+<p>الأصمر.</p>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<h4>مدينة طنجة</h4>
+<span class=ofig>figure</span>
+<p>تعتبر مدينة طنجة من بين أكبر خمس مدن</p>
+<p>مغربية، ويسكنها حوالي ٧٠٧ ألف</p>
+<p>نسمقه.</p>
+<p>وَهَذِهَا المَدِينَة مَوْقَعُ مَتْمِيزٍ، فِهِي تَقَعَ عند التَقَاءِ الْحِيْطِ الْأَطْلِنَطِيِ وَالْبِحْرِ المَتُوسَطِ مِنَ جَهَذِهَ، وَبَيْنَ قَارَتِي أَمْرِيَ قِيَا وَأَوْرِوْبِا مِنَ جَهَذِهِ. وَهِيَ مَرِكْزُ صَناَعِيْ وَتَجَاريُ هَامِ فِي المَغْرِبِ.</p>
+<p>وطنجة من أقدم مدن المغرب وها تاريخ</p>
+<p>طويل، ويرتبط اسمها برحالتنا الشهير ابن</p>
+<p>بطوطة.</p>
+<h4>فتى من طنجة</h4>
+<p>على شاطي بحر الظلمات الذي</p>
+<p>نسميه الآن الخيط الأطلنطي وقف</p>
+<p>الفتي الصغيرٍ ينظر إلى السفن</p>
+<p>القادمة إلى ميناء طنجة، مسقط راسه</p>
+<p>ويمنيُ نفسه بلقاء أحد التجار</p>
+<p>القادمين من بالادعي</p>
+<p>لقد اعتاد الفتي أن يعرف أن ينزل</p>
+<p>هولاء التجار ويذهب لكي يستمع</p>
+<p>إلى ما يقصونه من اخبار الناس</p>
+<p>وحكاياتهم في البلاد التي مروا بها،</p>
+<p>وعن العجاب التي شاهدومها</p>
+<p>والمغامرات التي عاشوها.</p>
+<p>أفاق الفتي من شروده على شاطي</p>
+<p>البحر على صوت صديقه عبد</p>
+<p>الرحمن يناديه ويخبره</p>
+<p>أنّ أحد التجار العائدين من رحلقة الحج قد ذهب لزيارة والدو وعليه أن يسرع بالعودة إلى البيت.</p>
+<p>كان الفتي هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيها يشتغل بالقضاء وله مكانة في المدينة، ويقصده الناس انتفاعاً بعلمه وحكمته.</p>
+<p>وكانِ ابنُ بطوَطةِ يستمعُ إلى مَا يَحْكِيهِ أصدقَاءُ أبِيهِ عن رحلاتِ الحج،</p>
+<p>فيستعجلُ الأيامَ لَكِي يَكِبْرَ وِيْحَقَقَ حَلَّمَهَ بالذهابِ إِلَى بِيتِ اللهِ الحرامِ فِي مَكَهَ</p>
+<p>وزيارِة قبر رسولِهِ الكريمِ في المدينَةِ المنورَةِ، ويتعرفُ على أخبار الناس ويرى</p>
+<p>ديارَ الاسلامَ وما فيها.</p>
+<p>وكان يتمنى أن يزدادَ علماً بمقابلة علماء كل بلد ينزلُ فيه حتي يصبحَ في مثل</p>
+<p>علم أبيه ويصبحَ قاضيًا كبيراً.</p>
+<span class=ofig>figure</span>
+<p>ما إِنْ بلغَ ابْنَ بطوَطَة الثانية والعشرين من عمره حتي عزمُ على تحقيق</p>
+<p>حُلمِهَ بالسفرهِ إلى مكةِ المكرمة لأداءِ فريضة الحجَ، فودَعَ أهله وأصحابه وتأثر</p>
+<p>تأثَّرًا بالغَاِ بفراقِ والديهِ وَلَكِنَّ رَغَبَتهِ فِي السفرَ كانت قويةِ وعزمُهَ كان</p>
+<p>شديدًا.</p>
+<p>كانت مكثة المكرمة التي ينوي زيارتها على بغد ثلاثة آلاف ميل من بليه،</p>
+<p>في القاهرة.</p>
+<p>مدينة مصر هي أهم البلاد وفراره فرعون دكي الأوتاد، &quot;ذاً الأفالببع العربيضَى والبلاد الأربضَى، المشاهية في كثرة العمارة، المنتاهبية بالعسن والنضارة&quot;. ابن بطوطة</p>
+<p>وصل ابن بطوظة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد السلطان المملوكي قلاوون الألفي، وقد انبهراً بما شاهد فيها وراها – كما يقولُ تموجّ موج البحر بسكانها.</p>
+<p>ويذكر أبن بطوطة النيل الذي يمرّ في القاهرة وأن به سّتة وثلاثين الفا من المراكب التي تحمل البضائع من أخاعد مصر إلى القاهرة.</p>
+<p>ويتجول أبن بطوطة في المدينة الكبيره فيعجبه مسجد عمرو ابن العاص،</p>
+<p>ويذكر أنّ المدارس بمصر لا يحصى عدها من كثرتها، ويندهش من روعة البيمارستان (المستشفى) الذي زاره والذي يقدم العلاج والدواء للمرضى. ويذكر الأهرام ويصيفها وصفا دقيقاً، ويصف كيف قام الخليفة العباسي المامون بإحدائث الفتحة الحالية في الهرم.</p>
+<p>ولا ينسي ابن بطوظة أن يتحدث عن علماء مصر وُقضاتها وشيوخها الذين قابلهم واستفاد من عليهم.</p>
+<span class=ofig>figure</span></div></div>
+<div class="opanel" data-o=unlimited><div class=ohead><div><b>Unlimited OCR</b><div class=sub>Managed serverless &middot; A100 node</div></div><div style="text-align:right"><span class=cf style="color:#b07d10;border-color:#b07d1033;background:#b07d1014">rank 5 of 8 &middot; 71.1</span><div class=osrc>Ibn_Battuta_untlimited_ocr.md</div></div></div><div class=otext><div class=opage>page 1 of 5</div>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم<br>اللواقي المظتعي المعروف إبين بطوطة. أشهر الرحالة<br>المسلمين في تاريخ الحضارة الإسلامية، وبنله الغربيون<br>باسم<br>&quot;أمير الرحالة&quot;.<br>حرج ابن يطوطة من بلده &quot; طنجة &quot; في الغرب عام ١٣٥٣<br>و طول يجوب بلاد العام اسلامی مدة ٢٥ سنة قطع<br>خترها ٢٥ إلى أبيل ساتق ما يقطها مسافر قبله.<br>في هذا الجزء من رحلات ابن بطولة ستحجه في رحلاته عبر<br>راضي مصر منذ دخلها من الإسكندریه، وطاق يكير من<br>مدتها وقراها حتى وصل إلى ميناء عيداب على البحر<br>الأحمر.<br><span class=ofig>figure</span></p>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>مؤسسة هوبس الحلية جبة تر. تبي<br>الموزية، وَلَّى مِيل، وَلَّى مِيل، وَلَّى مِيل، وَلَّى مِيل، وَلَّى مِيل، وِلَّى مِيل، وَلَّى مِيل، وَلَّى مِيل، وَلَّى مِيل، وَلَّى<br>E-mail: house@clif@ma.com<br>[Non-Text]<br><span class=ofig>figure</span></p>
+<p>[Non-Text]<br><span class=ofig>figure</span></p>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<div class=opage>page 2 of 5</div>
+<span class=ofig>figure</span>
+<p>تعترى مدينة طنجة من بين أخرى مس مدن<br>مغربية ، ويسكنها حواي ٧٠٠ ألف<br>تسمة.<br>وهذه المدينة موقع متميز، فيي توقع عند<br>التقاء الخيط الأطلي والبحر المتوسط<br>من جهة، وبين قارتي أفريقيا وأوروبا من<br>جهة. وهي مركز صناعي وخاري هام في<br>المغرب.<br>وطنجة من أقدم مدن المغرب وها تاريخ<br>طويل، ويرتبط اهها برحالتنا الشهير ابن<br>بطوطة.<br>فتى من طنجة<br>على شاطى بجر الطلمات الذي<br>نسميه الان أخيط الأطلطي وفق<br>الفتى الصغير ينظر إلى السفن<br>القادمة إلى ميناء طنجة، مسقط رأسه<br>وکئي نفسمه بلقاء بعيلى.<br>القادمين من بالاد بعيلى.<br>لقد اعتاد الفتى أن يعرف أين يزّل<br>هؤالء التجار ويدمب كي يستمع<br>إلى ما يقصونه من أخبار الناس<br>وحكابياتهم في البلاد التي مروا بها،<br>وعن العجائب إلى شاهدُوها<br>والغامرات التي عاشوها.<br>أفقّ الفتى من شروّه على شاطّ<br>البحر على صوت صديقه عبد<br>الرحمن يناديّه وخبره</p>
+<div class=opage>page 3 of 5</div>
+<p>أَنْ أَحَدَ التجار العائدين من رحلة الحج قَدْ ذَهَبَ لزيارة والله وعليه أَنْ يُسرع بالعودة إلى البيت.<br>كان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم المواتي الطنجي<br>المعروف بابن بطوطة، والوالده كان فقيها يشغل بالقصاء وله مكانة في المدينة<br>ويفصده الناس انتفاعا بعلمه وحكمته.<br>وكان ابن بطوطة يستمع إلى ما يُمْكِه أصدقاءً أَبِيه عن رحلات الحج، فيستعجل الأيامّ لَكِي يَكِبٍ وَحَقَقَ حُلَمَهُ بالدهاب إِلِي بِبِت الله الحَرام في مَكَة<br>وزارة قربرسوله الكريم في المدينة المنورة، ويتعرف على أخبار الناس ويرى<br>ديار Islam وما فيها.<br>وكان يتمنى أن يزداد علماً بقابلة علماء كل بلد ينزل فيه حتى يصح في مثل<br>علم أيه ويصبح قاضياً كبیراً.<br>بداية الرحلة<br>ما إن بلغ إن بطولة الثاني والضرين من عمريه حتى عزم على تحقيق<br>خلميه بالسفر إلى مكة المكرمة لأداء فرية الحج، فودع أهله وأصحابه وتأشر<br>تأشرّا بالغا بفراق والديه ولكن رغبته في السفر كانت قوية وعزمه كان<br>شديداً.<br>كانت مكة المكرمة التي يُنوي زيارّها على يُعُد ثلاثة آلاف مبل من بلله،</p>
+<div class=opage>page 4 of 5</div>
+<p>في القاهرة.<br>&quot; ... مدرنة مصر هي أُمّ البلد وفرارةُ فرعون دَكِي الأُوتاد،<br>ذات الأُقالبم الحربضى والبلد الأربضى، اطناًفيهة في كترة<br>الحمارة، اطناًفيهة بالحسن والنضارة.&quot;<br>ابن بطوطة<br>وصل ابن بطوطة إلى القاهرة إلى يسمها مدينة مصر وذلك في عهد السلطان المملوكي قالوون الألفي، وقد انبهرّ بما شاهد فيها ورأها - كما يقولّ تُوجّ موجّ البحر بسكانها.<br>ويذكرّ ابن بطوطة النيلّ الذي يمرّ في القاهرة وأن به سنة وثلاثين ألفا من المراكب التي تحملّ البضائع من أخاء مصر إلى القاهرة.<br>17</p>
+<div class=opage>page 5 of 5</div>
+<p>ويتجولاً ابن بطوطة في المدينة الكبيرة فيعجبة مسجد عمر ابن العاص،<br>ويذكرّ أنّ المدارس بصر لاً خُصى عددها من كثرتها، ويندهشّ من روعة<br>اليمارستان (المستشفي) الذي زاره، والذي يقدم العلاج والدوات للمرضى.<br>ويذكرّ الأهرام ويصفها وصقاً دقيقاً، ويصفّ كيف قام الخليفة العباسيّ المأمون<br>يحدث الفتحة الحالية في المرم.<br>ولا ينسي ابن بطوطة أن يتحدث عن علماء مصر وفضاتها وشيوخها الذين<br>قابلهم واستفاد من علمهم.<br><span class=ofig>figure</span></p>
+<p>18</p></div></div>
+<div class="opanel" data-o=datalab><div class=ohead><div><b>Datalab</b><div class=sub>Surya 2 / Chandra 2 &middot; Replicate deployment</div></div><div style="text-align:right"><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">rank 6 of 8 &middot; 62.3</span><div class=osrc>datalab-output-Ibn_Battuta_in_Egypt.pdf.md</div></div></div><div class=otext><h4>من رحلات ابن بطوطة</h4>
+<h4>ابن بطوطة في مصر</h4>
+<p>مصطفیٰ خنیم</p>
+<p>مؤسسة كورس الدولية</p>
+<span class=ofig>figure</span>
+<p>A cartoon illustration of a man in a brown robe and a woman in a blue dress standing in a desert landscape. The man is holding a staff and looking at the woman. The woman is looking down at her hands. The background shows a green field and a blue sky with a sun. There is Arabic text at the top and bottom of the image.</p>
+<span class=ofig>figure</span>
+<p>A cartoon illustration of a grey elephant wearing a red turban and a red sash, standing in a green field with a castle in the background. The text &#x27;برای مطالعه بیشتر&#x27; is written in the top left corner.</p>
+<span class=ofig>figure</span>
+<p>A colorful illustration of a man in a black coat and yellow shirt, holding a sword, standing next to a woman in a purple dress. They are in a stylized, possibly Japanese, setting with a large green lantern and a pink background.</p>
+<span class=ofig>figure</span>
+<p>A cartoon illustration of a man in a red robe and turban standing next to a man in a white and blue striped dhoti. The man in the red robe is holding a staff and has a speech bubble that says &#x27;میں نے تم کو سزا دی ہے&#x27; (I have given you a punishment). The man in the striped dhoti is looking at him with a speech bubble that says &#x27;میں نے تم کو سزا دی ہے&#x27; (I have given you a punishment). The background is a simple landscape with a blue sky and green ground.</p>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم  <br>اللوائي الطنجي المعروف بابن بطوطة.. أشهر الرحالة  <br>المسلمين في تاريخ الحضارة الإسلامية ، وبلغه الغربيون  <br>باسم  <br>&quot;أمير الرحالة&quot;.</p>
+<p>خرج ابن بطوطة من بلدته &quot; طنجة &quot; في المغرب عام ١٣٢٥  <br> وظل يجهز رحلاته في بلاد العالم الإسلامي مدة ٢٥ سنة قطع  <br> خلالها ٧٥ ألف ميل ، وهي مسافة لم يقطعها مسافر قبله.  <br> في هذا الجزء من رحلات ابن بطوطة سنسببه في رحلته عبر  <br> أراضي <b>مصر</b> منذ دخلها من الإسكندرية ، وطاف بكثير من  <br> مدنها وفراها حتى وصل إلى ميناء عيذاب على البحر  <br> الأحمر.</p>
+<span class=ofig>figure</span>
+<p>The Arabian Nights  <br>N. S. Ghalib</p>
+<p>Book cover for &#x27;The Arabian Nights&#x27; by N. S. Ghalib, featuring a man on a horse.</p>
+<span class=ofig>figure</span>
+<p>A cartoon illustration of a man in a white thobe and ghutra, carrying a large bundle on his back, walking towards the right. The background is a simple landscape with a yellow sky and green ground. There is Arabic text in the top left corner.</p>
+<span class=ofig>figure</span>
+<p>A cartoon illustration of a woman in a green bikini and a man in a green shirt and shorts swimming underwater. The woman is holding a large green plant. The background is blue with bubbles and a small fish.</p>
+<span class=ofig>figure</span>
+<p>A painting of a man in a green robe riding a brown horse through a snowy landscape. The man is wearing a white turban and has a beard. The background shows a snowy field with some trees and a small building in the distance. The painting is signed &#x27;M. F. 1302&#x27; in the bottom right corner.</p>
+<span class=ofig>figure</span>
+<p>ISBN  <br>0-7645-9854-3</p>
+<p>0-7645-9854-3</p>
+<p>Barcode for ISBN 0-7645-9854-3</p>
+<p>مؤسسة حقوق الدولية  <br>شعبة نشر - توزيع</p>
+<p>توزيع: بيروت، لبنان  <br> Email: [nasr.ase@att.net.lb](mailto:nasr.ase@att.net.lb) [nasr.ase@hotmail.com](mailto:nasr.ase@hotmail.com)</p>
+<h4>مدينة طنجة</h4>
+<span class=ofig>figure</span>
+<p>A scenic view of the city of Tangier, Morocco, showing the city built on a hillside overlooking the Mediterranean Sea, with palm trees in the foreground.</p>
+<p>تعتبر مدينة طنجة من بين أكبر خمس مدن مغربية ، ويسكنها حوالي ٧٠٠ ألف نسمة.</p>
+<p>ولهذه المدينة موقعٌ متميزٌ، فهي تقع عند التقاء المحيط الأطلسي والبحر المتوسط من جهة، وبين قارتي أفريقيا وأوروبا من جهة. وهي مركزٌ صناعي وتجاري هام في المغرب.</p>
+<p>وطنجة من أقدم مدن المغرب ولها تاريخٌ طويلٌ، ويرتبط اسمها برحالتنا الشهير ابن بطوطة .</p>
+<h4>فتى من طنجة</h4>
+<p>على شاطئ بحر الظلمات الذي نسميه الآن المحيط الأطلسي وقف الفتى الصغيرُ ينظر إلى السفن القادمة إلى ميناء طنجة، مسقط رأسه ، ويمني نفسه بلقاء أحد التجار القادمين من بلاد بعيدة.</p>
+<p>لقد اعتاد الفتى أن يعرف أين ينزل هؤلاء التجار ويذهب لكي يستمع إلى ما يقصونه من أخبار الناس وحكاياتهم في البلاد التي مروا بها، وعن العجائب التي شاهدها والمغامرات التي عاشوها.</p>
+<p>أفاق الفتى من شروده على شاطئ البحر على صوت صديقه عبد الرحمن يناديه ويخبره</p>
+<p>أنَّ أحدَ التجار العائدين من رحلة الحج قد ذهبَ لزيارة والده وعليه أن يُسرِعَ بالعودة إلى البيت.</p>
+<p>كان الفتى هو محمدُ بنُ عبدِ الله بن محمدٍ بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، ووالده كان فقيهاً يشتغل بالقضاء وله مكانة في المدينة ، ويقصده الناس انتفاعاً بعلمه وحكمته .</p>
+<p>وكان ابنُ بطوطة يستمعُ إلى ما يُحكىه أصدقاء أبيه عن رحلات الحج ، فيستعجل الأيام لكي يكبرَ ويحققَ حلمه بالذهابِ إلى بيتِ الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة ، ويتعرف على أخبار الناس ويرى ديار الإسلام وما فيها .</p>
+<p>وكان يتمنى أن يزدادَ علماً بمقابلة علماء كل بلدٍ ينزلُ فيه حتى يُصبحَ في مثل علم أبيه ويصبحَ قاضياً كبيراً.</p>
+<h4>بداية الرحلة</h4>
+<p>ما إن بلغ ابنُ بطوطة الثانية والعشرين من عمره حتى عزمَ على تحقيق حلمه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودّع أهله وأصحابه وتأثر تأثراً بالغاً بفراق والديه ولكنَّ رغبته في السفر كانت قويةً وعزمه كان شديداً.</p>
+<p>كانت مكة المكرمة التي ينوي زيارتها على بُعد ثلاثة آلاف ميلٍ من بلده ،</p>
+<h4>في القاهرة .</h4>
+<p>&quot; .. مدينة مصر هي أم البلاد وفرار فرعون ذي الأوتاد ،  <br>ذات الأقاليم العريضة والبلاد الأريضة ، امتناهيته في كثرة  <br>العمارة ، امتناهيته بالحسن والنضارة . &quot;  <br>ابن بطوطة</p>
+<p>وصل ابن بطوطة إلى القاهرة التي يسميها مدينة مصر وذلك في عهد  <br>السلطان المملوكي قلاوون الألفي ، وقد انبهر بما شاهد فيها ورآها - كما  <br>يقول تموج موج البحر بسكانها.</p>
+<p>ويذكر ابن بطوطة النيل الذي يمر في القاهرة وأن به ستة وثلاثين ألفاً من  <br>المراكب التي تحمل البضائع من أنحاء مصر إلى القاهرة.</p>
+<p>ويتجول ابن بطوطة في المدينة الكبيرة فيعجبه مسجد عمرو ابن العاص ،</p>
+<p>ويذكر أن المدارس بمصر لا يُحصى عددها من كثرتها ، ويندهش من روعة  <br>البيمارستان ( المستشفى ) الذي زاره والذي يُقدّم العلاج والدواء للمرضى .  <br>ويذكر الأهرام ويصفها وصفًا دقيقًا ، ويصف كيف قام الخليفة العباسي المأمون  <br>بإحداث الفتحة الحالية في الهرم.</p>
+<p>ولا ينسى ابن بطوطة أن يتحدث عن علماء مصر وقضايتها وشيوخها الذين  <br>قابلهم واستفاد من علمهم.</p>
+<span class=ofig>figure</span>
+<p>A photograph of the Great Pyramids of Giza in Egypt, showing three large pyramids in a desert landscape under a clear blue sky. In the foreground, there are some small figures of people and camels, suggesting a tourist area.</p></div></div>
+<div class="opanel" data-o=mineru><div class=ohead><div><b>MinerU Extractor</b><div class=sub>OpenDataLab</div></div><div style="text-align:right"><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">rank 7 of 8 &middot; 51.4</span><div class=osrc>MinerU_markdown_Ibn_Battuta_in_Egypt_2081770687867953152.md</div></div></div><div class=otext><span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>أبو عبد الله محمد بن عبد الله بن محمد بن إبراهيم<br>اللواقي الطنجي لمعرف بابن بطوبة... أشهر الرحالة<br>المسلمين في تاريخ الحضارة الإسلامية، وبلقبه الغربيون<br>باسم</p>
+<span class=ofig>figure</span>
+<h4>&quot;Amir Relgalle.&quot;</h4>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>خرج ابن بطوطة من بلدته &quot; طنجة &quot; في المغرب عام ١٣٢٥ م وظل يجبopl blاد العام Islamي مدة ٢٥ سنة قطع خلالها ٧٥ ألف ميل، وهي مسافة م يقطعها مسافر قبله. في هذا الجزء من رحلات ابن بطوطة سنصبه في رحلته عير اراضي مصر منذ داخلها من الإسكندرية، وطاف بكذیر من مدنها وقراها حتى وصل إلى ميناء عيداب على البحرا الأحمر.</p>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>تعتبر مدينة طنجة من بين أكثر خس مدن<br>مغربية، ويسكنها حوالي ٧٠٠ ألف<br>نسمة.</p>
+<p>وهلنه المدينة موقع متميز، فيه تفع عند التقاء الحيط Nordطي والبحر المتوسط من جهة، وبين قارتي أفريقيا وأوروبا من جهة. هي مركز صناعي وتجاري هام في المغرب.</p>
+<p>وطنجة من أقدم مدن المغرب وما تاريخ<br>طويل، ويرتبط اسمها برحالتنا الشهير ابن<br>بطوطة.</p>
+<h4>فُتى من طنچة</h4>
+<p>على شاطئ جمر الظلمات الذي<br>نسميه الآن الحيط Nordاني وفق<br>الفتي الصغير ينظر إلى السكن<br>الجادمة إلى ميناء طنجة، مsecط رأسه<br>وَيْتِي نفسّه بلقاء أحمد التجار<br>الجادمين من بالاد بعيلة.</p>
+<p>لقد اعتادّ الفتى أن يعرفّ أين ينزل<br>هُّلاءّ التجارّ ويذهبّ لكي يستمع<br>إلى ما يقصُونه من أخبار الناس<br>وحكانياتهم في البالاد التي مروا بها<br>وعن العج antibodies التي شاهدُوها<br>والمغامرات التي عاشُوها.<br>أفقّافّ الفتى من شروده على شاطئ<br>البحر على صوت صديقه عبد<br>الرحمن يناديه ويجبرّه</p>
+<p>أنّ أحدّ التجار العائدين من رحلّة الحّج قدّ ذهبّ لزيارة والده وعليه أنّ<br>يُسرّعَ بالعودة إلى البيت.</p>
+<p>كان الفتى هو محمد بن عبد الله بن محمد بن إبراهيم اللواتي الطنجي المعروف بابن بطوطة، والده كان فقيها يشعتل بالqxضاء وله مكانة في المدينة، municipalات انتفاعا بعلمه وحكمته.</p>
+<p>وكانّ ابنّ بطوطة يستمّعُ إلى ما يُكَكِيه أصدقاءُ أbyيه عن رحلات الحج، فيستعجلُ الْأِيامَ لكِي يُكَبْرَ وِيْحَقَّ حُلَّمَهِ بالذهابِ إلى بيت الله الحرام في مكة وزيارة قبر رسوله الكريم في المدينة المنورة، وِيْتعرَّفِ عَلَى أُخبار الناس ويرى ديارّ Islam وما فيها.</p>
+<p>وكان ي commitments أن يزداد علماً مقالة علماء كل بلد ينزل فيه حتى يُ按键 في مثل<br>علم أييه وي按键 قاضيا كيرًا.</p>
+<h4>بداية الرحلة</h4>
+<p>ما إنّ بلغَابنُ بطوطة الثانية والعشرين من عميه حتى عزم على تحقيق<br>حُلمِه بالسفر إلى مكة المكرمة لأداء فريضة الحج، فودعَأهله وأصد wavingه وتأشر<br>تأثرّا بالغا بفراق والديه ولكن رغبته في السفر كانت قوية وゼزمه كان<br>شديدّا.</p>
+<p>POINTS: كانت مكة المكرمة التي ينوي زيارتها على بعُد ئلاثة آلاف ميل من بليه، &quot; مدينّة مصر هي أم البالد وفرارة فرعون ذي الأonetاد،<br>ذا الأقالbre العربضف والبلد الأربضف، امتناهبّة في كثرة<br>العمارة، امتناهبّة بالحسن والنصارة .&quot;<br>ابن بطوطة</p>
+<p>وصّل ابْن بِطُوَطَة إِلَى الْقَاهَرَةِ الْتِي يَسْمِيُها مَدِينَّةٍ مَصْرِ وَذِلِكِ فِي عَهِدِ<br>الُسْلَطَانِ المَمْلُوَكِي قَلَا وَونَ الْأَلْفِي، وَقَدَ اَنْبَهِرَ بِمَا شَاهِدَ فِيها وَرَآهاٍ - كُما<br>يَقُولُّ مُجُ مُجُ مُجُ الْبَحْرِ بِسْكَانِها.</p>
+<p>ويذكرّ ابن بطوطة النيل الذي يرّ في القاهرة وأن به سète وثلاثين ألفا من<br>المر加倍 التي تحمل البضائع من أ洺اء مصر إلى القاهرة.</p>
+<p>ويتجولّ ابن بطوطة في المدينة الك并没有 فيعجبه مسجّدً عمرو ابن العاص،</p>
+<p>ويذكر أَنْ المدارس بصر لا يُحصّي عددها من كرتها، ويندهش من روعة<br>البيمارستان (المستشفى) الذي زاره والذي يُقدّم العلاج والدواء للمرضى.<br>ويذكر الأهرام و PVCفها وصفا دقيقا، و PVCف كيف قام الخليفة العباسيBond<br>إلحداث الفتحة الحالية في الهرم.</p>
+<p>ولا ينسى ابن بطوطة أن يتحدث عن علماء مصر وقصاتها وشيخها الدين قابلهم واستفاد من علمهم.</p>
+<span class=ofig>figure</span></div></div>
+<div class="opanel" data-o=glm><div class=ohead><div><b>GLM-OCR</b><div class=sub>GLM-4V &middot; Z.ai API</div></div><div style="text-align:right"><span class=cf style="color:#b3401f;border-color:#b3401f33;background:#b3401f14">rank 8 of 8 &middot; 50.7</span><div class=osrc>glm_ocr_Ibn_Battuta_in_Egypt-2026-07-21_05-35-48.md</div></div></div><div class=otext><span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>إذا كان النقطة معلومة بنفس النقطة بنفس معلومة بنفس الإرشادات</p>
+<p>الوالقية المطلوبة للمعروف ببنفس الإرشادات. أعطي الرابط</p>
+<p>الحاصلين في تبرن المعلومات البرمجية ، وبيانها المعلومات</p>
+<p>&quot;أمير البراءة.&quot;</p>
+<p>11740 ألف البريد المذكور &quot;حالة&quot; في الإنترنت من 1974م</p>
+<p>وفي البريد الإلكتروني باللغة العربية من 80 سنة قادرة</p>
+<p>حالة 10 ألف سنة ، وفي سلسلة بيانات سلسلة قادرة</p>
+<p>في حالة الالتزام من رحلات البريد الإلكتروني سلسلة في رحلة عبر</p>
+<p>أراضي مسار من دخول البريد الإلكتروني ، وكانت بكرة من</p>
+<p>مسافة وطوله حين وصل إلى مكان. كان البريد على الإنترنت</p>
+<p>الأصلي.</p>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<span class=ofig>figure</span>
+<p>تشير مسمى نصيب من نصين أكبر حسب مدن</p>
+<p>مشاربها ، وسيكون الحوالي ٧٠٠٠ ألف</p>
+<p>سنة.</p>
+<p>وقد نص المبينة من قولهم صحيح ، فهو قوله عليه</p>
+<p>النصبي الحكيم الأعظم الحكيم والبيحي الحكيم</p>
+<p>من جوازه ، وبينن قوله عليه أقوله عليه واوروما من</p>
+<p>جوازه . وقد نص مكرر صحيح وكشفري مامور في</p>
+<p>النصبي.</p>
+<p>وحيثة من أقصى مكان المقارن وما تليه يبين</p>
+<p>حروب البلان ، وبرنامج المقارن برحلة المقارن إبر</p>
+<p>صابوحا .</p>
+<h4>فنموذج خاص</h4>
+<p>على شيء في القلعة الصادرة</p>
+<p>سيمكن الإنكار الحقيق الألوانية وقد</p>
+<p>النظر في المسؤولية بصورة أخرى في المسؤول</p>
+<p>النظرية إلا منصور بصورة أخرى، مسؤول رئيس</p>
+<p>والكفاية نفسها بصورة أخرى المسؤول</p>
+<p>النظرية من بين البعض بصورة أخرى.</p>
+<p>لأننا أخذنا النصوص أين بشرنا أين بشرنا</p>
+<p>حيث لا يوجد النصوص وبيانهم لكيف بشرنا</p>
+<p>إلا ما يشتريون من أخذار النصوص</p>
+<p>وحكامتين في النصات التي مرتا بشرا,</p>
+<p>وكلنا الحكامتين في النصات بشرنا بشرنا</p>
+<p>والشاعر أستر الريف حينيما.</p>
+<p>أتأكد الريف من شيء ووده على شيء</p>
+<p>البيحي على شيء حينيما على شيء</p>
+<p>الرجي بسادديه وكبره</p>
+<span class=ofig>figure</span>
+<p>إن أحسن الشيخ الرئيسي من رحلة الأخيرة لبنان والصم وغيرها أين</p>
+<p>بصر في البلاد ذكرا إليه الشيخ.</p>
+<p>كان الضيق من كمعا بين عبيد الله بن كمعا بين !برام المؤمن الليلين في الملائكة</p>
+<p>الحرور وفي بين عبيد الله وفي الملائكة كان فضيق بينستين لليلين في الملائكة</p>
+<p>وفيستين الملائكة فضيق بينستين بعسى وخلقه .</p>
+<p>وكان ابن إبراهيم يسكن بصورة أخرى في رحلة إلى الماء ،</p>
+<p>تستطيع الليل بابا لكبر بكبر وكفاية لكبر بكفاية لكبر الليل بابا في مكان</p>
+<p>وتربطه في رحلة إلى الماء المريوب ، وتربطه في مكان أخرى في الماء المريوب وتربطه</p>
+<p>دراير الليل بابا وما يجعل .</p>
+<p>وكان يشمس في نزدنا على السماء كفيلباء عالمية كالنبي صلى الله عليه وسلم</p>
+<span class=ofig>figure</span>
+<p>ما أن باب أبرن بابوحلة النباتية والعالمية بباب عابرة من حمامة خزين خزين</p>
+<p>كنت么ك المكريمة العقلية بشرية على نفس الشيء المختلف من بالعق ،</p>
+<p>في الشركة .</p>
+<p>&quot;... معنى صدق في كل الأنبياء والسورة من قوله تعالى: &quot;إن الاكلباء والسورة والسورة الاكلباء</p>
+<p>وحسنا أن بن سعيد قال لنا القصة التي مضت منذها معنا ودعنا في قوله</p>
+<p>السعيد في القصة التي قالوا ودعنا في القصة ، وقد أشار إلى شاعر قيل له شاعر قيل له</p>
+<p>بشاعر قيل له شاعر القصة بسكاكان.</p>
+<p>وينبغي أن يكون هناك طريقة لإيجاد القيمة الموجودة وأن يكون هناك سعة وطريقة للإيجاد القيمة الموجودة في</p>
+<p>وستجيب لإبرة بكثير في الملكية في مجتمعهم منسوجات أبرة الملكية ،</p>
+<p>وينبغي أن الناس المصرين يكشفوا عن كثير من كثيرين ، وينبغي أن الناس المصرين ( المصرين زراعي والمصرين نجاحي والالمصرين المصرين )</p>
+<p>و بنتسى ابن بابور طفلة أين يستخدم منه فيحملها وشهدوها النبي</p>
+<p>قابليهم واستخدمه منه فيحملها.</p>
+<span class=ofig>figure</span></div></div></div>
+</div>
+
+<div class="card gap">
+<h2>Where the two halves of this review disagree</h2>
+<p style="color:#5c646e;font-size:13.5px;max-width:82ch"><b>Five of the sixteen priced rows have no
+accuracy data at all</b> &mdash; and they include both of the options this review otherwise steers
+you toward. Mistral OCR 4 (Batch API) is the cheapest vendor-published rate on the table at $2.00
+per 1,000 pages, and dots.mocr tops olmOCR-Bench at 83.9; neither has been run against these pages.
+Baseer OCR, the only model here that transcribes Arabic cleanly and respects right-to-left column
+order, is simultaneously the most expensive option on the list at $1,333.33 per month.</p>
+<p style="color:#5c646e;font-size:13.5px;max-width:82ch">Read together, the two tables say: the
+accuracy ranking is decided by defects that pricing cannot predict, so cost alone is not a
+shortlist. Test Mistral OCR 4 and dots.mocr on these same five pages before committing &mdash; on
+current evidence they are the only candidates that could be both cheap and correct, and that is
+exactly the combination this review has not yet been able to confirm.</p>
 </div>
 
 <div class=card>
@@ -199,3 +669,19 @@ editable on the Assumptions tab of the accompanying workbook, and every figure r
 </p></div>
 
 </div></html>
+
+<script>
+// Transcript tabs. Event-delegated from the tab strip so the panels stay plain
+// markup — with JS off, or in print, every panel is still in the document.
+document.querySelector(".otabs").addEventListener("click", function (e) {
+  var btn = e.target.closest(".otab");
+  if (!btn) return;
+  var id = btn.dataset.o;
+  document.querySelectorAll(".otab").forEach(function (t) {
+    t.classList.toggle("active", t.dataset.o === id);
+  });
+  document.querySelectorAll(".opanel").forEach(function (pn) {
+    pn.classList.toggle("active", pn.dataset.o === id);
+  });
+});
+</script>
