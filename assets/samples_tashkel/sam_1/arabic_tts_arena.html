@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arabic TTS Arena — Sample Comparison</title>
+<style>
+:root {
+  --bg:#eef1f4; --card:#fff; --ink:#1a1d21; --ink2:#5c646e; --ink3:#8a8f96;
+  --line:#dfe3e8; --navy:#14233a; --accent:#0f7b4a; --warn:#b3401f; --gold:#b07d10;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:var(--bg);padding:40px 24px}
+.pg{max-width:920px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);
+  font-weight:700;margin-bottom:8px}
+h1{font-size:28px;line-height:1.2;letter-spacing:-.02em;font-weight:680;margin-bottom:8px}
+.dek{color:var(--ink2);font-size:15px;max-width:74ch}
+.dek a{color:var(--navy)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px}
+h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);
+  font-weight:700;margin-bottom:16px}
+.callout{display:flex;gap:14px;align-items:flex-start;background:#fffdf5;
+  border:1px solid #efe2c4;border-radius:14px;padding:20px 24px;margin-bottom:20px}
+.callout b{color:#9a7b2a}
+.callout ul{margin:10px 0 0 20px;color:var(--ink2);font-size:13.5px;line-height:1.7}
+.callout p{color:var(--ink2);font-size:13.5px}
+.arabic{direction:rtl;text-align:right;
+  font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro','Times New Roman',serif;
+  font-size:19px;line-height:2.05}
+.arabic p{margin-bottom:14px}
+.arabic p:last-child{margin-bottom:0}
+.textmeta{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3)}
+
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.slot{border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center;
+  background:#fafbfc;position:relative}
+.slot .tag{font-family:-apple-system,sans-serif;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3);font-weight:700;margin-bottom:12px}
+.slot audio{width:100%}
+.slot .revealed{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);
+  text-align:left;font-size:13px}
+.slot .revealed b{display:block;font-size:13.5px;margin-bottom:4px}
+.slot .revealed .note{color:var(--ink2);font-size:12.5px;line-height:1.55;margin-top:4px}
+.slot .revealed .facts{color:var(--ink3);font-size:11.5px;margin-top:6px;
+  font-variant-numeric:tabular-nums}
+@media(max-width:640px){.arena{grid-template-columns:1fr}}
+
+.votebar{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+button.vote{font:inherit;font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:9px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+button.vote:hover{border-color:#b9c2cc}
+button.vote.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+button.vote:disabled{opacity:.4;cursor:default}
+.skiprow{text-align:center;margin-top:12px}
+.skiprow button{font:inherit;font-size:12.5px;color:var(--ink3);background:none;border:none;
+  text-decoration:underline;cursor:pointer;padding:4px}
+.roundinfo{text-align:center;font-size:12px;color:var(--ink3);margin-top:16px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);font-weight:700;padding:0 10px 10px;border-bottom:2px solid #e6eaee}
+th.n,td.n{text-align:right}
+td{padding:12px 10px;border-bottom:1px solid #f1f3f5;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.rank{color:var(--ink3);font-variant-numeric:tabular-nums;width:26px}
+.nm{font-weight:640}
+.nm .sub{font-weight:400;color:var(--ink3);font-size:11.5px;margin-top:2px}
+.elo{font-weight:700;font-variant-numeric:tabular-nums}
+.empty{color:var(--ink3);font-size:13px;padding:14px 0}
+
+.foot-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.foot-actions button{font:inherit;font-size:12px;padding:7px 14px;border-radius:7px;
+  border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+.foot-actions button:hover{border-color:#b9c2cc}
+
+.facttable td,.facttable th{font-size:12.5px}
+.facttable .sub{color:var(--ink3);font-size:11px}
+
+.listengrid{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:14px}
+.listenitem{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fafbfc}
+.listenitem b{display:block;font-size:14px;margin-bottom:10px;line-height:1.35}
+.listenitem .sub{color:var(--ink3);font-size:11px;margin:-6px 0 10px}
+.listenitem audio{width:100%;margin-bottom:10px}
+.listenitem .note{color:var(--ink2);font-size:12px;line-height:1.55;margin-bottom:8px}
+.listenitem .facts{color:var(--ink3);font-size:11px;font-variant-numeric:tabular-nums}
+
+footer{font-size:12px;color:var(--ink3);line-height:1.7;text-align:center;padding:20px 0 0}
+</style>
+</head>
+<body>
+<div class="pg">
+
+<div class="eyebrow">TTS sample comparison</div>
+<h1>Which voice reads this passage best?</h1>
+<p class="dek"><span id="sampleCountDek">Several</span> Arabic text-to-speech renders of the same
+449-character passage, compared the same way
+<a href="https://huggingface.co/spaces/Navid-AI/Arabic-TTS-Arena" target="_blank"
+rel="noopener">Navid-AI’s Arabic TTS Arena</a> ranks its own models: listen to two anonymous
+clips, pick the better one, and let Elo do the ranking from your votes.</p>
+
+<div class="callout">
+<span>ℹ️</span>
+<div>
+<p><b>Why this is a vote, not a score.</b> Navid-AI’s arena works by blind pairwise
+comparison — its own page states models are “ranked by ELO from community votes,”
+gathered by asking people to “listen to two anonymous models and pick the better one.”
+There is no fixed rubric behind that leaderboard, and I (the assistant writing this page) cannot
+hear audio at all — so a ranking I invented from file metadata alone would be fabricated.
+This page runs the identical mechanism locally: it can only be ranked by your ears, one vote at
+a time.</p>
+<ul>
+<li>Two clips — “Model A” and “Model B” — were pulled directly from
+the real arena above for this exact text. Its anonymization is permanent by design, so their
+true engine identity is genuinely unknown here, not withheld for effect.</li>
+<li>The Fish Speech S2 Pro clip appears twice (two separate takes, same engine and voice preset).
+They’re both in the vote pool as independent entries, but they are siblings, not rivals —
+treat a Fish-vs-Fish round as a consistency check, not a real contest.</li>
+<li>Clip lengths range from <span id="durRange">a few</span> seconds for the same passage; some
+may be reading only part of it. Durations are shown after each reveal so you can factor that in.</li>
+<li>With only <span id="sampleCountLi">several</span> clips in rotation, you will likely start
+recognizing them by ear well before the community-scale arena’s much larger pool would let that
+happen. Ratings here reflect a single listener’s preference, not a public benchmark.</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h2>Source text</h2>
+<div class="arabic">
+<p>خرج من «مكة» وقد ملا الحزنُ قلبه، فقد ضاقت عليه مكة.</p>
+<p>ولم تعد مدينته التي أحبها ودافع عنها، وعن دينها كثيراً.</p>
+<p>ولكن أين يذهبُ؟</p>
+<p>سيرحل عن أرض «الجزائر العربية» كلها؛ لقد قرر السفر إلى «الحبشة» (إثيوبيا حالياً)؛ حيث تربطه صداقة قوية وقديمة بملكها العظيم «النجاشي»- صحيح أن هذه العلاقة تأثرت قليلاً عندما رفض «النجاشي» تسليمه أتباعَ محمد صلى الله عليه وسلم» الذين لجئوا إليه نجاة من بطش قريش.</p>
+<p>إنه يذكر ذلك اليوم جيداً عندما أرسلته «قريشٌ» بالأموال وا</p>
+</div>
+<div class="textmeta">449 characters &middot; 78 words &middot; ends mid-sentence, matching the
+500-character sample cut used to generate every clip on this page.</div>
+</div>
+
+<div class="card">
+<h2>Listen to every clip</h2>
+<div class="listengrid" id="listenGrid"></div>
+</div>
+
+<div class="card">
+<h2 id="arena-head">Round <span id="roundNum">1</span> — which is better?</h2>
+<div class="arena">
+  <div class="slot" id="slotA">
+    <div class="tag">Clip A</div>
+    <audio id="audioA" controls preload="none"></audio>
+    <div class="revealed" id="revealA" style="display:none"></div>
+  </div>
+  <div class="slot" id="slotB">
+    <div class="tag">Clip B</div>
+    <audio id="audioB" controls preload="none"></audio>
+    <div class="revealed" id="revealB" style="display:none"></div>
+  </div>
+</div>
+<div class="votebar" id="voteBar">
+  <button class="vote primary" data-vote="A">⬅ A is better</button>
+  <button class="vote" data-vote="tie">🤝 About equal</button>
+  <button class="vote" data-vote="bad">👎 Both weak</button>
+  <button class="vote primary" data-vote="B">B is better ➡</button>
+</div>
+<div class="skiprow"><button id="skipBtn">New pair without voting</button></div>
+<div id="afterVote" style="display:none;text-align:center;margin-top:18px">
+  <button class="vote primary" id="nextBtn">Next round →</button>
+</div>
+<div class="roundinfo" id="roundInfo"></div>
+</div>
+
+<div class="card">
+<h2>Leaderboard</h2>
+<div id="leaderboardHost"></div>
+<div class="foot-actions">
+  <button id="exportBtn">Export votes (JSON)</button>
+  <button id="resetBtn">Reset all votes</button>
+</div>
+</div>
+
+<div class="card">
+<h2>Objective file facts — not a quality signal</h2>
+<table class="facttable">
+<thead><tr><th>Clip</th><th class=n>Duration</th><th class=n>Format</th>
+<th class=n>Sample rate</th><th class=n>Size</th></tr></thead>
+<tbody id="factsBody"></tbody>
+</table>
+</div>
+
+<footer>
+Ranking mechanism mirrors <a href="https://huggingface.co/spaces/Navid-AI/Arabic-TTS-Arena"
+target="_blank" rel="noopener">Navid-AI/Arabic-TTS-Arena</a> (blind pairwise vote &rarr; Elo).
+Votes are stored only in this browser’s local storage.
+</footer>
+</div>
+
+<script>
+const SAMPLES = [
+  {
+    "id": "fishspeech_egy_1",
+    "file": "_s2_pro_fishspeech_فويس-مصري-2026-08-03-10-14-خرج-من-«مكة»-وقد-ملا-الحزنُ-قلبه،-فقد-ضاقت-عليه.mp3",
+    "label": "Fish Speech S2 Pro — Egyptian preset voice (take 1)",
+    "group": "fishspeech_egy",
+    "note": "Stock “مصري” (Egyptian) preset voice, not a cloned voice.",
+    "duration": 21.24,
+    "codec": "MP3",
+    "sampleRate": "44.1 kHz",
+    "sizeKB": 332
+  },
+  {
+    "id": "fishspeech_egy_2",
+    "file": "فويس-مصري-2026-08-03-10-14-خرج-من-«مكة»-وقد-ملا-الحزنُ-قلبه،-فقد_s2_pro_fishspeech-ضاقت-عليه.mp3",
+    "label": "Fish Speech S2 Pro — Egyptian preset voice (take 2)",
+    "group": "fishspeech_egy",
+    "note": "Same engine and voice preset as take 1, generated as a separate run — compare the two to see this engine’s run-to-run consistency, not to compare different systems.",
+    "duration": 23.2,
+    "codec": "MP3",
+    "sampleRate": "44.1 kHz",
+    "sizeKB": 362
+  },
+  {
+    "id": "navid_arena_a",
+    "file": "first_samples_navaid_ai_model_a.wav",
+    "label": "Navid-AI Arena — “Model A”",
+    "group": null,
+    "note": "Pulled directly from the Navid-AI Arabic TTS Arena’s own blind interface for this text. The arena keeps the underlying engine anonymous even from the person running it — “Model A” is this clip’s real, permanent identity here, not a placeholder.",
+    "duration": 38.5,
+    "codec": "WAV / PCM16",
+    "sampleRate": "24 kHz",
+    "sizeKB": 1805
+  },
+  {
+    "id": "navid_arena_b",
+    "file": "first_samples_navaid_ai_model_b.wav",
+    "label": "Navid-AI Arena — “Model B”",
+    "group": null,
+    "note": "Same arena session as Model A, the opposite anonymous slot — see note above.",
+    "duration": 44.36,
+    "codec": "WAV / PCM16",
+    "sampleRate": "24 kHz",
+    "sizeKB": 2079
+  },
+  {
+    "id": "fishaudio_zeroshot",
+    "file": "fish_audio_s2_pro_zero_part1.wav",
+    "label": "Fish Audio S2 Pro — zero-shot voice clone (part 1)",
+    "group": null,
+    "note": "“Zero” means zero-shot voice cloning from a reference clip, not a stock preset. “part1” is the file’s own name — at 47.5s for a 449-character passage it most likely covers the full text, but this could not be confirmed without listening; if it cuts off mid-sentence, that is what the name is warning you about.",
+    "duration": 47.51,
+    "codec": "WAV / PCM16",
+    "sampleRate": "44.1 kHz",
+    "sizeKB": 4092
+  },
+  {
+    "id": "silma_tts",
+    "file": "silma-tts-audio-1785740529374.wav",
+    "label": "SILMA TTS",
+    "group": null,
+    "note": null,
+    "duration": 21.76,
+    "codec": "WAV / PCM16",
+    "sampleRate": "24 kHz",
+    "sizeKB": 1020
+  },
+  {
+    "id": "gemini_25_pro_tts",
+    "file": "gemini__2.5_pro_view_tts.wav",
+    "label": "Gemini 2.5 Pro — Preview TTS",
+    "group": null,
+    "note": null,
+    "duration": 43.33,
+    "codec": "WAV / PCM16",
+    "sampleRate": "24 kHz",
+    "sizeKB": 2031
+  }
+];
+
+const START_ELO = 1500, K = 32, STORAGE_KEY = "arabicTtsArenaSam1_v1";
+const byId = Object.fromEntries(SAMPLES.map(s => [s.id, s]));
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      SAMPLES.forEach(s => { if (!(s.id in parsed.ratings)) parsed.ratings[s.id] = START_ELO; });
+      return parsed;
+    }
+  } catch (e) { console.warn("localStorage read failed", e); }
+  const ratings = {};
+  SAMPLES.forEach(s => ratings[s.id] = START_ELO);
+  return { ratings, history: [] };
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function expectedScore(rA, rB) { return 1 / (1 + Math.pow(10, (rB - rA) / 400)); }
+
+// Zero-sum for A/B/tie outcomes (K*(sA-eA) + K*(sB-eB) = K*((sA+sB)-1) = 0 since sA+sB=1);
+// "bad" carries no signal about which clip is better, so ratings are left untouched.
+function applyVote(idA, idB, outcome) {
+  if (outcome === "bad") return;
+  const rA = state.ratings[idA], rB = state.ratings[idB];
+  const eA = expectedScore(rA, rB), eB = 1 - eA;
+  const sA = outcome === "A" ? 1 : outcome === "B" ? 0 : 0.5;
+  const sB = 1 - sA;
+  state.ratings[idA] = rA + K * (sA - eA);
+  state.ratings[idB] = rB + K * (sB - eB);
+}
+
+function pickPair() {
+  const ids = SAMPLES.map(s => s.id);
+  let a, b;
+  do {
+    a = ids[Math.floor(Math.random() * ids.length)];
+    b = ids[Math.floor(Math.random() * ids.length)];
+  } while (a === b);
+  return Math.random() < 0.5 ? [a, b] : [b, a];
+}
+
+function fmtKB(kb) { return kb >= 1024 ? (kb/1024).toFixed(2) + " MB" : kb + " KB"; }
+
+// Direct, non-blind playback of every clip — the arena below only ever plays two
+// at a time with identities hidden until you vote, so this is the only place all
+// samples are listed and playable on demand. Built with DOM calls rather than an
+// innerHTML template so filenames (Arabic text, «», spaces) never have to be
+// embedded inside an HTML attribute string.
+function renderListenAll() {
+  const host = document.getElementById("listenGrid");
+  host.innerHTML = "";
+  const shown = [...SAMPLES].sort((a, b) => a.label.localeCompare(b.label));
+  shown.forEach(s => {
+    const item = document.createElement("div");
+    item.className = "listenitem";
+
+    const label = document.createElement("b");
+    label.textContent = s.label;
+    item.appendChild(label);
+
+    if (s.group) {
+      const sub = document.createElement("div");
+      sub.className = "sub";
+      sub.textContent = "take of: " + s.group;
+      item.appendChild(sub);
+    }
+
+    const audio = document.createElement("audio");
+    audio.controls = true;
+    audio.preload = "none";
+    audio.src = encodeURI(s.file);
+    item.appendChild(audio);
+
+    if (s.note) {
+      const note = document.createElement("div");
+      note.className = "note";
+      note.textContent = s.note;
+      item.appendChild(note);
+    }
+
+    const facts = document.createElement("div");
+    facts.className = "facts";
+    facts.textContent = `${s.duration.toFixed(1)}s · ${s.codec} · ${s.sampleRate} · ${fmtKB(s.sizeKB)}`;
+    item.appendChild(facts);
+
+    host.appendChild(item);
+  });
+}
+
+function renderFacts() {
+  const rows = [...SAMPLES].sort((a,b) => a.label.localeCompare(b.label));
+  document.getElementById("factsBody").innerHTML = rows.map(s => `
+    <tr><td class=nm>${s.label}${s.group ? '<div class=sub>take of: ' + s.group + '</div>' : ''}</td>
+    <td class=n>${s.duration.toFixed(1)}s</td><td class=n>${s.codec}</td>
+    <td class=n>${s.sampleRate}</td><td class=n>${fmtKB(s.sizeKB)}</td></tr>`).join("");
+}
+
+function renderLeaderboard() {
+  const tally = {};
+  SAMPLES.forEach(s => tally[s.id] = { w:0, l:0, t:0, bad:0, votes:0 });
+  state.history.forEach(h => {
+    tally[h.a].votes++; tally[h.b].votes++;
+    if (h.outcome === "A") { tally[h.a].w++; tally[h.b].l++; }
+    else if (h.outcome === "B") { tally[h.b].w++; tally[h.a].l++; }
+    else if (h.outcome === "tie") { tally[h.a].t++; tally[h.b].t++; }
+    else { tally[h.a].bad++; tally[h.b].bad++; }
+  });
+  const ranked = [...SAMPLES].sort((x,y) => state.ratings[y.id] - state.ratings[x.id]);
+  if (state.history.length === 0) {
+    document.getElementById("leaderboardHost").innerHTML =
+      '<p class="empty">No votes yet — cast one above and the leaderboard fills in.</p>';
+    return;
+  }
+  const rows = ranked.map((s, i) => {
+    const t = tally[s.id];
+    return `<tr><td class=rank>${i+1}</td><td class=nm>${s.label}</td>
+      <td class=n elo>${Math.round(state.ratings[s.id])}</td>
+      <td class=n>${t.w}</td><td class=n>${t.l}</td><td class=n>${t.t}</td>
+      <td class=n>${t.bad}</td><td class=n>${t.votes}</td></tr>`;
+  }).join("");
+  document.getElementById("leaderboardHost").innerHTML = `
+    <table><thead><tr><th>#</th><th>Clip</th><th class=n>Elo</th><th class=n>W</th>
+    <th class=n>L</th><th class=n>Tie</th><th class=n>Both weak</th><th class=n>Votes</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+let state = loadState();
+let current = { a: null, b: null, voted: false };
+
+function newRound() {
+  const [a, b] = pickPair();
+  current = { a, b, voted: false };
+  document.getElementById("audioA").src = encodeURI(byId[a].file);
+  document.getElementById("audioB").src = encodeURI(byId[b].file);
+  document.getElementById("audioA").load();
+  document.getElementById("audioB").load();
+  document.getElementById("revealA").style.display = "none";
+  document.getElementById("revealB").style.display = "none";
+  document.getElementById("voteBar").style.display = "flex";
+  document.getElementById("skipBtn").style.display = "inline";
+  document.getElementById("afterVote").style.display = "none";
+  document.getElementById("roundNum").textContent = state.history.length + 1;
+  document.getElementById("roundInfo").textContent =
+    state.history.length === 0 ? "" : `${state.history.length} vote(s) cast so far.`;
+}
+
+function revealSlot(hostId, sampleId) {
+  const s = byId[sampleId];
+  document.getElementById(hostId).style.display = "block";
+  document.getElementById(hostId).innerHTML = `<b>${s.label}</b>
+    ${s.note ? '<div class="note">' + s.note + '</div>' : ''}
+    <div class="facts">${s.duration.toFixed(1)}s &middot; ${s.codec} &middot; ${s.sampleRate}</div>`;
+}
+
+document.getElementById("voteBar").addEventListener("click", e => {
+  const btn = e.target.closest("button.vote");
+  if (!btn || current.voted) return;
+  const outcome = btn.dataset.vote;
+  applyVote(current.a, current.b, outcome);
+  state.history.push({ a: current.a, b: current.b, outcome, ts: Date.now() });
+  saveState();
+  current.voted = true;
+  revealSlot("revealA", current.a);
+  revealSlot("revealB", current.b);
+  document.getElementById("voteBar").style.display = "none";
+  document.getElementById("skipBtn").style.display = "none";
+  document.getElementById("afterVote").style.display = "block";
+  renderLeaderboard();
+});
+document.getElementById("skipBtn").addEventListener("click", newRound);
+document.getElementById("nextBtn").addEventListener("click", newRound);
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "arabic-tts-arena-sam1-votes.json";
+  a.click();
+});
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!confirm("Clear all votes and reset every rating to 1500?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = loadState();
+  saveState();
+  renderLeaderboard();
+  newRound();
+});
+
+// Counts and the duration range are read from SAMPLES rather than typed into the
+// prose above, so adding or removing a clip can't leave the copy silently stale.
+document.getElementById("sampleCountDek").textContent = SAMPLES.length;
+document.getElementById("sampleCountLi").textContent = SAMPLES.length;
+const durations = SAMPLES.map(s => s.duration);
+document.getElementById("durRange").textContent =
+  `${Math.floor(Math.min(...durations))}s to ${Math.ceil(Math.max(...durations))}s`;
+
+renderListenAll();
+renderFacts();
+renderLeaderboard();
+newRound();
+</script>
+</body>
+</html>

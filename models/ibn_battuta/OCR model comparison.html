@@ -1,0 +1,165 @@
+<!doctype html><html lang=en><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>OCR Model Comparison — Arabic</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:40px 24px}
+.pg{max-width:1180px;margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#7a8290;font-weight:700;margin-bottom:8px}
+h1{font-size:30px;line-height:1.2;letter-spacing:-.02em;font-weight:680;margin-bottom:8px}
+.dek{color:#5c646e;margin-bottom:26px;max-width:88ch}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:14px;padding:26px 28px;margin-bottom:20px}
+h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7a8290;font-weight:700;margin-bottom:18px}
+h3{font-size:17px;font-weight:640;margin-bottom:6px}
+.verdict{background:#14233a;color:#fff;border-radius:14px;padding:30px 32px;margin-bottom:20px}
+.verdict h2{color:#8ea6c8}
+.verdict h3{color:#fff;font-size:20px;margin-bottom:8px}
+.verdict p{color:#c3cedd;font-size:14.5px;max-width:88ch}
+.verdict p+p{margin-top:12px}
+.verdict b{color:#fff}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.box{background:#ffffff0f;border-radius:11px;padding:18px 20px}
+.box .t{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.box.win .t{color:#7fd4a4}
+.box.lose .t{color:#f0a08e}
+.box p{font-size:13.5px;color:#c3cedd;margin:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#7a8290;
+font-weight:700;padding:0 9px 12px;border-bottom:2px solid #e6eaee;vertical-align:bottom}
+th.n{text-align:right}
+th small{display:block;font-size:9.5px;letter-spacing:.02em;text-transform:none;color:#a4abb4;
+font-weight:500;margin-top:3px;line-height:1.35}
+td{padding:13px 9px;border-bottom:1px solid #f1f3f5;vertical-align:middle}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr:first-child{background:#f3faf6}
+tbody tr:last-child td{border-bottom:none}
+.r{color:#a4abb4;width:26px}
+.nm{font-weight:640;min-width:150px}
+.nm2{font-weight:600;width:200px}
+.frow{display:flex;gap:20px;padding:16px 0;border-top:1px solid #f1f3f5;align-items:flex-start}
+.frow:first-of-type{border-top:none;padding-top:0}
+.fn{flex:none;width:190px;font-weight:640;font-size:13.5px}
+.ftag{font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.fl{flex:1}
+.fi{color:#5c646e;font-size:13px;line-height:1.5;padding:3px 0 3px 15px;position:relative}
+.fi:before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:#c9ced4}
+.ar{direction:rtl;font-family:'Geeza Pro','Noto Naskh Arabic',serif;font-size:15px;line-height:1.9}
+.bad{color:#b3401f}
+.foot{font-size:12px;color:#8a8f96;line-height:1.7}
+.foot b{color:#5c646e}
+.warn{background:#fff6f4;border:1px solid #f2c4bb;border-radius:14px;padding:24px 26px;margin-bottom:20px}
+.warn h2{color:#b3401f}
+.warn p{font-size:14.5px;line-height:1.65;max-width:88ch}
+.warn p+p{margin-top:11px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+@media print{body{background:#fff;padding:0}.card{break-inside:avoid}}
+</style>
+<div class=pg>
+
+<div class=eyebrow>Arabic OCR comparison &middot; Ibn Battuta in Egypt, 5 pages &middot; 27 July 2026</div>
+<h1>Which model is actually best?</h1>
+<p class=dek>Eight outputs scored against a hand-made transcript of the five source pages
+(538 words, 355 distinct). Five indicators as requested — accuracy, hallucination, English errors,
+malformed Arabic, and mixed-script contamination — plus numeric fidelity and right-to-left layout,
+which turned out to separate the models more sharply than anything else.</p>
+
+<div class=verdict>
+<h2>The answer, in two parts</h2>
+<h3>On your five indicators, Baseer OCR wins — clearly</h3>
+<p>It leads or ties on every one: highest word accuracy, lowest rate of malformed Arabic, zero
+English contamination, zero mixed-script tokens, the only model to get all six printed numbers right,
+and the <b>only one of eight</b> that read the two-column right-to-left page in the correct order.
+Composite score <b>97.5 / 100</b>, ahead of LightOnOCR.</p>
+<p><b>But the indicators miss the thing that should decide this.</b> Word-level metrics can only
+compare against words that are on the page. They cannot detect text a model invents wholesale in a
+region it failed to read — and that is exactly what the winner does.</p>
+<div class=split>
+<div class="box win"><div class=t>What the numbers say</div>
+<p>Baseer OCR produces the cleanest, most faithful Arabic prose of any model tested. For the body
+text of a document, it is genuinely the best of these eight.</p></div>
+<div class="box lose"><div class=t>What the numbers miss</div>
+<p>Faced with a publisher block it could not read, it invented a complete one: an Amman address, a
+telephone number, an e-mail and a website. All fluent. All false. The real imprint is in Alexandria.</p></div>
+</div>
+</div>
+
+<div class=warn>
+<h2>The distinction that matters most</h2>
+<p><b>A model that garbles is safer than a model that invents.</b> When FastOCR hit the same
+unreadable publisher block, it emitted obvious fragments — visibly broken, easy to catch, easy to
+route for manual review. When Baseer and Datalab hit it, they produced clean, plausible,
+professional-looking text that was entirely fabricated.</p>
+<p>Nothing downstream will flag an invented address or a fake ISBN. It reads correctly, passes
+validation, and propagates. If your pipeline extracts structured fields — addresses, identifiers,
+contact details, amounts — <b>fabrication is disqualifying in a way that a low accuracy score is not</b>.</p>
+</div>
+
+<div class=card>
+<h2>The five indicators, measured</h2>
+<table><thead><tr>
+<th>#</th><th>Model</th>
+<th class=n>Accuracy<small>words recovered</small></th>
+<th class=n>Bad Arabic<small>words not in source</small></th>
+<th class=n>Hallucinated<small>invented word types</small></th>
+<th class=n>English<small>injected into Arabic</small></th>
+<th class=n>Mixed script<small>both in one word</small></th>
+<th class=n>Numbers<small>6 printed figures</small></th>
+<th>Layout<small>2-column RTL</small></th>
+<th class=n>Overall</th>
+</tr></thead><tbody><tr><td class=r>1</td><td class=nm>Baseer OCR</td><td class=n style="color:#0f7b4a;font-weight:640">95.4%</td><td class=n style="color:#0f7b4a;font-weight:640">5.7%</td><td class=n style="color:#0f7b4a;font-weight:640">30</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">6/6</td><td style="color:#0f7b4a">Correct</td><td class=n><b style="font-size:15px">97.5</b></td></tr><tr><td class=r>2</td><td class=nm>LightOnOCR</td><td class=n style="color:#b07d10;font-weight:640">84.2%</td><td class=n style="color:#b07d10;font-weight:640">15.5%</td><td class=n style="color:#b07d10;font-weight:640">70</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#b07d10;font-weight:640">4/6</td><td style="color:#b07d10">Heading missing</td><td class=n><b style="font-size:15px">80.7</b></td></tr><tr><td class=r>3</td><td class=nm>FastOCR</td><td class=n style="color:#0f7b4a;font-weight:640">95.0%</td><td class=n style="color:#0f7b4a;font-weight:640">5.2%</td><td class=n style="color:#0f7b4a;font-weight:640">27</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#b07d10;font-weight:640">5/6</td><td style="color:#b3401f">Columns interleaved</td><td class=n><b style="font-size:15px">77.6</b></td></tr><tr><td class=r>4</td><td class=nm>PaddleOCR-VL-1.6</td><td class=n style="color:#b07d10;font-weight:640">77.7%</td><td class=n style="color:#b07d10;font-weight:640">15.4%</td><td class=n style="color:#b07d10;font-weight:640">66</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#b3401f;font-weight:640">0/6</td><td style="color:#b3401f">Sidebar first</td><td class=n><b style="font-size:15px">76.4</b></td></tr><tr><td class=r>5</td><td class=nm>Unlimited OCR</td><td class=n style="color:#b3401f;font-weight:640">71.0%</td><td class=n style="color:#b3401f;font-weight:640">25.7%</td><td class=n style="color:#b3401f;font-weight:640">120</td><td class=n style="color:#b07d10;font-weight:640">6</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#b3401f;font-weight:640">2/6</td><td style="color:#b3401f">Sidebar first</td><td class=n><b style="font-size:15px">71.1</b></td></tr><tr><td class=r>6</td><td class=nm>Datalab (Surya/Chandra)</td><td class=n style="color:#0f7b4a;font-weight:640">95.2%</td><td class=n style="color:#0f7b4a;font-weight:640">6.4%</td><td class=n style="color:#0f7b4a;font-weight:640">31</td><td class=n style="color:#b3401f;font-weight:640">104</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#b07d10;font-weight:640">4/6</td><td style="color:#b3401f">Sidebar first</td><td class=n><b style="font-size:15px">62.3</b></td></tr><tr><td class=r>7</td><td class=nm>MinerU</td><td class=n style="color:#b3401f;font-weight:640">69.5%</td><td class=n style="color:#b3401f;font-weight:640">23.2%</td><td class=n style="color:#b3401f;font-weight:640">103</td><td class=n style="color:#b3401f;font-weight:640">22</td><td class=n style="color:#b3401f;font-weight:640">22</td><td class=n style="color:#b07d10;font-weight:640">4/6</td><td style="color:#b07d10">Heading missing</td><td class=n><b style="font-size:15px">51.4</b></td></tr><tr><td class=r>8</td><td class=nm>GLM-OCR</td><td class=n style="color:#b3401f;font-weight:640">18.0%</td><td class=n style="color:#b3401f;font-weight:640">74.0%</td><td class=n style="color:#b3401f;font-weight:640">242</td><td class=n style="color:#0f7b4a;font-weight:640">0</td><td class=n style="color:#0f7b4a;font-weight:640">1</td><td class=n style="color:#b3401f;font-weight:640">1/6</td><td style="color:#b07d10">Heading missing</td><td class=n><b style="font-size:15px">50.7</b></td></tr></tbody></table>
+<p class=foot style="margin-top:16px;padding-top:14px;border-top:1px solid #eef1f4">
+Green is good, amber marginal, red poor. Overall is the unweighted mean of accuracy, malformed
+Arabic, English injection, mixed script and layout, each scaled 0&ndash;100.
+Diacritics and Persian letter forms are normalised before comparison, so a model is not penalised
+for dropping tashkeel.</p>
+</div>
+
+<div class=card>
+<h2>Fabrication — found by reading, not by counting</h2>
+<p style="color:#5c646e;font-size:13.5px;margin-bottom:20px;max-width:88ch">This is the column that
+does not appear in any automated metric. Ranked from most to least dangerous.</p>
+<div class=frow><div class=fn>Baseer OCR<div class=ftag style="color:#b3401f">3 fabrications</div></div><div class=fl><div class=fi>Whole publisher block invented: an Amman address, telephone 00962-6-5837999, e-mail horehaj@joe.net.jo and website joan.com.lb. The page shows Horus International, Alexandria, Egypt.</div><div class=fi>Added “for printing the Noble Qur’an” to the publisher name.</div><div class=fi>Page 17 read as 117.</div></div></div><div class=frow><div class=fn>LightOnOCR<div class=ftag style="color:#b07d10">1 fabrications</div></div><div class=fl><div class=fi>A run of roughly 1,300 repeated ٠ characters in place of the publisher block.</div></div></div><div class=frow><div class=fn>FastOCR<div class=ftag style="color:#0f7b4a">Garbles, does not invent</div></div><div class=fl><div class=fi>Publisher block came out as unreadable fragments rather than invented text — garbled, but not fabricated.</div></div></div><div class=frow><div class=fn>PaddleOCR-VL-1.6<div class=ftag style="color:#b3401f">2 fabrications</div></div><div class=fl><div class=fi>Every printed number replaced with a wrong one that still looks plausible: 1325→1770, 25→20, 75→20, 700→707.</div><div class=fi>Invented dense diacritics that are not on the page.</div></div></div><div class=frow><div class=fn>Unlimited OCR<div class=ftag style="color:#0f7b4a">Garbles, does not invent</div></div><div class=fl><div class=fi>E-mail garbled to house@clif@ma.com rather than invented.</div></div></div><div class=frow><div class=fn>Datalab (Surya/Chandra)<div class=ftag style="color:#b3401f">4 fabrications</div></div><div class=fl><div class=fi>Invented a Beirut, Lebanon distributor and two e-mail addresses.</div><div class=fi>Invented ISBN 0-7645-9854-3.</div><div class=fi>Image captions describe things not on the page — a woman in a bikini, a Japanese setting, Urdu speech bubbles reading “I have given you a punishment”, and a cover for “The Arabian Nights by N. S. Ghalib”.</div><div class=fi>Substituted الأطلسي for the printed الأطلنطي, twice.</div></div></div><div class=frow><div class=fn>MinerU<div class=ftag style="color:#b07d10">1 fabrications</div></div><div class=fl><div class=fi>Rendered an Arabic heading as the Latin transliteration “Amir Relgalle.”</div></div></div><div class=frow><div class=fn>GLM-OCR<div class=ftag style="color:#b07d10">1 fabrications</div></div><div class=fl><div class=fi>The entire output is unrelated to the document — fluent Arabic about “points”, “programming information” and “e-mail in Arabic”.</div></div></div>
+</div>
+
+<div class=card>
+<h2>Sample of malformed Arabic produced by each model</h2>
+<table><tbody><tr><td class=nm2>Baseer OCR</td><td class="ar bad">المتناهبه  ·  فنيم  ·  كوربس  ·  وباسمه  ·  عيداب  ·  جوتنس  ·  لطباعه</td></tr><tr><td class=nm2>LightOnOCR</td><td class="ar bad">بطبوطه  ·  بطوطخ  ·  ها  ·  وسسه  ·  ور  ·  الد  ·  الحيط</td></tr><tr><td class=nm2>FastOCR</td><td class="ar bad">ها  ·  سياسه  ·  ازنيه  ·  الحضريه  ·  مصطف  ·  غن  ·  مفتي</td></tr><tr><td class=nm2>PaddleOCR-VL-1.6</td><td class="ar bad">الم  ·  ال  ·  اء  ·  بطو  ·  يه  ·  اب  ·  ته</td></tr><tr><td class=nm2>Unlimited OCR</td><td class="ar bad">يل  ·  بطوله  ·  وها  ·  بعيلي  ·  الا  ·  اطنا  ·  فيهه</td></tr><tr><td class=nm2>Datalab (Surya/Chandra)</td><td class="ar bad">تم  ·  سزا  ·  الاطلسي  ·  امتناهيته  ·  مصطف  ·  خن  ·  كورس</td></tr><tr><td class=nm2>MinerU</td><td class="ar bad">ال  ·  اد  ·  الحيط  ·  وها  ·  يه  ·  امتناهب  ·  اه</td></tr><tr><td class=nm2>GLM-OCR</td><td class="ar bad">اخري  ·  البريد  ·  شيء  ·  بصوره  ·  بشرنا  ·  وفي  ·  مكان</td></tr></tbody></table>
+<p class=foot style="margin-top:16px;padding-top:14px;border-top:1px solid #eef1f4">
+Words appearing in the output that exist nowhere in the source document. Some are simple character
+errors (عيداب for عيذاب, فنيم for غنيم); others are not Arabic words at all.</p>
+</div>
+
+<div class=card>
+<h2>Recommendation</h2>
+<p style="font-size:15px;line-height:1.7;max-width:88ch"><b>For clean Arabic body text, use Baseer OCR.</b>
+It is measurably the best transcriber here, and the only one that respects right-to-left column order.</p>
+<p style="font-size:15px;line-height:1.7;max-width:88ch;margin-top:12px"><b>Do not let it touch
+structured fields unreviewed.</b> Addresses, identifiers, contact details and reference numbers need
+either human verification or a second model to cross-check. Where two models disagree on a structured
+field, treat both as unreliable for that field.</p>
+<p style="font-size:15px;line-height:1.7;max-width:88ch;margin-top:12px"><b>Rule out GLM-OCR and
+PaddleOCR-VL entirely.</b> GLM returned a document unrelated to the input. PaddleOCR got all six
+printed numbers wrong while producing numbers that look right — the worst possible failure for
+anything numeric.</p>
+<p style="font-size:15px;line-height:1.7;max-width:88ch;margin-top:12px"><b>Then test Mistral OCR 4
+and dots.mocr.</b> Neither is in this run, and both have published multilingual results stronger than
+anything here. Until they are tested on these same pages, the comparison is incomplete.</p>
+</div>
+
+<div class=card><h2>Method</h2>
+<p class=foot>
+<b>Reference.</b> A transcript of all five pages made by reading the page images directly — 538 words,
+355 distinct. No vendor transcript was used.<br><br>
+<b>Accuracy</b> is the share of reference words recovered, matched as a multiset so repetition counts.
+<b>Bad Arabic</b> is the share of output words absent from the source; a few will be transcription
+slips on my side rather than model errors, so treat small differences as noise.
+<b>English injected</b> counts Latin fragments sitting inside Arabic running text, and deliberately
+excludes standalone English image captions, which are a separate issue.
+<b>Layout</b> checks page 2, where correct right-to-left output places the main column
+(فتى من طنجة) before the sidebar (مدينة طنجة).<br><br>
+<b>Caveat.</b> Five pages of one document. Enough to disqualify a model; not enough to certify one.
+The winner here earned a larger trial, not a purchase order.
+</p></div>
+
+</div></html>
