@@ -1,0 +1,257 @@
+
+--- Page 1 ---
+
+# المجموعة الشمسية
+
+## لولو
+
+إعداد: محمد حسّام  
+إخراج فني: إيهاب عوض
+
+رقم الإيداع: 2022/2175  
+الترقيم الدولي: 978-977-808-1381
+
+<div style="text-align: center;">
+  ![image](image_1.png)
+</div>
+
+
+--- Page 2 ---
+
+كانت سارةً وأصدقاءًها يرسمون صوَرًا للسَّماء؛ حيث رَسَم مُغْظَمُ الأَطْفَالِ سَمَاءً زَرْقَاءً، لكنَّ بِعَضْهُمْ رَسَمَهَا بِاللَّوْنِ الرَّمَادِي، واسْتَخْدَمَ بِعَضُ الأَطْفَالِ كثيرًا من الطَّلاءِ الأَسْوَد، وَبِعَضُهُمْ الأَخَرُ رَسَمَ سَمَاءً بُرْتُقَالِيَّةً مَائِلَةً إلى الحُمْرَة.
+
+أُعْجِبَتْ مُعْلَمَةُ الفَضْلِ المُعْلَمَةُ بِجَمِيعِ اللَّوْحَاتِ المُخْتَلِفَةِ.
+
+المُعْلَمَةُ: «جَمِيعُ اللَّوْحَاتِ ذات الأَلْوَانِ المُخْتَلِفَةِ تَبْدُو لي مِثْلَ السَّمَاءِ».
+
+2
+
+
+Note: The image contains a cartoon illustration of children reading books in a classroom setting, but since the instruction is to extract *text content* into Markdown and not to describe or reproduce the visual elements, the illustration is not included in the Markdown output. The page number "2" is included as it is textual content visible in the image.
+
+
+--- Page 3 ---
+
+وَأَوْضَحَتِ الْمُعَلِّمَةُ أَنَّ كُلَّ الْأَلْوَانِ الَّتِي يُمْكِنُنَا رُؤْيَتُهَا فِي السَّمَاءِ ؛ تَأْتِي مِنَ الضَّوْءِ الَّذِي تُرْسِلُهُ إِلَيْنَا الشَّمْسُ.
+
+النَّقَطَتْ قِطْعَةً مِنَ الْوَرَقِ الْأَبْيَضِ، وَجِسْمًا رُجَاجِيًا شَفَّافًا يُسَمَّى الْمُنْشُورَ، وَقَالَتْ...
+
+الْمُعَلِّمَةُ: «إِذَا وَضَعْتُ هَذَا الْمُنْشُورَ عَلَى الْوَرَقَةِ بِمَسَافَةٍ مُعَيَّنَةٍ، أَخْبِرُونِي بِمَا تَرَوْنَهُ عَلَى الْوَرَقَةِ.»
+
+رَائِعٌ وَمُبْهِرٌ جِدًّا! هَكَذَا كَانَتْ رِدَّةُ فِعْلِ الْأَطْفَالِ عِنْدَمَا رَأَوْا أَلْوَانَ قَوْسٍ فُزَحَ مُتَكَوِّنَةً عَلَى الْوَرَقَةِ الْبَيْضَاءِ.
+
+3
+
+
+Note: The image contains a visual of a hand writing on a document with a purple highlighter, but since the instruction is to extract *text content* into Markdown and not describe or reproduce visual elements beyond text, the visual description is omitted. The page number "3" is included as it appears in the image.
+
+
+--- Page 4 ---
+
+أَخْبَرَتِ الْمُعْلَمَةُ الْفَضْلَ أَنَّهُ عَلَى الرَّغْمِ مِنْ أَنَّ ضَوْءَ النَّهَارِ يَبْدُو غَيْرَ مَرْيَيِ، إِلَّا  
+أَنَّهُ يَتَكَوَّنُ مِنْ أَلْوَانِ قَوْسٍ فُزْحَ السَّبْعَةِ، وَيَقُومُ الْمُنْشُورُ بِفَضْلٍ وَتَحْلِيلِ ضَوْءٍ  
+النَّهَارِ عِنْدَمَا يَمُرُّ مِنْ خِلَالِهِ.
+
+الْمُعْلَمَةُ: سَأَشْرَحُ لَكُمْ -الآنَ - لِمَاذَا تَبْدُو السَّمَاءُ زَرْقَاءَ؟ لَكِنْ حَالُوا أَنْ تَتَذَكَّرُوا  
+أَنَّ السَّمَاءَ عِبَارَةٌ عَنْ طَبَقَةٍ كَبِيرَةٍ وَمَهُولَةٍ مِنَ الْهَوَاءِ تُسَمَّى الْغِلَافَ الْجَوْيَ.
+
+4
+
+
+Note: The page number "4" is placed at the bottom center as shown in the image.
+
+
+--- Page 5 ---
+
+أَخْبَرَتِ الْمُعَلَّمَةُ الْأَطْفَالَ فِي الْفَضْلِ أَنَّ الضَّوْءَ يَمُرُّ خِلَالَ الْغَازَاتِ وَجُزْيَيَاتِ الْغُبَارِ  
+فِي الْغَلَافِ الْجَوْيِ؛ لِلْوُصُولِ إِلَى كَوْكَبِ الْأَرْضِ، وَتَعْمَلُ الْغَازَاتُ وَجُزْيَيَاتُ الْغُبَارِ  
+الصَّغِيرَةُ عَلَى تَشْتِيتِ ضَوْءِ الشَّمْسِ.
+
+الْمُعَلَّمَةُ: عِنْدَمَا يَتَشَنَّتُ الضَّوْءُ تَظْهَرُ أَلْوَانُهُ الْمُخْتَلِفَةُ،  
+فَمَا اللَّوْنُ – بِرَأْيِكُمْ – الَّذِي يَظْهَرُ بِوُضُوحٍ أَكْبَرَ عِنْدَ فَضْلِ الضَّوْءِ  
+عَنْ طَرِيقِ الْغَازَاتِ وَالْجُسَيْمَاتِ فِي السَّمَاءِ؟  
+لَمْ يَكُنِ الْأَطْفَالُ مُتَأَكِّدِينَ؛ لِذَلِكَ طَلَبَتْ مِنْهُمُ الْمُعَلَّمَةُ التَّفْكِيرَ فِي اللَّوْنِ الَّذِي  
+يَرَوْنَهُ غَالِبًا فِي السَّمَاءِ.
+
+سَارَةُ: «صَاحَتْ بِصَوْتٍ عَالٍ» الْأَزْرَقُ!
+
+5
+
+
+Note: The image contains a child illustration with two figures (one in purple, one in red) and a number "5" in a box at the bottom right. Since the instruction is to extract text content into Markdown and not to describe or include images, the illustration is not represented in the Markdown output. The number "5" is included as plain text as it appears in the image.
+
+
+--- Page 6 ---
+
+المُعَلَّمَةُ: أَحْسَنْتُ! ... يُشَتَّثُ الْغَلَافُ الْجَوْيُ الضَّوْءَ الْأَزْرَقَ أَكْثَرَ مِنَ الْأَلْوَانِ السِّتَّةِ الْأُخْرَى فِي ضَوْءِ النَّهَارِ؛ وَلِذَلِكَ عِنْدَمَا نَنْظُرُ إِلَى الْأَعْلَى نَزَى سَمَاءً زَرْقَاءً. سَأَلْتِ الْمُعَلَّمَةُ الْأَطْفَالَ عَنْ سَبِّبِ تَغَيُّرِ لَوْنِ السَّمَاءِ عِنْدَ غُرُوبِ الشَّمْسِ.
+
+المُعَلَّمَةُ: هَذَا دَلِيلٌ ... فَالْغَلَافُ الْجَوْيُ يَكُونُ أَكْثَرَ سَمَاكَةً عِنْدَمَا تَغْرُبُ الشَّمْسُ.
+
+سَارَةٌ: هَلْ تَنَاثَرَ الضَّوْءَ الْأَزْرَقُ كَثِيرًا لِدَرَجَةِ أَنَّ الْأَلْوَانَ الْأُخْرَى يُمْكِنُ أَنْ تَمُرَّ جَلَالَ السَّمَاءِ؟
+
+وَهُنَا كَانَتْ سَارَةُ عَلَى حَقٍّ فِيمَا تَقُولُ.
+
+6
+
+
+Note: The image contains a cartoon illustration at the bottom showing a child reading a book, a teacher, and a girl in a dress, but since the instruction is to extract *text content* into Markdown and not describe or include images, the illustration is not represented in the output. The page number "6" is included as it appears in the image.
+
+
+--- Page 7 ---
+
+المُعَلَّمَةُ: دَعُونَا تُفَكَّرْ فِي سَبِبِ ظُهُورِ السَّمَاءِ بِاللَّوْنِ الرَّمَادِيِّ عِنْدَمَا يَكُونُ الْجَوُّ غَائِمًا أَوْ مُمْطِرًا.
+
+جِينًا: فَهَلْ تَمْنَعُ الْغُيُومُ ضَوْءَ الشَّمْسِ مِنَ الْوُصُولِ إِلَى الْأَرْضِ؟
+
+المُعَلَّمَةُ: هَذَا صَحِيحٌ، تُضْبِحُ السَّمَاءُ رَمَادِيَّةً عِنْدَمَا يَقُلُ ضَوْءُ الشَّمْسِ الَّذِي يَصِلُ إِلَى الْأَرْضِ، لِأَنَّهُ فِي اللَّيْلِ تَكُونُ الشَّمْسُ عَلَى الْجَانِبِ الْآخَرِ مِنَ الْأَرْضِ، وَلَا يَصِلُنَا ضَوْءٌ عَلَى الْإِطْلَاقِ.
+
+<div style="text-align: center; margin-top: 20px;">
+    <div style="background-color: #ffeb3b; padding: 10px; border-radius: 5px; display: inline-block;">
+        7
+    </div>
+</div>
+
+
+--- Page 8 ---
+
+سَارَةُ: كَيْفَ تَتَكَوَّنُ السُّحُبُ؟
+
+أَوْضَحَتِ الْمُعَلَّمَةُ أَنَّهُ عِندَمَا تَقُومُ الشَّمْسُ بِتَذَفَّنَةِ الْأَرْضِ، فَإِنَّهَا تَقُومُ أَيْضًا بِتَسْخِينِ الْمِيَاهِ فِي الْأَنْهَارِ وَالْبُحَيْرَاتِ وَالْبِحَارِ، وَعِندَمَا تَسْخَنُ هَذِهِ الْمِيَاهُ، يَتَحَوَّلُ بَعْضُهَا إِلَى بُخَارِ مَاءٍ.
+
+الْمُعَلَّمَةُ: بُخَارُ الْمَاءِ مِثْلُ الْبُخَارِ غَيْرِ الْمَرْنَيِّ، وَيَرْتَفِعُ بُخَارُ الْمَاءِ إِلَى السَّمَاءِ؛ حَيْثُ يَكُونُ الْهَوَاءُ شَدِيدَ الْبُرُودَةِ.
+
+8
+
+
+Note: The page number "8" is placed at the bottom center as shown in the image. The decorative elements (clouds, wave, swirls) are not included in the Markdown as they are graphical and not textual content.
+
+
+--- Page 9 ---
+
+أَخْبَرَتِ الأَطْفَالَ فِي الْفَضْلِ أَنَّ الْهَوَاءَ الْبَارِدَ يُحَوِّلُ الْبُخَارَ مَرَّةً أُخْرَى إِلَى قَطَرَاتٍ  
+مِنَ الْمَاءِ، تَلْتَصِقُ هَذِهِ الْقُطَرَاتُ بِالْغَازِ وَالْغُبَارِ فِي الْغَلَافِ الْجَوِيِّ وَتَطْفُو فِي  
+السَّمَاءِ.  
+أُعْجِبَتْ سَارَةٌ وَصَدِيقَاتُهَا بِفَكْرَةِ الْمَاءِ الْمُنْفُوشِ فِي السَّمَاءِ.
+
+<div style="text-align: center;">
+    ![image](image_1.png)
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <span style="background-color: #ff6666; color: white; padding: 5px 10px; border-radius: 5px;">9</span>
+</div>
+
+
+Note: The image of the sun is represented as a placeholder since actual image extraction is not possible. The decorative elements (sun, clouds, waves, and background patterns) are not included as they are purely visual and do not contain textual content. The page number "9" is styled as a pink box with white text, as shown in the image.
+
+
+--- Page 10 ---
+
+إِبْنَاسُ: «سَأَلْتِ الْمُعَلَّمَةُ كَيْفَ نَرَى قَوْسَ قُزَحَ؟ فَلَا يُوجَدُ أَيُّ مَنْشُورٍ فِي السَّمَاءِ، أَلَيْسَ كَذَلِكَ؟»
+
+الْمُعَلَّمَةُ: «سُوَّالٌ جَيِّدٌ»، يُمْكِنُكَ فَقَطْ رُؤْيَةُ قَوْسٍ قُزَحَ؛ حَيْثُ تُوجَدُ مِيَاهٌ فِي الْهَوَاءِ رُبَّمَا بَعْدَ الْمَطَرِ أَوْ بِالْقُرْبِ مِنْ شَلَّالٍ أَوْ نَافُورَةٍ، قَطَرَاتُ بِخَارِ الْمَاءِ الصَّغِيرَةُ هُنَا تَعْمَلُ مِثْلَ مَنْشُورَاتِ صَغِيرَةِ الْحَجْمِ.
+
+10
+
+
+Note: The image contains a cartoon illustration of a woman with curly hair and a purple dress, holding a child, with a rainbow background and a sun in the sky. The illustration is not text and thus not included in the Markdown output as per instructions. The page number "10" is included as it is textual content.
+
+
+--- Page 11 ---
+
+أرادَ نبيلٌ أنْ يَعرفَ ما إذا كان من المُمْكِن أنْ نَلْمَسَ السَّمَاءَ!
+
+المُعَلِّمَةُ: «حَتَّى لَوْ تَسَلَّقْتِ أَغْلَى قِمَّةٍ جَبَلِيَّةٍ، فَكُلَّمَا ارْتَفَعْتِ أَصْبَحَ الْجَوُّ أَرَقَّ.»
+
+أَخْبَرَتْهُمْ أَيْضًا أَنَّهَا سَتُقَدِّمُ لَهُمُ المَزِيدَ مِنَ المَعْلُومَاتِ عَنِ الْجَوْ، وَأَخْبَرَتْهُمْ أنْ
+
+يَكُونُوا مُسْتَعِدِينَ لِبَعْضِ الْكَلِمَاتِ الطَّوِيلَةِ جِدًّا!
+
+11
+
+
+Note: The image contains two cartoon characters — one in a red shirt and one in a brown headscarf — but since the instruction is to extract *text content* into Markdown and not to describe or reproduce images, no image markup is included. The page number "11" is included as plain text at the bottom as it appears in the image.
+
+
+--- Page 12 ---
+
+المُعَلَّمَةُ: إنَّ الْغَلَافَ الْجَوِيَّ يَتَكَوَّنُ مِنْ طَبَقَاتٍ مُخْتَلِفَةٍ؛ حَيْثُ ثُسَمَى الطَّبَقَةُ الْأَقْرَبُ إِلَى الْأَرْضِ طَبَقَةَ التُّرُوبُوسْفِيرِ، فَمَادًا -بِرَأْيِكُمْ- يُوجَدُ فِي طَبَقَةِ التُّرُوبُوسْفِيرِ؟
+
+سَارَةُ: السُّحْبُ...
+
+جَنَّةُ: الْأَمْطَارُ...
+
+إِينَاسُ: الثُّلُوجُ...
+
+نَبِيلٌ: الْهَوَاءُ...
+
+المُعَلَّمَةُ: هَذِهِ الإِجَابَاتُ جَمِيعُهَا صَحِيحَةً.
+
+12
+
+
+Note: The image contains a cartoon illustration of a woman with a child, surrounded by four other children, but since the instruction is to extract *text content* into Markdown and not to describe or reproduce images, the illustration is not included in the Markdown output. The page number "12" is included as it is textual content.
+
+
+--- Page 13 ---
+
+$\text{الْمُعَلَّمَةُ: تُسَمَّى الطَّبَقَةُ فَوْقَ طَبَقَةِ التُّرُوبُوسْفِيرِ السِّتَرَانُوسْفِيرَ.}$
+
+$\text{هَلْ سَمِعْتُمْ يَوْمًا عَنْ طَبَقَةِ الأُوزُونِ؟ طَبَقَةُ الأُوزُونِ مَوْجُودَةٌ فِي السِّتَرَانُوسْفِيرِ،}$
+
+$\text{وَهِيَ تَحْمِي كَوْكَبَ الأَرْضِ مِنْ أَشْعَةِ الشَّمْسِ الضَّارَةِ.}$
+
+$\text{أَخْبَرَتِ الْمُعَلَّمَةُ الأَطْفَالَ عَنْ طَبَقَتَيْنِ أُخْرَيْنِ، تُسَمَّيَانِ الْمِيزُوسْفِيرَ وَالثَّيْرُمُوسْفِيرَ.}$
+
+<div style="text-align: center; margin-top: 20px;">
+    <span style="border: 1px solid black; padding: 5px; border-radius: 5px;">13</span>
+</div>
+
+
+--- Page 14 ---
+
+كَانَتْ هُنَاكَ طَبَقَةٌ أُخْرَى فِي الْغَلَافِ الْجَوَيِّ يُمْكِنُ التَّعْرُفُ إِلَيْهَا، طَلَبَتِ الْمُعَلَّمَةُ مِنَ الْجَمِيعِ ذِكْرَ اسْمِ الطَّبَقَةِ الْأَخِيرَةِ فِي الْغَلَافِ الْجَوَيِّ.
+
+<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
+  <div style="text-align: center;">
+    <div style="font-size: 12px; transform: rotate(-90deg); margin-bottom: 10px;">SPHERE</div>
+    <div style="margin-bottom: 20px;">
+      ![image](image_1.png)
+    </div>
+    <div>
+      ![image](image_2.png)
+    </div>
+  </div>
+  <div style="margin-left: 20px;">
+    ![image](image_3.png)
+  </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+  <div style="background-color: #f0f0f0; padding: 5px; border-radius: 5px; display: inline-block;">
+    14
+  </div>
+</div>
+
+
+--- Page 15 ---
+
+قالَ الْجَمِيعُ: إِكْسُوسْفِيرُ!
+
+الْمُعَلَّمَةُ: مِنْ هُنَا يَبْدَأُ الْفَضَاءُ، لَا يُوجَدُ هَوَاءٌ هُنَا إِطْلَاقًا؛ لِهَذَا السَّبَبِ يَتَعَيِّنُ عَلَى رُؤَادِ الْفَضَاءِ حَمْلُ الْأُكْسِجِينِ مَعَهُمْ.
+
+<div style="text-align: center;">
+    ![image](image_1.png)
+</div>
+
+15
+
+
+--- Page 16 ---
+
+قال الجمع: إِكْسُوسْفِيرُ!
+
+المُعَلَّمَةُ: مِنْ هُنَا يَبْدَأُ الْفَضَاءُ، لَا يُوجَدُ هَوَاءٌ هُنَا إِطْلَاقًا؛ لِهَذَا السَّبَبِ يَتَعَيِّنُ عَلَى رُؤَادِ الْفَضَاءِ حَمْلُ الْأَكْسِجِينِ مَعَهُمْ.
+
+16
+
