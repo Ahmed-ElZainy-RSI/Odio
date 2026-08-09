@@ -1,0 +1,552 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 4,
+ "source": "ocr",
+ "ocr_engine": "lighton/parse-v3",
+ "box_level": "none",
+ "diac_ratio": 0.0,
+ "path": "diacritise",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p004w000",
+   "raw": "المحاولات",
+   "txt": "المحاولات",
+   "fixes": []
+  },
+  {
+   "id": "p004w001",
+   "raw": "<table>",
+   "txt": "table>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w002",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w003",
+   "raw": "<td>4</td>",
+   "txt": "td>4</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w004",
+   "raw": "<td>العثور",
+   "txt": "td>العثور",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w005",
+   "raw": "على",
+   "txt": "على",
+   "fixes": []
+  },
+  {
+   "id": "p004w006",
+   "raw": "مومياء!</td>",
+   "txt": "مومياء!</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w007",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w008",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w009",
+   "raw": "<td>6</td>",
+   "txt": "td>6</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w010",
+   "raw": "<td>تحنيط",
+   "txt": "td>تحنيط",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w011",
+   "raw": "المومياء</td>",
+   "txt": "المومياء</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w012",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w013",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w014",
+   "raw": "<td>8</td>",
+   "txt": "td>8</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w015",
+   "raw": "<td>مومياوات",
+   "txt": "td>مومياوات",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w016",
+   "raw": "طبيعية</td>",
+   "txt": "طبيعية</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w017",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w018",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w019",
+   "raw": "<td>14</td>",
+   "txt": "td>14</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w020",
+   "raw": "<td>مومياوات",
+   "txt": "td>مومياوات",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w021",
+   "raw": "من",
+   "txt": "من",
+   "fixes": []
+  },
+  {
+   "id": "p004w022",
+   "raw": "تحنيط",
+   "txt": "تحنيط",
+   "fixes": []
+  },
+  {
+   "id": "p004w023",
+   "raw": "الإنسان</td>",
+   "txt": "الإنسان</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w024",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w025",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w026",
+   "raw": "<td>18</td>",
+   "txt": "td>18</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w027",
+   "raw": "<td>طريقة",
+   "txt": "td>طريقة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w028",
+   "raw": "التحنيط",
+   "txt": "التحنيط",
+   "fixes": []
+  },
+  {
+   "id": "p004w029",
+   "raw": "عند",
+   "txt": "عند",
+   "fixes": []
+  },
+  {
+   "id": "p004w030",
+   "raw": "المصريين",
+   "txt": "المصريين",
+   "fixes": []
+  },
+  {
+   "id": "p004w031",
+   "raw": "القدماء</td>",
+   "txt": "القدماء</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w032",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w033",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w034",
+   "raw": "<td>20</td>",
+   "txt": "td>20</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w035",
+   "raw": "<td>مقيرة",
+   "txt": "td>مقيرة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w036",
+   "raw": "ملبئة",
+   "txt": "ملبئة",
+   "fixes": []
+  },
+  {
+   "id": "p004w037",
+   "raw": "بالكنوز</td>",
+   "txt": "بالكنوز</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w038",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w039",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w040",
+   "raw": "<td>22</td>",
+   "txt": "td>22</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w041",
+   "raw": "<td>لعنة",
+   "txt": "td>لعنة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w042",
+   "raw": "المومياء</td>",
+   "txt": "المومياء</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w043",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w044",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w045",
+   "raw": "<td>24</td>",
+   "txt": "td>24</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w046",
+   "raw": "<td>حيوانات",
+   "txt": "td>حيوانات",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w047",
+   "raw": "مجنطة</td>",
+   "txt": "مجنطة</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w048",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w049",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w050",
+   "raw": "<td>26</td>",
+   "txt": "td>26</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w051",
+   "raw": "<td>مومياء",
+   "txt": "td>مومياء",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w052",
+   "raw": "السيئة",
+   "txt": "السيئة",
+   "fixes": []
+  },
+  {
+   "id": "p004w053",
+   "raw": "الجميلة</td>",
+   "txt": "الجميلة</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w054",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w055",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w056",
+   "raw": "<td>28</td>",
+   "txt": "td>28</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w057",
+   "raw": "<td>مومياوات",
+   "txt": "td>مومياوات",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w058",
+   "raw": "في",
+   "txt": "في",
+   "fixes": []
+  },
+  {
+   "id": "p004w059",
+   "raw": "الحاضر</td>",
+   "txt": "الحاضر</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w060",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w061",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w062",
+   "raw": "<td>30</td>",
+   "txt": "td>30</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w063",
+   "raw": "<td>الكشف",
+   "txt": "td>الكشف",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w064",
+   "raw": "عن",
+   "txt": "عن",
+   "fixes": []
+  },
+  {
+   "id": "p004w065",
+   "raw": "الأسرار</td>",
+   "txt": "الأسرار</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w066",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w067",
+   "raw": "<tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w068",
+   "raw": "<td>32</td>",
+   "txt": "td>32</td>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w069",
+   "raw": "<td>مصطلحات",
+   "txt": "td>مصطلحات",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w070",
+   "raw": "مصورة</td>",
+   "txt": "مصورة</td>",
+   "fixes": []
+  },
+  {
+   "id": "p004w071",
+   "raw": "</tr>",
+   "txt": "tr>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p004w072",
+   "raw": "</table>",
+   "txt": "table>",
+   "fixes": [
+    "leading-punct"
+   ]
+  }
+ ]
+}

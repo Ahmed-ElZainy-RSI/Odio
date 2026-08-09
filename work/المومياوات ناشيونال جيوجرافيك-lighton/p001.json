@@ -1,0 +1,322 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 1,
+ "source": "ocr",
+ "ocr_engine": "lighton/parse-v3",
+ "box_level": "none",
+ "diac_ratio": 0.0,
+ "path": "diacritise",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p001w000",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w001",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p001w002",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p001w003",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p001w004",
+   "raw": "18px;",
+   "txt": "18px;",
+   "fixes": []
+  },
+  {
+   "id": "p001w005",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p001w006",
+   "raw": "bold;",
+   "txt": "bold;",
+   "fixes": []
+  },
+  {
+   "id": "p001w007",
+   "raw": "margin-top:",
+   "txt": "margin-top:",
+   "fixes": []
+  },
+  {
+   "id": "p001w008",
+   "raw": "20px;\">",
+   "txt": "20px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p001w009",
+   "raw": "NATIONAL",
+   "txt": "NATIONAL",
+   "fixes": []
+  },
+  {
+   "id": "p001w010",
+   "raw": "GEOGRAPHIC",
+   "txt": "GEOGRAPHIC",
+   "fixes": []
+  },
+  {
+   "id": "p001w011",
+   "raw": "KIDS",
+   "txt": "KIDS",
+   "fixes": []
+  },
+  {
+   "id": "p001w012",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w013",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w014",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p001w015",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p001w016",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p001w017",
+   "raw": "48px;",
+   "txt": "48px;",
+   "fixes": []
+  },
+  {
+   "id": "p001w018",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p001w019",
+   "raw": "bold;",
+   "txt": "bold;",
+   "fixes": []
+  },
+  {
+   "id": "p001w020",
+   "raw": "margin-top:",
+   "txt": "margin-top:",
+   "fixes": []
+  },
+  {
+   "id": "p001w021",
+   "raw": "20px;\">",
+   "txt": "20px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p001w022",
+   "raw": "$\\text{المستوى",
+   "txt": "text{المستوى",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w023",
+   "raw": "2}$",
+   "txt": "2}$",
+   "fixes": []
+  },
+  {
+   "id": "p001w024",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w025",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w026",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p001w027",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p001w028",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p001w029",
+   "raw": "36px;",
+   "txt": "36px;",
+   "fixes": []
+  },
+  {
+   "id": "p001w030",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p001w031",
+   "raw": "bold;",
+   "txt": "bold;",
+   "fixes": []
+  },
+  {
+   "id": "p001w032",
+   "raw": "margin-top:",
+   "txt": "margin-top:",
+   "fixes": []
+  },
+  {
+   "id": "p001w033",
+   "raw": "20px;\">",
+   "txt": "20px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p001w034",
+   "raw": "$\\text{المستوى",
+   "txt": "text{المستوى",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w035",
+   "raw": "2}$",
+   "txt": "2}$",
+   "fixes": []
+  },
+  {
+   "id": "p001w036",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w037",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p001w038",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p001w039",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p001w040",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p001w041",
+   "raw": "16px;",
+   "txt": "16px;",
+   "fixes": []
+  },
+  {
+   "id": "p001w042",
+   "raw": "margin-top:",
+   "txt": "margin-top:",
+   "fixes": []
+  },
+  {
+   "id": "p001w043",
+   "raw": "20px;\">",
+   "txt": "20px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p001w044",
+   "raw": "دار",
+   "txt": "دار",
+   "fixes": []
+  },
+  {
+   "id": "p001w045",
+   "raw": "نشخنة",
+   "txt": "نشخنة",
+   "fixes": []
+  },
+  {
+   "id": "p001w046",
+   "raw": "مصر",
+   "txt": "مصر",
+   "fixes": []
+  },
+  {
+   "id": "p001w047",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  }
+ ]
+}

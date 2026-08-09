@@ -289,27 +289,133 @@ source of truth.
 
 ---
 
+## The code
+
+Everything below is real, runnable, and was used to produce the two books in
+`work/`. Run from the repo root.
+
+```
+src/pipeline/
+  extract.py        layer 01-03, text-layer path   — read PDF text + word boxes, clean by rule
+  ocr.py            layer 01,    OCR path          — Gemini vision + response schema, line boxes
+  ocr_lighton.py    layer 01,    OCR path (alt)    — LightOn, text only, no boxes (comparison run)
+  tashkel.py        layer 04b                      — diacritise 'diacritise'-routed pages, ids unchanged
+  speak.py          layer 05-06                    — bind TTS word timings onto token ids
+  run_extract.py    driver, text-layer books       — النجوم
+  run_ocr.py        driver, scanned books          — المومياوات  (resumable, BOOK=/PAGES= env)
+  run_tashkel.py    driver, diacritisation         — resumable, skips 'keep' pages and pages already done
+  run_speak.py      driver, TTS + alignment        — resumable, skips pages already spoken
+  rebind.py         re-bind timings offline        — uses persisted hume_words, no API spend
+  repair.py         fill gaps on legacy pages      — interpolates where raw timings were lost
+  build_reader.py   layer 08                       — emits work/<book>/reader.html
+```
+
+### Running it
+
+```bash
+# text-layer book (no OCR needed — 25 of 36 PDFs qualify)
+python3 src/pipeline/run_extract.py
+
+# scanned book (OCR path)
+BOOK="المومياوات ناشيونال جيوجرافيك " PAGES=5 python3 src/pipeline/run_ocr.py
+
+# diacritise pages the router sent down 'diacritise' ('keep' pages untouched)
+BOOK="المومياوات ناشيونال جيوجرافيك " python3 src/pipeline/run_tashkel.py
+
+# synthesise + align, then build the reader
+python3 src/pipeline/run_speak.py
+python3 src/pipeline/build_reader.py
+```
+
+Every driver is resumable: a page already done is skipped, so hitting a quota
+ceiling costs one page on retry, not the book. That was not theoretical — all
+three providers (Hume, SILMA, Gemini) hit their limits during this build.
+
+---
+
+## Two extraction paths
+
+The corpus splits, and the split matters more than the engine choice.
+
+| | text-layer path | OCR path |
+|---|---|---|
+| books | **25 of 36** | 11 of 36 |
+| module | `extract.py` | `ocr.py` |
+| text source | embedded PDF text | Gemini vision |
+| accuracy | exact — no recognition step | model-dependent |
+| **box granularity** | **per word, measured** | **per line, subdivided** |
+| tashkeel | already present (~0.80) | as printed (~0.24 measured) |
+| cost | free, instant | per page, quota-limited |
+| defects | kashida, stray marks, dropped hamza | recognition errors |
+
+Both emit the identical page record, so everything downstream is shared. The
+record carries `source` and `box_level` so the reader can tell the difference
+instead of implying precision it doesn't have.
+
+> Finding that reshaped this: OCR of `السماء` turned `الْفَصْلِ` ("classroom")
+> into `الفضل` ("grace") four times. The same book's **text layer has it right**.
+> For 69% of the corpus, the OCR error class is avoidable entirely.
+
+---
+
 ## Stage → implementation mapping
 
-| # | Stage | Output | State |
+| # | Stage | Module | State |
 |---|---|---|---|
-| 1 | **Extract + tokenise** | tokens with `id` + `box` | ⚠️ 8 engines in `src/`; **no bbox preservation, no tokeniser, no multi-engine runner** |
-| 2 | **Correctness gate** | `txt` + `fixes[]` | ❌ does not exist |
-| 3 | **Tashkeel** | diacritized `txt` | ❌ `src/tashkel.py` is **empty** |
-| 4 | **TTS** | audio | ⚠️ `salima.py` per-page + resume; `huma_ai.py` single-shot; `gemini.py` untested (`ENTER_FILE_NAME` placeholder) |
-| 5 | **Alignment** | `t` per token | ❌ Hume can emit it; nothing consumes it yet |
-| 6 | **Index + upload** | page JSON + CDN | ❌ does not exist |
-| 7 | **Reader app** | the product | ❌ does not exist |
-| — | Scoring harnesses | winners | ✅ OCR scorecard + Elo arena built |
+| 01 | Extract (text layer) | `extract.py` | ✅ built, run on النجوم |
+| 01 | Extract (OCR) | `ocr.py` | ✅ built, run on المومياوات (17/33 pages, quota) |
+| 02 | Tokenise + anchor | `extract.py` / `ocr.py` | ✅ stable ids + boxes |
+| 03 | Clean by rule | `extract.py:clean_word` | ✅ 4 rules, unit-tested with controls |
+| 04 | Tashkeel router | `run_extract.py` / `run_ocr.py` | ✅ routes on diacritic ratio |
+| 04b | Diacritise | `tashkel.py` / `run_tashkel.py` | ✅ arabic-diacritizer, run on المومياوات (4 pages routed `diacritise`, ids unchanged) |
+| 05 | TTS | `run_speak.py` | ✅ Hume, 15 pages of النجوم |
+| 06 | Align | `speak.py:bind` | ✅ 93.7% anchored to real timestamps |
+| 07 | Index | page JSON in `work/<book>/` | ✅ |
+| 08 | Reader | `build_reader.py` | ✅ `work/النجوم/reader.html` |
 
-### Reusable assets
+---
 
-- **OCR scorecard** — 8 indicators over 8 engines, with hand-made reference.
-- **TTS Elo arena** — `assets/samples_tashkel/sam_1/arabic_tts_arena.html`.
-- **Pricing dashboard** — `OCR pricing dashboard.html`, 16 configs audited.
-- **Hume timestamps** — SDK returns `{text, time:{begin,end}, type:"word"|"phoneme"}`.
-- **`salima.py` resume pattern** — per-page files + skip-if-exists, proven when
-  credits died mid-book.
+## What was actually produced
+
+| | النجوم | المومياوات |
+|---|---|---|
+| path | text layer | OCR (Gemini) |
+| pages | 16 (15 narrated + front matter) | 17 of 33 |
+| tokens | 816 | 788 |
+| cleaned by rule | 563 (69%) | 21 |
+| audio | **8.4 min, real** | — (quota) |
+| timings anchored | **759 / 810 (93.7%)** | — |
+| reader | ✅ `work/النجوم/reader.html` | index only |
+
+---
+
+## The HTML artifacts
+
+Four standalone files, no build step, no CDN. Open any of them directly.
+
+| File | What it is |
+|---|---|
+| `demo/pipeline_poc.html` | **The architecture + POC walkthrough.** Interactive SVG system chart (click any of 18 nodes for detail), token-anchoring diagram, two-phase chart, a 7-step trace of one line through every layer, and a working reader demo with **real Hume audio and real word timestamps**. Built on `السماء` page 5. |
+| `work/النجوم/reader.html` | **The real product.** 15 pages, 8.4 min of real audio, text ↔ page-image views, click-to-seek, word highlight driven by measured timings. Reads only the page index — no pipeline logic. |
+| `demo/OCR pricing dashboard.html` | 16 vendor configurations audited, with source-confidence ratings and the accuracy comparison. |
+| `demo/ocr_benchmark.html` | The 8-engine OCR bake-off on Ibn Battuta, with malformed-Arabic samples per engine. |
+
+### About `demo/pipeline_poc.html`
+
+There is no `demo_pipeline.html` — this is the file. It answers "what happens to
+a PDF, step by step, and what does the user finally see":
+
+1. **Data-integrity finding** — `sam_2/الشمس.txt` is actually `السماء.pdf`,
+   misfiled. Its cover was OCR'd as `لولو` and the ISBN digits disagree.
+2. **System flow** — nine layers, PDFs in, reader out, with branch diamonds for
+   the correctness vote and the tashkeel route. Click a node for what it emits.
+3. **Token anchoring** — one `id`, four representations (`box`, `raw`, `txt`, `t`).
+4. **Trace** — the same line at every stage, showing what each layer changes.
+5. **Reader POC** — plays real audio; the highlight is driven by Hume's own word
+   timestamps, not a timer.
+
+Anything simulated in it is labelled as such — in that file, only the bounding
+boxes are (it predates the text-layer discovery that made real boxes free).
 
 ---
 
@@ -331,17 +437,53 @@ source of truth.
 
 ## Open items
 
-- [ ] **Diacritization model unchosen.** `src/tashkel.py` empty. Prior research:
-      `models/ibn_battuta/Tashkeel libraries and APIs - research.html`.
-- [ ] **Does any high-quality Arabic fuṣḥā engine also emit word timestamps?**
-      Hume emits them (voice quality unverified); SILMA has a purpose-built MSA
-      model (no timestamps). If neither wins outright, forced alignment becomes
-      mandatory infrastructure.
-- [ ] **Bbox survival.** Most OCR engines return plain text. `dots.ocr` returns
-      bbox. Image-view highlighting constrains engine choice — verify before the
-      sweep, or the image view is unbuildable.
-- [ ] **Reference transcripts** for 2 sample books (~1 h each, manual).
-- [ ] **TTS budget** for N=1,000: 12.5 M characters. Unpriced.
-- [ ] **Parallelism** — 14 h serial at N=1,000; the runner must shard.
-- [ ] Front matter (title/ISBN/deposit number on page 1) — narrate or skip?
-- [ ] `src/gemini.py` still has `ENTER_FILE_NAME_{i}` placeholders, never run.
+**Resolved during the build**
+
+- ~~Bbox survival~~ — solved twice. The text layer gives exact **word** boxes for
+  25 of 36 books; Gemini + a response schema gives **line** boxes for the rest,
+  verified by overlaying them on the rendered page.
+- ~~Does any engine give fuṣḥā *and* word timestamps~~ — Hume does emit word
+  timestamps (93.7% coverage measured). Its Arabic voice quality is still
+  unjudged by ear.
+- ~~No diacritiser exists~~ — built. `tashkel.py` wraps `arabic-diacritizer`
+  (BiLSTM + sentence cache, MIT, CPU-only), chosen per the research note
+  (`models/ibn_battuta/Tashkeel libraries and APIs - research.html`) over a
+  general LLM, which the same note measures at 3× the error rate (GPT-5.3:
+  20.9% DER vs. 6.6%). Diacritises full-sentence context, then re-attaches
+  words to token ids by position rather than by re-tokenising the output — a
+  page where the model returns a different word count than it was given is
+  left untouched and reported, not silently misaligned. Run on المومياوات's
+  4 `diacritise`-routed pages; word count matched on all 4.
+
+**Blocking**
+
+- [ ] **All three TTS/OCR providers are quota-exhausted** — Hume (mid-book on
+      النجوم), SILMA (mid-book earlier), Gemini (page 18 of المومياوات). Every
+      driver resumes, so this is a billing question, not an engineering one.
+
+**Known limitations of what was built**
+
+- [ ] **Hume's word timestamps are not one-per-word.** Page 14 returned 20 for 29
+      tokens, and one interval was inverted (`كريم [12920, 5240]`). The binder
+      anchors what it gets and interpolates the rest, recording `t_src` per token.
+- [ ] **OCR boxes are line-level.** Word boxes on the OCR path are subdivided by
+      letter count — approximations, flagged `box_level: "line"`.
+- [ ] **Pages 12–16 of النجوم** were bound before raw timestamps were persisted,
+      so their gaps were repaired from surviving anchors rather than re-bound
+      from source. p014 is 19/29 anchored; the rest are 93–100%.
+- [ ] **The correctness gate is rule-based only.** The dictionary/LLM/consensus
+      design in this README is unbuilt — it wasn't needed for a text-layer book,
+      but the OCR path has no error detection at all yet.
+
+**Still open from the plan**
+
+- [ ] Voice choice unvalidated — "Layla, Arabic Philosopher" is the only
+      Arabic-designated voice in Hume's 160-voice library, chosen on that basis
+      alone. Nobody has listened critically yet.
+- [ ] Reference transcripts for the sample books (~1 h each, manual).
+- [ ] TTS budget for N=1,000: 12.5 M characters, unpriced.
+- [ ] Parallelism — 14 h serial at N=1,000; the runner must shard.
+- [ ] Front matter: page 1 is title/ISBN/deposit number. Currently skipped for
+      narration; confirm that's wanted.
+- [ ] 7.9 MB of audio was committed in `702c803` before `.gitignore` covered it.
+      Untracked now, but still in history.

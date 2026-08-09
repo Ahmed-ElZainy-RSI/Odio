@@ -1,0 +1,79 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 2,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.6-flash",
+ "box_level": "line",
+ "render_size": [
+  1100,
+  1424
+ ],
+ "diac_ratio": 0.0,
+ "path": "diacritise",
+ "status": "diacritised",
+ "tokens": [
+  {
+   "id": "p002w000",
+   "raw": "المومياوات",
+   "txt": "المومياوات",
+   "fixes": [],
+   "box": [
+    9.8,
+    3.8,
+    81.9,
+    20.8
+   ]
+  },
+  {
+   "id": "p002w001",
+   "raw": "إليزابيث",
+   "txt": "إليزابيث",
+   "fixes": [],
+   "box": [
+    45.5,
+    80.5,
+    16.0,
+    3.1
+   ]
+  },
+  {
+   "id": "p002w002",
+   "raw": "كارني",
+   "txt": "كارني",
+   "fixes": [],
+   "box": [
+    35.5,
+    80.5,
+    10.0,
+    3.1
+   ]
+  },
+  {
+   "id": "p002w003",
+   "raw": "NATIONAL",
+   "txt": "NATIONAL",
+   "fixes": [],
+   "box": [
+    53.533,
+    87.2,
+    7.867,
+    3.6
+   ]
+  },
+  {
+   "id": "p002w004",
+   "raw": "GEOGRAPHIC",
+   "txt": "GEOGRAPHIC",
+   "fixes": [],
+   "box": [
+    43.7,
+    87.2,
+    9.833,
+    3.6
+   ]
+  }
+ ],
+ "tashkeel_engine": "arabic-diacritizer"
+}

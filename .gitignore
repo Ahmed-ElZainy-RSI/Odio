@@ -227,3 +227,8 @@ assets/pages_png/
 .DS_Store
 .qodo/
 .ipynb_checkpoints/
+
+# pipeline working dir: audio + page renders are regenerable artifacts
+# (12 GB at N=1,000 by the architecture's own numbers — never commit these)
+work/*/audio/
+work/*/pages/

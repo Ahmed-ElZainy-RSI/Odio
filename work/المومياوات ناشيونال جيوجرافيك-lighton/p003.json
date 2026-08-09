@@ -1,0 +1,1318 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 3,
+ "source": "ocr",
+ "ocr_engine": "lighton/parse-v3",
+ "box_level": "none",
+ "diac_ratio": 0.006,
+ "path": "diacritise",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p003w000",
+   "raw": "العنوان:",
+   "txt": "العنوان:",
+   "fixes": []
+  },
+  {
+   "id": "p003w001",
+   "raw": "المُومياوات",
+   "txt": "المُومياوات",
+   "fixes": []
+  },
+  {
+   "id": "p003w002",
+   "raw": "السلسلة:",
+   "txt": "السلسلة:",
+   "fixes": []
+  },
+  {
+   "id": "p003w003",
+   "raw": "اقرأ",
+   "txt": "اقرأ",
+   "fixes": []
+  },
+  {
+   "id": "p003w004",
+   "raw": "مع",
+   "txt": "مع",
+   "fixes": []
+  },
+  {
+   "id": "p003w005",
+   "raw": "ناشيونال",
+   "txt": "ناشيونال",
+   "fixes": []
+  },
+  {
+   "id": "p003w006",
+   "raw": "جيوجرافيك",
+   "txt": "جيوجرافيك",
+   "fixes": []
+  },
+  {
+   "id": "p003w007",
+   "raw": "تأليف:",
+   "txt": "تأليف:",
+   "fixes": []
+  },
+  {
+   "id": "p003w008",
+   "raw": "إلزابيث",
+   "txt": "إلزابيث",
+   "fixes": []
+  },
+  {
+   "id": "p003w009",
+   "raw": "كارني",
+   "txt": "كارني",
+   "fixes": []
+  },
+  {
+   "id": "p003w010",
+   "raw": "ترجمة:",
+   "txt": "ترجمة:",
+   "fixes": []
+  },
+  {
+   "id": "p003w011",
+   "raw": "إدارة",
+   "txt": "إدارة",
+   "fixes": []
+  },
+  {
+   "id": "p003w012",
+   "raw": "الترجمة",
+   "txt": "الترجمة",
+   "fixes": []
+  },
+  {
+   "id": "p003w013",
+   "raw": "والنشر",
+   "txt": "والنشر",
+   "fixes": []
+  },
+  {
+   "id": "p003w014",
+   "raw": "إشراف",
+   "txt": "إشراف",
+   "fixes": []
+  },
+  {
+   "id": "p003w015",
+   "raw": "عام:",
+   "txt": "عام:",
+   "fixes": []
+  },
+  {
+   "id": "p003w016",
+   "raw": "داليا",
+   "txt": "داليا",
+   "fixes": []
+  },
+  {
+   "id": "p003w017",
+   "raw": "محمد",
+   "txt": "محمد",
+   "fixes": []
+  },
+  {
+   "id": "p003w018",
+   "raw": "إبراهيم",
+   "txt": "إبراهيم",
+   "fixes": []
+  },
+  {
+   "id": "p003w019",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w020",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p003w021",
+   "raw": "center;\">",
+   "txt": "center;\">",
+   "fixes": []
+  },
+  {
+   "id": "p003w022",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w023",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w024",
+   "raw": "style=\"background-color:",
+   "txt": "style=\"background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p003w025",
+   "raw": "#000;",
+   "txt": "000;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w026",
+   "raw": "color:",
+   "txt": "color:",
+   "fixes": []
+  },
+  {
+   "id": "p003w027",
+   "raw": "#fff;",
+   "txt": "fff;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w028",
+   "raw": "padding:",
+   "txt": "padding:",
+   "fixes": []
+  },
+  {
+   "id": "p003w029",
+   "raw": "20px;",
+   "txt": "20px;",
+   "fixes": []
+  },
+  {
+   "id": "p003w030",
+   "raw": "border-radius:",
+   "txt": "border-radius:",
+   "fixes": []
+  },
+  {
+   "id": "p003w031",
+   "raw": "10px;",
+   "txt": "10px;",
+   "fixes": []
+  },
+  {
+   "id": "p003w032",
+   "raw": "margin:",
+   "txt": "margin:",
+   "fixes": []
+  },
+  {
+   "id": "p003w033",
+   "raw": "20px",
+   "txt": "20px",
+   "fixes": []
+  },
+  {
+   "id": "p003w034",
+   "raw": "0;\">",
+   "txt": "0;\">",
+   "fixes": []
+  },
+  {
+   "id": "p003w035",
+   "raw": "<p>كارني،",
+   "txt": "p>كارني،",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w036",
+   "raw": "إلزابيث</p>",
+   "txt": "إلزابيث</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w037",
+   "raw": "<p>المُومياوات/",
+   "txt": "p>المُومياوات/",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w038",
+   "raw": "ترجمة",
+   "txt": "ترجمة",
+   "fixes": []
+  },
+  {
+   "id": "p003w039",
+   "raw": "دار",
+   "txt": "دار",
+   "fixes": []
+  },
+  {
+   "id": "p003w040",
+   "raw": "نهضة",
+   "txt": "نهضة",
+   "fixes": []
+  },
+  {
+   "id": "p003w041",
+   "raw": "مصر.",
+   "txt": "مصر.",
+   "fixes": []
+  },
+  {
+   "id": "p003w042",
+   "raw": "إدارة",
+   "txt": "إدارة",
+   "fixes": []
+  },
+  {
+   "id": "p003w043",
+   "raw": "الترجمة",
+   "txt": "الترجمة",
+   "fixes": []
+  },
+  {
+   "id": "p003w044",
+   "raw": "والنشر.",
+   "txt": "والنشر.",
+   "fixes": []
+  },
+  {
+   "id": "p003w045",
+   "raw": "القاهرة:",
+   "txt": "القاهرة:",
+   "fixes": []
+  },
+  {
+   "id": "p003w046",
+   "raw": "دار",
+   "txt": "دار",
+   "fixes": []
+  },
+  {
+   "id": "p003w047",
+   "raw": "نهضة",
+   "txt": "نهضة",
+   "fixes": []
+  },
+  {
+   "id": "p003w048",
+   "raw": "مصر.",
+   "txt": "مصر.",
+   "fixes": []
+  },
+  {
+   "id": "p003w049",
+   "raw": "2021</p>",
+   "txt": "2021</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w050",
+   "raw": "<p>32",
+   "txt": "p>32",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w051",
+   "raw": "ص،",
+   "txt": "ص،",
+   "fixes": []
+  },
+  {
+   "id": "p003w052",
+   "raw": "15",
+   "txt": "15",
+   "fixes": []
+  },
+  {
+   "id": "p003w053",
+   "raw": "22.5",
+   "txt": "22.5",
+   "fixes": []
+  },
+  {
+   "id": "p003w054",
+   "raw": "سم</p>",
+   "txt": "سم</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w055",
+   "raw": "<p>المستوى",
+   "txt": "p>المستوى",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w056",
+   "raw": "الثاني</p>",
+   "txt": "الثاني</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w057",
+   "raw": "<p>تدمك:",
+   "txt": "p>تدمك:",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w058",
+   "raw": "8-6026-977-14</p>",
+   "txt": "8-6026-977-14</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w059",
+   "raw": "<p>1",
+   "txt": "p>1",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w060",
+   "raw": "تعليم",
+   "txt": "تعليم",
+   "fixes": []
+  },
+  {
+   "id": "p003w061",
+   "raw": "الأطفال</p>",
+   "txt": "الأطفال</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w062",
+   "raw": "<p>أ",
+   "txt": "p>أ",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w063",
+   "raw": "دار",
+   "txt": "دار",
+   "fixes": []
+  },
+  {
+   "id": "p003w064",
+   "raw": "نهضة",
+   "txt": "نهضة",
+   "fixes": []
+  },
+  {
+   "id": "p003w065",
+   "raw": "مصر",
+   "txt": "مصر",
+   "fixes": []
+  },
+  {
+   "id": "p003w066",
+   "raw": "للنشر.",
+   "txt": "للنشر.",
+   "fixes": []
+  },
+  {
+   "id": "p003w067",
+   "raw": "إدارة",
+   "txt": "إدارة",
+   "fixes": []
+  },
+  {
+   "id": "p003w068",
+   "raw": "الترجمة",
+   "txt": "الترجمة",
+   "fixes": []
+  },
+  {
+   "id": "p003w069",
+   "raw": "والنشر</p>",
+   "txt": "والنشر</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w070",
+   "raw": "<p>2",
+   "txt": "p>2",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w071",
+   "raw": "المُومياوات.</p>",
+   "txt": "المُومياوات.</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w072",
+   "raw": "<p>(مترجم)</p>",
+   "txt": "p>(مترجم)</p>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w073",
+   "raw": "<p>372.218</p>",
+   "txt": "p>372.218</p>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w074",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w075",
+   "raw": "Original",
+   "txt": "Original",
+   "fixes": []
+  },
+  {
+   "id": "p003w076",
+   "raw": "English",
+   "txt": "English",
+   "fixes": []
+  },
+  {
+   "id": "p003w077",
+   "raw": "Title:",
+   "txt": "Title:",
+   "fixes": []
+  },
+  {
+   "id": "p003w078",
+   "raw": "Mummies",
+   "txt": "Mummies",
+   "fixes": []
+  },
+  {
+   "id": "p003w079",
+   "raw": "(NG",
+   "txt": "NG",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w080",
+   "raw": "Readers)",
+   "txt": "Readers)",
+   "fixes": []
+  },
+  {
+   "id": "p003w081",
+   "raw": "Copyright",
+   "txt": "Copyright",
+   "fixes": []
+  },
+  {
+   "id": "p003w082",
+   "raw": "2010",
+   "txt": "2010",
+   "fixes": []
+  },
+  {
+   "id": "p003w083",
+   "raw": "National",
+   "txt": "National",
+   "fixes": []
+  },
+  {
+   "id": "p003w084",
+   "raw": "Geographic",
+   "txt": "Geographic",
+   "fixes": []
+  },
+  {
+   "id": "p003w085",
+   "raw": "Partners,",
+   "txt": "Partners,",
+   "fixes": []
+  },
+  {
+   "id": "p003w086",
+   "raw": "LLC.",
+   "txt": "LLC.",
+   "fixes": []
+  },
+  {
+   "id": "p003w087",
+   "raw": "All",
+   "txt": "All",
+   "fixes": []
+  },
+  {
+   "id": "p003w088",
+   "raw": "rights",
+   "txt": "rights",
+   "fixes": []
+  },
+  {
+   "id": "p003w089",
+   "raw": "reserved.",
+   "txt": "reserved.",
+   "fixes": []
+  },
+  {
+   "id": "p003w090",
+   "raw": "National",
+   "txt": "National",
+   "fixes": []
+  },
+  {
+   "id": "p003w091",
+   "raw": "Geographic",
+   "txt": "Geographic",
+   "fixes": []
+  },
+  {
+   "id": "p003w092",
+   "raw": "Kids",
+   "txt": "Kids",
+   "fixes": []
+  },
+  {
+   "id": "p003w093",
+   "raw": "and",
+   "txt": "and",
+   "fixes": []
+  },
+  {
+   "id": "p003w094",
+   "raw": "Yellow",
+   "txt": "Yellow",
+   "fixes": []
+  },
+  {
+   "id": "p003w095",
+   "raw": "Border",
+   "txt": "Border",
+   "fixes": []
+  },
+  {
+   "id": "p003w096",
+   "raw": "Design",
+   "txt": "Design",
+   "fixes": []
+  },
+  {
+   "id": "p003w097",
+   "raw": "are",
+   "txt": "are",
+   "fixes": []
+  },
+  {
+   "id": "p003w098",
+   "raw": "trademarks",
+   "txt": "trademarks",
+   "fixes": []
+  },
+  {
+   "id": "p003w099",
+   "raw": "of",
+   "txt": "of",
+   "fixes": []
+  },
+  {
+   "id": "p003w100",
+   "raw": "National",
+   "txt": "National",
+   "fixes": []
+  },
+  {
+   "id": "p003w101",
+   "raw": "Geographic",
+   "txt": "Geographic",
+   "fixes": []
+  },
+  {
+   "id": "p003w102",
+   "raw": "Society,",
+   "txt": "Society,",
+   "fixes": []
+  },
+  {
+   "id": "p003w103",
+   "raw": "used",
+   "txt": "used",
+   "fixes": []
+  },
+  {
+   "id": "p003w104",
+   "raw": "under",
+   "txt": "under",
+   "fixes": []
+  },
+  {
+   "id": "p003w105",
+   "raw": "license.",
+   "txt": "license.",
+   "fixes": []
+  },
+  {
+   "id": "p003w106",
+   "raw": "Published",
+   "txt": "Published",
+   "fixes": []
+  },
+  {
+   "id": "p003w107",
+   "raw": "in",
+   "txt": "in",
+   "fixes": []
+  },
+  {
+   "id": "p003w108",
+   "raw": "Arabic",
+   "txt": "Arabic",
+   "fixes": []
+  },
+  {
+   "id": "p003w109",
+   "raw": "by",
+   "txt": "by",
+   "fixes": []
+  },
+  {
+   "id": "p003w110",
+   "raw": "Nahdet",
+   "txt": "Nahdet",
+   "fixes": []
+  },
+  {
+   "id": "p003w111",
+   "raw": "Misr",
+   "txt": "Misr",
+   "fixes": []
+  },
+  {
+   "id": "p003w112",
+   "raw": "Publishing",
+   "txt": "Publishing",
+   "fixes": []
+  },
+  {
+   "id": "p003w113",
+   "raw": "House",
+   "txt": "House",
+   "fixes": []
+  },
+  {
+   "id": "p003w114",
+   "raw": "upon",
+   "txt": "upon",
+   "fixes": []
+  },
+  {
+   "id": "p003w115",
+   "raw": "agreement",
+   "txt": "agreement",
+   "fixes": []
+  },
+  {
+   "id": "p003w116",
+   "raw": "with",
+   "txt": "with",
+   "fixes": []
+  },
+  {
+   "id": "p003w117",
+   "raw": "National",
+   "txt": "National",
+   "fixes": []
+  },
+  {
+   "id": "p003w118",
+   "raw": "Geographic",
+   "txt": "Geographic",
+   "fixes": []
+  },
+  {
+   "id": "p003w119",
+   "raw": "Partners,",
+   "txt": "Partners,",
+   "fixes": []
+  },
+  {
+   "id": "p003w120",
+   "raw": "LLC.",
+   "txt": "LLC.",
+   "fixes": []
+  },
+  {
+   "id": "p003w121",
+   "raw": "All",
+   "txt": "All",
+   "fixes": []
+  },
+  {
+   "id": "p003w122",
+   "raw": "rights",
+   "txt": "rights",
+   "fixes": []
+  },
+  {
+   "id": "p003w123",
+   "raw": "reserved.",
+   "txt": "reserved.",
+   "fixes": []
+  },
+  {
+   "id": "p003w124",
+   "raw": "**ترجمة",
+   "txt": "ترجمة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w125",
+   "raw": "كتاب**",
+   "txt": "كتاب**",
+   "fixes": []
+  },
+  {
+   "id": "p003w126",
+   "raw": "**Mummies**",
+   "txt": "Mummies**",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w127",
+   "raw": "**National",
+   "txt": "National",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w128",
+   "raw": "Geographic",
+   "txt": "Geographic",
+   "fixes": []
+  },
+  {
+   "id": "p003w129",
+   "raw": "Partners,",
+   "txt": "Partners,",
+   "fixes": []
+  },
+  {
+   "id": "p003w130",
+   "raw": "LLC.**",
+   "txt": "LLC.**",
+   "fixes": []
+  },
+  {
+   "id": "p003w131",
+   "raw": "تصدرها",
+   "txt": "تصدرها",
+   "fixes": []
+  },
+  {
+   "id": "p003w132",
+   "raw": "دار",
+   "txt": "دار",
+   "fixes": []
+  },
+  {
+   "id": "p003w133",
+   "raw": "نهضة",
+   "txt": "نهضة",
+   "fixes": []
+  },
+  {
+   "id": "p003w134",
+   "raw": "مصر",
+   "txt": "مصر",
+   "fixes": []
+  },
+  {
+   "id": "p003w135",
+   "raw": "للنشر",
+   "txt": "للنشر",
+   "fixes": []
+  },
+  {
+   "id": "p003w136",
+   "raw": "بترخيص",
+   "txt": "بترخيص",
+   "fixes": []
+  },
+  {
+   "id": "p003w137",
+   "raw": "من",
+   "txt": "من",
+   "fixes": []
+  },
+  {
+   "id": "p003w138",
+   "raw": "شركة.",
+   "txt": "شركة.",
+   "fixes": []
+  },
+  {
+   "id": "p003w139",
+   "raw": "يحظر",
+   "txt": "يحظر",
+   "fixes": []
+  },
+  {
+   "id": "p003w140",
+   "raw": "طبع",
+   "txt": "طبع",
+   "fixes": []
+  },
+  {
+   "id": "p003w141",
+   "raw": "أو",
+   "txt": "أو",
+   "fixes": []
+  },
+  {
+   "id": "p003w142",
+   "raw": "تصوير",
+   "txt": "تصوير",
+   "fixes": []
+  },
+  {
+   "id": "p003w143",
+   "raw": "أو",
+   "txt": "أو",
+   "fixes": []
+  },
+  {
+   "id": "p003w144",
+   "raw": "تخزين",
+   "txt": "تخزين",
+   "fixes": []
+  },
+  {
+   "id": "p003w145",
+   "raw": "أي",
+   "txt": "أي",
+   "fixes": []
+  },
+  {
+   "id": "p003w146",
+   "raw": "جزء",
+   "txt": "جزء",
+   "fixes": []
+  },
+  {
+   "id": "p003w147",
+   "raw": "من",
+   "txt": "من",
+   "fixes": []
+  },
+  {
+   "id": "p003w148",
+   "raw": "هذا",
+   "txt": "هذا",
+   "fixes": []
+  },
+  {
+   "id": "p003w149",
+   "raw": "الكتاب",
+   "txt": "الكتاب",
+   "fixes": []
+  },
+  {
+   "id": "p003w150",
+   "raw": "سواء",
+   "txt": "سواء",
+   "fixes": []
+  },
+  {
+   "id": "p003w151",
+   "raw": "النص",
+   "txt": "النص",
+   "fixes": []
+  },
+  {
+   "id": "p003w152",
+   "raw": "أو",
+   "txt": "أو",
+   "fixes": []
+  },
+  {
+   "id": "p003w153",
+   "raw": "الصور",
+   "txt": "الصور",
+   "fixes": []
+  },
+  {
+   "id": "p003w154",
+   "raw": "بأية",
+   "txt": "بأية",
+   "fixes": []
+  },
+  {
+   "id": "p003w155",
+   "raw": "وسيلة",
+   "txt": "وسيلة",
+   "fixes": []
+  },
+  {
+   "id": "p003w156",
+   "raw": "من",
+   "txt": "من",
+   "fixes": []
+  },
+  {
+   "id": "p003w157",
+   "raw": "وسائل",
+   "txt": "وسائل",
+   "fixes": []
+  },
+  {
+   "id": "p003w158",
+   "raw": "تسجيل",
+   "txt": "تسجيل",
+   "fixes": []
+  },
+  {
+   "id": "p003w159",
+   "raw": "البيانات،",
+   "txt": "البيانات،",
+   "fixes": []
+  },
+  {
+   "id": "p003w160",
+   "raw": "إلا",
+   "txt": "إلا",
+   "fixes": []
+  },
+  {
+   "id": "p003w161",
+   "raw": "بإذن",
+   "txt": "بإذن",
+   "fixes": []
+  },
+  {
+   "id": "p003w162",
+   "raw": "كتابي",
+   "txt": "كتابي",
+   "fixes": []
+  },
+  {
+   "id": "p003w163",
+   "raw": "صريح",
+   "txt": "صريح",
+   "fixes": []
+  },
+  {
+   "id": "p003w164",
+   "raw": "من",
+   "txt": "من",
+   "fixes": []
+  },
+  {
+   "id": "p003w165",
+   "raw": "الناشر.",
+   "txt": "الناشر.",
+   "fixes": []
+  },
+  {
+   "id": "p003w166",
+   "raw": "الترقيم",
+   "txt": "الترقيم",
+   "fixes": []
+  },
+  {
+   "id": "p003w167",
+   "raw": "الدولي:",
+   "txt": "الدولي:",
+   "fixes": []
+  },
+  {
+   "id": "p003w168",
+   "raw": "8-6026-977-14",
+   "txt": "8-6026-977-14",
+   "fixes": []
+  },
+  {
+   "id": "p003w169",
+   "raw": "رقم",
+   "txt": "رقم",
+   "fixes": []
+  },
+  {
+   "id": "p003w170",
+   "raw": "الإيداع:",
+   "txt": "الإيداع:",
+   "fixes": []
+  },
+  {
+   "id": "p003w171",
+   "raw": "19141/2021",
+   "txt": "19141/2021",
+   "fixes": []
+  },
+  {
+   "id": "p003w172",
+   "raw": "طبعة:",
+   "txt": "طبعة:",
+   "fixes": []
+  },
+  {
+   "id": "p003w173",
+   "raw": "أبريل",
+   "txt": "أبريل",
+   "fixes": []
+  },
+  {
+   "id": "p003w174",
+   "raw": "2025",
+   "txt": "2025",
+   "fixes": []
+  },
+  {
+   "id": "p003w175",
+   "raw": "**تليشون**:",
+   "txt": "تليشون**:",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w176",
+   "raw": "02",
+   "txt": "02",
+   "fixes": []
+  },
+  {
+   "id": "p003w177",
+   "raw": "33472864",
+   "txt": "33472864",
+   "fixes": []
+  },
+  {
+   "id": "p003w178",
+   "raw": "33466434",
+   "txt": "33466434",
+   "fixes": []
+  },
+  {
+   "id": "p003w179",
+   "raw": "**فاكس**:",
+   "txt": "فاكس**:",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w180",
+   "raw": "02",
+   "txt": "02",
+   "fixes": []
+  },
+  {
+   "id": "p003w181",
+   "raw": "33462576",
+   "txt": "33462576",
+   "fixes": []
+  },
+  {
+   "id": "p003w182",
+   "raw": "**خدمة",
+   "txt": "خدمة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w183",
+   "raw": "العملاء**:",
+   "txt": "العملاء**:",
+   "fixes": []
+  },
+  {
+   "id": "p003w184",
+   "raw": "16766",
+   "txt": "16766",
+   "fixes": []
+  },
+  {
+   "id": "p003w185",
+   "raw": "Website:",
+   "txt": "Website:",
+   "fixes": []
+  },
+  {
+   "id": "p003w186",
+   "raw": "www.nahdetmisr.com",
+   "txt": "www.nahdetmisr.com",
+   "fixes": []
+  },
+  {
+   "id": "p003w187",
+   "raw": "E-mail:",
+   "txt": "E-mail:",
+   "fixes": []
+  },
+  {
+   "id": "p003w188",
+   "raw": "publishing@nahdetmisr.com",
+   "txt": "publishing@nahdetmisr.com",
+   "fixes": []
+  },
+  {
+   "id": "p003w189",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w190",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p003w191",
+   "raw": "center;\">",
+   "txt": "center;\">",
+   "fixes": []
+  },
+  {
+   "id": "p003w192",
+   "raw": "<p>نهضة",
+   "txt": "p>نهضة",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w193",
+   "raw": "مصر",
+   "txt": "مصر",
+   "fixes": []
+  },
+  {
+   "id": "p003w194",
+   "raw": "للنشر</p>",
+   "txt": "للنشر</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w195",
+   "raw": "<p>أمسا",
+   "txt": "p>أمسا",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w196",
+   "raw": "أحمد",
+   "txt": "أحمد",
+   "fixes": []
+  },
+  {
+   "id": "p003w197",
+   "raw": "محمد",
+   "txt": "محمد",
+   "fixes": []
+  },
+  {
+   "id": "p003w198",
+   "raw": "إبراهيم",
+   "txt": "إبراهيم",
+   "fixes": []
+  },
+  {
+   "id": "p003w199",
+   "raw": "سنة",
+   "txt": "سنة",
+   "fixes": []
+  },
+  {
+   "id": "p003w200",
+   "raw": "1938</p>",
+   "txt": "1938</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w201",
+   "raw": "<p>21",
+   "txt": "p>21",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p003w202",
+   "raw": "شارع",
+   "txt": "شارع",
+   "fixes": []
+  },
+  {
+   "id": "p003w203",
+   "raw": "أحمد",
+   "txt": "أحمد",
+   "fixes": []
+  },
+  {
+   "id": "p003w204",
+   "raw": "عرابي",
+   "txt": "عرابي",
+   "fixes": []
+  },
+  {
+   "id": "p003w205",
+   "raw": "المهندسين",
+   "txt": "المهندسين",
+   "fixes": []
+  },
+  {
+   "id": "p003w206",
+   "raw": "الجيزة</p>",
+   "txt": "الجيزة</p>",
+   "fixes": []
+  },
+  {
+   "id": "p003w207",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  }
+ ]
+}

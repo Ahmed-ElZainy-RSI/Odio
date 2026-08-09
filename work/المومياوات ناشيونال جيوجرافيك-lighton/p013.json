@@ -1,0 +1,26 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 13,
+ "source": "ocr",
+ "ocr_engine": "lighton/parse-v3",
+ "box_level": "none",
+ "diac_ratio": 0.091,
+ "path": "diacritise",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p013w000",
+   "raw": "مُومياء",
+   "txt": "مُومياء",
+   "fixes": []
+  },
+  {
+   "id": "p013w001",
+   "raw": "أوزتي",
+   "txt": "أوزتي",
+   "fixes": []
+  }
+ ]
+}

@@ -1,0 +1,1096 @@
+{
+ "book": "المومياوات ناشيونال جيوجرافيك",
+ "source_pdf": "المومياوات ناشيونال جيوجرافيك .pdf",
+ "pdf_sha256_16": "a77d3a1ae7f90b76",
+ "page": 28,
+ "source": "ocr",
+ "ocr_engine": "lighton/parse-v3",
+ "box_level": "none",
+ "diac_ratio": 0.024,
+ "path": "diacritise",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p028w000",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w001",
+   "raw": "style=\"display:",
+   "txt": "style=\"display:",
+   "fixes": []
+  },
+  {
+   "id": "p028w002",
+   "raw": "flex;",
+   "txt": "flex;",
+   "fixes": []
+  },
+  {
+   "id": "p028w003",
+   "raw": "justify-content:",
+   "txt": "justify-content:",
+   "fixes": []
+  },
+  {
+   "id": "p028w004",
+   "raw": "space-between;",
+   "txt": "space-between;",
+   "fixes": []
+  },
+  {
+   "id": "p028w005",
+   "raw": "background-color:",
+   "txt": "background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w006",
+   "raw": "#FF6600;",
+   "txt": "FF6600;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w007",
+   "raw": "padding:",
+   "txt": "padding:",
+   "fixes": []
+  },
+  {
+   "id": "p028w008",
+   "raw": "10px;\">",
+   "txt": "10px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w009",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w010",
+   "raw": "style=\"display:",
+   "txt": "style=\"display:",
+   "fixes": []
+  },
+  {
+   "id": "p028w011",
+   "raw": "flex;",
+   "txt": "flex;",
+   "fixes": []
+  },
+  {
+   "id": "p028w012",
+   "raw": "align-items:",
+   "txt": "align-items:",
+   "fixes": []
+  },
+  {
+   "id": "p028w013",
+   "raw": "center;\">",
+   "txt": "center;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w014",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w015",
+   "raw": "style=\"background-color:",
+   "txt": "style=\"background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w016",
+   "raw": "#FFA500;",
+   "txt": "FFA500;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w017",
+   "raw": "border-radius:",
+   "txt": "border-radius:",
+   "fixes": []
+  },
+  {
+   "id": "p028w018",
+   "raw": "50%;",
+   "txt": "50%;",
+   "fixes": []
+  },
+  {
+   "id": "p028w019",
+   "raw": "width:",
+   "txt": "width:",
+   "fixes": []
+  },
+  {
+   "id": "p028w020",
+   "raw": "40px;",
+   "txt": "40px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w021",
+   "raw": "height:",
+   "txt": "height:",
+   "fixes": []
+  },
+  {
+   "id": "p028w022",
+   "raw": "40px;",
+   "txt": "40px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w023",
+   "raw": "display:",
+   "txt": "display:",
+   "fixes": []
+  },
+  {
+   "id": "p028w024",
+   "raw": "flex;",
+   "txt": "flex;",
+   "fixes": []
+  },
+  {
+   "id": "p028w025",
+   "raw": "justify-content:",
+   "txt": "justify-content:",
+   "fixes": []
+  },
+  {
+   "id": "p028w026",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w027",
+   "raw": "align-items:",
+   "txt": "align-items:",
+   "fixes": []
+  },
+  {
+   "id": "p028w028",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w029",
+   "raw": "margin-right:",
+   "txt": "margin-right:",
+   "fixes": []
+  },
+  {
+   "id": "p028w030",
+   "raw": "10px;\">",
+   "txt": "10px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w031",
+   "raw": "<span",
+   "txt": "span",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w032",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w033",
+   "raw": "24px;",
+   "txt": "24px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w034",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w035",
+   "raw": "bold;\">٢٦</span>",
+   "txt": "bold;\">٢٦</span>",
+   "fixes": []
+  },
+  {
+   "id": "p028w036",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w037",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w038",
+   "raw": "style=\"background-color:",
+   "txt": "style=\"background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w039",
+   "raw": "#FFFFFF;",
+   "txt": "FFFFFF;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w040",
+   "raw": "padding:",
+   "txt": "padding:",
+   "fixes": []
+  },
+  {
+   "id": "p028w041",
+   "raw": "5px;",
+   "txt": "5px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w042",
+   "raw": "border:",
+   "txt": "border:",
+   "fixes": []
+  },
+  {
+   "id": "p028w043",
+   "raw": "1px",
+   "txt": "1px",
+   "fixes": []
+  },
+  {
+   "id": "p028w044",
+   "raw": "solid",
+   "txt": "solid",
+   "fixes": []
+  },
+  {
+   "id": "p028w045",
+   "raw": "#000;\">",
+   "txt": "000;\">",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w046",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w047",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w048",
+   "raw": "16px;",
+   "txt": "16px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w049",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w050",
+   "raw": "bold;\">٢٦</div>",
+   "txt": "bold;\">٢٦</div>",
+   "fixes": []
+  },
+  {
+   "id": "p028w051",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w052",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w053",
+   "raw": "14px;\">٢٦</div>",
+   "txt": "14px;\">٢٦</div>",
+   "fixes": []
+  },
+  {
+   "id": "p028w054",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w055",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w056",
+   "raw": "14px;\">٢٦</div>",
+   "txt": "14px;\">٢٦</div>",
+   "fixes": []
+  },
+  {
+   "id": "p028w057",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w058",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w059",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w060",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p028w061",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w062",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w063",
+   "raw": "16px;",
+   "txt": "16px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w064",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w065",
+   "raw": "bold;\">",
+   "txt": "bold;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w066",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w067",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w068",
+   "raw": "18px;\">لماذا",
+   "txt": "18px;\">لماذا",
+   "fixes": []
+  },
+  {
+   "id": "p028w069",
+   "raw": "يمكنُ",
+   "txt": "يمكنُ",
+   "fixes": []
+  },
+  {
+   "id": "p028w070",
+   "raw": "ائتمانُ</div>",
+   "txt": "ائتمانُ</div>",
+   "fixes": []
+  },
+  {
+   "id": "p028w071",
+   "raw": "<div>المومياء",
+   "txt": "div>المومياء",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w072",
+   "raw": "على",
+   "txt": "على",
+   "fixes": []
+  },
+  {
+   "id": "p028w073",
+   "raw": "السرّ؟</div>",
+   "txt": "السرّ؟</div>",
+   "fixes": []
+  },
+  {
+   "id": "p028w074",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w075",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w076",
+   "raw": "style=\"background-color:",
+   "txt": "style=\"background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w077",
+   "raw": "#FFA500;",
+   "txt": "FFA500;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w078",
+   "raw": "border-radius:",
+   "txt": "border-radius:",
+   "fixes": []
+  },
+  {
+   "id": "p028w079",
+   "raw": "50%;",
+   "txt": "50%;",
+   "fixes": []
+  },
+  {
+   "id": "p028w080",
+   "raw": "width:",
+   "txt": "width:",
+   "fixes": []
+  },
+  {
+   "id": "p028w081",
+   "raw": "40px;",
+   "txt": "40px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w082",
+   "raw": "height:",
+   "txt": "height:",
+   "fixes": []
+  },
+  {
+   "id": "p028w083",
+   "raw": "40px;",
+   "txt": "40px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w084",
+   "raw": "display:",
+   "txt": "display:",
+   "fixes": []
+  },
+  {
+   "id": "p028w085",
+   "raw": "flex;",
+   "txt": "flex;",
+   "fixes": []
+  },
+  {
+   "id": "p028w086",
+   "raw": "justify-content:",
+   "txt": "justify-content:",
+   "fixes": []
+  },
+  {
+   "id": "p028w087",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w088",
+   "raw": "align-items:",
+   "txt": "align-items:",
+   "fixes": []
+  },
+  {
+   "id": "p028w089",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w090",
+   "raw": "margin-left:",
+   "txt": "margin-left:",
+   "fixes": []
+  },
+  {
+   "id": "p028w091",
+   "raw": "10px;\">",
+   "txt": "10px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w092",
+   "raw": "<span",
+   "txt": "span",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w093",
+   "raw": "style=\"font-size:",
+   "txt": "style=\"font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w094",
+   "raw": "24px;",
+   "txt": "24px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w095",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w096",
+   "raw": "bold;\">٢٦</span>",
+   "txt": "bold;\">٢٦</span>",
+   "fixes": []
+  },
+  {
+   "id": "p028w097",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w098",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w099",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w100",
+   "raw": "style=\"text-align:",
+   "txt": "style=\"text-align:",
+   "fixes": []
+  },
+  {
+   "id": "p028w101",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w102",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w103",
+   "raw": "16px;",
+   "txt": "16px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w104",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w105",
+   "raw": "bold;",
+   "txt": "bold;",
+   "fixes": []
+  },
+  {
+   "id": "p028w106",
+   "raw": "margin-top:",
+   "txt": "margin-top:",
+   "fixes": []
+  },
+  {
+   "id": "p028w107",
+   "raw": "20px;\">",
+   "txt": "20px;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w108",
+   "raw": "أغلق",
+   "txt": "أغلق",
+   "fixes": []
+  },
+  {
+   "id": "p028w109",
+   "raw": "قبرُ",
+   "txt": "قبرُ",
+   "fixes": []
+  },
+  {
+   "id": "p028w110",
+   "raw": "السيدة",
+   "txt": "السيدة",
+   "fixes": []
+  },
+  {
+   "id": "p028w111",
+   "raw": "«داي»",
+   "txt": "داي»",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w112",
+   "raw": "بإحكام",
+   "txt": "بإحكام",
+   "fixes": []
+  },
+  {
+   "id": "p028w113",
+   "raw": "باستخدام",
+   "txt": "باستخدام",
+   "fixes": []
+  },
+  {
+   "id": "p028w114",
+   "raw": "الطين",
+   "txt": "الطين",
+   "fixes": []
+  },
+  {
+   "id": "p028w115",
+   "raw": "والطمي.",
+   "txt": "والطمي.",
+   "fixes": []
+  },
+  {
+   "id": "p028w116",
+   "raw": "وقد",
+   "txt": "وقد",
+   "fixes": []
+  },
+  {
+   "id": "p028w117",
+   "raw": "غتر",
+   "txt": "غتر",
+   "fixes": []
+  },
+  {
+   "id": "p028w118",
+   "raw": "بعض",
+   "txt": "بعض",
+   "fixes": []
+  },
+  {
+   "id": "p028w119",
+   "raw": "العمال",
+   "txt": "العمال",
+   "fixes": []
+  },
+  {
+   "id": "p028w120",
+   "raw": "على",
+   "txt": "على",
+   "fixes": []
+  },
+  {
+   "id": "p028w121",
+   "raw": "السيدة",
+   "txt": "السيدة",
+   "fixes": []
+  },
+  {
+   "id": "p028w122",
+   "raw": "«داي»",
+   "txt": "داي»",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w123",
+   "raw": "في",
+   "txt": "في",
+   "fixes": []
+  },
+  {
+   "id": "p028w124",
+   "raw": "عام",
+   "txt": "عام",
+   "fixes": []
+  },
+  {
+   "id": "p028w125",
+   "raw": "١٩٧٢.",
+   "txt": "١٩٧٢.",
+   "fixes": []
+  },
+  {
+   "id": "p028w126",
+   "raw": "وكانت",
+   "txt": "وكانت",
+   "fixes": []
+  },
+  {
+   "id": "p028w127",
+   "raw": "جثثها",
+   "txt": "جثثها",
+   "fixes": []
+  },
+  {
+   "id": "p028w128",
+   "raw": "في",
+   "txt": "في",
+   "fixes": []
+  },
+  {
+   "id": "p028w129",
+   "raw": "حالة",
+   "txt": "حالة",
+   "fixes": []
+  },
+  {
+   "id": "p028w130",
+   "raw": "جيدة",
+   "txt": "جيدة",
+   "fixes": []
+  },
+  {
+   "id": "p028w131",
+   "raw": "للغاية،",
+   "txt": "للغاية،",
+   "fixes": []
+  },
+  {
+   "id": "p028w132",
+   "raw": "لدرجة",
+   "txt": "لدرجة",
+   "fixes": []
+  },
+  {
+   "id": "p028w133",
+   "raw": "أن",
+   "txt": "أن",
+   "fixes": []
+  },
+  {
+   "id": "p028w134",
+   "raw": "جلدها",
+   "txt": "جلدها",
+   "fixes": []
+  },
+  {
+   "id": "p028w135",
+   "raw": "وشعرها",
+   "txt": "وشعرها",
+   "fixes": []
+  },
+  {
+   "id": "p028w136",
+   "raw": "كان",
+   "txt": "كان",
+   "fixes": []
+  },
+  {
+   "id": "p028w137",
+   "raw": "ملمشهما",
+   "txt": "ملمشهما",
+   "fixes": []
+  },
+  {
+   "id": "p028w138",
+   "raw": "لا",
+   "txt": "لا",
+   "fixes": []
+  },
+  {
+   "id": "p028w139",
+   "raw": "يزال",
+   "txt": "يزال",
+   "fixes": []
+  },
+  {
+   "id": "p028w140",
+   "raw": "ناعما.",
+   "txt": "ناعما.",
+   "fixes": []
+  },
+  {
+   "id": "p028w141",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w142",
+   "raw": "<div",
+   "txt": "div",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w143",
+   "raw": "style=\"position:",
+   "txt": "style=\"position:",
+   "fixes": []
+  },
+  {
+   "id": "p028w144",
+   "raw": "absolute;",
+   "txt": "absolute;",
+   "fixes": []
+  },
+  {
+   "id": "p028w145",
+   "raw": "bottom:",
+   "txt": "bottom:",
+   "fixes": []
+  },
+  {
+   "id": "p028w146",
+   "raw": "20px;",
+   "txt": "20px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w147",
+   "raw": "left:",
+   "txt": "left:",
+   "fixes": []
+  },
+  {
+   "id": "p028w148",
+   "raw": "20px;",
+   "txt": "20px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w149",
+   "raw": "background-color:",
+   "txt": "background-color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w150",
+   "raw": "#FF6600;",
+   "txt": "FF6600;",
+   "fixes": [
+    "leading-punct"
+   ]
+  },
+  {
+   "id": "p028w151",
+   "raw": "border-radius:",
+   "txt": "border-radius:",
+   "fixes": []
+  },
+  {
+   "id": "p028w152",
+   "raw": "50%;",
+   "txt": "50%;",
+   "fixes": []
+  },
+  {
+   "id": "p028w153",
+   "raw": "width:",
+   "txt": "width:",
+   "fixes": []
+  },
+  {
+   "id": "p028w154",
+   "raw": "60px;",
+   "txt": "60px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w155",
+   "raw": "height:",
+   "txt": "height:",
+   "fixes": []
+  },
+  {
+   "id": "p028w156",
+   "raw": "60px;",
+   "txt": "60px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w157",
+   "raw": "display:",
+   "txt": "display:",
+   "fixes": []
+  },
+  {
+   "id": "p028w158",
+   "raw": "flex;",
+   "txt": "flex;",
+   "fixes": []
+  },
+  {
+   "id": "p028w159",
+   "raw": "justify-content:",
+   "txt": "justify-content:",
+   "fixes": []
+  },
+  {
+   "id": "p028w160",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w161",
+   "raw": "align-items:",
+   "txt": "align-items:",
+   "fixes": []
+  },
+  {
+   "id": "p028w162",
+   "raw": "center;",
+   "txt": "center;",
+   "fixes": []
+  },
+  {
+   "id": "p028w163",
+   "raw": "color:",
+   "txt": "color:",
+   "fixes": []
+  },
+  {
+   "id": "p028w164",
+   "raw": "white;",
+   "txt": "white;",
+   "fixes": []
+  },
+  {
+   "id": "p028w165",
+   "raw": "font-size:",
+   "txt": "font-size:",
+   "fixes": []
+  },
+  {
+   "id": "p028w166",
+   "raw": "24px;",
+   "txt": "24px;",
+   "fixes": []
+  },
+  {
+   "id": "p028w167",
+   "raw": "font-weight:",
+   "txt": "font-weight:",
+   "fixes": []
+  },
+  {
+   "id": "p028w168",
+   "raw": "bold;\">",
+   "txt": "bold;\">",
+   "fixes": []
+  },
+  {
+   "id": "p028w169",
+   "raw": "</div>",
+   "txt": "div>",
+   "fixes": [
+    "leading-punct"
+   ]
+  }
+ ]
+}
