@@ -6,57 +6,153 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.737,
+ "diac_ratio": 0.763,
  "path": "keep",
- "status": "extracted",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p006w000",
    "raw": "مُوميَائُ",
    "txt": "مُوميَائُ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    0,
+    880
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p006w001",
    "raw": "رَجُلٍ",
    "txt": "رَجُلٍ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    880,
+    1320
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w002",
    "raw": "غُرُوبَال،",
    "txt": "غُرُوبَال،",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    1320,
+    2120
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w003",
-   "raw": "غُثْرَ",
-   "txt": "غُثْرَ",
-   "fixes": []
+   "raw": "غُثَرَ",
+   "txt": "غُثَرَ",
+   "fixes": [],
+   "t": [
+    2120,
+    2860
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w004",
    "raw": "عَلِيَّهَا",
    "txt": "عَلِيَّهَا",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    2860,
+    3380
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w005",
    "raw": "فِي",
    "txt": "فِي",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3380,
+    3560
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w006",
    "raw": "أَحَدِ",
    "txt": "أَحَدِ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3560,
+    3920
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p006w007",
-   "raw": "المُسْتَنْفَعَاتِ.",
-   "txt": "المُسْتَنْفَعَاتِ.",
-   "fixes": []
+   "raw": "الْمُسْتَنْفَعَاتِ.",
+   "txt": "الْمُسْتَنْفَعَاتِ.",
+   "fixes": [],
+   "t": [
+    3920,
+    4820
+   ],
+   "t_src": "anchor"
   }
- ]
+ ],
+ "tts": "gemini:recovered-from-existing-audio",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "مميقات",
+   "b": 0,
+   "e": 880
+  },
+  {
+   "text": "رجل",
+   "b": 880,
+   "e": 1320
+  },
+  {
+   "text": "غروبال",
+   "b": 1320,
+   "e": 2120
+  },
+  {
+   "text": "غثر",
+   "b": 2120,
+   "e": 2860
+  },
+  {
+   "text": "عليها",
+   "b": 2860,
+   "e": 3380
+  },
+  {
+   "text": "في",
+   "b": 3380,
+   "e": 3560
+  },
+  {
+   "text": "أحد",
+   "b": 3560,
+   "e": 3920
+  },
+  {
+   "text": "المستنفعات",
+   "b": 3920,
+   "e": 4820
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 5050,
+ "audio": "audio/p006.wav",
+ "bind_report": {
+  "hume_timestamps": 8,
+  "hume_dropped_invalid": 0,
+  "tokens": 8,
+  "anchored": 7,
+  "interpolated": 1,
+  "untimed": 0,
+  "monotonic": true
+ }
 }

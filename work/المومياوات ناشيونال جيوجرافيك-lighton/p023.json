@@ -8,67 +8,68 @@
  "box_level": "none",
  "diac_ratio": 0.023,
  "path": "diacritise",
- "status": "extracted",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p023w000",
    "raw": "لعنة",
-   "txt": "لعنة",
+   "txt": "لَعْنَةُ",
    "fixes": []
   },
   {
    "id": "p023w001",
    "raw": "المعمّاء",
-   "txt": "المعمّاء",
+   "txt": "الْمَعْمَاءِ",
    "fixes": []
   },
   {
    "id": "p023w002",
    "raw": "هاورد",
-   "txt": "هاورد",
+   "txt": "هَاوَرَدٌ",
    "fixes": []
   },
   {
    "id": "p023w003",
    "raw": "كارتر",
-   "txt": "كارتر",
+   "txt": "كَارْتَر",
    "fixes": []
   },
   {
    "id": "p023w004",
    "raw": "في",
-   "txt": "في",
+   "txt": "فِي",
    "fixes": []
   },
   {
    "id": "p023w005",
    "raw": "مقبرة",
-   "txt": "مقبرة",
+   "txt": "مَقْبَرَةِ",
    "fixes": []
   },
   {
    "id": "p023w006",
    "raw": "الملك",
-   "txt": "الملك",
+   "txt": "الْمَلِكِ",
    "fixes": []
   },
   {
    "id": "p023w007",
    "raw": "توت",
-   "txt": "توت",
+   "txt": "تُوتَ",
    "fixes": []
   },
   {
    "id": "p023w008",
    "raw": "عنخ",
-   "txt": "عنخ",
+   "txt": "عِنَخَ",
    "fixes": []
   },
   {
    "id": "p023w009",
    "raw": "آمون",
-   "txt": "آمون",
+   "txt": "آمُونَ",
    "fixes": []
   }
- ]
+ ],
+ "tashkeel_engine": "arabic-diacritizer"
 }

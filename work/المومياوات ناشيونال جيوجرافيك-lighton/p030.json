@@ -8,6 +8,7 @@
  "box_level": "none",
  "diac_ratio": 0.0,
  "path": "diacritise",
- "status": "extracted",
- "tokens": []
+ "status": "diacritised",
+ "tokens": [],
+ "tashkeel_engine": "arabic-diacritizer"
 }

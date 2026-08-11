@@ -6,21 +6,52 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.091,
- "path": "diacritise",
- "status": "extracted",
+ "diac_ratio": 0.636,
+ "path": "keep",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p013w000",
-   "raw": "مُومياء",
-   "txt": "مُومياء",
+   "raw": "مُومِيَاءُ",
+   "txt": "مُومِيَاءُ",
    "fixes": []
   },
   {
    "id": "p013w001",
-   "raw": "أوزتي",
-   "txt": "أوزتي",
+   "raw": "أُوتَزِي",
+   "txt": "أُوتَزِي",
    "fixes": []
   }
- ]
+ ],
+ "tts": "gemini:recovered-from-existing-audio",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "موميا",
+   "b": 0,
+   "e": 800
+  },
+  {
+   "text": "أو",
+   "b": 800,
+   "e": 1000
+  },
+  {
+   "text": "أوزاتي",
+   "b": 1000,
+   "e": 1660
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 2040,
+ "audio": "audio/p013.wav",
+ "bind_report": {
+  "hume_timestamps": 3,
+  "hume_dropped_invalid": 0,
+  "tokens": 2,
+  "anchored": 0,
+  "interpolated": 0,
+  "untimed": 2,
+  "monotonic": true
+ }
 }

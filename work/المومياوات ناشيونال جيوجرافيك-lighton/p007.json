@@ -6,111 +6,298 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.045,
+ "diac_ratio": 0.057,
  "path": "diacritise",
- "status": "extracted",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p007w000",
-   "raw": "تنظيم",
-   "txt": "تنظيم",
-   "fixes": []
+   "raw": "تدابط",
+   "txt": "تَدَابُطُ",
+   "fixes": [],
+   "t": [
+    0,
+    508
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w001",
-   "raw": "الدعماء",
-   "txt": "الدعماء",
-   "fixes": []
+   "raw": "المعمول",
+   "txt": "الْمَعْمُولِ",
+   "fixes": [],
+   "t": [
+    508,
+    1220
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w002",
    "raw": "عند",
-   "txt": "عند",
-   "fixes": []
+   "txt": "عِنْدَ",
+   "fixes": [],
+   "t": [
+    1220,
+    1480
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w003",
    "raw": "وفاة",
-   "txt": "وفاة",
-   "fixes": []
+   "txt": "وَفَاةٍ",
+   "fixes": [],
+   "t": [
+    1480,
+    2240
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w004",
    "raw": "أيّ",
-   "txt": "أيّ",
-   "fixes": []
+   "txt": "أَيِّ",
+   "fixes": [],
+   "t": [
+    2240,
+    2620
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w005",
    "raw": "كائنٍ",
-   "txt": "كائنٍ",
-   "fixes": []
+   "txt": "كَائِنٍ",
+   "fixes": [],
+   "t": [
+    2620,
+    3060
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w006",
    "raw": "حيّ",
-   "txt": "حيّ",
-   "fixes": []
+   "txt": "حَيٍّ",
+   "fixes": [],
+   "t": [
+    3060,
+    3480
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w007",
    "raw": "فإنه",
-   "txt": "فإنه",
-   "fixes": []
+   "txt": "فَإِنَّهُ",
+   "fixes": [],
+   "t": [
+    3480,
+    4157
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w008",
-   "raw": "يتحمل.",
-   "txt": "يتحمل.",
-   "fixes": []
+   "raw": "يتحلّن.",
+   "txt": "يَتَحِلَّنَ.",
+   "fixes": [],
+   "t": [
+    4157,
+    5004
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w009",
-   "raw": "فثلتهم",
-   "txt": "فثلتهم",
-   "fixes": []
+   "raw": "فتلتهم",
+   "txt": "فَتَلَّتْهُمُ",
+   "fixes": [],
+   "t": [
+    5004,
+    6020
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p007w010",
    "raw": "الحشرات",
-   "txt": "الحشرات",
-   "fixes": []
+   "txt": "الْحَشَرَاتُ",
+   "fixes": [],
+   "t": [
+    6020,
+    6660
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w011",
    "raw": "والحيوانات",
-   "txt": "والحيوانات",
-   "fixes": []
+   "txt": "وَالْحَيَوَانَاتُ",
+   "fixes": [],
+   "t": [
+    6660,
+    7460
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w012",
    "raw": "المتوحشة",
-   "txt": "المتوحشة",
-   "fixes": []
+   "txt": "الْمُتَوَحِّشَةُ",
+   "fixes": [],
+   "t": [
+    7460,
+    8300
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w013",
    "raw": "والبكتيريا",
-   "txt": "والبكتيريا",
-   "fixes": []
+   "txt": "وَالْبَكْتِيرِيا",
+   "fixes": [],
+   "t": [
+    8300,
+    9360
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w014",
    "raw": "أجزاءٌ",
-   "txt": "أجزاءٌ",
-   "fixes": []
+   "txt": "أَجْزَاءٌ",
+   "fixes": [],
+   "t": [
+    9360,
+    10000
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w015",
    "raw": "من",
-   "txt": "من",
-   "fixes": []
+   "txt": "مِنْ",
+   "fixes": [],
+   "t": [
+    10000,
+    10200
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p007w016",
    "raw": "جسمه.",
-   "txt": "جسمه.",
-   "fixes": []
+   "txt": "جِسْمِهِ.",
+   "fixes": [],
+   "t": [
+    10200,
+    10660
+   ],
+   "t_src": "anchor"
   }
- ]
+ ],
+ "tashkeel_engine": "arabic-diacritizer",
+ "tts": "gemini:recovered-from-existing-audio",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "تنظيم",
+   "b": 0,
+   "e": 660
+  },
+  {
+   "text": "الدعماء",
+   "b": 660,
+   "e": 1220
+  },
+  {
+   "text": "عند",
+   "b": 1220,
+   "e": 1480
+  },
+  {
+   "text": "وفات",
+   "b": 1480,
+   "e": 2040
+  },
+  {
+   "text": "اي",
+   "b": 2040,
+   "e": 2620
+  },
+  {
+   "text": "كائن",
+   "b": 2620,
+   "e": 3060
+  },
+  {
+   "text": "حي",
+   "b": 3060,
+   "e": 3480
+  },
+  {
+   "text": "فانه",
+   "b": 3480,
+   "e": 4200
+  },
+  {
+   "text": "يتحمل",
+   "b": 4200,
+   "e": 4920
+  },
+  {
+   "text": "فثلتهم",
+   "b": 4920,
+   "e": 6020
+  },
+  {
+   "text": "الحشرات",
+   "b": 6020,
+   "e": 6660
+  },
+  {
+   "text": "والحيوانات",
+   "b": 6660,
+   "e": 7460
+  },
+  {
+   "text": "المتوحشة",
+   "b": 7460,
+   "e": 8300
+  },
+  {
+   "text": "والبكتيريا",
+   "b": 8300,
+   "e": 9360
+  },
+  {
+   "text": "أجزاء",
+   "b": 9360,
+   "e": 10000
+  },
+  {
+   "text": "من",
+   "b": 10000,
+   "e": 10200
+  },
+  {
+   "text": "جسمه",
+   "b": 10200,
+   "e": 10660
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 10930,
+ "audio": "audio/p007.wav",
+ "bind_report": {
+  "hume_timestamps": 17,
+  "hume_dropped_invalid": 0,
+  "tokens": 17,
+  "anchored": 10,
+  "interpolated": 7,
+  "untimed": 0,
+  "monotonic": true
+ }
 }

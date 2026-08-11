@@ -6,26 +6,26 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.0,
- "path": "diacritise",
- "status": "extracted",
+ "diac_ratio": 0.579,
+ "path": "keep",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p002w000",
-   "raw": "البحوث",
-   "txt": "البحوث",
+   "raw": "اعْلَمْتُ",
+   "txt": "اعْلَمْتُ",
    "fixes": []
   },
   {
    "id": "p002w001",
-   "raw": "البحوث",
-   "txt": "البحوث",
+   "raw": "الإِبْرَاهِيم",
+   "txt": "الإِبْرَاهِيم",
    "fixes": []
   },
   {
    "id": "p002w002",
-   "raw": "كارني",
-   "txt": "كارني",
+   "raw": "كَارِنِي",
+   "txt": "كَارِنِي",
    "fixes": []
   },
   {
@@ -40,5 +40,46 @@
    "txt": "GEOGRAPHIC",
    "fixes": []
   }
- ]
+ ],
+ "tts": "gemini:recovered-from-existing-audio",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "البحوث",
+   "b": 0,
+   "e": 1200
+  },
+  {
+   "text": "البحوث",
+   "b": 1200,
+   "e": 2460
+  },
+  {
+   "text": "كارنجي",
+   "b": 2460,
+   "e": 3560
+  },
+  {
+   "text": "نشنل",
+   "b": 3560,
+   "e": 4540
+  },
+  {
+   "text": "جيغرافق",
+   "b": 4540,
+   "e": 5300
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 5610,
+ "audio": "audio/p002.wav",
+ "bind_report": {
+  "hume_timestamps": 5,
+  "hume_dropped_invalid": 0,
+  "tokens": 5,
+  "anchored": 0,
+  "interpolated": 0,
+  "untimed": 5,
+  "monotonic": true
+ }
 }

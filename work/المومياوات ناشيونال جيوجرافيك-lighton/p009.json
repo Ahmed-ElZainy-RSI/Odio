@@ -6,65 +6,166 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.412,
+ "diac_ratio": 0.364,
  "path": "keep",
- "status": "extracted",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p009w000",
    "raw": "مومیاء",
    "txt": "مومیاء",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    0,
+    1000
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p009w001",
    "raw": "عُنْر",
    "txt": "عُنْر",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    1000,
+    1540
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p009w002",
    "raw": "علیہا",
    "txt": "علیہا",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    1540,
+    2080
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p009w003",
    "raw": "فی",
    "txt": "فی",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    2080,
+    2260
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p009w004",
-   "raw": "مُستنفِع",
-   "txt": "مُستنفِع",
-   "fixes": []
+   "raw": "مُستنفع",
+   "txt": "مُستنفع",
+   "fixes": [],
+   "t": [
+    2260,
+    3020
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p009w005",
    "raw": "تَعْرِف",
    "txt": "تَعْرِف",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3020,
+    3700
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p009w006",
    "raw": "بَاشِم",
    "txt": "بَاشِم",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3700,
+    4234
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p009w007",
-   "raw": "«لِبِنْدُو",
-   "txt": "لِبِنْدُو",
+   "raw": "«لِبْدَو",
+   "txt": "لِبْدَو",
    "fixes": [
     "leading-punct"
-   ]
+   ],
+   "t": [
+    4234,
+    4769
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p009w008",
    "raw": "مَان»",
    "txt": "مَان»",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    4769,
+    5169
+   ],
+   "t_src": "interpolated"
   }
- ]
+ ],
+ "tts": "gemini:recovered-from-existing-audio",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "مومياء",
+   "b": 0,
+   "e": 1000
+  },
+  {
+   "text": "عنر",
+   "b": 1000,
+   "e": 1540
+  },
+  {
+   "text": "عليها",
+   "b": 1540,
+   "e": 2080
+  },
+  {
+   "text": "في",
+   "b": 2080,
+   "e": 2260
+  },
+  {
+   "text": "مستنفع",
+   "b": 2260,
+   "e": 3020
+  },
+  {
+   "text": "تعرف",
+   "b": 3020,
+   "e": 3700
+  },
+  {
+   "text": "بشيم",
+   "b": 3700,
+   "e": 4180
+  },
+  {
+   "text": "لبندو",
+   "b": 4180,
+   "e": 4800
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 5170,
+ "audio": "audio/p009.wav",
+ "bind_report": {
+  "hume_timestamps": 8,
+  "hume_dropped_invalid": 0,
+  "tokens": 9,
+  "anchored": 3,
+  "interpolated": 6,
+  "untimed": 0,
+  "monotonic": true
+ }
 }

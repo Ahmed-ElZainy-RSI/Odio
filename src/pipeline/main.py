@@ -1,0 +1,117 @@
+"""Single entry point: run one PDF through the whole pipeline.
+
+Detects whether the PDF carries an embedded text layer (free, exact, no OCR
+needed) or is genuinely scanned (needs OCR), then runs
+extract -> diacritise -> TTS+align -> reader, writing everything to
+work/<book>/.
+
+Usage:
+    python3 src/pipeline/main.py "assets/PDF Samples/النجوم.pdf"
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --ocr lighton --tts gemini
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 5
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --force-ocr
+
+Every stage is independently resumable (each run_*.py module skips pages
+already done), so re-running this after a quota stall picks up where it left
+off instead of redoing the book.
+
+--force-ocr exists because "has a text layer" and "the text layer is
+trustworthy" are not the same thing. Found on شكرا يامى: PyMuPDF reported a
+real, >50-word text layer, but it was stale ghost text unrelated to the
+page's actual visual content (confirmed by rendering pages and comparing --
+page 2's real text is about a character named فرح; the embedded text layer
+said آيات and monkeys instead, and page 3's real text is a different
+unrelated sentence again). No word-count or diacritic-ratio check catches
+this -- the extracted words are real, correctly-spelled Arabic, just for the
+wrong page. OCR reads the rendered pixels instead, so it isn't fooled by
+this class of defect.
+"""
+import argparse
+import sys
+from pathlib import Path
+
+import fitz
+from dotenv import load_dotenv
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+load_dotenv()
+
+from pipeline import (build_reader, run_extract, run_ocr_gemini, run_ocr_lighton,
+                       run_speak_gemini, run_speak_hume, run_tashkel)
+
+TEXT_LAYER_MIN_WORDS = 50  # a scanned page's stray OCR-able text stays under this
+
+
+def has_text_layer(pdf_path: Path, threshold: int = TEXT_LAYER_MIN_WORDS) -> bool:
+    doc = fitz.open(str(pdf_path))
+    words = sum(len(page.get_text("words")) for page in doc)
+    doc.close()
+    return words > threshold
+
+
+def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
+                  voice: str | None = None, pages: int = 0, force_ocr: bool = False) -> Path:
+    book = pdf_path.stem.strip()
+    work_dir = Path(f"work/{book}")
+
+    print(f"=== {book} ===")
+    if not force_ocr and has_text_layer(pdf_path):
+        print("embedded text layer detected -> extract.py (no OCR needed)\n")
+        run_extract.run(pdf_path, work_dir, pages=pages)
+    else:
+        reason = "--force-ocr" if force_ocr else "no text layer"
+        print(f"OCR path ({ocr}) -- {reason}\n")
+        if ocr == "gemini":
+            run_ocr_gemini.run(pdf_path, work_dir, pages=pages)
+        else:
+            run_ocr_lighton.run(pdf_path, work_dir, pages=pages)
+
+    print("\n--- diacritising ---")
+    run_tashkel.run(work_dir, pages=pages)
+
+    print(f"\n--- synthesising ({tts}) ---")
+    if tts == "hume":
+        run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE, pages=pages)
+    else:
+        run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE, pages=pages)
+
+    print("\n--- building reader ---")
+    out = build_reader.build(work_dir)
+    if out:
+        print(f"\ndone -> {out}")
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser(
+        description="Run one PDF through extract -> diacritise -> TTS+align -> reader.")
+    ap.add_argument("pdf", help="path to the book PDF")
+    ap.add_argument("--ocr", choices=["gemini", "lighton"], default="gemini",
+                     help="OCR engine for scanned PDFs (ignored if the PDF has a text layer); "
+                          "gemini gives line-level boxes, lighton gives none")
+    ap.add_argument("--tts", choices=["gemini", "hume"], default="gemini",
+                     help="TTS engine (default: gemini). gemini needs faster-whisper for "
+                          "alignment (no native timestamps on the free API tier) but has "
+                          "quota available; hume gives native timestamps but its credit "
+                          "balance is currently exhausted")
+    ap.add_argument("--voice", default=None, help="override the default voice for the chosen TTS engine")
+    ap.add_argument("--pages", type=int, default=0,
+                     help="limit the whole run to the first N pages (0 = all) -- "
+                          "extraction, diacritisation, and synthesis all honour this, "
+                          "even if the book already has more pages on disk from a prior run")
+    ap.add_argument("--force-ocr", action="store_true",
+                     help="use the OCR path even if the PDF has a text layer -- for PDFs where "
+                          "the text layer exists but is wrong (e.g. stale text unrelated to the "
+                          "page's actual visual content, which no automatic check catches)")
+    args = ap.parse_args()
+
+    pdf_path = Path(args.pdf)
+    if not pdf_path.exists():
+        sys.exit(f"no such file: {pdf_path}")
+
+    run_pipeline(pdf_path, ocr=args.ocr, tts=args.tts, voice=args.voice, pages=args.pages,
+                 force_ocr=args.force_ocr)
+
+
+if __name__ == "__main__":
+    main()

@@ -6,1631 +6,615 @@
  "source": "ocr",
  "ocr_engine": "lighton/parse-v3",
  "box_level": "none",
- "diac_ratio": 0.762,
+ "diac_ratio": 0.731,
  "path": "keep",
  "status": "extracted",
  "tokens": [
   {
    "id": "p010w000",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
+   "raw": "ح",
+   "txt": "ح",
+   "fixes": []
   },
   {
    "id": "p010w001",
-   "raw": "style=\"display:",
-   "txt": "style=\"display:",
+   "raw": "مَجَّهِيْهِ",
+   "txt": "مَجَّهِيْهِ",
    "fixes": []
   },
   {
    "id": "p010w002",
-   "raw": "flex;",
-   "txt": "flex;",
+   "raw": "مُتَهَّمِّيْهِ",
+   "txt": "مُتَهَّمِّيْهِ",
    "fixes": []
   },
   {
    "id": "p010w003",
-   "raw": "align-items:",
-   "txt": "align-items:",
+   "raw": "بِمَاذَا",
+   "txt": "بِمَاذَا",
    "fixes": []
   },
   {
    "id": "p010w004",
-   "raw": "center;",
-   "txt": "center;",
-   "fixes": []
-  },
-  {
-   "id": "p010w005",
-   "raw": "background-color:",
-   "txt": "background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w006",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w007",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w008",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w009",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w010",
-   "raw": "style=\"background-color:",
-   "txt": "style=\"background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w011",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w012",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w013",
-   "raw": "10px;",
-   "txt": "10px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w014",
-   "raw": "border-radius:",
-   "txt": "border-radius:",
-   "fixes": []
-  },
-  {
-   "id": "p010w015",
-   "raw": "50%;",
-   "txt": "50%;",
-   "fixes": []
-  },
-  {
-   "id": "p010w016",
-   "raw": "margin-right:",
-   "txt": "margin-right:",
-   "fixes": []
-  },
-  {
-   "id": "p010w017",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w018",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w019",
-   "raw": "style=\"background-color:",
-   "txt": "style=\"background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w020",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w021",
-   "raw": "color:",
-   "txt": "color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w022",
-   "raw": "white;",
-   "txt": "white;",
-   "fixes": []
-  },
-  {
-   "id": "p010w023",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w024",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w025",
-   "raw": "border-radius:",
-   "txt": "border-radius:",
-   "fixes": []
-  },
-  {
-   "id": "p010w026",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w027",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w028",
-   "raw": "bold;\">٩</div>",
-   "txt": "bold;\">٩</div>",
-   "fixes": []
-  },
-  {
-   "id": "p010w029",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w030",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w031",
-   "raw": "style=\"flex-grow:",
-   "txt": "style=\"flex-grow:",
-   "fixes": []
-  },
-  {
-   "id": "p010w032",
-   "raw": "1;",
-   "txt": "1;",
-   "fixes": []
-  },
-  {
-   "id": "p010w033",
-   "raw": "text-align:",
-   "txt": "text-align:",
-   "fixes": []
-  },
-  {
-   "id": "p010w034",
-   "raw": "center;",
-   "txt": "center;",
-   "fixes": []
-  },
-  {
-   "id": "p010w035",
-   "raw": "font-size:",
-   "txt": "font-size:",
-   "fixes": []
-  },
-  {
-   "id": "p010w036",
-   "raw": "14px;",
-   "txt": "14px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w037",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w038",
-   "raw": "bold;\">",
-   "txt": "bold;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w039",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w040",
-   "raw": "style=\"display:",
-   "txt": "style=\"display:",
-   "fixes": []
-  },
-  {
-   "id": "p010w041",
-   "raw": "flex;",
-   "txt": "flex;",
-   "fixes": []
-  },
-  {
-   "id": "p010w042",
-   "raw": "align-items:",
-   "txt": "align-items:",
-   "fixes": []
-  },
-  {
-   "id": "p010w043",
-   "raw": "center;",
-   "txt": "center;",
-   "fixes": []
-  },
-  {
-   "id": "p010w044",
-   "raw": "justify-content:",
-   "txt": "justify-content:",
-   "fixes": []
-  },
-  {
-   "id": "p010w045",
-   "raw": "center;",
-   "txt": "center;",
-   "fixes": []
-  },
-  {
-   "id": "p010w046",
-   "raw": "gap:",
-   "txt": "gap:",
-   "fixes": []
-  },
-  {
-   "id": "p010w047",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w048",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w049",
-   "raw": "style=\"background-color:",
-   "txt": "style=\"background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w050",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w051",
-   "raw": "color:",
-   "txt": "color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w052",
-   "raw": "white;",
-   "txt": "white;",
-   "fixes": []
-  },
-  {
-   "id": "p010w053",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w054",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w055",
-   "raw": "border-radius:",
-   "txt": "border-radius:",
-   "fixes": []
-  },
-  {
-   "id": "p010w056",
-   "raw": "50%;",
-   "txt": "50%;",
-   "fixes": []
-  },
-  {
-   "id": "p010w057",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w058",
-   "raw": "bold;\">٩</div>",
-   "txt": "bold;\">٩</div>",
-   "fixes": []
-  },
-  {
-   "id": "p010w059",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w060",
-   "raw": "style=\"display:",
-   "txt": "style=\"display:",
-   "fixes": []
-  },
-  {
-   "id": "p010w061",
-   "raw": "flex;",
-   "txt": "flex;",
-   "fixes": []
-  },
-  {
-   "id": "p010w062",
-   "raw": "flex-direction:",
-   "txt": "flex-direction:",
-   "fixes": []
-  },
-  {
-   "id": "p010w063",
-   "raw": "column;",
-   "txt": "column;",
-   "fixes": []
-  },
-  {
-   "id": "p010w064",
-   "raw": "align-items:",
-   "txt": "align-items:",
-   "fixes": []
-  },
-  {
-   "id": "p010w065",
-   "raw": "center;\">",
-   "txt": "center;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w066",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w067",
-   "raw": "style=\"font-size:",
-   "txt": "style=\"font-size:",
-   "fixes": []
-  },
-  {
-   "id": "p010w068",
-   "raw": "14px;",
-   "txt": "14px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w069",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w070",
-   "raw": "bold;\">بِمَاذَا",
-   "txt": "bold;\">بِمَاذَا",
-   "fixes": []
-  },
-  {
-   "id": "p010w071",
    "raw": "نصْفُ",
    "txt": "نصْفُ",
    "fixes": []
   },
   {
-   "id": "p010w072",
+   "id": "p010w005",
    "raw": "المُومِيَاءَ",
    "txt": "المُومِيَاءَ",
    "fixes": []
   },
   {
-   "id": "p010w073",
-   "raw": "الَّتِي</div>",
-   "txt": "الَّتِي</div>",
+   "id": "p010w006",
+   "raw": "الَّتِي",
+   "txt": "الَّتِي",
    "fixes": []
   },
   {
-   "id": "p010w074",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w075",
-   "raw": "style=\"font-size:",
-   "txt": "style=\"font-size:",
+   "id": "p010w007",
+   "raw": "تَأْكُلُ",
+   "txt": "تَأْكُلُ",
    "fixes": []
   },
   {
-   "id": "p010w076",
-   "raw": "14px;",
-   "txt": "14px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w077",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w078",
-   "raw": "bold;\">تَأْكُلُ",
-   "txt": "bold;\">تَأْكُلُ",
-   "fixes": []
-  },
-  {
-   "id": "p010w079",
+   "id": "p010w008",
    "raw": "كَثِيرًا",
    "txt": "كَثِيرًا",
    "fixes": []
   },
   {
-   "id": "p010w080",
+   "id": "p010w009",
    "raw": "مِنَ",
    "txt": "مِنَ",
    "fixes": []
   },
   {
-   "id": "p010w081",
-   "raw": "الْبِسْكُويَتِ؟</div>",
-   "txt": "الْبِسْكُويَتِ؟</div>",
+   "id": "p010w010",
+   "raw": "الْبِسْكُويِّ؟",
+   "txt": "الْبِسْكُويِّ؟",
    "fixes": []
   },
   {
-   "id": "p010w082",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w083",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w084",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w085",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w086",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w087",
-   "raw": "style=\"margin-top:",
-   "txt": "style=\"margin-top:",
+   "id": "p010w011",
+   "raw": "لِسْ",
+   "txt": "لِسْ",
    "fixes": []
   },
   {
-   "id": "p010w088",
-   "raw": "20px;\">",
-   "txt": "20px;\">",
+   "id": "p010w012",
+   "raw": "لَا",
+   "txt": "لَا",
    "fixes": []
   },
   {
-   "id": "p010w089",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w090",
-   "raw": "style=\"float:",
-   "txt": "style=\"float:",
-   "fixes": []
-  },
-  {
-   "id": "p010w091",
-   "raw": "left;",
-   "txt": "left;",
-   "fixes": []
-  },
-  {
-   "id": "p010w092",
-   "raw": "width:",
-   "txt": "width:",
-   "fixes": []
-  },
-  {
-   "id": "p010w093",
-   "raw": "30%;",
-   "txt": "30%;",
-   "fixes": []
-  },
-  {
-   "id": "p010w094",
-   "raw": "margin-right:",
-   "txt": "margin-right:",
-   "fixes": []
-  },
-  {
-   "id": "p010w095",
-   "raw": "20px;\">",
-   "txt": "20px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w096",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w097",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w098",
-   "raw": "style=\"float:",
-   "txt": "style=\"float:",
-   "fixes": []
-  },
-  {
-   "id": "p010w099",
-   "raw": "right;",
-   "txt": "right;",
-   "fixes": []
-  },
-  {
-   "id": "p010w100",
-   "raw": "width:",
-   "txt": "width:",
-   "fixes": []
-  },
-  {
-   "id": "p010w101",
-   "raw": "65%;\">",
-   "txt": "65%;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w102",
-   "raw": "<p>لَا",
-   "txt": "p>لَا",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w103",
+   "id": "p010w013",
    "raw": "تَنْمُو",
    "txt": "تَنْمُو",
    "fixes": []
   },
   {
-   "id": "p010w104",
-   "raw": "الْبِكْتِيرِيَا",
-   "txt": "الْبِكْتِيرِيَا",
+   "id": "p010w014",
+   "raw": "البِكْتِيرِيَا",
+   "txt": "البِكْتِيرِيَا",
    "fixes": []
   },
   {
-   "id": "p010w105",
+   "id": "p010w015",
    "raw": "الَّتِي",
    "txt": "الَّتِي",
    "fixes": []
   },
   {
-   "id": "p010w106",
+   "id": "p010w016",
    "raw": "تُحِلِّلُ",
    "txt": "تُحِلِّلُ",
    "fixes": []
   },
   {
-   "id": "p010w107",
+   "id": "p010w017",
    "raw": "أَجْسَامَ",
    "txt": "أَجْسَامَ",
    "fixes": []
   },
   {
-   "id": "p010w108",
+   "id": "p010w018",
    "raw": "الْكَائِنَاتِ",
    "txt": "الْكَائِنَاتِ",
    "fixes": []
   },
   {
-   "id": "p010w109",
-   "raw": "الْحِيَةِ",
-   "txt": "الْحِيَةِ",
+   "id": "p010w019",
+   "raw": "الحِيَّةَ",
+   "txt": "الحِيَّةَ",
    "fixes": []
   },
   {
-   "id": "p010w110",
-   "raw": "نَمَوَّا",
-   "txt": "نَمَوَّا",
+   "id": "p010w020",
+   "raw": "نَمْوًا",
+   "txt": "نَمْوًا",
    "fixes": []
   },
   {
-   "id": "p010w111",
-   "raw": "جِيدًا</p>",
-   "txt": "جِيدًا</p>",
+   "id": "p010w021",
+   "raw": "جِيدًا",
+   "txt": "جِيدًا",
    "fixes": []
   },
   {
-   "id": "p010w112",
-   "raw": "<p>فِي",
-   "txt": "p>فِي",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w113",
-   "raw": "الْأَمَاكِنِ",
-   "txt": "الْأَمَاكِنِ",
-   "fixes": []
-  },
-  {
-   "id": "p010w114",
-   "raw": "شَدِيدَةِ",
-   "txt": "شَدِيدَةِ",
-   "fixes": []
-  },
-  {
-   "id": "p010w115",
-   "raw": "الْبُرُودَةِ،",
-   "txt": "الْبُرُودَةِ،",
-   "fixes": []
-  },
-  {
-   "id": "p010w116",
-   "raw": "أَوْ",
-   "txt": "أَوْ",
-   "fixes": []
-  },
-  {
-   "id": "p010w117",
-   "raw": "الْأَمَاكِنِ",
-   "txt": "الْأَمَاكِنِ",
-   "fixes": []
-  },
-  {
-   "id": "p010w118",
-   "raw": "الْجَافَةِ</p>",
-   "txt": "الْجَافَةِ</p>",
-   "fixes": []
-  },
-  {
-   "id": "p010w119",
-   "raw": "<p>وَمَرْتِفَعَةِ",
-   "txt": "p>وَمَرْتِفَعَةِ",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w120",
-   "raw": "الْحَرَارَةِ،",
-   "txt": "الْحَرَارَةِ،",
-   "fixes": []
-  },
-  {
-   "id": "p010w121",
-   "raw": "أَوْ",
-   "txt": "أَوْ",
-   "fixes": []
-  },
-  {
-   "id": "p010w122",
+   "id": "p010w022",
    "raw": "فِي",
    "txt": "فِي",
    "fixes": []
   },
   {
-   "id": "p010w123",
+   "id": "p010w023",
    "raw": "الْأَمَاكِنِ",
    "txt": "الْأَمَاكِنِ",
    "fixes": []
   },
   {
-   "id": "p010w124",
+   "id": "p010w024",
+   "raw": "شَدِيدَةِ",
+   "txt": "شَدِيدَةِ",
+   "fixes": []
+  },
+  {
+   "id": "p010w025",
+   "raw": "الْبِرُودَةِ،",
+   "txt": "الْبِرُودَةِ،",
+   "fixes": []
+  },
+  {
+   "id": "p010w026",
+   "raw": "أَوْ",
+   "txt": "أَوْ",
+   "fixes": []
+  },
+  {
+   "id": "p010w027",
+   "raw": "الْأَمَاكِنِ",
+   "txt": "الْأَمَاكِنِ",
+   "fixes": []
+  },
+  {
+   "id": "p010w028",
+   "raw": "الْجَافَةِ",
+   "txt": "الْجَافَةِ",
+   "fixes": []
+  },
+  {
+   "id": "p010w029",
+   "raw": "ومرتفعة",
+   "txt": "ومرتفعة",
+   "fixes": []
+  },
+  {
+   "id": "p010w030",
+   "raw": "الحرارة،",
+   "txt": "الحرارة،",
+   "fixes": []
+  },
+  {
+   "id": "p010w031",
+   "raw": "أَوْ",
+   "txt": "أَوْ",
+   "fixes": []
+  },
+  {
+   "id": "p010w032",
+   "raw": "فِي",
+   "txt": "فِي",
+   "fixes": []
+  },
+  {
+   "id": "p010w033",
+   "raw": "الْأَمَاكِنِ",
+   "txt": "الْأَمَاكِنِ",
+   "fixes": []
+  },
+  {
+   "id": "p010w034",
    "raw": "الَّتِي",
    "txt": "الَّتِي",
    "fixes": []
   },
   {
-   "id": "p010w125",
+   "id": "p010w035",
    "raw": "تُعْرِفُ",
    "txt": "تُعْرِفُ",
    "fixes": []
   },
   {
-   "id": "p010w126",
-   "raw": "بِاسِمِ</p>",
-   "txt": "بِاسِمِ</p>",
+   "id": "p010w036",
+   "raw": "بِاسْمِ",
+   "txt": "بِاسْمِ",
    "fixes": []
   },
   {
-   "id": "p010w127",
-   "raw": "<p>المُسْتَنْقِعَاتِ.</p>",
-   "txt": "p>المُسْتَنْقِعَاتِ.</p>",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w037",
+   "raw": "المُستَنْقَعَاتِ.",
+   "txt": "المُستَنْقَعَاتِ.",
+   "fixes": []
   },
   {
-   "id": "p010w128",
-   "raw": "<p>وَلَهَذَا",
-   "txt": "p>وَلَهَذَا",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w038",
+   "raw": "ولِهَذَا",
+   "txt": "ولِهَذَا",
+   "fixes": []
   },
   {
-   "id": "p010w129",
+   "id": "p010w039",
    "raw": "عَثَرَ",
    "txt": "عَثَرَ",
    "fixes": []
   },
   {
-   "id": "p010w130",
+   "id": "p010w040",
    "raw": "النَّاسُ",
    "txt": "النَّاسُ",
    "fixes": []
   },
   {
-   "id": "p010w131",
+   "id": "p010w041",
    "raw": "عَلَى",
    "txt": "عَلَى",
    "fixes": []
   },
   {
-   "id": "p010w132",
-   "raw": "مُومِيَاؤَتِ",
-   "txt": "مُومِيَاؤَتِ",
+   "id": "p010w042",
+   "raw": "مُومِيَاؤَاتٍ",
+   "txt": "مُومِيَاؤَاتٍ",
    "fixes": []
   },
   {
-   "id": "p010w133",
+   "id": "p010w043",
    "raw": "عِندَ",
    "txt": "عِندَ",
    "fixes": []
   },
   {
-   "id": "p010w134",
-   "raw": "قِمِمِ",
-   "txt": "قِمِمِ",
+   "id": "p010w044",
+   "raw": "قَمِمِ",
+   "txt": "قَمِمِ",
    "fixes": []
   },
   {
-   "id": "p010w135",
-   "raw": "الْجِبَالِ</p>",
-   "txt": "الْجِبَالِ</p>",
+   "id": "p010w045",
+   "raw": "الْجِبَالِ",
+   "txt": "الْجِبَالِ",
    "fixes": []
   },
   {
-   "id": "p010w136",
-   "raw": "<p>المُتَجْمِدَةِ",
-   "txt": "p>المُتَجْمِدَةِ",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w046",
+   "raw": "المُتَجْمَدَةِ",
+   "txt": "المُتَجْمَدَةِ",
+   "fixes": []
   },
   {
-   "id": "p010w137",
+   "id": "p010w047",
    "raw": "وَفِي",
    "txt": "وَفِي",
    "fixes": []
   },
   {
-   "id": "p010w138",
+   "id": "p010w048",
    "raw": "الصَّحَارِيِّ",
    "txt": "الصَّحَارِيِّ",
    "fixes": []
   },
   {
-   "id": "p010w139",
-   "raw": "الْحَارَةِ.</p>",
-   "txt": "الْحَارَةِ.</p>",
+   "id": "p010w049",
+   "raw": "الْحَارَةِ.",
+   "txt": "الْحَارَةِ.",
    "fixes": []
   },
   {
-   "id": "p010w140",
-   "raw": "<p>المُسْتَنْقِعَاتُ",
-   "txt": "p>المُسْتَنْقِعَاتُ",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w050",
+   "raw": "المُستَنْقَعَاتُ",
+   "txt": "المُستَنْقَعَاتُ",
+   "fixes": []
   },
   {
-   "id": "p010w141",
+   "id": "p010w051",
    "raw": "هِيَ",
    "txt": "هِيَ",
    "fixes": []
   },
   {
-   "id": "p010w142",
+   "id": "p010w052",
    "raw": "أَرَاضٍ",
    "txt": "أَرَاضٍ",
    "fixes": []
   },
   {
-   "id": "p010w143",
+   "id": "p010w053",
    "raw": "رَطْبَةٌ",
    "txt": "رَطْبَةٌ",
    "fixes": []
   },
   {
-   "id": "p010w144",
+   "id": "p010w054",
    "raw": "تَنْمُو",
    "txt": "تَنْمُو",
    "fixes": []
   },
   {
-   "id": "p010w145",
+   "id": "p010w055",
    "raw": "فِيهَا",
    "txt": "فِيهَا",
    "fixes": []
   },
   {
-   "id": "p010w146",
-   "raw": "نِبَاتَاتُ</p>",
-   "txt": "نِبَاتَاتُ</p>",
+   "id": "p010w056",
+   "raw": "نَبَاتَاتٌ",
+   "txt": "نَبَاتَاتٌ",
    "fixes": []
   },
   {
-   "id": "p010w147",
-   "raw": "<p>كَثِيرَةٌ.",
-   "txt": "p>كَثِيرَةٌ.",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w148",
-   "raw": "وَتُحَفِّظُ",
-   "txt": "وَتُحَفِّظُ",
+   "id": "p010w057",
+   "raw": "كَثِيرَةٌ.",
+   "txt": "كَثِيرَةٌ.",
    "fixes": []
   },
   {
-   "id": "p010w149",
-   "raw": "المُومِيَاؤَتُ",
-   "txt": "المُومِيَاؤَتُ",
+   "id": "p010w058",
+   "raw": "وَتُحَفِظُ",
+   "txt": "وَتُحَفِظُ",
    "fixes": []
   },
   {
-   "id": "p010w150",
+   "id": "p010w059",
+   "raw": "المُومِيَاؤَاتُ",
+   "txt": "المُومِيَاؤَاتُ",
+   "fixes": []
+  },
+  {
+   "id": "p010w060",
    "raw": "الْمَدْفُونَةُ",
    "txt": "الْمَدْفُونَةُ",
    "fixes": []
   },
   {
-   "id": "p010w151",
-   "raw": "فِي</p>",
-   "txt": "فِي</p>",
+   "id": "p010w061",
+   "raw": "فِي",
+   "txt": "فِي",
    "fixes": []
   },
   {
-   "id": "p010w152",
-   "raw": "<p>المُسْتَنْقِعَاتِ",
-   "txt": "p>المُسْتَنْقِعَاتِ",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w153",
-   "raw": "حِفْظًا",
-   "txt": "حِفْظًا",
+   "id": "p010w062",
+   "raw": "المُستَنْقَعَاتِ",
+   "txt": "المُستَنْقَعَاتِ",
    "fixes": []
   },
   {
-   "id": "p010w154",
+   "id": "p010w063",
+   "raw": "حَفِظًا",
+   "txt": "حَفِظًا",
+   "fixes": []
+  },
+  {
+   "id": "p010w064",
    "raw": "جِيدًا،",
    "txt": "جِيدًا،",
    "fixes": []
   },
   {
-   "id": "p010w155",
+   "id": "p010w065",
    "raw": "لِدَرْجَةٍ",
    "txt": "لِدَرْجَةٍ",
    "fixes": []
   },
   {
-   "id": "p010w156",
+   "id": "p010w066",
    "raw": "أَنَّ",
    "txt": "أَنَّ",
    "fixes": []
   },
   {
-   "id": "p010w157",
-   "raw": "الْعُلْمَاءَ</p>",
-   "txt": "الْعُلْمَاءَ</p>",
+   "id": "p010w067",
+   "raw": "الْعُلْمَاءَ",
+   "txt": "الْعُلْمَاءَ",
    "fixes": []
   },
   {
-   "id": "p010w158",
-   "raw": "<p>استطَاعُوا",
-   "txt": "p>استطَاعُوا",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w068",
+   "raw": "استطَاعُوا",
+   "txt": "استطَاعُوا",
+   "fixes": []
   },
   {
-   "id": "p010w159",
+   "id": "p010w069",
    "raw": "مَعْرِفَةً",
    "txt": "مَعْرِفَةً",
    "fixes": []
   },
   {
-   "id": "p010w160",
+   "id": "p010w070",
    "raw": "أَنَّ",
    "txt": "أَنَّ",
    "fixes": []
   },
   {
-   "id": "p010w161",
+   "id": "p010w071",
    "raw": "أَحَدَ",
    "txt": "أَحَدَ",
    "fixes": []
   },
   {
-   "id": "p010w162",
+   "id": "p010w072",
    "raw": "الرِّجَالِ",
    "txt": "الرِّجَالِ",
    "fixes": []
   },
   {
-   "id": "p010w163",
+   "id": "p010w073",
    "raw": "الْبِدَائِيِّينَ",
    "txt": "الْبِدَائِيِّينَ",
    "fixes": []
   },
   {
-   "id": "p010w164",
-   "raw": "كَانَ</p>",
-   "txt": "كَانَ</p>",
+   "id": "p010w074",
+   "raw": "كَانَ",
+   "txt": "كَانَ",
    "fixes": []
   },
   {
-   "id": "p010w165",
-   "raw": "<p>يَسْتَخْدِمُ",
-   "txt": "p>يَسْتَخْدِمُ",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w075",
+   "raw": "يَسْتَخْدِمُ",
+   "txt": "يَسْتَخْدِمُ",
+   "fixes": []
   },
   {
-   "id": "p010w166",
+   "id": "p010w076",
    "raw": "مُثْبِتًا",
    "txt": "مُثْبِتًا",
    "fixes": []
   },
   {
-   "id": "p010w167",
-   "raw": "لِلشَّعْرِ!</p>",
-   "txt": "لِلشَّعْرِ!</p>",
+   "id": "p010w077",
+   "raw": "لِلشَّعْرِ!",
+   "txt": "لِلشَّعْرِ!",
    "fixes": []
   },
   {
-   "id": "p010w168",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w169",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w170",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w171",
-   "raw": "style=\"margin-top:",
-   "txt": "style=\"margin-top:",
+   "id": "p010w078",
+   "raw": "مُصْطَلَحَاتُ",
+   "txt": "مُصْطَلَحَاتُ",
    "fixes": []
   },
   {
-   "id": "p010w172",
-   "raw": "20px;\">",
-   "txt": "20px;\">",
+   "id": "p010w079",
+   "raw": "عَنْ",
+   "txt": "عَنْ",
    "fixes": []
   },
   {
-   "id": "p010w173",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w174",
-   "raw": "style=\"display:",
-   "txt": "style=\"display:",
+   "id": "p010w080",
+   "raw": "المُومِيَاؤَاتُ",
+   "txt": "المُومِيَاؤَاتُ",
    "fixes": []
   },
   {
-   "id": "p010w175",
-   "raw": "flex;",
-   "txt": "flex;",
+   "id": "p010w081",
+   "raw": "مُسْتَنْقِعٌ:",
+   "txt": "مُسْتَنْقِعٌ:",
    "fixes": []
   },
   {
-   "id": "p010w176",
-   "raw": "align-items:",
-   "txt": "align-items:",
+   "id": "p010w082",
+   "raw": "مِنْطَقَةٌ",
+   "txt": "مِنْطَقَةٌ",
    "fixes": []
   },
   {
-   "id": "p010w177",
-   "raw": "center;",
-   "txt": "center;",
-   "fixes": []
-  },
-  {
-   "id": "p010w178",
-   "raw": "margin-bottom:",
-   "txt": "margin-bottom:",
-   "fixes": []
-  },
-  {
-   "id": "p010w179",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w180",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w181",
-   "raw": "style=\"background-color:",
-   "txt": "style=\"background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w182",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w183",
-   "raw": "color:",
-   "txt": "color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w184",
-   "raw": "white;",
-   "txt": "white;",
-   "fixes": []
-  },
-  {
-   "id": "p010w185",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w186",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w187",
-   "raw": "border-radius:",
-   "txt": "border-radius:",
-   "fixes": []
-  },
-  {
-   "id": "p010w188",
-   "raw": "50%;",
-   "txt": "50%;",
-   "fixes": []
-  },
-  {
-   "id": "p010w189",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w190",
-   "raw": "bold;",
-   "txt": "bold;",
-   "fixes": []
-  },
-  {
-   "id": "p010w191",
-   "raw": "margin-right:",
-   "txt": "margin-right:",
-   "fixes": []
-  },
-  {
-   "id": "p010w192",
-   "raw": "10px;\">٩</div>",
-   "txt": "10px;\">٩</div>",
-   "fixes": []
-  },
-  {
-   "id": "p010w193",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w194",
-   "raw": "style=\"font-size:",
-   "txt": "style=\"font-size:",
-   "fixes": []
-  },
-  {
-   "id": "p010w195",
-   "raw": "14px;",
-   "txt": "14px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w196",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w197",
-   "raw": "bold;",
-   "txt": "bold;",
-   "fixes": []
-  },
-  {
-   "id": "p010w198",
-   "raw": "color:",
-   "txt": "color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w199",
-   "raw": "#f57c00;\">مُصْطَلَحَاتُ",
-   "txt": "f57c00;\">مُصْطَلَحَاتُ",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w200",
-   "raw": "عَنْ</div>",
-   "txt": "عَنْ</div>",
-   "fixes": []
-  },
-  {
-   "id": "p010w201",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w202",
-   "raw": "style=\"margin-left:",
-   "txt": "style=\"margin-left:",
-   "fixes": []
-  },
-  {
-   "id": "p010w203",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w204",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w205",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w206",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w207",
-   "raw": "style=\"border:",
-   "txt": "style=\"border:",
-   "fixes": []
-  },
-  {
-   "id": "p010w208",
-   "raw": "2px",
-   "txt": "2px",
-   "fixes": []
-  },
-  {
-   "id": "p010w209",
-   "raw": "dotted",
-   "txt": "dotted",
-   "fixes": []
-  },
-  {
-   "id": "p010w210",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w211",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w212",
-   "raw": "10px;\">",
-   "txt": "10px;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w213",
-   "raw": "<p><strong>المُومِيَاؤَتْ</strong></p>",
-   "txt": "p><strong>المُومِيَاؤَتْ</strong></p>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w214",
-   "raw": "<p>مُسْتَنْقِعٌ:",
-   "txt": "p>مُسْتَنْقِعٌ:",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w215",
-   "raw": "مُنْطَقَةٌ",
-   "txt": "مُنْطَقَةٌ",
-   "fixes": []
-  },
-  {
-   "id": "p010w216",
+   "id": "p010w083",
    "raw": "رَطْبَةٌ",
    "txt": "رَطْبَةٌ",
    "fixes": []
   },
   {
-   "id": "p010w217",
+   "id": "p010w084",
    "raw": "تَنْمُو",
    "txt": "تَنْمُو",
    "fixes": []
   },
   {
-   "id": "p010w218",
+   "id": "p010w085",
    "raw": "فِيهَا",
    "txt": "فِيهَا",
    "fixes": []
   },
   {
-   "id": "p010w219",
+   "id": "p010w086",
    "raw": "أَنْوَاعٌ",
    "txt": "أَنْوَاعٌ",
    "fixes": []
   },
   {
-   "id": "p010w220",
-   "raw": "مَعِينَةٌ</p>",
-   "txt": "مَعِينَةٌ</p>",
+   "id": "p010w087",
+   "raw": "مَعِينَةٌ",
+   "txt": "مَعِينَةٌ",
    "fixes": []
   },
   {
-   "id": "p010w221",
-   "raw": "<p>مِنَ",
-   "txt": "p>مِنَ",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w088",
+   "raw": "مِنَ",
+   "txt": "مِنَ",
+   "fixes": []
   },
   {
-   "id": "p010w222",
+   "id": "p010w089",
    "raw": "الظُّلْحَالِبِ.",
    "txt": "الظُّلْحَالِبِ.",
    "fixes": []
   },
   {
-   "id": "p010w223",
+   "id": "p010w090",
    "raw": "وَتَجْعَلُ",
    "txt": "وَتَجْعَلُ",
    "fixes": []
   },
   {
-   "id": "p010w224",
-   "raw": "النِّبَاتَاتُ",
-   "txt": "النِّبَاتَاتُ",
+   "id": "p010w091",
+   "raw": "النَّبَاتَاتُ",
+   "txt": "النَّبَاتَاتُ",
    "fixes": []
   },
   {
-   "id": "p010w225",
-   "raw": "الْمُجُودَةُ",
-   "txt": "الْمُجُودَةُ",
+   "id": "p010w092",
+   "raw": "الْمُوْجُودَةُ",
+   "txt": "الْمُوْجُودَةُ",
    "fixes": []
   },
   {
-   "id": "p010w226",
-   "raw": "فِيهِ</p>",
-   "txt": "فِيهِ</p>",
+   "id": "p010w093",
+   "raw": "فِيهِ",
+   "txt": "فِيهِ",
    "fixes": []
   },
   {
-   "id": "p010w227",
-   "raw": "<p>مِنَ",
-   "txt": "p>مِنَ",
-   "fixes": [
-    "leading-punct"
-   ]
+   "id": "p010w094",
+   "raw": "مِنَ",
+   "txt": "مِنَ",
+   "fixes": []
   },
   {
-   "id": "p010w228",
+   "id": "p010w095",
    "raw": "الصَّعْبِ",
    "txt": "الصَّعْبِ",
    "fixes": []
   },
   {
-   "id": "p010w229",
+   "id": "p010w096",
    "raw": "عَلَى",
    "txt": "عَلَى",
    "fixes": []
   },
   {
-   "id": "p010w230",
-   "raw": "الْبِكْتِيرِيَا",
-   "txt": "الْبِكْتِيرِيَا",
+   "id": "p010w097",
+   "raw": "البِكْتِيرِيَا",
+   "txt": "البِكْتِيرِيَا",
    "fixes": []
   },
   {
-   "id": "p010w231",
+   "id": "p010w098",
    "raw": "أَنْ",
    "txt": "أَنْ",
    "fixes": []
   },
   {
-   "id": "p010w232",
+   "id": "p010w099",
    "raw": "تَنْمُو",
    "txt": "تَنْمُو",
    "fixes": []
   },
   {
-   "id": "p010w233",
-   "raw": "وَتَزْدَهَرَ.</p>",
-   "txt": "وَتَزْدَهَرَ.</p>",
+   "id": "p010w100",
+   "raw": "وَتَزْدَهَرَ.",
+   "txt": "وَتَزْدَهَرَ.",
    "fixes": []
-  },
-  {
-   "id": "p010w234",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w235",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w236",
-   "raw": "<div",
-   "txt": "div",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w237",
-   "raw": "style=\"position:",
-   "txt": "style=\"position:",
-   "fixes": []
-  },
-  {
-   "id": "p010w238",
-   "raw": "absolute;",
-   "txt": "absolute;",
-   "fixes": []
-  },
-  {
-   "id": "p010w239",
-   "raw": "bottom:",
-   "txt": "bottom:",
-   "fixes": []
-  },
-  {
-   "id": "p010w240",
-   "raw": "10px;",
-   "txt": "10px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w241",
-   "raw": "left:",
-   "txt": "left:",
-   "fixes": []
-  },
-  {
-   "id": "p010w242",
-   "raw": "10px;",
-   "txt": "10px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w243",
-   "raw": "background-color:",
-   "txt": "background-color:",
-   "fixes": []
-  },
-  {
-   "id": "p010w244",
-   "raw": "#f57c00;",
-   "txt": "f57c00;",
-   "fixes": [
-    "leading-punct"
-   ]
-  },
-  {
-   "id": "p010w245",
-   "raw": "padding:",
-   "txt": "padding:",
-   "fixes": []
-  },
-  {
-   "id": "p010w246",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w247",
-   "raw": "border-radius:",
-   "txt": "border-radius:",
-   "fixes": []
-  },
-  {
-   "id": "p010w248",
-   "raw": "5px;",
-   "txt": "5px;",
-   "fixes": []
-  },
-  {
-   "id": "p010w249",
-   "raw": "font-weight:",
-   "txt": "font-weight:",
-   "fixes": []
-  },
-  {
-   "id": "p010w250",
-   "raw": "bold;\">",
-   "txt": "bold;\">",
-   "fixes": []
-  },
-  {
-   "id": "p010w251",
-   "raw": "</div>",
-   "txt": "div>",
-   "fixes": [
-    "leading-punct"
-   ]
   }
  ]
 }

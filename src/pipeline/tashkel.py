@@ -1,7 +1,7 @@
 """Layer 04b — diacritise pages that don't already carry tashkeel.
 
 Only pages already routed 'diacritise' by the ratio threshold in
-run_extract.py / run_ocr.py reach this module. Diacritizing text that already
+run_extract.py / run_ocr_gemini.py / run_ocr_lighton.py reach this module. Diacritizing text that already
 carries marks would strip a typesetter's tashkeel and rewrite it wrong — the
 research note this engine choice comes from (models/ibn_battuta/Tashkeel
 libraries and APIs - research.html) calls that out explicitly. The routing
