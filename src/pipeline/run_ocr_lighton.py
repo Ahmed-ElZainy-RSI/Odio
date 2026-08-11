@@ -17,24 +17,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_lighton import (slice_page, parse_page, clean_markdown,
                                    text_to_tokens, ENGINE)
+from pipeline.pages import parse_pages
 
 DIAC_THRESHOLD = 0.15
 
 
-def run(pdf_path: Path, out_dir: Path, pages: int = 0):
-    """OCR every page of pdf_path (or the first `pages`, 0 = all) into out_dir."""
+def run(pdf_path: Path, out_dir: Path, pages="0"):
+    """OCR pdf_path into out_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
     book = pdf_path.stem
     key = os.environ["LIGHTON_API_KEY"]
     out_dir.mkdir(parents=True, exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
     reader = PdfReader(str(pdf_path))
-    n = pages or len(reader.pages)
-    print(f"{book} — {len(reader.pages)} pages via {ENGINE}, doing {n}")
+    total = len(reader.pages)
+    start, end = parse_pages(pages)
+    print(f"{book} — {total} pages via {ENGINE}, doing {start}-{end or total}")
     print("box_level=none: no geometry from this engine, so no page-image view\n")
     print(f"{'pg':>3} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")
     print("-" * 52)
 
-    for i in range(1, n + 1):
+    for i in range(start, (end or total) + 1):
         rec_path = out_dir / f"p{i:03d}.json"
         if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") == "extracted":
             print(f"{i:>3}  already done, skipping")
@@ -68,7 +70,7 @@ def main():
     # standalone CLI keeps the -lighton suffix so the Gemini and LightOn
     # extractions of the same book can be compared side by side
     run(Path(f"assets/PDF Samples/{book}.pdf"), Path(f"work/{book.strip()}-lighton"),
-        pages=int(os.environ.get("PAGES", "0")))
+        pages=os.environ.get("PAGES", "0"))
 
 
 if __name__ == "__main__":

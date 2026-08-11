@@ -21,22 +21,28 @@ import fitz
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.extract import extract_page, diacritic_ratio
 from pipeline.ocr_gemini import render_page
+from pipeline.pages import parse_pages
 
 DIAC_THRESHOLD = 0.15
 
 
-def run(pdf_path: Path, out_dir: Path, pages: int = 0):
-    """Extract pdf_path's embedded text layer into out_dir (first `pages`, 0 = all)."""
+def run(pdf_path: Path, out_dir: Path, pages="0"):
+    """Extract pdf_path's embedded text layer into out_dir.
+
+    pages: "0"/""/None = all, "5" = pages 1-5, "13:20" = pages 13-20 (see pages.py).
+    """
     book = pdf_path.stem
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pages").mkdir(exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
     doc = fitz.open(str(pdf_path))
     total = len(doc)
-    n = pages or total
+    start, end = parse_pages(pages)
     summary = []
     for i, page in enumerate(doc, start=1):
-        if i > n:
+        if i < start:
+            continue
+        if end and i > end:
             break
         rec_path = out_dir / f"p{i:03d}.json"
         img_path = out_dir / "pages" / f"p{i:03d}.jpg"
@@ -71,7 +77,7 @@ def run(pdf_path: Path, out_dir: Path, pages: int = 0):
         summary.append((i, len(tokens), len(text), ratio, rec["path"], fixed))
     doc.close()
 
-    print(f"{book} — sha256:{pdf_hash}, {total} pages, doing {n}\n")
+    print(f"{book} — sha256:{pdf_hash}, {total} pages, doing {start}-{end or total}\n")
     print(f"{'pg':>3} {'tokens':>7} {'chars':>6} {'diac':>6} {'path':>11} {'fixed':>6}")
     print("-" * 48)
     for r in summary:
@@ -88,7 +94,7 @@ def run(pdf_path: Path, out_dir: Path, pages: int = 0):
 def main():
     book = os.environ.get("BOOK", "النجوم")
     run(Path(f"assets/PDF Samples/{book}.pdf"), Path(f"work/{book}"),
-        pages=int(os.environ.get("PAGES", "0")))
+        pages=os.environ.get("PAGES", "0"))
 
 
 if __name__ == "__main__":

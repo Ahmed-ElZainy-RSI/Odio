@@ -16,12 +16,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.tashkel import diacritize_tokens
+from pipeline.pages import parse_pages, in_range
 
 
-def run(work_dir: Path, pages: int = 0):
-    """Diacritise pages in work_dir (first `pages` by page number, 0 = all present)."""
+def run(work_dir: Path, pages="0"):
+    """Diacritise pages in work_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
+    start, end = parse_pages(pages)
     all_pages = sorted(work_dir.glob("p*.json"))
-    page_files = all_pages[:pages] if pages else all_pages
+    page_files = [f for f in all_pages if in_range(int(f.stem[1:]), start, end)]
     print(f"{work_dir.name} — {len(page_files)} of {len(all_pages)} pages\n")
     print(f"{'pg':>3}  path         result")
     print("-" * 50)
@@ -60,7 +62,7 @@ def run(work_dir: Path, pages: int = 0):
 
 def main():
     book = os.environ.get("BOOK", "المومياوات ناشيونال جيوجرافيك ")
-    run(Path(f"work/{book.strip()}"), pages=int(os.environ.get("PAGES", "0")))
+    run(Path(f"work/{book.strip()}"), pages=os.environ.get("PAGES", "0"))
 
 
 if __name__ == "__main__":

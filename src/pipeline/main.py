@@ -9,6 +9,7 @@ Usage:
     python3 src/pipeline/main.py "assets/PDF Samples/النجوم.pdf"
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --ocr lighton --tts gemini
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 5
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 13:20
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --force-ocr
 
 Every stage is independently resumable (each run_*.py module skips pages
@@ -50,7 +51,7 @@ def has_text_layer(pdf_path: Path, threshold: int = TEXT_LAYER_MIN_WORDS) -> boo
 
 
 def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
-                  voice: str | None = None, pages: int = 0, force_ocr: bool = False) -> Path:
+                  voice: str | None = None, pages="0", force_ocr: bool = False) -> Path:
     book = pdf_path.stem.strip()
     work_dir = Path(f"work/{book}")
 
@@ -95,8 +96,9 @@ def main():
                           "quota available; hume gives native timestamps but its credit "
                           "balance is currently exhausted")
     ap.add_argument("--voice", default=None, help="override the default voice for the chosen TTS engine")
-    ap.add_argument("--pages", type=int, default=0,
-                     help="limit the whole run to the first N pages (0 = all) -- "
+    ap.add_argument("--pages", default="0",
+                     help="limit the whole run to specific pages (0 = all): "
+                          "'5' = pages 1-5, '13:20' = pages 13-20, '13:' = page 13 to the end -- "
                           "extraction, diacritisation, and synthesis all honour this, "
                           "even if the book already has more pages on disk from a prior run")
     ap.add_argument("--force-ocr", action="store_true",
