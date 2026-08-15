@@ -8,23 +8,26 @@
  "box_level": "none",
  "diac_ratio": 0.006,
  "path": "diacritise",
- "status": "spoken",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p015w000",
    "raw": "موميلات",
-   "txt": "مُومِيلَاتٍ",
-   "fixes": [],
+   "txt": "مُومِيَاوَاتَ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     0,
     1020
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "مُومِيلَاتٍ"
   },
   {
    "id": "p015w001",
    "raw": "من",
-   "txt": "مِنَ",
+   "txt": "مِنْ",
    "fixes": [],
    "t": [
     1020,
@@ -35,18 +38,21 @@
   {
    "id": "p015w002",
    "raw": "التحيط",
-   "txt": "التَّحَيُّطِ",
-   "fixes": [],
+   "txt": "تَحْنِيطِ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     1220,
     2281
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "التَّحَيُّطِ"
   },
   {
    "id": "p015w003",
    "raw": "الإنسان",
-   "txt": "الْإِنْسَانُ",
+   "txt": "الْإِنْسَانِ",
    "fixes": [],
    "t": [
     2281,
@@ -90,13 +96,16 @@
   {
    "id": "p015w007",
    "raw": "الجنت",
-   "txt": "الْجَنَّتِ",
-   "fixes": [],
+   "txt": "الْجُثْثِ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     4925,
     5600
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "الْجَنَّتِ"
   },
   {
    "id": "p015w008",
@@ -288,13 +297,16 @@
   {
    "id": "p015w025",
    "raw": "غرف",
-   "txt": "غُرِّفَ",
-   "fixes": [],
+   "txt": "عُرِفَ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     14880,
     15424
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "غُرِّفَ"
   },
   {
    "id": "p015w026",
@@ -389,18 +401,21 @@
   {
    "id": "p015w034",
    "raw": "التحيظ.",
-   "txt": "التَّحَيُّظِ.",
-   "fixes": [],
+   "txt": "التَّحْنِيطِ.",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     20680,
     22173
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "التَّحَيُّظِ."
   },
   {
    "id": "p015w035",
    "raw": "نعد",
-   "txt": "نَعْدُّ",
+   "txt": "نَعْدِّ",
    "fixes": [],
    "t": [
     22173,

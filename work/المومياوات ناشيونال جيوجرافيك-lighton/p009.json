@@ -13,57 +13,72 @@
   {
    "id": "p009w000",
    "raw": "مومیاء",
-   "txt": "مومیاء",
-   "fixes": [],
+   "txt": "مومياوات",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     0,
-    1000
+    980
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "مومیاء"
   },
   {
    "id": "p009w001",
    "raw": "عُنْر",
-   "txt": "عُنْر",
-   "fixes": [],
-   "t": [
-    1000,
-    1540
+   "txt": "طبيعية",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "anchor"
+   "t": [
+    980,
+    1960
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "عُنْر"
   },
   {
    "id": "p009w002",
    "raw": "علیہا",
-   "txt": "علیہا",
-   "fixes": [],
-   "t": [
-    1540,
-    2080
+   "txt": "مومياءُ",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    2500,
+    3180
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "علیہا"
   },
   {
    "id": "p009w003",
    "raw": "فی",
-   "txt": "فی",
-   "fixes": [],
-   "t": [
-    2080,
-    2260
+   "txt": "عُثِرَ",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    3180,
+    3680
+   ],
+   "t_src": "interpolated",
+   "ocr_txt": "فی"
   },
   {
    "id": "p009w004",
    "raw": "مُستنفع",
-   "txt": "مُستنفع",
-   "fixes": [],
-   "t": [
-    2260,
-    3020
+   "txt": "عَلَيْهَا",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "anchor"
+   "t": [
+    3680,
+    4180
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "مُستنفع"
   },
   {
    "id": "p009w005",
@@ -71,34 +86,39 @@
    "txt": "تَعْرِف",
    "fixes": [],
    "t": [
-    3020,
-    3700
+    4180,
+    4580
    ],
    "t_src": "anchor"
   },
   {
    "id": "p009w006",
    "raw": "بَاشِم",
-   "txt": "بَاشِم",
-   "fixes": [],
-   "t": [
-    3700,
-    4234
+   "txt": "بِاسْمِ",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    4580,
+    5426
+   ],
+   "t_src": "interpolated",
+   "ocr_txt": "بَاشِم"
   },
   {
    "id": "p009w007",
    "raw": "«لِبْدَو",
-   "txt": "لِبْدَو",
+   "txt": "«لِينْدُو",
    "fixes": [
-    "leading-punct"
+    "leading-punct",
+    "ensemble-vlm"
    ],
    "t": [
-    4234,
-    4769
+    5426,
+    6485
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "لِبْدَو"
   },
   {
    "id": "p009w008",
@@ -106,65 +126,70 @@
    "txt": "مَان»",
    "fixes": [],
    "t": [
-    4769,
-    5169
+    6485,
+    7120
    ],
    "t_src": "interpolated"
   }
  ],
- "tts": "gemini:recovered-from-existing-audio",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
  "voice": "Kore",
  "whisper_words": [
   {
-   "text": "مومياء",
+   "text": "موميوات",
    "b": 0,
-   "e": 1000
+   "e": 980
   },
   {
-   "text": "عنر",
-   "b": 1000,
-   "e": 1540
+   "text": "طبيعية",
+   "b": 980,
+   "e": 1960
+  },
+  {
+   "text": "مومياء",
+   "b": 2500,
+   "e": 3180
+  },
+  {
+   "text": "عثرة",
+   "b": 3180,
+   "e": 3680
   },
   {
    "text": "عليها",
-   "b": 1540,
-   "e": 2080
-  },
-  {
-   "text": "في",
-   "b": 2080,
-   "e": 2260
-  },
-  {
-   "text": "مستنفع",
-   "b": 2260,
-   "e": 3020
-  },
-  {
-   "text": "تعرف",
-   "b": 3020,
-   "e": 3700
-  },
-  {
-   "text": "بشيم",
-   "b": 3700,
+   "b": 3680,
    "e": 4180
   },
   {
-   "text": "لبندو",
+   "text": "تعرف",
    "b": 4180,
-   "e": 4800
+   "e": 4580
+  },
+  {
+   "text": "بسمي",
+   "b": 4580,
+   "e": 5660
+  },
+  {
+   "text": "لندو",
+   "b": 5660,
+   "e": 6340
+  },
+  {
+   "text": "من",
+   "b": 6340,
+   "e": 6620
   }
  ],
  "align": "forced-whisper-small",
- "duration_ms": 5170,
+ "duration_ms": 7120,
  "audio": "audio/p009.wav",
  "bind_report": {
-  "hume_timestamps": 8,
+  "hume_timestamps": 9,
   "hume_dropped_invalid": 0,
   "tokens": 9,
-  "anchored": 3,
-  "interpolated": 6,
+  "anchored": 4,
+  "interpolated": 5,
   "untimed": 0,
   "monotonic": true
  }

@@ -8,7 +8,7 @@
  "box_level": "none",
  "diac_ratio": 0.076,
  "path": "diacritise",
- "status": "spoken",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p012w000",
@@ -24,13 +24,16 @@
   {
    "id": "p012w001",
    "raw": "غثر",
-   "txt": "غَثَّرَ",
-   "fixes": [],
+   "txt": "عُثَرَ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     580,
     885
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "غَثَّرَ"
   },
   {
    "id": "p012w002",
@@ -101,7 +104,7 @@
   {
    "id": "p012w008",
    "raw": "وقد",
-   "txt": "وَقَدْ",
+   "txt": "وَقَدِ",
    "fixes": [],
    "t": [
     3800,
@@ -112,13 +115,16 @@
   {
    "id": "p012w009",
    "raw": "التَّقْ",
-   "txt": "الْتَقَّ",
-   "fixes": [],
+   "txt": "الْتَفَّ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     4420,
     4920
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "الْتَقَّ"
   },
   {
    "id": "p012w010",
@@ -134,7 +140,7 @@
   {
    "id": "p012w011",
    "raw": "حول",
-   "txt": "حَوْلِ",
+   "txt": "حَوْلَ",
    "fixes": [],
    "t": [
     5280,

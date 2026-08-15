@@ -16,6 +16,13 @@ Every stage is independently resumable (each run_*.py module skips pages
 already done), so re-running this after a quota stall picks up where it left
 off instead of redoing the book.
 
+--pages only scopes extraction/OCR -- which pages get fetched from the PDF.
+Diacritisation and TTS then process everything on disk that still needs it,
+regardless of what range was used to fetch it, so a run also catches up any
+earlier pages left un-diacritised or unsynthesised instead of hiding that
+backlog behind a filter. Their own status checks already prevent redundant
+work, so there's nothing for a second range filter to usefully add there.
+
 --force-ocr exists because "has a text layer" and "the text layer is
 trustworthy" are not the same thing. Found on شكرا يامى: PyMuPDF reported a
 real, >50-word text layer, but it was stale ghost text unrelated to the
@@ -68,13 +75,13 @@ def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
             run_ocr_lighton.run(pdf_path, work_dir, pages=pages)
 
     print("\n--- diacritising ---")
-    run_tashkel.run(work_dir, pages=pages)
+    run_tashkel.run(work_dir)
 
     print(f"\n--- synthesising ({tts}) ---")
     if tts == "hume":
-        run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE, pages=pages)
+        run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE)
     else:
-        run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE, pages=pages)
+        run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE)
 
     print("\n--- building reader ---")
     out = build_reader.build(work_dir)
@@ -97,10 +104,10 @@ def main():
                           "balance is currently exhausted")
     ap.add_argument("--voice", default=None, help="override the default voice for the chosen TTS engine")
     ap.add_argument("--pages", default="0",
-                     help="limit the whole run to specific pages (0 = all): "
+                     help="limit which pages get fetched during extraction/OCR (0 = all): "
                           "'5' = pages 1-5, '13:20' = pages 13-20, '13:' = page 13 to the end -- "
-                          "extraction, diacritisation, and synthesis all honour this, "
-                          "even if the book already has more pages on disk from a prior run")
+                          "diacritisation and synthesis are unaffected and process everything "
+                          "on disk that still needs it, so they also catch up any backlog")
     ap.add_argument("--force-ocr", action="store_true",
                      help="use the OCR path even if the PDF has a text layer -- for PDFs where "
                           "the text layer exists but is wrong (e.g. stale text unrelated to the "

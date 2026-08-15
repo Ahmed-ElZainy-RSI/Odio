@@ -23,7 +23,6 @@ from google import genai
 from pipeline.speak import bind
 from pipeline.tts_gemini import synthesize, VOICE, MODEL, SAMPLE_RATE
 from pipeline.align_whisper import align_words
-from pipeline.pages import parse_pages, in_range
 
 
 def do_page(client, path, audio_dir, voice):
@@ -63,16 +62,20 @@ def do_page(client, path, audio_dir, voice):
           f"{'mono' if report['monotonic'] else 'NON-MONOTONIC'}")
 
 
-def run(work_dir: Path, voice: str = VOICE, pages="0"):
-    """Synthesise pages in work_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
+def run(work_dir: Path, voice: str = VOICE):
+    """Synthesise every page in work_dir that isn't already spoken.
+
+    No page-range option here on purpose: --pages/PAGES only controls which
+    pages get fetched during extraction/OCR. Once pages exist on disk, this
+    processes everything not yet spoken, so it also catches up any earlier
+    pages left unsynthesised instead of hiding that backlog behind a filter.
+    """
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     audio_dir = work_dir / "audio"
-    start, end = parse_pages(pages)
     all_pages = sorted(work_dir.glob("p*.json"))
-    page_files = [f for f in all_pages if in_range(int(f.stem[1:]), start, end)]
-    print(f"{work_dir.name} — {len(page_files)} of {len(all_pages)} pages, "
+    print(f"{work_dir.name} — {len(all_pages)} pages, "
           f"{MODEL} voice={voice!r} + faster-whisper alignment\n")
-    for p in page_files:
+    for p in all_pages:
         try:
             do_page(client, p, audio_dir, voice)
         except Exception as e:
@@ -85,7 +88,7 @@ def run(work_dir: Path, voice: str = VOICE, pages="0"):
 def main():
     book = os.environ.get("BOOK", "المومياوات ناشيونال جيوجرافيك-lighton")
     voice = os.environ.get("VOICE", VOICE)
-    run(Path(f"work/{book}"), voice, pages=os.environ.get("PAGES", "0"))
+    run(Path(f"work/{book}"), voice)
 
 
 if __name__ == "__main__":

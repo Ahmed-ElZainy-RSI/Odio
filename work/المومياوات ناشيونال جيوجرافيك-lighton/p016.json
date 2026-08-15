@@ -8,13 +8,16 @@
  "box_level": "none",
  "diac_ratio": 0.0,
  "path": "diacritise",
- "status": "spoken",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p016w000",
    "raw": "ج",
-   "txt": "جَ",
-   "fixes": []
+   "txt": "لِمَّاًذَا",
+   "fixes": [
+    "ensemble-vlm"
+   ],
+   "ocr_txt": "جَ"
   }
  ],
  "tashkeel_engine": "arabic-diacritizer",

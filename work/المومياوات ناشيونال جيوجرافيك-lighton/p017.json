@@ -8,7 +8,7 @@
  "box_level": "none",
  "diac_ratio": 0.023,
  "path": "diacritise",
- "status": "spoken",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p017w000",
@@ -57,7 +57,7 @@
   {
    "id": "p017w004",
    "raw": "شينشورو",
-   "txt": "شُينَشُورُو",
+   "txt": "شينَشُورُو",
    "fixes": [],
    "t": [
     2580,
@@ -134,13 +134,16 @@
   {
    "id": "p017w011",
    "raw": "الجثت.",
-   "txt": "الْجُثَّتَ.",
-   "fixes": [],
+   "txt": "الْجُثْثَ.",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     6433,
     7100
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "الْجُثَّتَ."
   },
   {
    "id": "p017w012",
@@ -299,13 +302,16 @@
   {
    "id": "p017w026",
    "raw": "غثر",
-   "txt": "غَثَرَ",
-   "fixes": [],
+   "txt": "عُثِرَ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     15500,
     16280
    ],
-   "t_src": "anchor"
+   "t_src": "anchor",
+   "ocr_txt": "غَثَرَ"
   },
   {
    "id": "p017w027",

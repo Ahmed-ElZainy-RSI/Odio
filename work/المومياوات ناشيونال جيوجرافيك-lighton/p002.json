@@ -13,14 +13,20 @@
   {
    "id": "p002w000",
    "raw": "اعْلَمْتُ",
-   "txt": "اعْلَمْتُ",
-   "fixes": []
+   "txt": "المومياوات",
+   "fixes": [
+    "ensemble-vlm"
+   ],
+   "ocr_txt": "اعْلَمْتُ"
   },
   {
    "id": "p002w001",
    "raw": "الإِبْرَاهِيم",
-   "txt": "الإِبْرَاهِيم",
-   "fixes": []
+   "txt": "إليزابيث",
+   "fixes": [
+    "ensemble-vlm"
+   ],
+   "ocr_txt": "الإِبْرَاهِيم"
   },
   {
    "id": "p002w002",
@@ -41,37 +47,37 @@
    "fixes": []
   }
  ],
- "tts": "gemini:recovered-from-existing-audio",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
  "voice": "Kore",
  "whisper_words": [
   {
-   "text": "البحوث",
+   "text": "المميوات",
    "b": 0,
-   "e": 1200
+   "e": 1260
   },
   {
-   "text": "البحوث",
-   "b": 1200,
-   "e": 2460
+   "text": "إلزاب",
+   "b": 1260,
+   "e": 2040
   },
   {
-   "text": "كارنجي",
-   "b": 2460,
-   "e": 3560
+   "text": "إثكارني",
+   "b": 2040,
+   "e": 2660
   },
   {
-   "text": "نشنل",
-   "b": 3560,
-   "e": 4540
+   "text": "نشنول",
+   "b": 2660,
+   "e": 3720
   },
   {
-   "text": "جيغرافق",
-   "b": 4540,
-   "e": 5300
+   "text": "جيوغرافق",
+   "b": 3720,
+   "e": 4500
   }
  ],
  "align": "forced-whisper-small",
- "duration_ms": 5610,
+ "duration_ms": 4920,
  "audio": "audio/p002.wav",
  "bind_report": {
   "hume_timestamps": 5,

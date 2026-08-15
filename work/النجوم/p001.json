@@ -6,7 +6,7 @@
  "source": "pdf-text-layer",
  "diac_ratio": 0.0,
  "path": "diacritise",
- "status": "skipped-front-matter",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p001w000",

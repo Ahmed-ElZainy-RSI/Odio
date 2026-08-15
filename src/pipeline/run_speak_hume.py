@@ -16,7 +16,6 @@ from hume import AsyncHumeClient
 
 from pipeline.speak import bind
 from pipeline.tts_hume import synthesize, VOICE
-from pipeline.pages import parse_pages, in_range
 
 
 async def do_page(client, path, audio_dir, voice):
@@ -52,14 +51,12 @@ async def do_page(client, path, audio_dir, voice):
           f"{'mono' if report['monotonic'] else 'NON-MONOTONIC'}")
 
 
-async def _run_async(work_dir: Path, voice: str, pages):
+async def _run_async(work_dir: Path, voice: str):
     client = AsyncHumeClient(api_key=os.environ["HUME_API_KEY"])
     audio_dir = work_dir / "audio"
-    start, end = parse_pages(pages)
     all_pages = sorted(work_dir.glob("p*.json"))
-    page_files = [f for f in all_pages if in_range(int(f.stem[1:]), start, end)]
-    print(f"{work_dir.name} — {len(page_files)} of {len(all_pages)} pages, voice: {voice}\n")
-    for p in page_files:
+    print(f"{work_dir.name} — {len(all_pages)} pages, voice: {voice}\n")
+    for p in all_pages:
         try:
             await do_page(client, p, audio_dir, voice)
         except Exception as e:
@@ -69,15 +66,21 @@ async def _run_async(work_dir: Path, voice: str, pages):
     print("\ndone")
 
 
-def run(work_dir: Path, voice: str = VOICE, pages="0"):
-    """Synthesise pages in work_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
-    asyncio.run(_run_async(work_dir, voice, pages))
+def run(work_dir: Path, voice: str = VOICE):
+    """Synthesise every page in work_dir that isn't already spoken.
+
+    No page-range option here on purpose: --pages/PAGES only controls which
+    pages get fetched during extraction/OCR. Once pages exist on disk, this
+    processes everything not yet spoken, so it also catches up any earlier
+    pages left unsynthesised instead of hiding that backlog behind a filter.
+    """
+    asyncio.run(_run_async(work_dir, voice))
 
 
 def main():
     book = os.environ.get("BOOK", "النجوم")
     voice = os.environ.get("VOICE", VOICE)
-    run(Path(f"work/{book}"), voice, pages=os.environ.get("PAGES", "0"))
+    run(Path(f"work/{book}"), voice)
 
 
 if __name__ == "__main__":

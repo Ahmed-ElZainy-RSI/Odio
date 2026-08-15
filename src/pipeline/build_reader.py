@@ -19,6 +19,22 @@ from pathlib import Path
 def build(work_dir: Path):
     """Build work_dir/reader.html from every 'spoken' page record. Returns the output Path, or None if nothing is spoken yet."""
     book = work_dir.name
+
+    # tools/ensemble_review.py writes this separately and never touches
+    # pXXX.json -- reading it here is optional and additive, so a book with
+    # no review still builds exactly as before.
+    review_path = work_dir / "ensemble_review.json"
+    review_by_id = {}
+    if review_path.exists():
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        for results in review["pages"].values():
+            for r in results:
+                # "gemini-only:..." ids have no corresponding LightOn token
+                # to attach a flag to -- Gemini saw a word LightOn dropped
+                # entirely, not a per-token disagreement to highlight
+                if r["action"] in ("FLAG", "VERIFIED") and not r["id"].startswith("gemini-only:"):
+                    review_by_id[r["id"]] = r
+
     pages = []
     for f in sorted(work_dir.glob("p*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
@@ -32,9 +48,20 @@ def build(work_dir: Path):
         # spoken-word mismatch) leaves every token with no "t" at all -- not just
         # a rare gap between anchors. Those tokens still display; they just can't
         # highlight or be clicked-to-seek.
-        tok = [{"i": t["id"], "r": t["raw"], "t": t["txt"],
-                "m": t.get("t"), "s": t.get("t_src", "untimed"), "f": t["fixes"]}
-               for t in r["tokens"]]
+        tok = []
+        for t in r["tokens"]:
+            entry = {"i": t["id"], "r": t["raw"], "t": t["txt"],
+                      "m": t.get("t"), "s": t.get("t_src", "untimed"), "f": t["fixes"]}
+            rv = review_by_id.get(t["id"])
+            if rv:
+                # gemini_txt/verified_txt are only added when a review row
+                # exists at all, so the reader can tell "never reviewed"
+                # (key absent) apart from "reviewed, Gemini had no reading"
+                # (key present, value null)
+                entry["g"] = rv["gemini_txt"]
+                if rv["action"] == "VERIFIED":
+                    entry["v"] = rv["verified_txt"]
+            tok.append(entry)
         if has_boxes:
             for t, src in zip(tok, r["tokens"]):
                 t["b"] = src["box"]
@@ -57,6 +84,8 @@ def build(work_dir: Path):
     n_tok = sum(len(p["tokens"]) for p in pages)
     n_anc = sum(1 for p in pages for t in p["tokens"] if t["s"] == "anchor")
     n_fix = sum(1 for p in pages for t in p["tokens"] if t["f"])
+    n_flag = sum(1 for p in pages for t in p["tokens"] if "g" in t and "v" not in t)
+    n_verified = sum(1 for p in pages for t in p["tokens"] if "v" in t)
     dur = sum(p["dur"] for p in pages) / 1000
 
     html = f"""<!doctype html><html lang=ar dir=rtl><head><meta charset=utf-8>
@@ -97,6 +126,10 @@ font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro',serif;min
 .w.interp{{border-bottom:2px dotted #c3cbd4}}
 .w.fixed{{background:#f4fbf6}}
 .w.fixed.now{{background:#ffe9a8}}
+.w.flagged{{background:#fdeceb;outline:1px solid #e8b4ae}}
+.w.flagged.now{{background:#ffe9a8}}
+.w.verified{{background:#fdf3e0;outline:1px solid #e8c98a}}
+.w.verified.now{{background:#ffe9a8}}
 .w.untimed{{opacity:.55;cursor:default}}
 .imgw{{position:relative;line-height:0}}
 .imgw img{{width:100%;display:block}}
@@ -133,11 +166,15 @@ font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-heig
 <span><i style="background:#ffe9a8"></i>currently spoken</span>
 <span><i style="background:#f4fbf6;border:1px solid #cfe8d8"></i>cleaned by a rule</span>
 <span><i style="border-bottom:2px dotted #c3cbd4;width:14px;height:8px"></i>timing interpolated</span>
+{'<span><i style="background:#fdeceb;border:1px solid #e8b4ae"></i>disagrees with a second engine, unresolved</span>' if n_flag else ''}
+{'<span><i style="background:#fdf3e0;border:1px solid #e8c98a"></i>disagreement, VLM-verified reading available</span>' if n_verified else ''}
 </div>
 <div class=stat>
 <div><b>{n_anc}</b><span>anchored to real timestamps ({100*n_anc/n_tok:.0f}%)</span></div>
 <div><b>{n_tok-n_anc}</b><span>interpolated between anchors</span></div>
 <div><b>{n_fix}</b><span>tokens cleaned by an extraction rule</span></div>
+{f'<div><b>{n_flag}</b><span>unresolved disagreements ({100*n_flag/n_tok:.0f}%)</span></div>' if n_flag else ''}
+{f'<div><b>{n_verified}</b><span>VLM-verified disagreements ({100*n_verified/n_tok:.0f}%)</span></div>' if n_verified else ''}
 <div><b>{dur/60:.1f} min</b><span>real synthesised audio</span></div>
 </div>
 </div>
@@ -161,7 +198,8 @@ function load(i){{
   if(HAS_COMPARE){{ img.src=p.img; boxes.innerHTML=""; }}
   p.tokens.forEach((t,j)=>{{
     const s=document.createElement("span");
-    s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")+(t.m?"":" untimed");
+    s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")
+      +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
     s.dataset.j=j; s.textContent=t.t;
     txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
     if(HAS_COMPARE){{
@@ -192,8 +230,14 @@ function show(j){{
                      :'<span style="color:#a4abb4">no cleanup needed</span>';
   const box=HAS_COMPARE?` &nbsp;·&nbsp; box [${{t.b.map(v=>v.toFixed(1)).join(", ")}}]`:"";
   const timing=t.m?`t [${{t.m[0]}}, ${{t.m[1]}}] ms · `:"";
+  const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
+  const ens="v" in t
+    ? `<br><span style="color:#9a6b00">ensemble: LightOn <b>${{esc(t.t)}}</b> vs Gemini <b>${{gTxt}}</b> → VLM read <b>${{esc(t.v)}}</b></span>`
+    : "g" in t
+    ? `<br><span style="color:#c0392b">ensemble: LightOn says <b>${{esc(t.t)}}</b>, Gemini says <b>${{gTxt}}</b> (unresolved)</span>`
+    : "";
   insp.innerHTML=`<b>${{t.i}}</b> &nbsp; raw <b>${{esc(t.r)}}</b> → <b>${{esc(t.t)}}</b><br>`
-   +`${{timing}}${{src}} &nbsp;·&nbsp; ${{fx}}${{box}}`;
+   +`${{timing}}${{src}} &nbsp;·&nbsp; ${{fx}}${{box}}${{ens}}`;
 }}
 let last=-1;
 function render(){{

@@ -8,12 +8,12 @@
  "box_level": "none",
  "diac_ratio": 0.031,
  "path": "diacritise",
- "status": "spoken",
+ "status": "diacritised",
  "tokens": [
   {
    "id": "p011w000",
    "raw": "يبدو",
-   "txt": "يَبْدُو",
+   "txt": "يَبْدُوَ",
    "fixes": [],
    "t": [
     0,
@@ -24,13 +24,16 @@
   {
    "id": "p011w001",
    "raw": "وجهه",
-   "txt": "وَجْهُهُ",
-   "fixes": [],
+   "txt": "وَجْهُ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     720,
     1000
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "وَجْهُهُ"
   },
   {
    "id": "p011w002",
@@ -46,7 +49,7 @@
   {
    "id": "p011w003",
    "raw": "الرجل",
-   "txt": "الرَّجُلُ",
+   "txt": "الرَّجُلِ",
    "fixes": [],
    "t": [
     1340,
@@ -101,13 +104,16 @@
   {
    "id": "p011w008",
    "raw": "يمث",
-   "txt": "يَمَثْ",
-   "fixes": [],
+   "txt": "يَمُتْ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     4180,
     4580
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "يَمَثْ"
   },
   {
    "id": "p011w009",

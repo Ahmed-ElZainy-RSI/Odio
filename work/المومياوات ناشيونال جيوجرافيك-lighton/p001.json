@@ -17,7 +17,7 @@
    "fixes": [],
    "t": [
     0,
-    340
+    700
    ],
    "t_src": "interpolated"
   },
@@ -27,8 +27,8 @@
    "txt": "GEOGRAPHIC",
    "fixes": [],
    "t": [
-    340,
-    680
+    700,
+    1400
    ],
    "t_src": "interpolated"
   },
@@ -38,21 +38,24 @@
    "txt": "KiDS",
    "fixes": [],
    "t": [
-    680,
-    1020
+    1400,
+    2100
    ],
    "t_src": "interpolated"
   },
   {
    "id": "p001w003",
    "raw": "المسمى",
-   "txt": "المسمى",
-   "fixes": [],
-   "t": [
-    1020,
-    3060
+   "txt": "المستوى",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    2100,
+    3920
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "المسمى"
   },
   {
    "id": "p001w004",
@@ -60,8 +63,8 @@
    "txt": "المستوى",
    "fixes": [],
    "t": [
-    3060,
-    4120
+    3920,
+    5200
    ],
    "t_src": "anchor"
   },
@@ -71,88 +74,94 @@
    "txt": "دار",
    "fixes": [],
    "t": [
-    4120,
-    4520
+    5200,
+    5880
    ],
    "t_src": "anchor"
   },
   {
    "id": "p001w006",
    "raw": "نشخنة",
-   "txt": "نشخنة",
-   "fixes": [],
-   "t": [
-    4520,
-    5236
+   "txt": "نهضة",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    5880,
+    6400
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "نشخنة"
   },
   {
    "id": "p001w007",
    "raw": "لمصر",
-   "txt": "لمصر",
-   "fixes": [],
-   "t": [
-    5236,
-    5810
+   "txt": "مصر",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "interpolated"
+   "t": [
+    6400,
+    6860
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "لمصر"
   }
  ],
  "tashkeel_engine": "arabic-diacritizer",
- "tts": "gemini:recovered-from-existing-audio",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
  "voice": "Kore",
  "whisper_words": [
   {
-   "text": "National",
+   "text": "نشنل",
    "b": 0,
-   "e": 660
+   "e": 860
   },
   {
-   "text": "Geographic",
-   "b": 660,
-   "e": 1420
+   "text": "جيوغرافق",
+   "b": 860,
+   "e": 1600
   },
   {
-   "text": "Kids",
-   "b": 1420,
-   "e": 1860
-  },
-  {
-   "text": "يوميا",
-   "b": 1860,
-   "e": 3060
+   "text": "كيض",
+   "b": 1600,
+   "e": 2100
   },
   {
    "text": "المستوى",
-   "b": 3060,
-   "e": 4120
+   "b": 2100,
+   "e": 3920
+  },
+  {
+   "text": "المستوى",
+   "b": 3920,
+   "e": 5200
   },
   {
    "text": "دار",
-   "b": 4120,
-   "e": 4520
+   "b": 5200,
+   "e": 5880
   },
   {
-   "text": "نشخال",
-   "b": 4520,
-   "e": 5040
+   "text": "نهضة",
+   "b": 5880,
+   "e": 6400
   },
   {
    "text": "مصر",
-   "b": 5040,
-   "e": 5540
+   "b": 6400,
+   "e": 6860
   }
  ],
  "align": "forced-whisper-small",
- "duration_ms": 5810,
+ "duration_ms": 7200,
  "audio": "audio/p001.wav",
  "bind_report": {
   "hume_timestamps": 8,
   "hume_dropped_invalid": 0,
   "tokens": 8,
-  "anchored": 2,
-  "interpolated": 6,
+  "anchored": 5,
+  "interpolated": 3,
   "untimed": 0,
   "monotonic": true
  }

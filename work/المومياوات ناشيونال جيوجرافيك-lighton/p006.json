@@ -13,13 +13,16 @@
   {
    "id": "p006w000",
    "raw": "مُوميَائُ",
-   "txt": "مُوميَائُ",
-   "fixes": [],
+   "txt": "مُومياءُ",
+   "fixes": [
+    "ensemble-vlm"
+   ],
    "t": [
     0,
-    880
+    900
    ],
-   "t_src": "interpolated"
+   "t_src": "interpolated",
+   "ocr_txt": "مُوميَائُ"
   },
   {
    "id": "p006w001",
@@ -27,8 +30,8 @@
    "txt": "رَجُلٍ",
    "fixes": [],
    "t": [
-    880,
-    1320
+    900,
+    1460
    ],
    "t_src": "anchor"
   },
@@ -38,21 +41,24 @@
    "txt": "غُرُوبَال،",
    "fixes": [],
    "t": [
-    1320,
-    2120
+    1460,
+    2320
    ],
-   "t_src": "anchor"
+   "t_src": "interpolated"
   },
   {
    "id": "p006w003",
    "raw": "غُثَرَ",
-   "txt": "غُثَرَ",
-   "fixes": [],
-   "t": [
-    2120,
-    2860
+   "txt": "عُثِرَ",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "anchor"
+   "t": [
+    2320,
+    3120
+   ],
+   "t_src": "anchor",
+   "ocr_txt": "غُثَرَ"
   },
   {
    "id": "p006w004",
@@ -60,8 +66,8 @@
    "txt": "عَلِيَّهَا",
    "fixes": [],
    "t": [
-    2860,
-    3380
+    3120,
+    3740
    ],
    "t_src": "anchor"
   },
@@ -71,8 +77,8 @@
    "txt": "فِي",
    "fixes": [],
    "t": [
-    3380,
-    3560
+    3740,
+    3940
    ],
    "t_src": "anchor"
   },
@@ -82,76 +88,79 @@
    "txt": "أَحَدِ",
    "fixes": [],
    "t": [
-    3560,
-    3920
+    3940,
+    4360
    ],
    "t_src": "anchor"
   },
   {
    "id": "p006w007",
    "raw": "الْمُسْتَنْفَعَاتِ.",
-   "txt": "الْمُسْتَنْفَعَاتِ.",
-   "fixes": [],
-   "t": [
-    3920,
-    4820
+   "txt": "المستنقعاتِ.",
+   "fixes": [
+    "ensemble-vlm"
    ],
-   "t_src": "anchor"
+   "t": [
+    4360,
+    5840
+   ],
+   "t_src": "interpolated",
+   "ocr_txt": "الْمُسْتَنْفَعَاتِ."
   }
  ],
- "tts": "gemini:recovered-from-existing-audio",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
  "voice": "Kore",
  "whisper_words": [
   {
-   "text": "مميقات",
+   "text": "ممياء",
    "b": 0,
-   "e": 880
+   "e": 900
   },
   {
    "text": "رجل",
-   "b": 880,
-   "e": 1320
+   "b": 900,
+   "e": 1460
   },
   {
-   "text": "غروبال",
-   "b": 1320,
-   "e": 2120
+   "text": "غورباً",
+   "b": 1460,
+   "e": 2320
   },
   {
-   "text": "غثر",
-   "b": 2120,
-   "e": 2860
+   "text": "عثر",
+   "b": 2320,
+   "e": 3120
   },
   {
    "text": "عليها",
-   "b": 2860,
-   "e": 3380
+   "b": 3120,
+   "e": 3740
   },
   {
    "text": "في",
-   "b": 3380,
-   "e": 3560
+   "b": 3740,
+   "e": 3940
   },
   {
    "text": "أحد",
-   "b": 3560,
-   "e": 3920
+   "b": 3940,
+   "e": 4360
   },
   {
-   "text": "المستنفعات",
-   "b": 3920,
-   "e": 4820
+   "text": "المستقعات",
+   "b": 4360,
+   "e": 5440
   }
  ],
  "align": "forced-whisper-small",
- "duration_ms": 5050,
+ "duration_ms": 5840,
  "audio": "audio/p006.wav",
  "bind_report": {
   "hume_timestamps": 8,
   "hume_dropped_invalid": 0,
   "tokens": 8,
-  "anchored": 7,
-  "interpolated": 1,
+  "anchored": 5,
+  "interpolated": 3,
   "untimed": 0,
   "monotonic": true
  }
