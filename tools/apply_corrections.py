@@ -7,15 +7,23 @@ pre-correction text is kept in "ocr_txt" and "ensemble-vlm" is appended to
 "fixes", the same pattern extract.py's clean_word already uses to record
 what changed and why.
 
-Two categories are deliberately NOT auto-applied, and are reported instead
-of guessed at:
-  - verified_txt == "" -- the VLM decided the word doesn't exist on the
-    page at all. Applying that means deleting a token (renumbering ids,
-    invalidating box math), which is a bigger structural change than a
-    text substitution and wasn't something this POC decided how to do.
-  - "gemini-only:..." ids -- Gemini saw a word LightOn dropped entirely.
-    There is no LightOn token to attach the correction to; inserting a new
-    one raises the same id/box questions as the deletion case above.
+verified_txt == "" (the VLM decided the word doesn't exist on the page at
+all) is handled by removing the token outright -- safe because nothing
+downstream indexes by id: the reader walks tokens[] by array position
+(dataset.j), and diacritize_tokens() re-matches by position against
+whatever's in the list *after* this runs, not against the id string. A
+line's word-box proportions were computed including the now-deleted word
+and don't get recomputed, so remaining boxes on that line stay
+approximate -- box_level "line" already documents them as such.
+
+"gemini-only:..." ids are NOT auto-applied. Gemini saw a word LightOn
+dropped entirely, but inserting one means picking a position, minting an
+id, and (on box_level "line" pages) sourcing a box -- and when these
+cluster (see tools/ensemble_review.py's summary), it usually means LightOn
+failed the page wholesale, not that a single word is missing. That's a
+different fix (replace the page's LightOn tokens with Gemini's) than
+per-token insertion, and this POC doesn't decide that automatically --
+reported instead, grouped by page, so a human can see which.
 
 A page that gets any correction has its status reset to "extracted" so
 run_tashkel.py / run_speak_*.py naturally redo it -- their own resumability
