@@ -8,7 +8,7 @@
  "box_level": "none",
  "diac_ratio": 0.031,
  "path": "diacritise",
- "status": "diacritised",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p011w000",
@@ -17,7 +17,7 @@
    "fixes": [],
    "t": [
     0,
-    720
+    760
    ],
    "t_src": "anchor"
   },
@@ -26,14 +26,15 @@
    "raw": "وجهه",
    "txt": "وَجْهُ",
    "fixes": [
+    "ensemble-vlm",
     "ensemble-vlm"
    ],
    "t": [
-    720,
-    1000
+    760,
+    1060
    ],
-   "t_src": "interpolated",
-   "ocr_txt": "وَجْهُهُ"
+   "t_src": "anchor",
+   "ocr_txt": "وَجْهُ"
   },
   {
    "id": "p011w002",
@@ -41,7 +42,7 @@
    "txt": "هَذَا",
    "fixes": [],
    "t": [
-    1000,
+    1060,
     1340
    ],
    "t_src": "anchor"
@@ -53,9 +54,9 @@
    "fixes": [],
    "t": [
     1340,
-    1860
+    1840
    ],
-   "t_src": "interpolated"
+   "t_src": "anchor"
   },
   {
    "id": "p011w004",
@@ -63,8 +64,8 @@
    "txt": "كَأَنَّهُ",
    "fixes": [],
    "t": [
-    1860,
-    2380
+    1840,
+    2460
    ],
    "t_src": "anchor"
   },
@@ -74,8 +75,8 @@
    "txt": "نَائِمٌ،",
    "fixes": [],
    "t": [
-    2380,
-    3240
+    2460,
+    3360
    ],
    "t_src": "anchor"
   },
@@ -85,8 +86,8 @@
    "txt": "وَلَكِنَّهُ",
    "fixes": [],
    "t": [
-    3240,
-    3940
+    3360,
+    4040
    ],
    "t_src": "anchor"
   },
@@ -96,8 +97,8 @@
    "txt": "لَمْ",
    "fixes": [],
    "t": [
-    3940,
-    4180
+    4040,
+    4240
    ],
    "t_src": "anchor"
   },
@@ -106,14 +107,15 @@
    "raw": "يمث",
    "txt": "يَمُتْ",
    "fixes": [
+    "ensemble-vlm",
     "ensemble-vlm"
    ],
    "t": [
-    4180,
-    4580
+    4240,
+    4660
    ],
-   "t_src": "interpolated",
-   "ocr_txt": "يَمَثْ"
+   "t_src": "anchor",
+   "ocr_txt": "يَمُتْ"
   },
   {
    "id": "p011w009",
@@ -121,8 +123,8 @@
    "txt": "بِسَلَامٍ",
    "fixes": [],
    "t": [
-    4580,
-    5100
+    4660,
+    5160
    ],
    "t_src": "anchor"
   },
@@ -132,8 +134,8 @@
    "txt": "عَلَى",
    "fixes": [],
    "t": [
-    5100,
-    5420
+    5160,
+    5480
    ],
    "t_src": "anchor"
   },
@@ -143,8 +145,8 @@
    "txt": "الإِطْلَاقِ.",
    "fixes": [],
    "t": [
-    5420,
-    6140
+    5480,
+    6160
    ],
    "t_src": "anchor"
   },
@@ -154,8 +156,8 @@
    "txt": "مُومِيَاءُ",
    "fixes": [],
    "t": [
-    6140,
-    7360
+    6160,
+    7300
    ],
    "t_src": "anchor"
   },
@@ -165,10 +167,10 @@
    "txt": "رَجُلٍ",
    "fixes": [],
    "t": [
-    7360,
-    7946
+    7300,
+    7740
    ],
-   "t_src": "interpolated"
+   "t_src": "anchor"
   },
   {
    "id": "p011w014",
@@ -176,101 +178,101 @@
    "txt": "تَوَلَّوَنَدَ",
    "fixes": [],
    "t": [
-    7946,
-    9120
+    7740,
+    8920
    ],
    "t_src": "interpolated"
   }
  ],
  "tashkeel_engine": "arabic-diacritizer",
- "tts": "gemini:recovered-from-existing-audio",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
  "voice": "Kore",
  "whisper_words": [
   {
    "text": "يبدو",
    "b": 0,
-   "e": 720
+   "e": 760
   },
   {
    "text": "وجه",
-   "b": 720,
-   "e": 1000
+   "b": 760,
+   "e": 1060
   },
   {
    "text": "هذا",
-   "b": 1000,
+   "b": 1060,
    "e": 1340
   },
   {
-   "text": "الرجلي",
+   "text": "الرجل",
    "b": 1340,
-   "e": 1860
+   "e": 1840
   },
   {
    "text": "كأنه",
-   "b": 1860,
-   "e": 2380
+   "b": 1840,
+   "e": 2460
   },
   {
    "text": "نائم",
-   "b": 2380,
-   "e": 3240
+   "b": 2460,
+   "e": 3360
   },
   {
    "text": "ولكنه",
-   "b": 3240,
-   "e": 3940
+   "b": 3360,
+   "e": 4040
   },
   {
    "text": "لم",
-   "b": 3940,
-   "e": 4180
+   "b": 4040,
+   "e": 4240
   },
   {
    "text": "يمت",
-   "b": 4180,
-   "e": 4580
+   "b": 4240,
+   "e": 4660
   },
   {
    "text": "بسلام",
-   "b": 4580,
-   "e": 5100
+   "b": 4660,
+   "e": 5160
   },
   {
    "text": "على",
-   "b": 5100,
-   "e": 5420
+   "b": 5160,
+   "e": 5480
   },
   {
    "text": "الإطلاق",
-   "b": 5420,
-   "e": 6140
+   "b": 5480,
+   "e": 6160
   },
   {
    "text": "مومياء",
-   "b": 6140,
-   "e": 7360
+   "b": 6160,
+   "e": 7300
   },
   {
-   "text": "رجلي",
-   "b": 7360,
-   "e": 7940
+   "text": "رجل",
+   "b": 7300,
+   "e": 7740
   },
   {
-   "text": "تولونادا",
-   "b": 7940,
-   "e": 8820
+   "text": "طولوندا",
+   "b": 7740,
+   "e": 8400
   }
  ],
  "align": "forced-whisper-small",
- "duration_ms": 9120,
+ "duration_ms": 8920,
  "audio": "audio/p011.wav",
  "bind_report": {
   "hume_timestamps": 15,
   "hume_dropped_invalid": 0,
   "tokens": 15,
-  "anchored": 10,
-  "interpolated": 5,
+  "anchored": 14,
+  "interpolated": 1,
   "untimed": 0,
   "monotonic": true
  }

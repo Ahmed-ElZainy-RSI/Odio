@@ -1,0 +1,6 @@
+- finish داخلي ما الكَهْرَبَاءُ؟"
+as overall 
+
+
+## future map
+- (voice pipeline) tts task (transcribe)

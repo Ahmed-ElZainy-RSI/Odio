@@ -30,16 +30,16 @@ Everything below follows from those two.
 
 Diacritics per Arabic letter, measured across current OCR output:
 
-| Book (OCR output) | ratio | needs |
-|---|---:|---|
-| `Ibn_Battuta_in_Egypt` (baseerocr) | 0.00 | full diacritization |
-| `استكشاف العلوم` (lighton) | 0.01 | full diacritization |
-| `المومياوات` (deepseek) | 0.02 | full diacritization |
-| … | | |
-| `القمر` (lighton) | 0.78 | already diacritized |
-| `النجوم` (lighton) | 0.80 | already diacritized |
-| `الكواكب` (lighton) | 0.81 | already diacritized |
-| `الشمس` (lighton) | 0.82 | already diacritized |
+| Book (OCR output)                         | ratio | needs               |
+| ----------------------------------------- | ----: | ------------------- |
+| `Ibn_Battuta_in_Egypt` (baseerocr)      |  0.00 | full diacritization |
+| `استكشاف العلوم` (lighton) |  0.01 | full diacritization |
+| `المومياوات` (deepseek)       |  0.02 | full diacritization |
+| …                                        |       |                     |
+| `القمر` (lighton)                  |  0.78 | already diacritized |
+| `النجوم` (lighton)                |  0.80 | already diacritized |
+| `الكواكب` (lighton)              |  0.81 | already diacritized |
+| `الشمس` (lighton)                  |  0.82 | already diacritized |
 
 No middle ground. Books are printed either with tashkeel (~0.8) or without
 (~0.0). **Two paths are required**; "add tashkeel everywhere" would corrupt the
@@ -49,14 +49,14 @@ already-correct half.
 
 `الشمس` is 78% diacritized — and has **10 letter-substitution errors in 16 pages**:
 
-| OCR produced | should be | why it matters |
-|---|---|---|
-| `الفضل` ×4 | `الفصل` | "grace/merit" vs **"classroom"** — changes the sentence |
-| `فزح` ×2 | `قزح` | `قوس قزح` = rainbow; `فزح` is not a word |
-| `رجاجيا` | `زجاجيا` | "glass" — ز→ر |
-| `مغظم` | `معظم` | "most" — ع→غ |
-| `النقطت` | `التقطت` | "picked up" |
-| `مريي` | `مرئي` | "visible" — hamza lost |
+| OCR produced       | should be        | why it matters                                                |
+| ------------------ | ---------------- | ------------------------------------------------------------- |
+| `الفضل` ×4 | `الفصل`   | "grace/merit" vs**"classroom"** — changes the sentence |
+| `فزح` ×2     | `قزح`       | `قوس قزح` = rainbow; `فزح` is not a word         |
+| `رجاجيا`   | `زجاجيا` | "glass" — ز→ر                                             |
+| `مغظم`       | `معظم`     | "most" — ع→غ                                              |
+| `النقطت`   | `التقطت` | "picked up"                                                   |
+| `مريي`       | `مرئي`     | "visible" — hamza lost                                       |
 
 `الفضل` is the dangerous class: a **valid Arabic word**, so a spellchecker passes
 it, a diacritizer diacritizes it beautifully, and the reader hears *al-faḍl*
@@ -94,11 +94,11 @@ flowchart LR
 
 Given that, all three surfaces are the same lookup:
 
-| Reader action | Resolution |
-|---|---|
-| hover a word on the **page image** | box → `id` → `t.begin` → seek audio |
-| select a span of **reflowed text** | `id` range → `t[first].begin … t[last].end` |
-| audio playhead advances | `t` → `id` → highlight box *and* text |
+| Reader action                           | Resolution                                        |
+| --------------------------------------- | ------------------------------------------------- |
+| hover a word on the**page image** | box →`id` → `t.begin` → seek audio         |
+| select a span of**reflowed text** | `id` range → `t[first].begin … t[last].end` |
+| audio playhead advances                 | `t` → `id` → highlight box *and* text     |
 
 Without stable IDs, correction changing `مريي`→`مرئي` (different length) silently
 breaks every downstream offset — and the bug appears as a highlight drifting
@@ -164,11 +164,11 @@ flowchart TD
 All three are supported; the index is identical in each case — only *when*
 synthesis happens changes.
 
-| Mode | Synthesis | Storage at N=1,000 | Use for |
-|---|---|---|---|
-| **Pre-generated** | all up front | 12 GB MP3 | popular/curated titles, offline |
-| **On-demand** | at selection, ~500 ms TTFT | grows with demand | long tail, arbitrary selections |
-| **Hybrid** | pages pre-gen, selections live | demand-shaped | default |
+| Mode                    | Synthesis                      | Storage at N=1,000 | Use for                         |
+| ----------------------- | ------------------------------ | ------------------ | ------------------------------- |
+| **Pre-generated** | all up front                   | 12 GB MP3          | popular/curated titles, offline |
+| **On-demand**     | at selection, ~500 ms TTFT     | grows with demand  | long tail, arbitrary selections |
+| **Hybrid**        | pages pre-gen, selections live | demand-shaped      | default                         |
 
 > On-demand synthesis returns audio for exactly the selected string, so it needs
 > no alignment map — but it *does* still need token IDs to know which string to
@@ -181,17 +181,17 @@ synthesis happens changes.
 Ratios measured from real artifacts in this repo
 (31.4 pages/book, ~400 chars/page, 0.06 s/char, 5.7 chars/word).
 
-| | N = 36 | N = 1,000 | N = 5,000 |
-|---|---:|---:|---:|
-| pages | 1,129 | 31,361 | 156,806 |
-| characters | 452 K | 12.5 M | 62.7 M |
-| audio | 8 h | **209 h** | 1,045 h |
-| WAV | 1.3 GB | 36.1 GB | 180.6 GB |
-| MP3 | 0.4 GB | **12.0 GB** | 60.2 GB |
-| index JSON | 11 MB | **293 MB** | 1.5 GB |
-| SILMA requests @250 chars | 1.8 K | 50 K | 251 K |
-| wall-clock @1 req/s | 1 h | **14 h** | 70 h |
-| OCR, 3-engine consensus | $38 | **$1,064** | $5,322 |
+|                           | N = 36 |         N = 1,000 | N = 5,000 |
+| ------------------------- | -----: | ----------------: | --------: |
+| pages                     |  1,129 |            31,361 |   156,806 |
+| characters                |  452 K |            12.5 M |    62.7 M |
+| audio                     |    8 h |   **209 h** |   1,045 h |
+| WAV                       | 1.3 GB |           36.1 GB |  180.6 GB |
+| MP3                       | 0.4 GB | **12.0 GB** |   60.2 GB |
+| index JSON                |  11 MB |  **293 MB** |    1.5 GB |
+| SILMA requests @250 chars |  1.8 K |              50 K |     251 K |
+| wall-clock @1 req/s       |    1 h |    **14 h** |      70 h |
+| OCR, 3-engine consensus   |    $38 |  **$1,064** |    $5,322 |
 
 **Consequences that changed the design:**
 
@@ -233,21 +233,21 @@ flowchart LR
 
 ### Sample set — exercises both tashkeel paths
 
-| Book | pages | tashkeel | why |
-|---|---:|---:|---|
-| `Ibn_Battuta_in_Egypt` | 5 | 0.00 | reference transcript **already exists** (538 words, hand-read); 8 engines already scored |
-| `الشمس` | 16 | 0.82 | already has SILMA per-page audio + Gemini draft |
-| `استكشاف العلوم` | — | 0.01 | second undiacritized book, longer |
+| Book                            | pages | tashkeel | why                                                                                           |
+| ------------------------------- | ----: | -------: | --------------------------------------------------------------------------------------------- |
+| `Ibn_Battuta_in_Egypt`        |     5 |     0.00 | reference transcript**already exists** (538 words, hand-read); 8 engines already scored |
+| `الشمس`                  |    16 |     0.82 | already has SILMA per-page audio + Gemini draft                                               |
+| `استكشاف العلوم` |    — |     0.01 | second undiacritized book, longer                                                             |
 
 ### What the sweep measures
 
-| Stage | Metric | Harness |
-|---|---|---|
-| OCR | 8-indicator scorecard + bbox presence | ✅ built |
-| Correction | errors caught / false edits introduced | ❌ to build |
-| Tashkeel | diacritic error rate vs reference | ❌ to build |
-| TTS voice | Elo from blind A/B | ✅ built |
-| **Sync** | **highlight drift, ms** | ❌ to build |
+| Stage          | Metric                                 | Harness     |
+| -------------- | -------------------------------------- | ----------- |
+| OCR            | 8-indicator scorecard + bbox presence  | ✅ built    |
+| Correction     | errors caught / false edits introduced | ❌ to build |
+| Tashkeel       | diacritic error rate vs reference      | ❌ to build |
+| TTS voice      | Elo from blind A/B                     | ✅ built    |
+| **Sync** | **highlight drift, ms**          | ❌ to build |
 
 ---
 
@@ -277,15 +277,15 @@ source of truth.
 }
 ```
 
-| Field | Enables |
-|---|---|
-| `tokens[].id` | the anchor — survives correction, diacritization, chunking |
-| `tokens[].box` | image-view highlight |
-| `tokens[].t` | audio seek + karaoke highlight |
-| `fixes[]` | reviewable diff log — audit changes, not 31,361 pages |
-| `diac_ratio` | routes to the correct tashkeel path |
-| `status` | resume: skip anything already done |
-| `engine`/`tts`/`align` | provenance, so sweep results stay comparable |
+| Field                        | Enables                                                     |
+| ---------------------------- | ----------------------------------------------------------- |
+| `tokens[].id`              | the anchor — survives correction, diacritization, chunking |
+| `tokens[].box`             | image-view highlight                                        |
+| `tokens[].t`               | audio seek + karaoke highlight                              |
+| `fixes[]`                  | reviewable diff log — audit changes, not 31,361 pages      |
+| `diac_ratio`               | routes to the correct tashkeel path                         |
+| `status`                   | resume: skip anything already done                          |
+| `engine`/`tts`/`align` | provenance, so sweep results stay comparable                |
 
 ---
 
@@ -366,16 +366,16 @@ three providers (Hume, SILMA, Gemini) hit their limits during this build.
 
 The corpus splits, and the split matters more than the engine choice.
 
-| | text-layer path | OCR path |
-|---|---|---|
-| books | **25 of 36** | 11 of 36 |
-| module | `extract.py` | `ocr_gemini.py` |
-| text source | embedded PDF text | Gemini vision |
-| accuracy | exact — no recognition step | model-dependent |
-| **box granularity** | **per word, measured** | **per line, subdivided** |
-| tashkeel | already present (~0.80) | as printed (~0.24 measured) |
-| cost | free, instant | per page, quota-limited |
-| defects | kashida, stray marks, dropped hamza | recognition errors |
+|                           | text-layer path                     | OCR path                       |
+| ------------------------- | ----------------------------------- | ------------------------------ |
+| books                     | **25 of 36**                  | 11 of 36                       |
+| module                    | `extract.py`                      | `ocr_gemini.py`              |
+| text source               | embedded PDF text                   | Gemini vision                  |
+| accuracy                  | exact — no recognition step        | model-dependent                |
+| **box granularity** | **per word, measured**        | **per line, subdivided** |
+| tashkeel                  | already present (~0.80)             | as printed (~0.24 measured)    |
+| cost                      | free, instant                       | per page, quota-limited        |
+| defects                   | kashida, stray marks, dropped hamza | recognition errors             |
 
 Both emit the identical page record, so everything downstream is shared. The
 record carries `source` and `box_level` so the reader can tell the difference
@@ -389,35 +389,35 @@ instead of implying precision it doesn't have.
 
 ## Stage → implementation mapping
 
-| # | Stage | Module | State |
-|---|---|---|---|
-| 01 | Extract (text layer) | `extract.py` | ✅ built, run on النجوم |
-| 01 | Extract (OCR, Gemini) | `ocr_gemini.py` | ✅ built, run on المومياوات (17/33 pages, quota) |
-| 01 | Extract (OCR, LightOn) | `ocr_lighton.py` | ✅ all 33 pages of المومياوات, no boxes |
-| 02 | Tokenise + anchor | `extract.py` / `ocr_gemini.py` / `ocr_lighton.py` | ✅ stable ids; boxes where the engine gives them |
-| 03 | Clean by rule | `extract.py:clean_word` | ✅ 4 rules, unit-tested with controls |
-| 04 | Tashkeel router | `run_extract.py` / `run_ocr*.py` | ✅ routes on diacritic ratio |
-| 04b | Diacritise | `tashkel.py` / `run_tashkel.py` | ✅ arabic-diacritizer, run across both المومياوات extractions |
-| 05 | TTS | `run_speak_gemini.py` (Gemini) / `run_speak_hume.py` (Hume) | ✅ both engines proven; both quota-capped |
-| 06 | Align | `speak.py:bind` (native or forced) | ✅ Hume native 93.7% anchored on النجوم; Gemini+whisper 51.0% anchored + 47.8% interpolated on المومياوات (1.2% untimed on 2 hard pages — degrades to unhighlightable text, doesn't break) |
-| 07 | Index | page JSON in `work/<book>/` | ✅ |
-| 08 | Reader | `build_reader.py` | ✅ `work/النجوم/reader.html` (full) + `work/المومياوات ناشيونال جيوجرافيك-lighton/reader.html` (text-only, no boxes) |
+| #   | Stage                  | Module                                                          | State                                                                                                                                                                                                       |
+| --- | ---------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 01  | Extract (text layer)   | `extract.py`                                                  | ✅ built, run on النجوم                                                                                                                                                                               |
+| 01  | Extract (OCR, Gemini)  | `ocr_gemini.py`                                               | ✅ built, run on المومياوات (17/33 pages, quota)                                                                                                                                                  |
+| 01  | Extract (OCR, LightOn) | `ocr_lighton.py`                                              | ✅ all 33 pages of المومياوات, no boxes                                                                                                                                                           |
+| 02  | Tokenise + anchor      | `extract.py` / `ocr_gemini.py` / `ocr_lighton.py`         | ✅ stable ids; boxes where the engine gives them                                                                                                                                                            |
+| 03  | Clean by rule          | `extract.py:clean_word`                                       | ✅ 4 rules, unit-tested with controls                                                                                                                                                                       |
+| 04  | Tashkeel router        | `run_extract.py` / `run_ocr*.py`                            | ✅ routes on diacritic ratio                                                                                                                                                                                |
+| 04b | Diacritise             | `tashkel.py` / `run_tashkel.py`                             | ✅ arabic-diacritizer, run across both المومياوات extractions                                                                                                                                     |
+| 05  | TTS                    | `run_speak_gemini.py` (Gemini) / `run_speak_hume.py` (Hume) | ✅ both engines proven; both quota-capped                                                                                                                                                                   |
+| 06  | Align                  | `speak.py:bind` (native or forced)                            | ✅ Hume native 93.7% anchored on النجوم; Gemini+whisper 51.0% anchored + 47.8% interpolated on المومياوات (1.2% untimed on 2 hard pages — degrades to unhighlightable text, doesn't break) |
+| 07  | Index                  | page JSON in`work/<book>/`                                    | ✅                                                                                                                                                                                                          |
+| 08  | Reader                 | `build_reader.py`                                             | ✅`work/النجوم/reader.html` (full) + `work/المومياوات ناشيونال جيوجرافيك-lighton/reader.html` (text-only, no boxes)                                                    |
 
 ---
 
 ## What was actually produced
 
-| | النجوم | المومياوات (Gemini OCR) | المومياوات (LightOn OCR) |
-|---|---|---|---|
-| path | text layer | OCR (Gemini vision) | OCR (LightOn `/parse`) |
-| boxes | ✅ word, from PDF | ✅ line, from Gemini | ❌ none — endpoint doesn't return them |
-| pages extracted | 16 (15 narrated + front matter) | 17 of 33 (quota) | 33 of 33 |
-| tokens | 816 | 788 | ~750 across 32 non-empty pages (p030 has none — LightOn returned only a page-number footer) |
-| cleaned by rule | 563 (69%) | 21 | mechanical HTML/LaTeX leakage fixed in `ocr_lighton.py` (see Findings below) |
-| TTS engine | Hume (native word timestamps) | — (Hume quota exhausted before this book) | Gemini TTS (`gemini-3.1-flash-tts-preview`) + `faster-whisper` forced alignment |
-| audio | **8.4 min, real** | — | **8.2 min, real, 17 of 33 pages** (Gemini free-tier capped at 10 req/day per model; 2 models used across 2 days-worth of quota) |
-| timings anchored | **759 / 810 (93.7%)** | — | **348/682 anchored (51.0%) + 326 interpolated (47.8%)**, 1.2% untimed on 2 pages |
-| reader | ✅ `work/النجوم/reader.html`, full image+text view | index only | ✅ `work/المومياوات ناشيونال جيوجرافيك-lighton/reader.html`, **text-only** (no boxes) |
+|                  | النجوم                                              | المومياوات (Gemini OCR)          | المومياوات (LightOn OCR)                                                                                                    |
+| ---------------- | --------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| path             | text layer                                                | OCR (Gemini vision)                        | OCR (LightOn`/parse`)                                                                                                               |
+| boxes            | ✅ word, from PDF                                         | ✅ line, from Gemini                       | ❌ none — endpoint doesn't return them                                                                                               |
+| pages extracted  | 16 (15 narrated + front matter)                           | 17 of 33 (quota)                           | 33 of 33                                                                                                                              |
+| tokens           | 816                                                       | 788                                        | ~750 across 32 non-empty pages (p030 has none — LightOn returned only a page-number footer)                                          |
+| cleaned by rule  | 563 (69%)                                                 | 21                                         | mechanical HTML/LaTeX leakage fixed in`ocr_lighton.py` (see Findings below)                                                         |
+| TTS engine       | Hume (native word timestamps)                             | — (Hume quota exhausted before this book) | Gemini TTS (`gemini-3.1-flash-tts-preview`) + `faster-whisper` forced alignment                                                   |
+| audio            | **8.4 min, real**                                   | —                                         | **8.2 min, real, 17 of 33 pages** (Gemini free-tier capped at 10 req/day per model; 2 models used across 2 days-worth of quota) |
+| timings anchored | **759 / 810 (93.7%)**                               | —                                         | **348/682 anchored (51.0%) + 326 interpolated (47.8%)**, 1.2% untimed on 2 pages                                                |
+| reader           | ✅`work/النجوم/reader.html`, full image+text view | index only                                 | ✅`work/المومياوات ناشيونال جيوجرافيك-lighton/reader.html`, **text-only** (no boxes)               |
 
 ---
 
@@ -425,12 +425,12 @@ instead of implying precision it doesn't have.
 
 Four standalone files, no build step, no CDN. Open any of them directly.
 
-| File | What it is |
-|---|---|
-| `demo/pipeline_poc.html` | **The architecture + POC walkthrough.** Interactive SVG system chart (click any of 18 nodes for detail), token-anchoring diagram, two-phase chart, a 7-step trace of one line through every layer, and a working reader demo with **real Hume audio and real word timestamps**. Built on `السماء` page 5. |
-| `work/النجوم/reader.html` | **The real product.** 15 pages, 8.4 min of real audio, text ↔ page-image views, click-to-seek, word highlight driven by measured timings. Reads only the page index — no pipeline logic. |
-| `demo/OCR pricing dashboard.html` | 16 vendor configurations audited, with source-confidence ratings and the accuracy comparison. |
-| `demo/ocr_benchmark.html` | The 8-engine OCR bake-off on Ibn Battuta, with malformed-Arabic samples per engine. |
+| File                                | What it is                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `demo/pipeline_poc.html`          | **The architecture + POC walkthrough.** Interactive SVG system chart (click any of 18 nodes for detail), token-anchoring diagram, two-phase chart, a 7-step trace of one line through every layer, and a working reader demo with **real Hume audio and real word timestamps**. Built on `السماء` page 5. |
+| `work/النجوم/reader.html`   | **The real product.** 15 pages, 8.4 min of real audio, text ↔ page-image views, click-to-seek, word highlight driven by measured timings. Reads only the page index — no pipeline logic.                                                                                                                              |
+| `demo/OCR pricing dashboard.html` | 16 vendor configurations audited, with source-confidence ratings and the accuracy comparison.                                                                                                                                                                                                                                 |
+| `demo/ocr_benchmark.html`         | The 8-engine OCR bake-off on Ibn Battuta, with malformed-Arabic samples per engine.                                                                                                                                                                                                                                           |
 
 ### About `demo/pipeline_poc.html`
 
@@ -453,17 +453,17 @@ boxes are (it predates the text-layer discovery that made real boxes free).
 
 ## Decisions
 
-| Decision | Chosen | Rejected because |
-|---|---|---|
-| Tashkeel | correct **then** diacritize | "add if missing" leaves `الفضل` mispronounced |
-| Detection | all methods, brute-forced | dictionary alone misses 4 of 10 found errors |
-| Sweep scope | sample only | full-catalogue sweep is millions of chars |
-| Flagged pages | auto-fix + diff log + spot-check | flag-only stalls at ~700 flags per 1,129 pages |
-| Anchoring | **stable token IDs** | string offsets break at every mutation |
-| Reader | image **and** text views | illustrations matter; study needs text |
-| Storage | CDN for audio, git for index | 12 GB cannot live in git |
-| Delivery | all three modes | different titles have different economics |
-| Engine choice | pluggable, decided by sweep | fuṣḥā quality and timestamp support are unverified and may conflict |
+| Decision      | Chosen                           | Rejected because                                                       |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------- |
+| Tashkeel      | correct**then** diacritize | "add if missing" leaves`الفضل` mispronounced                    |
+| Detection     | all methods, brute-forced        | dictionary alone misses 4 of 10 found errors                           |
+| Sweep scope   | sample only                      | full-catalogue sweep is millions of chars                              |
+| Flagged pages | auto-fix + diff log + spot-check | flag-only stalls at ~700 flags per 1,129 pages                         |
+| Anchoring     | **stable token IDs**       | string offsets break at every mutation                                 |
+| Reader        | image**and** text views    | illustrations matter; study needs text                                 |
+| Storage       | CDN for audio, git for index     | 12 GB cannot live in git                                               |
+| Delivery      | all three modes                  | different titles have different economics                              |
+| Engine choice | pluggable, decided by sweep      | fuṣḥā quality and timestamp support are unverified and may conflict |
 
 ---
 
@@ -489,8 +489,7 @@ boxes are (it predates the text-layer discovery that made real boxes free).
 - ~~Gemini TTS has no word timestamps~~ — confirmed two ways: the response
   carries nothing beyond raw audio, and passing `audio_timestamp=True`
   doesn't even reach the server — the SDK raises client-side
-  (`audio_timestamp parameter is only supported in Gemini Enterprise Agent
-  Platform mode, not in Gemini Developer API mode`), confirmed on the latest
+  (`audio_timestamp parameter is only supported in Gemini Enterprise Agent Platform mode, not in Gemini Developer API mode`), confirmed on the latest
   SDK version too. That mode exists (tested with `vertexai=True` on the same
   key — the client-side block disappears and it fails differently, on a 403
   for the Agent Platform API not being enabled on the project), but it's a
@@ -507,62 +506,61 @@ boxes are (it predates the text-layer discovery that made real boxes free).
 **Blocking**
 
 - [ ] **Every TTS/OCR provider tried is quota-exhausted on its free tier** —
-      Hume (mid-book on النجوم), SILMA (mid-book earlier), Gemini vision
-      (page 18 of المومياوات), and now Gemini TTS too: both
-      `gemini-2.5-flash-preview-tts` and `gemini-3.1-flash-tts-preview` hit
-      their **10-requests-per-day** free-tier cap synthesising المومياوات (17
-      of 33 pages got through across the two models before both capped out).
-      Every driver resumes, so this is a billing/scheduling question, not an
-      engineering one — the LightOn-extracted book can finish once quota
-      resets or a paid tier is enabled.
+  Hume (mid-book on النجوم), SILMA (mid-book earlier), Gemini vision
+  (page 18 of المومياوات), and now Gemini TTS too: both
+  `gemini-2.5-flash-preview-tts` and `gemini-3.1-flash-tts-preview` hit
+  their **10-requests-per-day** free-tier cap synthesising المومياوات (17
+  of 33 pages got through across the two models before both capped out).
+  Every driver resumes, so this is a billing/scheduling question, not an
+  engineering one — the LightOn-extracted book can finish once quota
+  resets or a paid tier is enabled.
 
 **Known limitations of what was built**
 
 - [ ] **LightOn's OCR is non-deterministic between calls on the same page.**
-      Page 10 returned clean HTML on one call and literal LaTeX artifacts
-      (`$\mathcal{S}$`) on another. `ocr_lighton.py`'s cleaner now strips any
-      `\command{...}` wrapper generically (not just `\text{}`), not only the
-      pattern seen first — but a future page could still surface a pattern
-      neither call exercised.
+  Page 10 returned clean HTML on one call and literal LaTeX artifacts
+  (`$\mathcal{S}$`) on another. `ocr_lighton.py`'s cleaner now strips any
+  `\command{...}` wrapper generically (not just `\text{}`), not only the
+  pattern seen first — but a future page could still surface a pattern
+  neither call exercised.
 - [ ] **The binder can fail completely, not just partially, on hard pages.**
-      Two of المومياوات's 33 pages (a price/ISBN back-cover page, and a
-      heavily over-diacritized 2-token fragment) got zero anchors — digits
-      vs. their spoken word form, and stacked diacritics, both defeat the
-      letter-only matching key. `build_reader.py` now renders those tokens as
-      plain unhighlightable text instead of crashing on the missing timing.
+  Two of المومياوات's 33 pages (a price/ISBN back-cover page, and a
+  heavily over-diacritized 2-token fragment) got zero anchors — digits
+  vs. their spoken word form, and stacked diacritics, both defeat the
+  letter-only matching key. `build_reader.py` now renders those tokens as
+  plain unhighlightable text instead of crashing on the missing timing.
 - [ ] **A driver resumability check clobbered downstream status once.**
-      `run_tashkel.py` originally treated `status == "diacritised"` as "done"
-      — but `run_speak_gemini.py` advances status to `"spoken"`, which the
-      check didn't recognise, so re-running tashkeel after synthesis briefly
-      reset 13 already-spoken pages back a stage (their audio and bind data
-      were untouched on disk; the reader's `status == "spoken"` filter just
-      stopped seeing them). Fixed to check for `("diacritised", "spoken")`;
-      recovered by re-aligning the existing audio locally, with no repeat
-      API calls. The general lesson — a resume check must recognise every
-      later state, not just the immediately-next one — applies to every
-      driver in this pipeline, not just this one.
-
+  `run_tashkel.py` originally treated `status == "diacritised"` as "done"
+  — but `run_speak_gemini.py` advances status to `"spoken"`, which the
+  check didn't recognise, so re-running tashkeel after synthesis briefly
+  reset 13 already-spoken pages back a stage (their audio and bind data
+  were untouched on disk; the reader's `status == "spoken"` filter just
+  stopped seeing them). Fixed to check for `("diacritised", "spoken")`;
+  recovered by re-aligning the existing audio locally, with no repeat
+  API calls. The general lesson — a resume check must recognise every
+  later state, not just the immediately-next one — applies to every
+  driver in this pipeline, not just this one.
 - [ ] **Hume's word timestamps are not one-per-word.** Page 14 returned 20 for 29
-      tokens, and one interval was inverted (`كريم [12920, 5240]`). The binder
-      anchors what it gets and interpolates the rest, recording `t_src` per token.
+  tokens, and one interval was inverted (`كريم [12920, 5240]`). The binder
+  anchors what it gets and interpolates the rest, recording `t_src` per token.
 - [ ] **OCR boxes are line-level.** Word boxes on the OCR path are subdivided by
-      letter count — approximations, flagged `box_level: "line"`.
+  letter count — approximations, flagged `box_level: "line"`.
 - [ ] **Pages 12–16 of النجوم** were bound before raw timestamps were persisted,
-      so their gaps were repaired from surviving anchors rather than re-bound
-      from source. p014 is 19/29 anchored; the rest are 93–100%.
+  so their gaps were repaired from surviving anchors rather than re-bound
+  from source. p014 is 19/29 anchored; the rest are 93–100%.
 - [ ] **The correctness gate is rule-based only.** The dictionary/LLM/consensus
-      design in this README is unbuilt — it wasn't needed for a text-layer book,
-      but the OCR path has no error detection at all yet.
+  design in this README is unbuilt — it wasn't needed for a text-layer book,
+  but the OCR path has no error detection at all yet.
 
 **Still open from the plan**
 
 - [ ] Voice choice unvalidated — "Layla, Arabic Philosopher" is the only
-      Arabic-designated voice in Hume's 160-voice library, chosen on that basis
-      alone. Nobody has listened critically yet.
+  Arabic-designated voice in Hume's 160-voice library, chosen on that basis
+  alone. Nobody has listened critically yet.
 - [ ] Reference transcripts for the sample books (~1 h each, manual).
 - [ ] TTS budget for N=1,000: 12.5 M characters, unpriced.
 - [ ] Parallelism — 14 h serial at N=1,000; the runner must shard.
 - [ ] Front matter: page 1 is title/ISBN/deposit number. Currently skipped for
-      narration; confirm that's wanted.
+  narration; confirm that's wanted.
 - [ ] 7.9 MB of audio was committed in `702c803` before `.gitignore` covered it.
-      Untracked now, but still in history.
+  Untracked now, but still in history.

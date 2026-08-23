@@ -8,68 +8,184 @@
  "box_level": "none",
  "diac_ratio": 0.023,
  "path": "diacritise",
- "status": "diacritised",
+ "status": "spoken",
  "tokens": [
   {
    "id": "p023w000",
    "raw": "لعنة",
    "txt": "لَعْنَةُ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    0,
+    840
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p023w001",
    "raw": "المعمّاء",
    "txt": "الْمَعْمَاءِ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    840,
+    1620
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w002",
    "raw": "هاورد",
    "txt": "هَاوَرَدٌ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    1620,
+    2940
+   ],
+   "t_src": "interpolated"
   },
   {
    "id": "p023w003",
    "raw": "كارتر",
    "txt": "كَارْتَر",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    2940,
+    3480
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w004",
    "raw": "في",
    "txt": "فِي",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3480,
+    3820
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w005",
    "raw": "مقبرة",
    "txt": "مَقْبَرَةِ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    3820,
+    4440
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w006",
    "raw": "الملك",
    "txt": "الْمَلِكِ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    4440,
+    4880
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w007",
    "raw": "توت",
    "txt": "تُوتَ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    4880,
+    5360
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w008",
    "raw": "عنخ",
    "txt": "عِنَخَ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    5360,
+    5800
+   ],
+   "t_src": "anchor"
   },
   {
    "id": "p023w009",
    "raw": "آمون",
    "txt": "آمُونَ",
-   "fixes": []
+   "fixes": [],
+   "t": [
+    5800,
+    6880
+   ],
+   "t_src": "interpolated"
   }
  ],
- "tashkeel_engine": "arabic-diacritizer"
+ "tashkeel_engine": "arabic-diacritizer",
+ "tts": "gemini:gemini-3.1-flash-tts-preview",
+ "voice": "Kore",
+ "whisper_words": [
+  {
+   "text": "لانة",
+   "b": 0,
+   "e": 840
+  },
+  {
+   "text": "المعماء",
+   "b": 840,
+   "e": 1620
+  },
+  {
+   "text": "هورد",
+   "b": 1620,
+   "e": 2940
+  },
+  {
+   "text": "كارتر",
+   "b": 2940,
+   "e": 3480
+  },
+  {
+   "text": "في",
+   "b": 3480,
+   "e": 3820
+  },
+  {
+   "text": "مقبرة",
+   "b": 3820,
+   "e": 4440
+  },
+  {
+   "text": "الملك",
+   "b": 4440,
+   "e": 4880
+  },
+  {
+   "text": "توت",
+   "b": 4880,
+   "e": 5360
+  },
+  {
+   "text": "عنخ",
+   "b": 5360,
+   "e": 5800
+  },
+  {
+   "text": "أمون",
+   "b": 5800,
+   "e": 6300
+  }
+ ],
+ "align": "forced-whisper-small",
+ "duration_ms": 6880,
+ "audio": "audio/p023.wav",
+ "bind_report": {
+  "hume_timestamps": 10,
+  "hume_dropped_invalid": 0,
+  "tokens": 10,
+  "anchored": 7,
+  "interpolated": 3,
+  "untimed": 0,
+  "monotonic": true
+ }
 }
