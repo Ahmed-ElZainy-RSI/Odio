@@ -96,15 +96,27 @@ def run(review_path: Path) -> Path:
             print(f"page {page_no}: no rendered image at {jpeg_path}, skipping")
             continue
 
-        verdicts = arbitrate_page(client, jpeg_path.read_bytes(), flagged)
+        try:
+            verdicts = arbitrate_page(client, jpeg_path.read_bytes(), flagged)
+        except Exception as e:
+            # write what's already been arbitrated before stopping -- a
+            # crash (quota, network) used to lose every page done so far
+            # since the write only happened once, at the very end
+            review_path.write_text(json.dumps(review, ensure_ascii=False, indent=1), encoding="utf-8")
+            print(f"page {page_no}  FAILED: {type(e).__name__}: {str(e)[:150]}")
+            print(f"{arbitrated} token(s) from earlier pages saved -> {review_path}")
+            print("stopping -- rerun to resume from here")
+            return review_path
+
         for r in flagged:
             if r["id"] in verdicts:
                 r["verified_txt"] = verdicts[r["id"]]
                 r["action"] = "VERIFIED"
                 arbitrated += 1
         print(f"page {page_no}: {len(verdicts)}/{len(flagged)} arbitrated")
+        # persisted every page, not just at the end, for the same reason
+        review_path.write_text(json.dumps(review, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    review_path.write_text(json.dumps(review, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"\n{arbitrated} tokens arbitrated -> {review_path}")
     return review_path
 

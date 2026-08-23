@@ -1,19 +1,58 @@
 """Layer 08 — the reader. Consumes only the page index; no pipeline logic here.
 
 box_level "none" (LightOn's OCR path has no geometry) means tokens carry no
-`box` field. Those pages omit "b" entirely rather than fabricate a box.
+`box` field of their own. If ensemble_review.json exists (the book was run
+through tools/ensemble_review.py against a Gemini OCR of the same PDF), a
+page can still get a compare view by BORROWING Gemini's box and page image
+for that page -- Gemini's OCR always renders+saves pages/pXXX.jpg and a per-
+word box, regardless of box_level, unlike LightOn's /parse which returns
+neither. The borrow only takes for a page if EVERY current LightOn token on
+it re-aligns to a Gemini token (via a fresh, on-the-fly alignment -- see
+_borrow_boxes below); a partially-boxed page falls back to text-only rather
+than half-working, matching the plain-per-page rule this reader already
+used for native boxes.
 
-HAS_BOXES (real per-token coordinates) and HAS_IMAGE (a rendered page JPEG
-actually on disk) are checked separately -- box_level alone doesn't guarantee
-an image exists. run_extract.py's text-layer path didn't render page images
-at all until this was added; a book extracted before that still needs its
-images backfilled before the compare view can show anything. Only when both
-are true for every page does the reader show text and page image side by
-side; otherwise it falls back to text-only rather than half-working per page.
+Whether a given page ends up with a compare view (native OR borrowed boxes,
+plus an image) is therefore a PER-PAGE decision, carried in each page's
+"compare" flag -- not a single book-wide switch. The two-column DOM is
+rendered once if ANY page qualifies; load() hides the image column for
+pages that don't.
 """
 import json
 import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+from ensemble_review import align_page  # noqa: E402
+
+
+def _borrow_boxes(lighton_tokens: list[dict], gemini_dir: Path, page_no: int) -> dict[str, list[float]]:
+    """Fresh, on-the-fly alignment (never persisted) between the CURRENT
+    LightOn tokens for one page and that page's Gemini tokens, purely to
+    look up a box for each LightOn token via the Gemini token it aligns to.
+
+    Runs the same align_page() tools/ensemble_review.py uses for the
+    correction report, but on today's (possibly already-corrected) LightOn
+    text -- not the report's saved snapshot -- and doesn't write anything;
+    ensemble_review.json's own history of what was flagged/verified is left
+    untouched. Returns {} if the Gemini page doesn't exist or coverage isn't
+    complete for every current LightOn token.
+    """
+    gemini_page = gemini_dir / f"p{page_no:03d}.json"
+    if not gemini_page.exists():
+        return {}
+    gemini_tokens = json.loads(gemini_page.read_text(encoding="utf-8"))["tokens"]
+    gemini_box_by_id = {t["id"]: t["box"] for t in gemini_tokens if "box" in t}
+
+    boxes = {}
+    for r in align_page(gemini_tokens, lighton_tokens):
+        gid = r.get("gemini_id")
+        if gid and gid in gemini_box_by_id:
+            boxes[r["id"]] = gemini_box_by_id[gid]
+    if len(boxes) != len(lighton_tokens):
+        return {}  # partial coverage -- stay text-only rather than half-working
+    return boxes
 
 
 def build(work_dir: Path):
@@ -25,8 +64,10 @@ def build(work_dir: Path):
     # no review still builds exactly as before.
     review_path = work_dir / "ensemble_review.json"
     review_by_id = {}
+    gemini_dir = None
     if review_path.exists():
         review = json.loads(review_path.read_text(encoding="utf-8"))
+        gemini_dir = Path(review["gemini_dir"])
         for results in review["pages"].values():
             for r in results:
                 # "gemini-only:..." ids have no corresponding LightOn token
@@ -43,7 +84,25 @@ def build(work_dir: Path):
         # run_extract.py's text-layer records predate box_level and never set it —
         # they always have word boxes, so an absent key defaults to "word", not "none"
         has_boxes = r.get("box_level", "word") not in (None, "none")
-        has_image = (work_dir / "pages" / f"p{r['page']:03d}.jpg").exists()
+        own_image = work_dir / "pages" / f"p{r['page']:03d}.jpg"
+        img_path, has_image, borrowed = f"pages/p{r['page']:03d}.jpg", own_image.exists(), {}
+        gemini_jpg = gemini_dir / "pages" / f"p{r['page']:03d}.jpg" if gemini_dir is not None else None
+
+        if not has_boxes and gemini_dir is not None:
+            borrowed = _borrow_boxes(r["tokens"], gemini_dir, r["page"])
+            if borrowed and gemini_jpg.exists():
+                has_boxes = True
+            elif borrowed:
+                borrowed = {}
+
+        # LightOn's own OCR path never renders/saves page images at all (see
+        # module docstring), so a page with NATIVE boxes -- e.g. one
+        # replace_page.py wholesale-swapped from Gemini -- still has no
+        # local jpg to show them against. Fall back to Gemini's rendered
+        # page, which is where those boxes actually came from either way.
+        if not has_image and gemini_jpg is not None and gemini_jpg.exists():
+            img_path = os.path.relpath(gemini_jpg, start=work_dir)
+            has_image = True
         # a page with zero whisper/hume anchors (e.g. heavy OCR noise or digit-vs-
         # spoken-word mismatch) leaves every token with no "t" at all -- not just
         # a rare gap between anchors. Those tokens still display; they just can't
@@ -62,13 +121,16 @@ def build(work_dir: Path):
                 if rv["action"] == "VERIFIED":
                     entry["v"] = rv["verified_txt"]
             tok.append(entry)
-        if has_boxes:
+        if borrowed:
+            for t in tok:
+                t["b"] = borrowed[t["i"]]
+        elif has_boxes:
             for t, src in zip(tok, r["tokens"]):
                 t["b"] = src["box"]
         pages.append({"page": r["page"], "audio": r["audio"],
-            "img": f"pages/p{r['page']:03d}.jpg", "dur": r["duration_ms"],
+            "img": img_path, "dur": r["duration_ms"],
             "diac": r["diac_ratio"], "box_level": r.get("box_level", "word"),
-            "has_image": has_image,
+            "has_image": has_image, "compare": has_boxes and has_image,
             "voice": r.get("voice", ""), "tokens": tok})
 
     if not pages:
@@ -76,9 +138,10 @@ def build(work_dir: Path):
               f"nothing to build yet. Run the TTS step for {book!r} first.")
         return None
 
-    has_boxes_all = all(p["box_level"] not in (None, "none") for p in pages)
-    has_image_all = all(p["has_image"] for p in pages)
-    has_compare = has_boxes_all and has_image_all
+    # per-page "compare" already decides native vs. borrowed vs. neither;
+    # the DOM only needs the two-column structure if at least one page uses it
+    has_compare = any(p["compare"] for p in pages)
+    n_compare = sum(1 for p in pages if p["compare"])
     voice = pages[0]["voice"]
     data = json.dumps(pages, ensure_ascii=False, separators=(",", ":"))
     n_tok = sum(len(p["tokens"]) for p in pages)
@@ -117,6 +180,8 @@ background:#fff;border-radius:6px;cursor:pointer;color:#5c646e}}
 .compare>div{{flex:1;min-width:0}}
 .txtcol{{max-height:75vh;overflow:auto;border-left:1px solid #eef1f4}}
 .imgcol{{max-height:75vh;overflow:auto;background:#000}}
+.compare.textonly .imgcol{{display:none}}
+.compare.textonly .txtcol{{border-left:none}}
 @media (max-width:760px){{.compare{{flex-direction:column}} .txtcol{{border-left:none;border-bottom:1px solid #eef1f4}}}}
 .txt{{padding:26px 30px;font-size:24px;line-height:2.6;
 font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro',serif;min-height:220px}}
@@ -148,7 +213,7 @@ font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-heig
 </style></head><body><div class=pg>
 
 <div class=hd><h1>{book}</h1>
-<div class=sub>{len(pages)} pages · {n_tok} tokens · {dur/60:.1f} min{f" · {voice}" if voice else ""}{"" if has_compare else " · text view only — no page image available for every page"}</div></div>
+<div class=sub>{len(pages)} pages · {n_tok} tokens · {dur/60:.1f} min{f" · {voice}" if voice else ""}{f" · page image available for {n_compare}/{len(pages)} pages" if has_compare and n_compare < len(pages) else ("" if has_compare else " · text view only — no page image available")}</div></div>
 
 <div class=card>
 <div class=pgsel id=pgsel></div>
@@ -158,7 +223,7 @@ font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-heig
 <div class=scrub id=scrub><i id=bar></i></div>
 <div class=tm id=tm>0.00 / 0.00</div>
 </div>
-{'<div class=compare><div class=txtcol><div class=txt id=txt></div></div><div class=imgcol><div class=imgw id=imgw><img id=img alt=""><div id=boxes></div></div></div></div>' if has_compare else '<div class=txt id=txt></div>'}
+{'<div class=compare id=compare><div class=txtcol><div class=txt id=txt></div></div><div class=imgcol><div class=imgw id=imgw><img id=img alt=""><div id=boxes></div></div></div></div>' if has_compare else '<div class=txt id=txt></div>'}
 <div class=insp id=insp>Hover a word to inspect its token record.</div>
 </div>
 
@@ -181,10 +246,10 @@ font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-heig
 <audio id=au preload=metadata></audio>
 <script>
 const P={data};
-const HAS_COMPARE={str(has_compare).lower()};
+const HAS_COMPARE_LAYOUT={str(has_compare).lower()};
 let cur=0;
 const $=s=>document.querySelector(s);
-const au=$("#au"),txt=$("#txt"),imgw=$("#imgw"),img=$("#img"),boxes=$("#boxes"),
+const au=$("#au"),txt=$("#txt"),compare=$("#compare"),imgw=$("#imgw"),img=$("#img"),boxes=$("#boxes"),
       insp=$("#insp"),bar=$("#bar"),tm=$("#tm"),playB=$("#play");
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 
@@ -195,14 +260,17 @@ function load(i){{
   cur=i; const p=P[i];
   au.src=p.audio;
   txt.innerHTML="";
-  if(HAS_COMPARE){{ img.src=p.img; boxes.innerHTML=""; }}
+  if(HAS_COMPARE_LAYOUT){{
+    compare.classList.toggle("textonly",!p.compare);
+    if(p.compare){{ img.src=p.img; boxes.innerHTML=""; }}
+  }}
   p.tokens.forEach((t,j)=>{{
     const s=document.createElement("span");
     s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")
       +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
     s.dataset.j=j; s.textContent=t.t;
     txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
-    if(HAS_COMPARE){{
+    if(p.compare){{
       const b=document.createElement("div");
       b.className="bx"; b.dataset.j=j;
       b.style.cssText=`left:${{t.b[0]}}%;top:${{t.b[1]}}%;width:${{t.b[2]}}%;height:${{t.b[3]}}%`;
@@ -228,7 +296,7 @@ function show(j){{
     : '<span style="color:#c0392b">no timing available</span>';
   const fx=t.f.length?`<span style="color:#1c4f8f">cleaned: ${{t.f.join(", ")}}</span>`
                      :'<span style="color:#a4abb4">no cleanup needed</span>';
-  const box=HAS_COMPARE?` &nbsp;·&nbsp; box [${{t.b.map(v=>v.toFixed(1)).join(", ")}}]`:"";
+  const box=P[cur].compare?` &nbsp;·&nbsp; box [${{t.b.map(v=>v.toFixed(1)).join(", ")}}]`:"";
   const timing=t.m?`t [${{t.m[0]}}, ${{t.m[1]}}] ms · `:"";
   const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
   const ens="v" in t
@@ -245,7 +313,7 @@ function render(){{
   let i=-1;
   for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){{i=k;break;}}
   document.querySelectorAll(".w").forEach((e,k)=>e.classList.toggle("now",k===i));
-  if(HAS_COMPARE) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(P[cur].compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
   if(i>=0&&i!==last){{show(i);last=i;}}
   const d=P[cur].dur;
   bar.style.width=Math.min(100,100*ms/d)+"%";

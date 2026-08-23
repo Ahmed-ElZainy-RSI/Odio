@@ -47,48 +47,58 @@ def run(review_path: Path) -> None:
     lighton_dir = review_path.parent
 
     by_page: dict[int, list[dict]] = {}
-    skipped_empty = skipped_insert = 0
+    inserts_by_page: dict[int, int] = {}
     for results in review["pages"].values():
         for r in results:
             if r["action"] != "VERIFIED":
                 continue
             if r["id"].startswith("gemini-only:"):
-                skipped_insert += 1
-                continue
-            if r["verified_txt"] == "":
-                skipped_empty += 1
+                page = int(PAGE_FROM_ID.match(r["id"].split(":", 1)[1]).group(1))
+                inserts_by_page[page] = inserts_by_page.get(page, 0) + 1
                 continue
             m = PAGE_FROM_ID.match(r["id"])
             by_page.setdefault(int(m.group(1)), []).append(r)
 
-    applied = 0
+    corrected = deleted = 0
     for page_no, corrections in sorted(by_page.items()):
         page_path = lighton_dir / f"p{page_no:03d}.json"
         rec = json.loads(page_path.read_text(encoding="utf-8"))
         by_id = {t["id"]: t for t in rec["tokens"]}
 
-        changed = False
+        to_delete = set()
+        page_corrected = 0
         for r in corrections:
             tok = by_id.get(r["id"])
-            if tok is None or tok["txt"] == r["verified_txt"]:
+            if tok is None:
+                continue
+            if r["verified_txt"] == "":
+                to_delete.add(r["id"])
+                continue
+            if tok["txt"] == r["verified_txt"]:
                 continue
             tok["ocr_txt"] = tok["txt"]
             tok["txt"] = r["verified_txt"]
             tok["fixes"] = tok["fixes"] + ["ensemble-vlm"]
-            applied += 1
-            changed = True
+            page_corrected += 1
 
-        if changed:
+        if to_delete:
+            rec["tokens"] = [t for t in rec["tokens"] if t["id"] not in to_delete]
+
+        if page_corrected or to_delete:
+            corrected += page_corrected
+            deleted += len(to_delete)
             rec["status"] = "extracted"
             page_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
-            print(f"page {page_no}: {len(corrections)} correction(s) applied, status reset")
+            print(f"page {page_no}: {page_corrected} correction(s), "
+                  f"{len(to_delete)} deletion(s), status reset")
 
-    print(f"\n{applied} tokens corrected across {len(by_page)} page(s)")
-    if skipped_empty:
-        print(f"{skipped_empty} skipped (VLM found no word there -- needs a manual delete decision)")
-    if skipped_insert:
-        print(f"{skipped_insert} skipped (Gemini-only word LightOn never produced -- needs a manual insert decision)")
-    if applied:
+    print(f"\n{corrected} tokens corrected, {deleted} deleted, across {len(by_page)} page(s)")
+    if inserts_by_page:
+        total_inserts = sum(inserts_by_page.values())
+        print(f"{total_inserts} gemini-only words not applied (no LightOn token to attach to) -- by page:")
+        for page, n in sorted(inserts_by_page.items(), key=lambda x: -x[1]):
+            print(f"  page {page}: {n}")
+    if corrected or deleted:
         print(f"\nre-run diacritise/TTS/reader for this book, e.g.:\n"
               f'  python3 -c "import sys; sys.path.insert(0,\'src\'); '
               f"from pipeline import run_tashkel, run_speak_gemini, build_reader; "

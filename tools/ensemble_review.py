@@ -60,7 +60,12 @@ def find_pages(d: Path) -> dict[int, Path]:
 
 
 def align_page(gemini_tokens: list[dict], lighton_tokens: list[dict]) -> list[dict]:
-    """Returns [{id, lighton_txt, gemini_txt, agree, action}, ...].
+    """Returns [{id, gemini_id, lighton_txt, gemini_txt, agree, action}, ...].
+
+    gemini_id is the specific Gemini token a LightOn token was paired with
+    (present for 'equal'/'replace' pairs, absent for delete/insert entries
+    with no counterpart on the other side) -- build_reader.py reuses it to
+    borrow that token's box when LightOn has none of its own.
 
     Alignment runs on normalize_for_compare(txt) so the two engines' text is
     compared after orthographic folding; the words stored in the result are
@@ -80,6 +85,7 @@ def align_page(gemini_tokens: list[dict], lighton_tokens: list[dict]) -> list[di
             for gi, li in zip(range(i1, i2), range(j1, j2)):
                 results.append({
                     "id": lighton_tokens[li]["id"],
+                    "gemini_id": gemini_tokens[gi]["id"],
                     "lighton_txt": l_words[li],
                     "gemini_txt": g_words[gi],
                     "agree": True,
@@ -94,6 +100,7 @@ def align_page(gemini_tokens: list[dict], lighton_tokens: list[dict]) -> list[di
         for gi, li in zip(range(i1, i1 + paired), range(j1, j1 + paired)):
             results.append({
                 "id": lighton_tokens[li]["id"],
+                "gemini_id": gemini_tokens[gi]["id"],
                 "lighton_txt": l_words[li],
                 "gemini_txt": g_words[gi],
                 "agree": False,
@@ -129,19 +136,34 @@ def run(gemini_dir: Path, lighton_dir: Path, out_path: Path | None = None) -> Pa
     if skipped:
         print(f"skipping {len(skipped)} page(s) only present on one side: {skipped}")
 
-    report = {"gemini_dir": str(gemini_dir), "lighton_dir": str(lighton_dir), "pages": {}}
-    total = flagged = 0
-    for n in common:
+    out_path = out_path or (lighton_dir / "ensemble_review.json")
+    # resumable: an existing report may already carry vlm_arbiter.py verdicts
+    # (real, paid API calls) for pages compared earlier. Re-aligning those
+    # pages here would silently discard that history, so only pages NOT
+    # already in the report get (re-)computed -- new pages extend it, an
+    # already-covered page is left exactly as it was.
+    if out_path.exists():
+        report = json.loads(out_path.read_text(encoding="utf-8"))
+        already = {int(p) for p in report["pages"]}
+        to_process = [n for n in common if n not in already]
+        if already & set(common):
+            print(f"{len(already & set(common))} already-compared page(s) left untouched "
+                  f"(preserves any vlm_arbiter.py verdicts already recorded)")
+    else:
+        report = {"gemini_dir": str(gemini_dir), "lighton_dir": str(lighton_dir), "pages": {}}
+        to_process = common
+
+    for n in to_process:
         results = align_page(load_tokens(gemini_pages[n]), load_tokens(lighton_pages[n]))
         report["pages"][str(n)] = results
-        total += len(results)
-        flagged += sum(1 for r in results if r["action"] == "FLAG")
 
-    report["summary"] = {"pages_compared": len(common), "tokens": total, "flagged": flagged}
+    total = sum(len(v) for v in report["pages"].values())
+    flagged = sum(1 for v in report["pages"].values() for r in v if r["action"] == "FLAG")
+    report["summary"] = {"pages_compared": len(report["pages"]), "tokens": total, "flagged": flagged}
 
-    out_path = out_path or (lighton_dir / "ensemble_review.json")
     out_path.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"{len(common)} pages compared, {flagged}/{total} tokens flagged -> {out_path}")
+    print(f"{len(to_process)} page(s) newly compared, {len(report['pages'])} total, "
+          f"{flagged}/{total} tokens flagged overall -> {out_path}")
     return out_path
 
 

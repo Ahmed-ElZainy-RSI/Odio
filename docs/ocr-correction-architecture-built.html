@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OCR Correction Pipeline — As Built</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --border:#dfe3e8; --ink:#1a1d21; --sub:#5c646e;
+    --muted:#8a92a0; --accent:#1c4f8f; --accent-bg:#eaf1fb;
+    --green:#0f6b3a; --green-bg:#eef8f1; --amber:#9a6b00; --amber-bg:#fdf3e0;
+    --red:#a4392f; --red-bg:#fdeceb; --code-bg:#f1f3f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:28px;font-weight:800;margin:0 0 6px}
+  .lede{color:var(--sub);font-size:15px;margin-bottom:36px}
+  h2{font-size:20px;font-weight:800;margin:44px 0 6px;padding-top:6px;border-top:1px solid var(--border)}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:8px;background:var(--accent);color:#fff;font-size:13px;margin-right:9px;vertical-align:-5px}
+  h3{font-size:14.5px;font-weight:700;margin:22px 0 8px;color:var(--ink)}
+  p{margin:10px 0}
+  .stage-sub{color:var(--sub);font-size:13.5px;margin:-2px 0 16px}
+  code{font:12.5px/1.4 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:var(--code-bg);border-radius:10px;padding:14px 16px;overflow-x:auto;font:12.5px/1.55 ui-monospace,Menlo,monospace;margin:12px 0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin:14px 0}
+  .flow{display:flex;flex-direction:column;gap:0;margin:18px 0}
+  .flow-step{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13.5px}
+  .flow-step b{color:var(--accent)}
+  .flow-arrow{text-align:center;color:var(--muted);font-size:13px;padding:3px 0}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-right:6px;letter-spacing:.02em}
+  .b-new{background:var(--accent-bg);color:var(--accent)}
+  .b-mod{background:var(--amber-bg);color:var(--amber)}
+  .b-file{font:12px ui-monospace,Menlo,monospace;color:var(--sub)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--sub);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  .keep{color:var(--green);font-weight:700}
+  .flag{color:var(--red);font-weight:700}
+  .verified{color:var(--amber);font-weight:700}
+  .stat-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;min-width:120px}
+  .stat b{display:block;font-size:19px}
+  .stat span{font-size:11px;color:var(--sub)}
+  .callout{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:13.5px}
+  .callout.warn{background:var(--red-bg);border:1px solid #e8b4ae}
+  .callout.warn .t{color:var(--red);font-weight:700;margin-bottom:4px}
+  .callout.info{background:var(--accent-bg);border:1px solid #bcd3ec}
+  .callout.info .t{color:var(--accent);font-weight:700;margin-bottom:4px}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:5px 0}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:20px 0}
+  .toc a{display:block;color:var(--accent);text-decoration:none;font-size:13.5px;padding:3px 0}
+  .toc a:hover{text-decoration:underline}
+  .gap-list li{margin:10px 0}
+  .gap-list b{display:block;color:var(--ink)}
+  .gap-list span{color:var(--sub);font-size:13px}
+
+  .diagram{margin:22px 0 8px}
+  .d-row{display:flex;gap:14px;justify-content:center;align-items:stretch;flex-wrap:wrap}
+  .d-box{flex:1;min-width:190px;max-width:270px;background:var(--card);border:2px solid var(--border);
+    border-radius:12px;padding:13px 16px;text-align:center}
+  .d-box .t{font-weight:800;font-size:13.5px}
+  .d-box .f{font:11px ui-monospace,Menlo,monospace;color:var(--sub);margin-top:3px}
+  .d-box .d{font-size:11.5px;color:var(--sub);margin-top:7px;line-height:1.45}
+  .d-box.input{border-style:dashed;border-color:var(--muted)}
+  .d-box.new{border-color:var(--accent)}
+  .d-box.mod{border-color:var(--amber)}
+  .d-box .out{display:inline-block;margin-top:8px;font-size:10.5px;font-weight:700;padding:2px 9px;
+    border-radius:999px}
+  .d-box .out.keep{background:var(--green-bg);color:var(--green)}
+  .d-box .out.flag{background:var(--red-bg);color:var(--red)}
+  .d-box .out.verified{background:var(--amber-bg);color:var(--amber)}
+  .d-arrow{text-align:center;color:var(--muted);font-size:19px;line-height:1;margin:4px 0 2px}
+  .d-arrow .lbl{display:block;font-size:10px;color:var(--muted);margin-top:3px;font-family:ui-monospace,Menlo,monospace;
+    max-width:340px;margin-left:auto;margin-right:auto;line-height:1.4}
+  .d-split{text-align:center;font-size:10.5px;color:var(--muted);margin:0 0 6px;font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>OCR Correction Pipeline — As Built</h1>
+<p class="lede">How this repo detects and corrects LightOn OCR errors, and what it doesn't do yet. Written as a reference after building it, not a proposal — every number below came from a real run on <code>المومياوات ناشيونال جيوجرافيك</code>.</p>
+
+<div class="toc">
+  <a href="#root-cause">0. The root cause: LightOn has no geometry</a>
+  <a href="#detection">1. Detection — tools/ensemble_review.py</a>
+  <a href="#correction">2. Correction (deciding) — tools/vlm_arbiter.py</a>
+  <a href="#applying">3. Applying it — tools/apply_corrections.py</a>
+  <a href="#replace">4. Whole-page failures — tools/replace_page.py</a>
+  <a href="#reader">5. Seeing it — build_reader.py &amp; build_review.py</a>
+  <a href="#gaps">6. What this does NOT do</a>
+</div>
+
+<h2 style="border-top:none;margin-top:8px">The pipeline at a glance</h2>
+<div class="diagram">
+
+  <div class="d-row">
+    <div class="d-box input"><div class="t">LightOn OCR</div><div class="f">ocr_lighton.py</div>
+      <div class="d">text only — no boxes, no saved image</div></div>
+    <div class="d-box input"><div class="t">Gemini OCR</div><div class="f">ocr_gemini.py</div>
+      <div class="d">text + per-word box + saved page image</div></div>
+  </div>
+  <div class="d-arrow">↓↓<span class="lbl">normalize (diacritics/alif/ة/ى/tatweel folded for comparison only) → align with difflib.SequenceMatcher</span></div>
+
+  <div class="d-row">
+    <div class="d-box new"><div class="t">DETECT</div><div class="f">tools/ensemble_review.py</div>
+      <div class="d">every token: do the two engines agree?</div>
+      <span class="out keep">KEEP</span> <span class="out flag">FLAG</span></div>
+  </div>
+  <div class="d-arrow">↓<span class="lbl">only pages with ≥1 FLAG, one Gemini-vision call per page (not per word)</span></div>
+
+  <div class="d-row">
+    <div class="d-box new"><div class="t">CORRECT</div><div class="f">tools/vlm_arbiter.py</div>
+      <div class="d">Gemini vision reads the real page image, writes what's actually there</div>
+      <span class="out verified">VERIFIED</span></div>
+  </div>
+  <div class="d-arrow">↓</div>
+  <div class="d-split">splits by how badly the page failed</div>
+
+  <div class="d-row">
+    <div class="d-box new"><div class="t">Word-level fix</div><div class="f">tools/apply_corrections.py</div>
+      <div class="d">substitute / delete individual tokens. never inserts a missing word</div></div>
+    <div class="d-box new"><div class="t">Whole-page swap</div><div class="f">tools/replace_page.py</div>
+      <div class="d">≥50% of page is gemini-only → replace all tokens with Gemini's</div></div>
+  </div>
+  <div class="d-arrow">↓<span class="lbl">status reset to "extracted" → run_tashkel.py / run_speak_gemini.py redo diacritize + TTS + alignment</span></div>
+
+  <div class="d-row">
+    <div class="d-box mod"><div class="t">Reader (every book)</div><div class="f">build_reader.py</div>
+      <div class="d">borrows Gemini's box + image per page when LightOn has none; color-coded highlights</div></div>
+    <div class="d-box new"><div class="t">Review (one page range)</div><div class="f">tools/build_review.py</div>
+      <div class="d">original-vs-corrected: dual audio, inline strikethrough pairs</div></div>
+  </div>
+
+</div>
+
+<h2 id="root-cause"><span class="num">0</span>The root cause: LightOn has no geometry</h2>
+<p>Two OCR engines exist in this pipeline. <code class="b-file">ocr_lighton.py</code>'s <code>/parse</code> endpoint returns markdown text only — no bounding boxes, ever. A support ticket in <code>tmp/lighton_bbox_support_request.md</code> confirms even <code>/search</code>'s <code>include_bboxes</code> flag is broken (always <code>[]</code>). <code class="b-file">ocr_gemini.py</code>, by contrast, renders and saves the page image to disk <i>and</i> returns an approximate per-word box for every token.</p>
+<p>That single asymmetry is why this became a <b>two-engine comparison system</b> instead of a single-engine self-correction system: you can't crop a word from an image if you don't know where it is. Gemini's OCR run of the same PDF became the reference every downstream tool leans on.</p>
+
+<h2 id="detection"><span class="num">1</span>Detection — how an error is found</h2>
+<div class="stage-sub"><span class="badge b-new">NEW</span><span class="b-file">tools/ensemble_review.py</span></div>
+<p>For a book that has both a LightOn OCR run and a Gemini OCR run of the same PDF, this diffs the two, page by page. Before comparing, both sides are normalized <b>for comparison only</b> — alif forms (أ/إ/آ/ٱ → ا), ة→ه, ى→ي, diacritics/shadda stripped, tatweel and punctuation removed. The stored/reported text is always the original, un-normalized form; normalization only decides equal-vs-not.</p>
+<p>The two normalized word lists are aligned with Python's stdlib <code>difflib.SequenceMatcher</code> — not a hand-rolled aligner. Two OCR reads of the <i>same</i> page are difflib's strong case: mostly aligned, with a handful of localized edits, not two unrelated documents.</p>
+<div class="callout info">
+  <div class="t">There is no "suspicion score"</div>
+  Neither OCR engine emits a per-word confidence value, so this tool doesn't invent one. The action on every token is strictly binary:
+</div>
+<table>
+  <tr><th>Action</th><th>Meaning</th></tr>
+  <tr><td class="keep">KEEP</td><td>Both engines produced the same word (after normalization) — no error.</td></tr>
+  <tr><td class="flag">FLAG</td><td>The two engines disagree, or one produced a word the other didn't.</td></tr>
+</table>
+<p>Result: <code>ensemble_review.json</code> per book — one row per token, <code>{id, gemini_id, lighton_txt, gemini_txt, agree, action}</code>. <code>gemini_id</code> records exactly which Gemini token a LightOn token aligned to; it's reused later to borrow that token's box for the reader.</p>
+
+<div class="callout warn">
+  <div class="t">Blind spot</div>
+  Detection is <i>purely</i> disagreement between two engines. If LightOn and Gemini independently produce the <i>same wrong word</i>, nothing here catches it — that's exactly the "correlated errors" failure mode the original design doc (<code>docs/ocr-correction-approaches-en.md</code> §9.6) warned a pure ensemble is blind to. No separate linguistic/context suspicion model exists to catch that class of error.
+</div>
+
+<h2 id="correction"><span class="num">2</span>Correction — deciding what's actually right</h2>
+<div class="stage-sub"><span class="badge b-new">NEW</span><span class="b-file">tools/vlm_arbiter.py</span></div>
+<p>For every page with at least one <span class="flag">FLAG</span>, this sends the <i>already-rendered</i> Gemini page image plus the list of disagreeing candidates to Gemini vision — <b>one API call per flagged page, not per flagged word</b>. It works with no bounding box on either side, because it isn't cropping; it shows the whole page and asks the model to read specific spots.</p>
+<p>The prompt deliberately does not offer a multiple-choice between the two candidates — it asks the model to read the image and write what's actually printed, diacritics included. That matters: a pure A-or-B choice can only ever be as right as the better of two wrong answers.</p>
+<pre>Two OCR engines transcribed this page and disagreed on the words listed
+below. For each id, look at the image and write EXACTLY what is
+printed there ... Do not just repeat either candidate if both are wrong;
+write what you actually see.</pre>
+
+<h3>Real numbers from the pilot run (234 flagged tokens, 17 pages)</h3>
+<div class="stat-row">
+  <div class="stat"><b>197 / 234</b><span>matched one of the two original OCR reads (84%)</span></div>
+  <div class="stat"><b>17 / 234</b><span>genuinely new third answer (7%)</span></div>
+  <div class="stat"><b>0</b><span>API failures across all pages</span></div>
+</div>
+<p>The 17 novel answers were a mix — some were real fixes (Gemini's table-of-contents dot-leader noise, e.g. <code>مُحَنّطَةً...................24</code>, correctly cleaned to <code>محنطة</code>), some were riskier (an ISBN digit string got a <i>third</i> different grouping from either OCR read — not somewhere a VLM should be trusted blindly), and one was a literal empty string, meaning the model decided a word LightOn produced simply doesn't exist on the page at all.</p>
+
+<div class="callout warn">
+  <div class="t">Self-confirmation risk</div>
+  Gemini vision arbitrates disagreements where Gemini's own earlier OCR read is one of the two candidates being judged. The prompt framing (a narrow "which is right at this spot" question, not a repeat of open-ended transcription) mitigates this somewhat, but it isn't a truly independent second opinion the way a different model or engine would be.
+</div>
+
+<h2 id="applying"><span class="num">3</span>Applying it — writing the correction back</h2>
+<div class="stage-sub"><span class="badge b-new">NEW</span><span class="b-file">tools/apply_corrections.py</span> — the first tool in this chain that <b>writes</b> to <code>pXXX.json</code>. Detection and arbitration only read/report.</div>
+<table>
+  <tr><th>Verdict</th><th>What happens</th></tr>
+  <tr><td>Substitution</td><td><code>txt</code> is overwritten; the pre-correction word is kept in a new <code>ocr_txt</code> field, and <code>"ensemble-vlm"</code> is appended to the token's existing <code>fixes[]</code> list — same provenance pattern <code>extract.py</code>'s <code>clean_word()</code> already used for its own fixes.</td></tr>
+  <tr><td>Empty verdict (<code>""</code>)</td><td>The token is <b>deleted outright</b>. Safe because nothing downstream indexes by id — the reader walks tokens by array position, and the diacritizer re-matches by position against whatever's in the list after this runs.</td></tr>
+  <tr><td><code>gemini-only</code> (word LightOn produced nothing for)</td><td><b>Never auto-applied, on any book.</b> Reported grouped by page instead. Inserting a word means guessing a position, minting an id, and sourcing a box — genuinely harder than substitution, and not something this pipeline decides automatically.</td></tr>
+</table>
+<p>Any page that gets a correction has its <code>status</code> reset to <code>"extracted"</code> — <code>run_tashkel.py</code> and <code>run_speak_gemini.py</code> already skip anything marked <code>"diacritised"</code>/<code>"spoken"</code> for resumability, so this reset makes them naturally redo diacritization → TTS → alignment for the touched page. Without it, the audio would keep narrating the pre-correction word forever.</p>
+
+<div class="callout warn">
+  <div class="t">Coverage gap this leaves on every book</div>
+  Because <code>gemini-only</code> words are never auto-inserted, a book that only ran through <code>apply_corrections.py</code> is still <i>missing words</i> that Gemini saw and LightOn didn't — not just occasionally wrong ones. That gap is only closed where <code>replace_page.py</code>'s threshold catches the page (next section), or by a manual insert.
+</div>
+
+<h2 id="replace"><span class="num">4</span>Whole-page failures — a different fix for a different failure</h2>
+<div class="stage-sub"><span class="badge b-new">NEW</span><span class="b-file">tools/replace_page.py</span></div>
+<p>Found by actually looking at the data: page 16 of the pilot book had 74 of 75 tokens as <code>gemini-only</code> — LightOn didn't misread a few words there, it failed almost entirely. Looking at the actual page image explained why: white text reversed out of a dark olive background, with a ghosted watermark illustration bleeding through behind it — a genuinely hard case for a small 1B-parameter OCR model, not a fluke.</p>
+<p>For a page like that, inserting 74 words one at a time is the wrong tool. <code>replace_page.py</code> instead <b>wholesale-swaps</b> the page's entire token list for Gemini's — safe because both engines' OCR code already emits the identical token schema (<code>id/raw/txt/fixes/box</code>). It's threshold-gated (default ≥50% of a page's tokens being <code>gemini-only</code>) specifically so it can't accidentally swap a page that just had ordinary word-level disagreements, which belong to <code>apply_corrections.py</code> instead.</p>
+<div class="callout info">
+  <div class="t">Side effect worth knowing</div>
+  A wholesale-replaced page loses LightOn's original ids — they become Gemini's. Any tool trying to pair "what LightOn originally said" against "the current corrected token" by id (like <code>build_review.py</code>'s inline text pairing) can't do that for a replaced page anymore; it has to fall back to sourcing the original text from <code>ensemble_review.json</code>'s untouched historical record instead.
+</div>
+
+<h2 id="reader"><span class="num">5</span>Seeing it — the two reader tools</h2>
+
+<h3><span class="badge b-mod">MODIFIED</span><span class="b-file">src/pipeline/build_reader.py</span> — affects every book, not just the pilot</h3>
+<p>Optionally reads <code>ensemble_review.json</code> if a book has one (additive — a book with none builds exactly as before). Flagged/verified words get distinct highlight colors with correction detail on hover.</p>
+<p>The bigger change: when a LightOn page has no boxes of its own, the reader does a <b>fresh, on-the-fly re-alignment</b> (reusing <code>ensemble_review.py</code>'s <code>align_page()</code>, never persisted, run against <i>today's</i> possibly-already-corrected text) to <b>borrow</b> the paired Gemini page's box and rendered image. It only does this if <i>every</i> current token on that page gets a borrowed box — otherwise the page stays honestly text-only rather than half-rendering. That turned what used to be one global "does this book get the compare view" switch into a per-page decision.</p>
+
+<h3><span class="badge b-new">NEW</span><span class="b-file">tools/build_review.py</span> — a separate, one-off comparison view</h3>
+<p>Not wired into <code>build_reader.py</code> — scoped deliberately to a specific page range of one book. Builds <b>two independent, fully-synthesized audio tracks</b> per page (original-OCR text vs. corrected text), each with its own Gemini TTS + Whisper alignment pass, plus inline strikethrough-original → bold-correction text pairs and color-coded image boxes.</p>
+<p>"Original" text is sourced from <code>ensemble_review.json</code>'s <code>lighton_txt</code> directly — deliberately decoupled from per-token id pairing, because that pairing breaks on a wholesale-replaced page (previous section). This is why page 16 still gets a real (near-silent) original-audio track even though its ids no longer match anything in <code>ensemble_review.json</code> for per-word highlighting purposes.</p>
+<div class="callout info">
+  <div class="t">Real constraint hit while building this</div>
+  <code>gemini-3.1-flash-tts</code>'s free tier caps at <b>10 requests/day</b>. Both TTS-heavy tools (<code>run_speak_gemini.py</code> and <code>build_review.py</code>) are resumable — an already-synthesized <code>.wav</code> on disk is reused rather than re-spent — specifically because this quota is real and gets hit repeatedly on an active book.
+</div>
+
+<h2 id="gaps"><span class="num">6</span>What this does NOT do</h2>
+<p>Worth having in one place rather than scattered across five tools' docstrings:</p>
+<ul class="gap-list">
+  <li><b>No context/suspicion model.</b><span>Detection is purely engine disagreement. Two engines agreeing on the same wrong word is invisible to this system.</span></li>
+  <li><b>No independent verifier.</b><span>The VLM arbitrator is the same model family as one of the two OCR candidates it's judging.</span></li>
+  <li><b>Not every "VERIFIED" word deserves equal trust.</b><span>~7% of verdicts are novel third answers; a couple (numeric codes) are genuinely lower-confidence than the flat VERIFIED label implies.</span></li>
+  <li><b>Missing words are never auto-inserted.</b><span><code>apply_corrections.py</code> reports <code>gemini-only</code> gaps but never fills them, on any book — only a whole-page replacement via <code>replace_page.py</code> closes that gap, and only above its threshold.</span></li>
+  <li><b>Requires a paired Gemini OCR run.</b><span>A LightOn-only book with no matching Gemini run of the same PDF has no error-detection path at all right now — every tool in this chain reads <code>ensemble_review.json</code>, which can't exist without that pairing.</span></li>
+</ul>
+
+</div>
+</body>
+</html>
