@@ -49,14 +49,14 @@ already-correct half.
 
 `الشمس` is 78% diacritized — and has **10 letter-substitution errors in 16 pages**:
 
-| OCR produced       | should be        | why it matters                                                |
-| ------------------ | ---------------- | ------------------------------------------------------------- |
+| OCR produced       | should be        | why it matters                                          |
+| ------------------ | ---------------- | ------------------------------------------------------- |
 | `الفضل` ×4 | `الفصل`   | "grace/merit" vs**"classroom"** — changes the sentence |
-| `فزح` ×2     | `قزح`       | `قوس قزح` = rainbow; `فزح` is not a word         |
-| `رجاجيا`   | `زجاجيا` | "glass" — ز→ر                                             |
-| `مغظم`       | `معظم`     | "most" — ع→غ                                              |
-| `النقطت`   | `التقطت` | "picked up"                                                   |
-| `مريي`       | `مرئي`     | "visible" — hamza lost                                       |
+| `فزح` ×2     | `قزح`       | `قوس قزح` = rainbow; `فزح` is not a word   |
+| `رجاجيا`   | `زجاجيا` | "glass" — ز→ر                                       |
+| `مغظم`       | `معظم`     | "most" — ع→غ                                        |
+| `النقطت`   | `التقطت` | "picked up"                                             |
+| `مريي`       | `مرئي`     | "visible" — hamza lost                                 |
 
 `الفضل` is the dangerous class: a **valid Arabic word**, so a spellchecker passes
 it, a diacritizer diacritizes it beautifully, and the reader hears *al-faḍl*

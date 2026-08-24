@@ -1,0 +1,176 @@
+<!doctype html><html lang=ar dir=rtl><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>ثعلوب المكار — قارئ متزامن</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:26px 18px}
+.pg{max-width:1000px;margin:0 auto}
+.hd{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+h1{font-size:26px;font-weight:700}
+.sub{font-size:12.5px;color:#7a8290;direction:ltr}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:14px;overflow:hidden}
+.bar{display:flex;gap:9px;align-items:center;padding:11px 14px;background:#fafbfc;
+border-bottom:1px solid #eef1f4;flex-wrap:wrap;direction:ltr}
+.bar button{font:inherit;font-size:12.5px;padding:7px 13px;border:1px solid #dfe3e8;
+background:#fff;border-radius:8px;cursor:pointer;color:#3c434c}
+.bar button:hover{border-color:#b9c2cc}
+.bar button.on{background:#14233a;border-color:#14233a;color:#fff}
+.bar button:disabled{opacity:.35;cursor:default}
+.scrub{flex:1;min-width:110px;height:6px;background:#e6eaee;border-radius:3px;position:relative;cursor:pointer}
+.scrub i{position:absolute;inset:0 auto 0 0;width:0;background:#1c4f8f;border-radius:3px;display:block}
+.tm{font-variant-numeric:tabular-nums;font-size:12px;color:#7a8290;min-width:86px;text-align:right}
+.pgsel{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #eef1f4;direction:ltr}
+.pgsel button{font:inherit;font-size:11.5px;width:30px;height:28px;border:1px solid #dfe3e8;
+background:#fff;border-radius:6px;cursor:pointer;color:#5c646e}
+.pgsel button.on{background:#1c4f8f;border-color:#1c4f8f;color:#fff;font-weight:700}
+.compare{display:flex;align-items:stretch}
+.compare>div{flex:1;min-width:0}
+.txtcol{max-height:75vh;overflow:auto;border-left:1px solid #eef1f4}
+.imgcol{max-height:75vh;overflow:auto;background:#000}
+.compare.textonly .imgcol{display:none}
+.compare.textonly .txtcol{border-left:none}
+@media (max-width:760px){.compare{flex-direction:column} .txtcol{border-left:none;border-bottom:1px solid #eef1f4}}
+.txt{padding:26px 30px;font-size:24px;line-height:2.6;
+font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro',serif;min-height:220px}
+.w{padding:2px 4px;border-radius:5px;cursor:pointer}
+.w:hover{background:#eef4fc;outline:1px solid #c3d5ee}
+.w.now{background:#ffe9a8;box-shadow:0 0 0 2px #e3b778}
+.w.interp{border-bottom:2px dotted #c3cbd4}
+.w.fixed{background:#f4fbf6}
+.w.fixed.now{background:#ffe9a8}
+.w.flagged{background:#fdeceb;outline:1px solid #e8b4ae}
+.w.flagged.now{background:#ffe9a8}
+.w.verified{background:#fdf3e0;outline:1px solid #e8c98a}
+.w.verified.now{background:#ffe9a8}
+.w.untimed{opacity:.55;cursor:default}
+.imgw{position:relative;line-height:0}
+.imgw img{width:100%;display:block}
+.bx{position:absolute;border:2px solid transparent;border-radius:3px;cursor:pointer}
+.bx:hover{border-color:#1c4f8f;background:#1c4f8f22}
+.bx.now{border-color:#e3a11a;background:#ffd97e55}
+.insp{padding:12px 16px;border-top:1px solid #eef1f4;background:#fafbfc;direction:ltr;
+font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-height:58px}
+.insp b{color:#1a1d21}
+.lg{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:#5c646e;margin-top:12px;direction:ltr}
+.lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:16px;direction:ltr}
+.stat div{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:11px 13px}
+.stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+.stat span{font-size:10.5px;color:#7a8290}
+</style></head><body><div class=pg>
+
+<div class=hd><h1>ثعلوب المكار</h1>
+<div class=sub>4 pages · 112 tokens · 1.4 min · Kore · text view only — no page image available</div></div>
+
+<div class=card>
+<div class=pgsel id=pgsel></div>
+<div class=bar>
+<button id=play>▶</button>
+<button id=prev>‹</button><button id=next>›</button>
+<div class=scrub id=scrub><i id=bar></i></div>
+<div class=tm id=tm>0.00 / 0.00</div>
+</div>
+<div class=txt id=txt></div>
+<div class=insp id=insp>Hover a word to inspect its token record.</div>
+</div>
+
+<div class=lg>
+<span><i style="background:#ffe9a8"></i>currently spoken</span>
+<span><i style="background:#f4fbf6;border:1px solid #cfe8d8"></i>cleaned by a rule</span>
+<span><i style="border-bottom:2px dotted #c3cbd4;width:14px;height:8px"></i>timing interpolated</span>
+
+
+</div>
+<div class=stat>
+<div><b>84</b><span>anchored to real timestamps (75%)</span></div>
+<div><b>28</b><span>interpolated between anchors</span></div>
+<div><b>6</b><span>tokens cleaned by an extraction rule</span></div>
+
+
+<div><b>1.4 min</b><span>real synthesised audio</span></div>
+</div>
+</div>
+<audio id=au preload=metadata></audio>
+<script>
+const P=[{"page":1,"audio":"audio/p001.wav","img":"pages/p001.jpg","dur":33680,"diac":0.0,"box_level":"none","has_image":false,"compare":false,"voice":"Kore","tokens":[{"i":"p001w000","r":"كتاب","t":"كتَاب","m":[0,720],"s":"anchor","f":[]},{"i":"p001w001","r":"الغاربة","t":"الغاربَة","m":[720,1420],"s":"anchor","f":[]},{"i":"p001w002","r":"٢٥","t":"٢٥","m":[1420,3540],"s":"interpolated","f":[]},{"i":"p001w003","r":"كتاب","t":"كتَابُ","m":[3540,4240],"s":"anchor","f":[]},{"i":"p001w004","r":"المكار","t":"المكَار","m":[4240,4960],"s":"anchor","f":[]},{"i":"p001w005","r":"**تأليف:**","t":"تأليفٌ:**","m":[5620,6320],"s":"anchor","f":["leading-punct"]},{"i":"p001w006","r":"فاطمة","t":"فَاطِمَةُ","m":[6700,7400],"s":"anchor","f":[]},{"i":"p001w007","r":"نعمان","t":"نُعْمَانٌ","m":[7400,8140],"s":"anchor","f":[]},{"i":"p001w008","r":"**رسوم:**","t":"رسومٌ:**","m":[8740,9440],"s":"anchor","f":["leading-punct"]},{"i":"p001w009","r":"سلمى","t":"سلْمى","m":[9440,10460],"s":"interpolated","f":[]},{"i":"p001w010","r":"حافظ","t":"حَافظُ","m":[10460,11140],"s":"anchor","f":[]},{"i":"p001w011","r":"**رقم","t":"رَقْمِ","m":[11500,12200],"s":"anchor","f":["leading-punct"]},{"i":"p001w012","r":"الأيداع:**","t":"الأَيْدَاعِ:**","m":[12200,18080],"s":"interpolated","f":[]},{"i":"p001w013","r":"2021/9747","t":"2021/9747","m":[18080,18920],"s":"interpolated","f":[]},{"i":"p001w014","r":"**التوقيع","t":"التوقيع","m":[18920,20060],"s":"anchor","f":["leading-punct"]},{"i":"p001w015","r":"الدولي:**","t":"الدولي:**","m":[20060,21200],"s":"anchor","f":[]},{"i":"p001w016","r":"978-977-808-101-5","t":"978-977-808-101-5","m":[21200,21980],"s":"interpolated","f":[]},{"i":"p001w017","r":"*باز","t":"بَازِ","m":[21980,24320],"s":"interpolated","f":["leading-punct"]},{"i":"p001w018","r":"المبتغيل*","t":"الْمُبْتَغِيلِ*ُّ","m":[24320,30560],"s":"interpolated","f":[]},{"i":"p001w019","r":"*par","t":"par","m":[30560,31340],"s":"interpolated","f":["leading-punct"]},{"i":"p001w020","r":"almost","t":"almost","m":[31340,32120],"s":"interpolated","f":[]},{"i":"p001w021","r":"a","t":"a","m":[32120,32900],"s":"interpolated","f":[]},{"i":"p001w022","r":"book*","t":"book*","m":[32900,33680],"s":"interpolated","f":[]}]},{"page":2,"audio":"audio/p002.wav","img":"pages/p002.jpg","dur":19080,"diac":0.064,"box_level":"none","has_image":false,"compare":false,"voice":"Kore","tokens":[{"i":"p002w000","r":"كان","t":"كَانَ","m":[0,480],"s":"anchor","f":[]},{"i":"p002w001","r":"في","t":"فِي","m":[480,660],"s":"anchor","f":[]},{"i":"p002w002","r":"الغاية","t":"الْغَايَةِ","m":[660,1140],"s":"anchor","f":[]},{"i":"p002w003","r":"الغناء","t":"الْغِنَاءُ","m":[1140,1680],"s":"anchor","f":[]},{"i":"p002w004","r":"مكانٌ","t":"مَكَانٌ","m":[1680,2200],"s":"anchor","f":[]},{"i":"p002w005","r":"مُتغير،","t":"مُتَغَيِّرٌ،","m":[2200,3000],"s":"anchor","f":[]},{"i":"p002w006","r":"به","t":"بِهِ","m":[3000,3740],"s":"anchor","f":[]},{"i":"p002w007","r":"مجموعة","t":"مَجْمُوعَةٌ","m":[3740,4420],"s":"anchor","f":[]},{"i":"p002w008","r":"أشجار","t":"أَشْجَارِ","m":[4420,4920],"s":"interpolated","f":[]},{"i":"p002w009","r":"ضخمة","t":"ضَخْمَةٍ","m":[4920,5440],"s":"anchor","f":[]},{"i":"p002w010","r":"عالية","t":"عَالِيَةٍ","m":[5440,6140],"s":"anchor","f":[]},{"i":"p002w011","r":"مشابكة","t":"مُشَابَكَةُ","m":[6140,6943],"s":"interpolated","f":[]},{"i":"p002w012","r":"الأغصان،","t":"الْأَغْصَانِ،","m":[6943,7880],"s":"interpolated","f":[]},{"i":"p002w013","r":"وكانت","t":"وَكَانَتْ","m":[7880,8980],"s":"anchor","f":[]},{"i":"p002w014","r":"فروعها","t":"فُرُوعُهَا","m":[8980,9560],"s":"anchor","f":[]},{"i":"p002w015","r":"تدلي","t":"تُدْلِي","m":[9560,9980],"s":"anchor","f":[]},{"i":"p002w016","r":"وكأنها","t":"وَكَأَنَّهَا","m":[9980,10720],"s":"anchor","f":[]},{"i":"p002w017","r":"حبال","t":"حِبَالٌ","m":[10720,11200],"s":"anchor","f":[]},{"i":"p002w018","r":"قوية،","t":"قَوِيَّةٌ،","m":[11200,11780],"s":"anchor","f":[]},{"i":"p002w019","r":"وكانت","t":"وَكَانَتِ","m":[11780,13080],"s":"anchor","f":[]},{"i":"p002w020","r":"الفُزود","t":"الْفُزُودُ","m":[13080,13540],"s":"anchor","f":[]},{"i":"p002w021","r":"تُخذ","t":"تَخَذُ","m":[13540,14060],"s":"interpolated","f":[]},{"i":"p002w022","r":"من","t":"مِنْ","m":[14060,14240],"s":"anchor","f":[]},{"i":"p002w023","r":"هذه","t":"هَذِهِ","m":[14240,14500],"s":"anchor","f":[]},{"i":"p002w024","r":"الأمكنة","t":"الأَمْكِنَةِ","m":[14500,15180],"s":"anchor","f":[]},{"i":"p002w025","r":"مكانًا","t":"مَكَانًا","m":[15180,15740],"s":"anchor","f":[]},{"i":"p002w026","r":"مُفضلاً","t":"مُفَضَّلًا","m":[15740,16280],"s":"anchor","f":[]},{"i":"p002w027","r":"إليها","t":"إِلَيْهَا","m":[16280,16880],"s":"anchor","f":[]},{"i":"p002w028","r":"تُعيب،","t":"تَعَيبٌ،","m":[16880,17857],"s":"interpolated","f":[]},{"i":"p002w029","r":"وتسلّى،","t":"وَتُسَلَّى،","m":[17857,19080],"s":"interpolated","f":[]}]},{"page":3,"audio":"audio/p003.wav","img":"pages/p003.jpg","dur":18880,"diac":0.062,"box_level":"none","has_image":false,"compare":false,"voice":"Kore","tokens":[{"i":"p003w000","r":"وخاصّةٌ","t":"وَخَاصَّةً","m":[0,960],"s":"anchor","f":[]},{"i":"p003w001","r":"أن","t":"أَنَّ","m":[960,1260],"s":"anchor","f":[]},{"i":"p003w002","r":"هذه","t":"هَذِهِ","m":[1260,1640],"s":"anchor","f":[]},{"i":"p003w003","r":"الأشجار","t":"الْأَشْجَارَ","m":[1640,2560],"s":"interpolated","f":[]},{"i":"p003w004","r":"كانت","t":"كَانَتْ","m":[2560,2980],"s":"anchor","f":[]},{"i":"p003w005","r":"قريبة","t":"قَرِيبَةً","m":[2980,3520],"s":"anchor","f":[]},{"i":"p003w006","r":"جداً","t":"جِدًّا","m":[3520,4040],"s":"anchor","f":[]},{"i":"p003w007","r":"من","t":"مِنَ","m":[4040,4280],"s":"anchor","f":[]},{"i":"p003w008","r":"النهر،","t":"النَّهْرِ،","m":[4280,4800],"s":"anchor","f":[]},{"i":"p003w009","r":"وكانت","t":"وَكَانَتِ","m":[4800,5880],"s":"anchor","f":[]},{"i":"p003w010","r":"الفُزود","t":"الْفُزُودُ","m":[5880,6420],"s":"anchor","f":[]},{"i":"p003w011","r":"تأتي","t":"تَأْتِي","m":[6420,6960],"s":"anchor","f":[]},{"i":"p003w012","r":"من","t":"مِنْ","m":[6960,7160],"s":"anchor","f":[]},{"i":"p003w013","r":"أماكن","t":"أَمَاكِنَ","m":[7160,7700],"s":"anchor","f":[]},{"i":"p003w014","r":"بعيدة","t":"بَعِيدَةٍ","m":[7700,8480],"s":"anchor","f":[]},{"i":"p003w015","r":"عن","t":"عَنِ","m":[8480,8680],"s":"anchor","f":[]},{"i":"p003w016","r":"الغاية،","t":"الْغَايَةِ،","m":[8680,9460],"s":"anchor","f":[]},{"i":"p003w017","r":"فتشرب،","t":"فَتَشْرَبُ،","m":[9460,10480],"s":"anchor","f":[]},{"i":"p003w018","r":"وتظل","t":"وَتُظِلُّ","m":[10480,11460],"s":"interpolated","f":[]},{"i":"p003w019","r":"تلعبُ","t":"تَلْعَبُ","m":[11460,12160],"s":"anchor","f":[]},{"i":"p003w020","r":"تُحثّ","t":"تَحُثُّ","m":[12160,12760],"s":"interpolated","f":[]},{"i":"p003w021","r":"هذه","t":"هَذِهِ","m":[12760,13120],"s":"anchor","f":[]},{"i":"p003w022","r":"الأشجار","t":"الْأَشْجَارَ","m":[13120,14020],"s":"interpolated","f":[]},{"i":"p003w023","r":"حتى","t":"حَتَّى","m":[14020,14440],"s":"anchor","f":[]},{"i":"p003w024","r":"آخر","t":"آخِرَ","m":[14440,14940],"s":"anchor","f":[]},{"i":"p003w025","r":"النهار،","t":"النَّهَارِ،","m":[14940,15540],"s":"anchor","f":[]},{"i":"p003w026","r":"ثم","t":"ثُمَّ","m":[15540,16420],"s":"anchor","f":[]},{"i":"p003w027","r":"تُدهب","t":"تَدْهَبُ","m":[16420,16980],"s":"interpolated","f":[]},{"i":"p003w028","r":"إلى","t":"إِلَى","m":[16980,17260],"s":"anchor","f":[]},{"i":"p003w029","r":"أماكن","t":"أَمَاكِنِ","m":[17260,17920],"s":"anchor","f":[]},{"i":"p003w030","r":"تومها.","t":"تَوْمِهَا.","m":[17920,18880],"s":"interpolated","f":[]}]},{"page":4,"audio":"audio/p004.wav","img":"pages/p004.jpg","dur":14240,"diac":0.87,"box_level":"none","has_image":false,"compare":false,"voice":"Kore","tokens":[{"i":"p004w000","r":"دَاعٍ","t":"دَاعٍ","m":[0,560],"s":"anchor","f":[]},{"i":"p004w001","r":"صَيْتَ","t":"صَيْتَ","m":[560,960],"s":"anchor","f":[]},{"i":"p004w002","r":"هَذِهِ","t":"هَذِهِ","m":[960,1300],"s":"anchor","f":[]},{"i":"p004w003","r":"الْمَنْطِقَةِ","t":"الْمَنْطِقَةِ","m":[1300,2020],"s":"anchor","f":[]},{"i":"p004w004","r":"فِي","t":"فِي","m":[2020,2240],"s":"anchor","f":[]},{"i":"p004w005","r":"الْعَاقِبَةِ","t":"الْعَاقِبَةِ","m":[2240,2820],"s":"anchor","f":[]},{"i":"p004w006","r":"كُلُّهَا،","t":"كُلُّهَا،","m":[2820,3420],"s":"anchor","f":[]},{"i":"p004w007","r":"وَذَاتٍ","t":"وَذَاتٍ","m":[3420,4140],"s":"anchor","f":[]},{"i":"p004w008","r":"يَوْمٍ","t":"يَوْمٍ","m":[4140,4480],"s":"anchor","f":[]},{"i":"p004w009","r":"حَاطِلَ","t":"حَاطِلَ","m":[4480,5280],"s":"interpolated","f":[]},{"i":"p004w010","r":"الشُّعُوبِ","t":"الشُّعُوبِ","m":[5280,5720],"s":"anchor","f":[]},{"i":"p004w011","r":"الْمَكَازِ","t":"الْمَكَازِ","m":[5720,6360],"s":"interpolated","f":[]},{"i":"p004w012","r":"أَنْ","t":"أَنْ","m":[6360,6460],"s":"anchor","f":[]},{"i":"p004w013","r":"يُقْتَبَ","t":"يُقْتَبَ","m":[6460,7020],"s":"interpolated","f":[]},{"i":"p004w014","r":"أَحَدُّ","t":"أَحَدُّ","m":[7020,7420],"s":"anchor","f":[]},{"i":"p004w015","r":"الْفُرُودِ","t":"الْفُرُودِ","m":[7420,7940],"s":"anchor","f":[]},{"i":"p004w016","r":"الصَّغِيرَةِ","t":"الصَّغِيرَةِ","m":[7940,8500],"s":"anchor","f":[]},{"i":"p004w017","r":"بَعْدَ","t":"بَعْدَ","m":[8500,8800],"s":"anchor","f":[]},{"i":"p004w018","r":"أَنْ","t":"أَنْ","m":[8800,9060],"s":"anchor","f":[]},{"i":"p004w019","r":"شَرِيَتْ،","t":"شَرِيَتْ،","m":[9060,9580],"s":"anchor","f":[]},{"i":"p004w020","r":"لَكِنَّهُ","t":"لَكِنَّهُ","m":[9580,10440],"s":"anchor","f":[]},{"i":"p004w021","r":"لَمْ","t":"لَمْ","m":[10440,10580],"s":"anchor","f":[]},{"i":"p004w022","r":"يُفْلِحْ،","t":"يُفْلِحْ،","m":[10580,11140],"s":"anchor","f":[]},{"i":"p004w023","r":"وَأَحَدَتْ","t":"وَأَحَدَتْ","m":[11140,12000],"s":"interpolated","f":[]},{"i":"p004w024","r":"كُلُّ","t":"كُلُّ","m":[12000,12200],"s":"anchor","f":[]},{"i":"p004w025","r":"الْحَيَاةَاتِ","t":"الْحَيَاةَاتِ","m":[12200,13080],"s":"interpolated","f":[]},{"i":"p004w026","r":"تَضْحَكُ","t":"تَضْحَكُ","m":[13080,13560],"s":"anchor","f":[]},{"i":"p004w027","r":"مِنْهُ.","t":"مِنْهُ.","m":[13560,13940],"s":"anchor","f":[]}]}];
+const HAS_COMPARE_LAYOUT=false;
+let cur=0;
+const $=s=>document.querySelector(s);
+const au=$("#au"),txt=$("#txt"),compare=$("#compare"),imgw=$("#imgw"),img=$("#img"),boxes=$("#boxes"),
+      insp=$("#insp"),bar=$("#bar"),tm=$("#tm"),playB=$("#play");
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+$("#pgsel").innerHTML=P.map((p,i)=>`<button data-p="${i}"${i?"":" class=on"}>${p.page}</button>`).join("");
+$("#pgsel").onclick=e=>{const b=e.target.closest("button"); if(b) load(+b.dataset.p);};
+
+function load(i){
+  cur=i; const p=P[i];
+  au.src=p.audio;
+  txt.innerHTML="";
+  if(HAS_COMPARE_LAYOUT){
+    compare.classList.toggle("textonly",!p.compare);
+    if(p.compare){ img.src=p.img; boxes.innerHTML=""; }
+  }
+  p.tokens.forEach((t,j)=>{
+    const s=document.createElement("span");
+    s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")
+      +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
+    s.dataset.j=j; s.textContent=t.t;
+    txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
+    if(p.compare){
+      const b=document.createElement("div");
+      b.className="bx"; b.dataset.j=j;
+      b.style.cssText=`left:${t.b[0]}%;top:${t.b[1]}%;width:${t.b[2]}%;height:${t.b[3]}%`;
+      boxes.appendChild(b);
+    }
+  });
+  document.querySelectorAll("#pgsel button").forEach((b,k)=>b.classList.toggle("on",k===i));
+  $("#prev").disabled=!i; $("#next").disabled=i===P.length-1;
+  wire(); render();
+}
+function wire(){
+  document.querySelectorAll(".w,.bx").forEach(el=>{
+    el.onmouseenter=()=>show(+el.dataset.j);
+    el.onclick=()=>{const m=P[cur].tokens[+el.dataset.j].m; if(m){au.currentTime=m[0]/1000; render();}};
+  });
+}
+function show(j){
+  const t=P[cur].tokens[j];
+  const src=t.s==="anchor"
+    ? '<span style="color:#0f7b4a">anchor — real timestamp</span>'
+    : t.s==="interpolated"
+    ? '<span style="color:#8a8f96">interpolated between anchors</span>'
+    : '<span style="color:#c0392b">no timing available</span>';
+  const fx=t.f.length?`<span style="color:#1c4f8f">cleaned: ${t.f.join(", ")}</span>`
+                     :'<span style="color:#a4abb4">no cleanup needed</span>';
+  const box=P[cur].compare?` &nbsp;·&nbsp; box [${t.b.map(v=>v.toFixed(1)).join(", ")}]`:"";
+  const timing=t.m?`t [${t.m[0]}, ${t.m[1]}] ms · `:"";
+  const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
+  const ens="v" in t
+    ? `<br><span style="color:#9a6b00">ensemble: LightOn <b>${esc(t.t)}</b> vs Gemini <b>${gTxt}</b> → VLM read <b>${esc(t.v)}</b></span>`
+    : "g" in t
+    ? `<br><span style="color:#c0392b">ensemble: LightOn says <b>${esc(t.t)}</b>, Gemini says <b>${gTxt}</b> (unresolved)</span>`
+    : "";
+  insp.innerHTML=`<b>${t.i}</b> &nbsp; raw <b>${esc(t.r)}</b> → <b>${esc(t.t)}</b><br>`
+   +`${timing}${src} &nbsp;·&nbsp; ${fx}${box}${ens}`;
+}
+let last=-1;
+function render(){
+  const ms=au.currentTime*1000, ts=P[cur].tokens;
+  let i=-1;
+  for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){i=k;break;}
+  document.querySelectorAll(".w").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(P[cur].compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(i>=0&&i!==last){show(i);last=i;}
+  const d=P[cur].dur;
+  bar.style.width=Math.min(100,100*ms/d)+"%";
+  tm.textContent=(ms/1000).toFixed(2)+" / "+(d/1000).toFixed(2);
+}
+au.ontimeupdate=render;
+au.onended=()=>{playB.textContent="▶";};
+playB.onclick=()=>{if(au.paused){au.play();playB.textContent="⏸";}else{au.pause();playB.textContent="▶";}};
+$("#prev").onclick=()=>load(cur-1); $("#next").onclick=()=>load(cur+1);
+$("#scrub").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();
+  au.currentTime=P[cur].dur/1000*(e.clientX-r.left)/r.width; render();};
+load(0);
+</script></body></html>

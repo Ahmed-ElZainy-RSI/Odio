@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tools/ — Running &amp; Reviewing Reference</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --border:#dfe3e8; --ink:#1a1d21; --sub:#5c646e;
+    --muted:#8a92a0; --accent:#1c4f8f; --accent-bg:#eaf1fb;
+    --green:#0f6b3a; --green-bg:#eef8f1; --amber:#9a6b00; --amber-bg:#fdf3e0;
+    --red:#a4392f; --red-bg:#fdeceb; --code-bg:#f1f3f6; --code-ink:#1a1d21;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:28px;font-weight:800;margin:0 0 6px}
+  .lede{color:var(--sub);font-size:15px;margin-bottom:30px}
+  h2{font-size:20px;font-weight:800;margin:46px 0 4px;padding-top:8px;border-top:1px solid var(--border);
+    display:flex;align-items:center;gap:10px}
+  h2 .step{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+    border-radius:9px;background:var(--accent);color:#fff;font-size:13px;flex:none}
+  h2 code{font-size:16px}
+  h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--sub);
+    margin:20px 0 8px}
+  p{margin:10px 0}
+  code{font:12.5px/1.4 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:#20242b;color:#e8eaed;border-radius:10px;padding:14px 18px;overflow-x:auto;
+    font:12.5px/1.6 ui-monospace,Menlo,monospace;margin:10px 0;direction:ltr;text-align:left}
+  pre .c{color:#8a92a0}
+  .purpose{color:var(--sub);font-size:14px;margin:4px 0 16px}
+  .meta-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+  .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-flex;
+    align-items:center;gap:5px}
+  .pill.env{background:var(--accent-bg);color:var(--accent)}
+  .pill.key{background:var(--amber-bg);color:var(--amber)}
+  .pill.nokey{background:var(--green-bg);color:var(--green)}
+  table{width:100%;border-collapse:collapse;margin:10px 0 4px;font-size:13px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--sub);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.03em;width:110px}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:5px 0}
+  .callout{border-radius:10px;padding:12px 15px;margin:12px 0;font-size:13.5px}
+  .callout.warn{background:var(--red-bg);border:1px solid #e8b4ae}
+  .callout.warn .t{color:var(--red);font-weight:700;margin-bottom:3px}
+  .callout.info{background:var(--accent-bg);border:1px solid #bcd3ec}
+  .callout.info .t{color:var(--accent);font-weight:700;margin-bottom:3px}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:20px 0}
+  .toc a{display:block;color:var(--accent);text-decoration:none;font-size:13.5px;padding:3px 0}
+  .toc a:hover{text-decoration:underline}
+  .chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;font-family:ui-monospace,Menlo,monospace;
+    color:var(--sub);margin:14px 0;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .chain b{color:var(--accent);font-family:inherit}
+  .chain .arrow{color:var(--muted)}
+  .files{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin:8px 0}
+  .files code{white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>tools/ — Running &amp; Reviewing Reference</h1>
+<p class="lede">Exact commands, environments, inputs/outputs, and how to review each tool's results. Companion to <code>docs/ocr-correction-architecture-built.html</code> (the why); this is the how. Every command below is copy-pasteable against the pilot book, <code>المومياوات ناشيونال جيوجرافيك-lighton</code>.</p>
+
+<div class="callout info">
+  <div class="t">Two Python environments in play</div>
+  This repo's dependencies (fitz/PyMuPDF, google-genai, faster-whisper) live in a conda env, not system Python. Tools that only touch local JSON files run fine with plain <code>python3</code>; anything calling Gemini or doing audio alignment needs:
+  <pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/&lt;script&gt;.py ...</pre>
+  Each tool below says which one it needs.
+</div>
+
+<div class="toc">
+  <a href="#chain">The full chain, in order</a>
+  <a href="#ensemble_review">1. ensemble_review.py — detect disagreements</a>
+  <a href="#vlm_arbiter">2. vlm_arbiter.py — resolve disagreements visually</a>
+  <a href="#apply_corrections">3. apply_corrections.py — write word-level fixes</a>
+  <a href="#replace_page">4. replace_page.py — replace a failed page wholesale</a>
+  <a href="#context_detector">5. context_detector.py — catch errors both engines agreed on</a>
+  <a href="#apply_context_suggestions">6. apply_context_suggestions.py — apply accepted suggestions</a>
+  <a href="#build_review">7. build_review.py — original-vs-corrected comparison page</a>
+  <a href="#build_reader">Reminder: build_reader.py picks up everything automatically</a>
+</div>
+
+<h2 id="chain" style="border-top:none"><span class="step">→</span>The full chain, in order</h2>
+<div class="chain">
+  Gemini OCR of the same PDF <span class="arrow">→</span>
+  <b>ensemble_review.py</b> <span class="arrow">→</span>
+  <b>vlm_arbiter.py</b> <span class="arrow">→</span>
+  <b>apply_corrections.py</b> + <b>replace_page.py</b> <span class="arrow">→</span>
+  re-diacritize + re-TTS <span class="arrow">→</span>
+  <b>context_detector.py</b> <span class="arrow">→</span> (human review) <span class="arrow">→</span>
+  <b>apply_context_suggestions.py</b> <span class="arrow">→</span>
+  re-diacritize + re-TTS <span class="arrow">→</span>
+  <code>build_reader.py</code> (or <b>build_review.py</b> for a side-by-side view)
+</div>
+<p>Steps 1-2 and 5-6 each write a JSON report first, then a separate step applies it — nothing ever writes to <code>pXXX.json</code> without a distinct, previewable file existing first.</p>
+
+<h2 id="ensemble_review"><span class="step">1</span><code>ensemble_review.py</code></h2>
+<p class="purpose">Diffs LightOn's OCR against a Gemini OCR of the same PDF, page by page. Produces <code>ensemble_review.json</code> — the file every other tool in this chain reads.</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill nokey">no API key</span>
+</div>
+<pre>python3 tools/ensemble_review.py \
+  "work/المومياوات ناشيونال جيوجرافيك" \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton"</pre>
+<table>
+  <tr><th>Requires</th><td>Both dirs must already have <code>pXXX.json</code> page records (i.e. both OCR engines have run on this PDF).</td></tr>
+  <tr><th>Writes</th><td><code>&lt;lighton_dir&gt;/ensemble_review.json</code></td></tr>
+  <tr><th>Resumable</th><td>Yes — re-running only computes pages not already in the file. An existing page's entries (including any <code>VERIFIED</code> verdicts from step 2) are left untouched.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>Open the JSON and check <code>summary.flagged / summary.tokens</code> for the overall disagreement rate. Per page, <code>action</code> is <code class="pill nokey" style="padding:1px 6px">KEEP</code> (both engines agree) or <code class="pill" style="background:var(--red-bg);color:var(--red);padding:1px 6px">FLAG</code> (disagree, or one engine produced nothing). A `FLAG` entry whose `id` starts with <code>gemini-only:</code> means LightOn produced no token there at all.</p>
+<div class="callout warn">
+  <div class="t">Don't re-run this carelessly on a book you've already arbitrated</div>
+  It IS safe now (resumable since this session), but always confirm you're pointing at the right <code>lighton_dir</code> — this file is the single source every later tool depends on.
+</div>
+
+<h2 id="vlm_arbiter"><span class="step">2</span><code>vlm_arbiter.py</code></h2>
+<p class="purpose">For every page with a <code>FLAG</code>, sends the real page image + the disagreeing candidates to Gemini vision, one call per page. Writes <code>verified_txt</code> back into <code>ensemble_review.json</code> and upgrades <code>action</code> to <code>VERIFIED</code>.</p>
+<div class="meta-row">
+  <span class="pill env">vx2lm env</span>
+  <span class="pill key">GEMINI_API_KEY</span>
+</div>
+<pre><span class="c"># needs the conda env (google-genai)</span>
+/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/vlm_arbiter.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json"</pre>
+<table>
+  <tr><th>Requires</th><td><code>ensemble_review.json</code> must exist (step 1). Reads its recorded <code>gemini_dir</code> to find the page images itself.</td></tr>
+  <tr><th>Writes</th><td>Updates the same <code>ensemble_review.json</code> in place (adds <code>verified_txt</code>, flips <code>action</code>).</td></tr>
+  <tr><th>Resumable</th><td>Yes — writes after <b>every page</b>, not just at the end. Re-running only processes pages that still have a <code>FLAG</code>; anything already <code>VERIFIED</code> is skipped.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>For each <code>VERIFIED</code> entry, compare <code>lighton_txt</code> / <code>gemini_txt</code> / <code>verified_txt</code>. Most will match one of the two originals; a genuinely new third answer is worth a second look before trusting it (numeric/ISBN-style content especially).</p>
+<div class="callout warn">
+  <div class="t">Real constraint: gemini-3.6-flash's daily free-tier cap is 20 requests/day</div>
+  A 429 mid-run is expected on an active project, not a bug. Just re-run the same command later — it resumes exactly where it stopped.
+</div>
+
+<h2 id="apply_corrections"><span class="step">3</span><code>apply_corrections.py</code></h2>
+<p class="purpose">Writes <code>VERIFIED</code> corrections into the actual <code>pXXX.json</code> token records. The first tool in this chain that touches pipeline data, not just a report.</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill nokey">no API key</span>
+</div>
+<pre>python3 tools/apply_corrections.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json"</pre>
+<table>
+  <tr><th>Requires</th><td>At least one <code>VERIFIED</code> entry (i.e. step 2 has run).</td></tr>
+  <tr><th>Writes</th><td>Updates affected <code>pXXX.json</code> files: substitutes <code>txt</code> (keeping the old value in <code>ocr_txt</code>), deletes a token outright if <code>verified_txt==""</code>, resets <code>status</code> to <code>"extracted"</code>.</td></tr>
+  <tr><th>Never does</th><td>Insert a word LightOn never produced (a <code>gemini-only</code> id) — reports these grouped by page instead. See step 4 for the case where that's most of a page.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>Its own console output is the review: <code>N corrected, M deleted, across P pages</code>, plus a per-page breakdown of skipped <code>gemini-only</code> words. No separate file to open.</p>
+<h3>Then re-run downstream stages for touched pages</h3>
+<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+import sys; sys.path.insert(0,'src')
+from pipeline import run_tashkel, run_speak_gemini, build_reader
+from pathlib import Path
+d = Path('work/المومياوات ناشيونال جيوجرافيك-lighton')
+run_tashkel.run(d)
+run_speak_gemini.run(d, run_speak_gemini.VOICE)
+build_reader.build(d)
+"</pre>
+
+<h2 id="replace_page"><span class="step">4</span><code>replace_page.py</code></h2>
+<p class="purpose">For a page LightOn didn't misread a few words on, but failed almost entirely on. Wholesale-swaps that page's token list for Gemini's (same schema on both sides).</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill nokey">no API key</span>
+</div>
+<pre><span class="c"># auto-detect and replace any page &gt;=50% gemini-only</span>
+python3 tools/replace_page.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json"
+
+<span class="c"># or target one page explicitly</span>
+python3 tools/replace_page.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json" --page 16
+
+<span class="c"># or change the auto-detect threshold</span>
+python3 tools/replace_page.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json" --threshold 0.7</pre>
+<table>
+  <tr><th>Writes</th><td>Replaces <code>tokens</code>, <code>box_level</code>, and <code>ocr_engine</code> in the target <code>pXXX.json</code>; records the original engine in <code>ocr_engine_replaced_from</code>; resets <code>status</code> to <code>"extracted"</code>.</td></tr>
+  <tr><th>Side effect</th><td>The page's LightOn ids are gone — tokens now carry Gemini's ids. Later tools that pair "original vs. corrected" by id (like <code>build_review.py</code>) detect this via <code>ocr_engine_replaced_from</code> and fall back accordingly.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>Console prints which page(s) qualified and how many tokens were replaced. Worth opening the actual page image once (<code>&lt;gemini_dir&gt;/pages/pXXX.jpg</code>) to sanity-check the page really was a genuine failure, not a threshold false-positive.</p>
+<p>Same re-run step as above applies afterward (diacritize/TTS/reader).</p>
+
+<h2 id="context_detector"><span class="step">5</span><code>context_detector.py</code></h2>
+<p class="purpose">Catches the one blind spot nothing else covers: LightOn and Gemini <i>agreeing</i> on the same wrong word. Runs on every page's <code>KEEP</code> entries — not just flagged pages — using a text-only LLM as a linguistic plausibility check.</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill key">OPENROUTER_API_KEY</span>
+</div>
+<pre>python3 tools/context_detector.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json"</pre>
+<table>
+  <tr><th>Model</th><td><code>deepseek/deepseek-v4-pro-0813</code> via OpenRouter — a <b>reasoning model</b>, deliberately kept off Gemini so a Gemini quota day doesn't block this layer too.</td></tr>
+  <tr><th>Writes</th><td>A <b>separate</b> file, <code>&lt;lighton_dir&gt;/context_review.json</code> — never touches <code>ensemble_review.json</code>. Also creates/extends <code>context_decisions.json</code>, a template defaulting every new suspicion to <code>"reject"</code>.</td></tr>
+  <tr><th>Resumable</th><td>Yes, per-page, same pattern as step 2.</td></tr>
+</table>
+<div class="callout warn">
+  <div class="t">Per-page latency varies a lot — this is expected, not a hang</div>
+  Because it's a reasoning model, a page with many agreed-upon words to check can take several minutes of real "thinking" time, not seconds. Don't assume it's stuck under ~8 minutes on a large page.
+</div>
+<h3>How to review — this is the one manual step in the whole chain</h3>
+<ol>
+  <li>Open <code>context_review.json</code>. Each entry: <code>ocr_word</code> (current text), <code>proposed</code> (the model's guess), <code>suspicion</code> (0–1).</li>
+  <li>Open <code>context_decisions.json</code>. For each id you agree with, change its value from <code>"reject"</code> to <code>"accept"</code> (use the proposed word) — or to any other literal string to use your own correction instead.</li>
+  <li>Leave everything else as <code>"reject"</code>. Nothing is applied until step 6 runs.</li>
+</ol>
+<div class="callout info">
+  <div class="t">A pattern worth knowing before you accept things</div>
+  Many flagged words are case-ending (i'rab) corrections rather than letter-level misreadings — this layer also catches the automated diacritizer's own errors (~6.6% DER), since it runs on already-diacritized text. Sort by <code>suspicion</code> and prioritize ones that look like unambiguous typos over debatable grammatical case calls.
+</div>
+
+<h2 id="apply_context_suggestions"><span class="step">6</span><code>apply_context_suggestions.py</code></h2>
+<p class="purpose">Applies only what you explicitly accepted in <code>context_decisions.json</code>. Nothing here is automatic — this is the gate between an LLM's linguistic guess and the actual pipeline data.</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill nokey">no API key</span>
+</div>
+<pre>python3 tools/apply_context_suggestions.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/context_review.json"</pre>
+<table>
+  <tr><th>Requires</th><td><code>context_decisions.json</code> next to the review file, with at least one non-<code>"reject"</code> value.</td></tr>
+  <tr><th>Writes</th><td>Same reversible pattern as step 3: <code>ocr_txt</code> preserved, <code>"context-llm"</code> appended to <code>fixes[]</code>, <code>status</code> reset to <code>"extracted"</code>.</td></tr>
+  <tr><th>Safety check</th><td>If a token's current <code>txt</code> no longer matches the <code>ocr_word</code> recorded when it was flagged (something else touched it since), that entry is skipped and reported rather than blindly overwritten.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>Console prints <code>N tokens corrected, M skipped (changed since detection)</code>. Same re-run step (diacritize/TTS/reader) applies afterward if <code>N &gt; 0</code>.</p>
+
+<h2 id="build_review"><span class="step">7</span><code>build_review.py</code></h2>
+<p class="purpose">A separate, one-off side-by-side page for a specific page range — original-OCR audio vs. corrected audio, inline strikethrough-correction pairs, color-coded image boxes. Not part of the normal reader; built for manually auditing a slice of a book in depth.</p>
+<div class="meta-row">
+  <span class="pill env">vx2lm env</span>
+  <span class="pill key">GEMINI_API_KEY</span>
+</div>
+<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/build_review.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton" --pages 15:19</pre>
+<table>
+  <tr><th>Requires</th><td><code>ensemble_review.json</code>, and every page in the range must be <code>status: "spoken"</code> already.</td></tr>
+  <tr><th>Writes</th><td><code>&lt;work_dir&gt;/review_&lt;start&gt;-&lt;end&gt;.html</code> plus new audio in <code>&lt;work_dir&gt;/review_audio/</code> (only the original-OCR track — the corrected track reuses the book's existing audio, no re-synthesis).</td></tr>
+  <tr><th>Skips</th><td>Any page with no comparison data in <code>ensemble_review.json</code> (Gemini never OCR'd it) — reported by name, not shown as a blank page.</td></tr>
+</table>
+<h3>How to review</h3>
+<p>Open the generated HTML in a browser. Page selector across the top; per page, the image with color-coded boxes (amber = VLM-verified, red = still unresolved), the annotated text panel, and two independent audio players (original OCR on top, corrected below) with a font-size control.</p>
+<div class="callout warn">
+  <div class="t">gemini-3.1-flash-tts free tier caps at 10 requests/day</div>
+  Resumable — an already-synthesized <code>.wav</code> in <code>review_audio/</code> is reused, not redone.
+</div>
+
+<h2 id="build_reader" style="border-top:none">Reminder — the normal reader needs no separate step</h2>
+<p><code>src/pipeline/build_reader.py</code> (part of the main pipeline, not <code>tools/</code>) automatically picks up <code>ensemble_review.json</code> if it exists — highlighting flagged/verified words and borrowing Gemini's box+image per page when LightOn has none. Just rebuild it after any of the apply steps above:</p>
+<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+import sys; sys.path.insert(0,'src')
+from pipeline import build_reader
+from pathlib import Path
+build_reader.build(Path('work/المومياوات ناشيونال جيوجرافيك-lighton'))
+"</pre>
+
+</div>
+</body>
+</html>

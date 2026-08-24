@@ -81,7 +81,10 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
                     "temperature": 0,
                     "response_format": {"type": "json_object"},
                 },
-                timeout=90,
+                # deepseek-v4-pro-0813 is a reasoning model -- its think time
+                # scales with how many words need judging, not prompt size, so
+                # a large page can genuinely take several minutes, not a hang
+                timeout=480,
             )
             if r.status_code != 200:
                 raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
