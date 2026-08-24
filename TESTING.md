@@ -1,12 +1,25 @@
 # Testing — real scenarios, not hypothetical ones
 
 Every scenario below actually happened while building `tools/` against two
-real books (`المومياوات ناشيونال جيوجرافيك`, `ثعلوب المكار`). There's no
-automated test suite for this pipeline yet — this is the manual/scenario
-catalog that exists instead: what to check, on what kind of input, and what
-the correct behavior looks like, backed by a real run that already exercised
-it. Where a scenario found a real bug, the bug and fix are named so the next
-person doesn't have to rediscover it.
+real books (`المومياوات ناشيونال جيوجرافيك`, `ثعلوب المكار`). This is the
+scenario catalog: what to check, on what kind of input, and what the correct
+behavior looks like, backed by a real run that already exercised it. Where a
+scenario found a real bug, the bug and fix are named so the next person
+doesn't have to rediscover it.
+
+**Most of the scenarios below now have an automated regression test.** They
+live in `src/tests/` (pytest) and run against fixture data, not live API
+calls or real quota:
+
+```bash
+/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -m pytest src/tests/ -v
+```
+
+Plain `python3 -m pytest src/tests/` also works and covers everything except
+`test_ocr_resumability.py` (needs `fitz`/`google-genai`, so it skips cleanly
+under an environment without them rather than erroring). Each scenario below
+that has a test names its file; scenarios without one are still open —
+tracked honestly in §6.
 
 Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-built.html`
 (why), `docs/tools-reference.html` (per-tool detail), `docs/full-pipeline-guide.html`
@@ -46,6 +59,8 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 **Expected:** only the new pages (18–33) get computed; pages 1–17's existing entries — including any `vlm_arbiter.py` verdicts — are left untouched.
 **Bug found and fixed:** the original `run()` always rebuilt the whole report from scratch. Re-running it after extending OCR coverage would have silently discarded 234 already-arbitrated (real, paid API call) verdicts. Fixed to skip pages already present in the output file.
 
+**Automated:** all of §1.1–1.3, 1.5, 1.6 → `src/tests/test_ensemble_review.py` (16 tests).
+
 ---
 
 ## 2. Arbitration (`vlm_arbiter.py`)
@@ -69,6 +84,8 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 **Setup:** a 429 (quota) interrupts arbitration partway through a multi-page run.
 **Expected:** every page already arbitrated before the crash is on disk; re-running resumes at the next un-arbitrated page.
 **Bug found and fixed:** the original `run()` only wrote the output file once, after the entire loop finished. A crash mid-run — which happened for real, twice — silently discarded every page completed before it, including real API calls already paid for. Fixed to write after every page.
+
+**Automated:** none of §2 yet — `vlm_arbiter.py`'s core logic is a real Gemini vision call, and it hasn't been factored so the request-building/response-parsing can be tested without mocking that call. Tracked in §6.
 
 ---
 
@@ -109,6 +126,8 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 **Expected:** the tool detects the page was wholesale-replaced (via `ocr_engine_replaced_from`, which `replace_page.py` sets) and falls back to sourcing the original text from `ensemble_review.json`'s untouched historical record instead of trying id-based pairing that can't work anymore (the ids are now Gemini's, not LightOn's).
 **Observed:** pilot book page 16 — `build_review.py` correctly produced a near-silent "original OCR" audio track for the page (just the one real word LightOn produced) without crashing on the id mismatch.
 
+**Automated:** §3.1–3.6 → `src/tests/test_apply_corrections.py` (8 tests) and `src/tests/test_replace_page.py` (9 tests). §3.7 (`build_review.py`'s fallback) is not — it also needs a live Gemini TTS call to exercise end to end. Tracked in §6.
+
 ---
 
 ## 4. Correlated errors (`context_detector.py` / `apply_context_suggestions.py`)
@@ -130,13 +149,15 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 
 ### 4.4 Something else changed a token between detection and applying its suggestion
 **Setup:** `context_decisions.json` was edited to accept a suggestion, but the underlying token's text changed since (another correction pass, a manual edit).
-**Expected:** the apply step detects the mismatch (letters-only comparison, same reasoning as §3.6) and skips that entry, reporting it rather than blindly overwriting.
-**Observed:** not yet triggered on a real run — worth deliberately testing before trusting this path on a book with overlapping correction passes.
+**Expected:** the apply step detects the mismatch (letters-only comparison, same reasoning as §3.6) and skips that entry, reporting it rather than blindly overwriting; a diacritic-only drift (not an actual letter change) must NOT be treated as stale.
+**Observed:** not yet triggered on a real run, but now covered by an automated test exercising both directions — a genuine letter change (skipped) and a diacritic-only drift (still applied).
 
 ### 4.5 A reasoning model's real "thinking" time looks like a hang
 **Setup:** `context_detector.py` calls a reasoning model (`deepseek-v4-pro-0813` via OpenRouter); a page with 50+ words to check can take several minutes of genuine computation.
 **Expected:** don't kill and retry within the first few minutes — check actual process state (CPU time, open network connections) before concluding it's stuck.
 **Observed:** a page that appeared frozen for 12+ minutes with 0% CPU turned out to be genuinely still processing — it completed normally, and killing/retrying similar cases wasted real progress. A separate case *was* a genuine multi-hour stall (near-zero CPU, no forward progress across a much longer window) and needed a kill + retry. Both are real; the distinguishing signal is whether elapsed time keeps growing with no state change at all versus periodic real progress.
+
+**Automated:** §4.2, 4.3, 4.4 → `src/tests/test_build_context_review.py` (7 tests) and `src/tests/test_apply_context_suggestions.py` (7 tests). §4.1 (the detector itself) and §4.5 (latency behavior) are not — both need a live OpenRouter call. Tracked in §6.
 
 ---
 
@@ -151,7 +172,7 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 **Setup:** `main.py --ocr lighton` is run again against a book that already went through the full correction chain (some pages reset to `"extracted"` by `apply_corrections.py`, expecting `run_tashkel`/`run_speak_gemini` to pick them up).
 **Expected:** `run_ocr_lighton.py`/`run_ocr_gemini.py` recognize the page is already past extraction (status `"diacritised"` or `"spoken"`, not just `"extracted"`) and skip it — corrections survive.
 **Bug found and fixed:** both drivers only checked `status == "extracted"`. A page reset to `"extracted"` by the correction pipeline would be silently re-OCR'd from scratch on the next full-pipeline run, destroying every applied correction. This is the same bug class `run_extract.py` already had a documented real incident about (see README's Open Items) — just never fixed on the OCR-engine drivers until this session. Fixed identically on both.
-**How to re-verify:** run `tools/run_full_pipeline.py` twice in a row on the same book. The second run should report 0 new corrections, 0 pages re-diacritized, and every OCR stage should say "already done, skipping" for every page.
+**How to re-verify:** run `tools/run_full_pipeline.py` twice in a row on the same book. The second run should report 0 new corrections, 0 pages re-diacritized, and every OCR stage should say "already done, skipping" for every page. Automated: `src/tests/test_ocr_resumability.py` — parametrized over all three "already done" statuses for both engines, plus the exact cross-tool sequence (a page `apply_corrections.py` reset to `"extracted"` must still be skipped, not re-OCR'd), using a real minimal PDF and monkeypatched network calls (no live API needed, no quota spent).
 
 ### 5.3 The one-command orchestrator on a fresh book vs. a resumed one
 **Setup:** `tools/run_full_pipeline.py` run on a PDF with no `work/` output yet, versus run again on the same PDF after a partial completion.
@@ -160,9 +181,22 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 
 ---
 
-## 6. Known gaps not yet covered by any scenario above
+## 6. Known gaps — genuinely untested, not just undocumented
 
-- No scenario exercises a book that fails `has_text_layer()`'s threshold ambiguously (near the 50-word cutoff) — worth a deliberate test since the whole correction pipeline assumes the OCR path was taken.
-- No scenario exercises `replace_page.py --page N` targeting a specific page manually (only the auto-threshold path has been run for real).
-- §4.4 above (staleness detection in `apply_context_suggestions.py`) has code but no real-run confirmation yet.
-- No scenario covers what happens if `OPENROUTER_API_KEY` or `GEMINI_API_KEY` is missing/invalid — currently just an unhandled `KeyError`/API error, not a friendly message.
+**No automated coverage, and the reason is the same for all of them: the
+function under test IS the network call.** None have been refactored to
+separate "build the request" / "parse the response" from "make the HTTP
+call," which is what would make them mockable without either hitting a real
+API or asserting nothing meaningful:
+
+- `vlm_arbiter.py`'s `arbitrate_page` — the Gemini vision request/response handling itself (§2.1–2.3).
+- `context_detector.py`'s `detect_page` — the OpenRouter request/response handling itself (§4.1).
+- `build_review.py` end to end — needs a live Gemini TTS call to produce the dual audio tracks (§3.7).
+- Quota-exhaustion handling (§5.1) — a real 429 mid-loop, and that the driver saves progress before stopping. The *shape* of this (save-before-stop) is exercised indirectly by `vlm_arbiter.py`'s per-page-write fix, but no test actually injects a failure partway through a loop.
+- `run_full_pipeline.py` itself — it's a thin orchestrator over already-tested pieces, but the orchestration logic (fresh vs. resumed run, the folder move/rename dance) has no test of its own.
+
+**Smaller, genuinely open gaps:**
+
+- No test exercises a book that fails `has_text_layer()`'s threshold ambiguously (near the 50-word cutoff).
+- No test covers what happens if `OPENROUTER_API_KEY` or `GEMINI_API_KEY` is missing/invalid — currently just an unhandled `KeyError`/API error, not a friendly message.
+- `run_ocr_lighton.py`'s per-page failure handling (a bad LightOn response mid-loop) isn't exercised, only its resumability check.

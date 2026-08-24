@@ -424,7 +424,7 @@ python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.j
 | `docs/ocr-correction-architecture-built.html` | Why it's shaped this way — the LightOn/Gemini asymmetry, detection, arbitration, known blind spots |
 | `docs/tools-reference.html` | Every tool: exact command, env, inputs/outputs, how to review its result |
 | `docs/full-pipeline-guide.html` | One copy-pasteable script, start to finish, plus the known quota constraints |
-| `TESTING.md` | Real scenarios this pipeline has actually hit, and what it did about each |
+| `TESTING.md` | Real scenarios this pipeline has actually hit, what it did about each, and an automated pytest suite (`src/tests/`, 56 tests) covering most of them |
 
 ---
 
