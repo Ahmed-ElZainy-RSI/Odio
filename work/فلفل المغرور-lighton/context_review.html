@@ -1,0 +1,297 @@
+<!doctype html><html lang=ar dir=rtl><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>فلفل المغرور-lighton — مراجعة الأخطاء المتطابقة</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:26px 18px;direction:ltr}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-size:24px;font-weight:800;margin-bottom:4px;direction:rtl;text-align:right}
+.sub{color:#7a8290;font-size:13px;margin-bottom:20px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:#5c646e;margin-bottom:18px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.jump{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:14px 16px;margin-bottom:22px}
+.jump h2{font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:#7a8290;margin-bottom:10px}
+.jump table{width:100%;border-collapse:collapse;font-size:13px}
+.jump th{text-align:left;color:#7a8290;font-size:11px;text-transform:uppercase;padding:4px 8px}
+.jump td{padding:5px 8px;border-top:1px solid #eef1f4}
+.jump a{color:#1c4f8f;text-decoration:none}
+.jump a:hover{text-decoration:underline}
+.tag{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}
+.tag.diff{background:#fdeceb;color:#a4392f}
+.tag.case{background:#eaf1fb;color:#1c4f8f}
+.dec{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}
+.dec.reject{background:#f1f3f6;color:#8a92a0}
+.dec.accept{background:#eef8f1;color:#0f6b3a}
+.dec.custom{background:#fdf3e0;color:#9a6b00}
+.page{background:#fff;border:1px solid #dfe3e8;border-radius:14px;overflow:hidden;margin-bottom:20px}
+.page-hd{padding:10px 16px;background:#fafbfc;border-bottom:1px solid #eef1f4;font-weight:700;font-size:13px}
+.page-body{display:flex;align-items:stretch}
+.page-img{flex:1;min-width:0;max-height:420px;overflow:auto;background:#000}
+.page-img img{width:100%;display:block}
+.page-list{flex:1;min-width:0;max-height:420px;overflow:auto;padding:10px 14px}
+.entry{padding:8px 6px;border-bottom:1px solid #f1f3f6;font-size:14px;direction:rtl}
+.entry:last-child{border-bottom:none}
+.entry .words{display:flex;gap:8px;align-items:baseline;justify-content:flex-end;font-family:'Amiri','Scheherazade New',serif;font-size:19px}
+.entry .arrow{color:#8a92a0;font-size:13px}
+.entry .meta{display:flex;gap:6px;justify-content:flex-end;margin-top:4px;direction:ltr}
+.entry .sus{font-size:10.5px;color:#8a92a0;font-family:ui-monospace,Menlo,monospace}
+@media (max-width:760px){.page-body{flex-direction:column}}
+</style></head><body><div class=wrap>
+
+<h1>فلفل المغرور-lighton — مراجعة الأخطاء المتطابقة (context_detector.py)</h1>
+<div class=sub>26 suspicious word(s) across 7 page(s) · sorted by suspicion in the jump list, grouped by page below</div>
+
+<div class=legend>
+<span><i style="background:#fdeceb"></i>different word — check the image first</span>
+<span><i style="background:#eaf1fb"></i>diacritics/case-ending only</span>
+<span class="dec reject">reject</span> default, unreviewed
+<span class="dec accept">accept</span> takes the model's proposal
+<span class="dec custom">custom</span> reviewer wrote their own text
+</div>
+
+<div class=jump>
+<h2>Sorted by suspicion (highest first)</h2>
+<table>
+<tr><th>sus</th><th>pg</th><th>word</th><th></th><th>proposed</th><th>type</th><th>decision</th></tr>
+<tr><td>0.98</td><td><a href="#p3">3</a></td><td dir=rtl>فَرَدٌ</td><td>→</td><td dir=rtl>فَرَدَّ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p3">3</a></td><td dir=rtl>طَارُ</td><td>→</td><td dir=rtl>طارَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p3">3</a></td><td dir=rtl>طَارُ</td><td>→</td><td dir=rtl>طارَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p4">4</a></td><td dir=rtl>أَكَلَهُ</td><td>→</td><td dir=rtl>أَكَلْتُهُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p6">6</a></td><td dir=rtl>يُلْعَبُ</td><td>→</td><td dir=rtl>يَلْعَبُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p1">1</a></td><td dir=rtl>الأيداع</td><td>→</td><td dir=rtl>الإيداع</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p2">2</a></td><td dir=rtl>بِأَشْهَى</td><td>→</td><td dir=rtl>يَتَبَخْتَرُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p3">3</a></td><td dir=rtl>وَسَبْقُهُ</td><td>→</td><td dir=rtl>وَسَبَقَهُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p4">4</a></td><td dir=rtl>فَرُفُورٍ،</td><td>→</td><td dir=rtl>بِفَرْفُورٍ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p4">4</a></td><td dir=rtl>يَقُضِمُ</td><td>→</td><td dir=rtl>يَقْضِمُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>آخَرُ.</td><td>→</td><td dir=rtl>آخَرِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>صَمَّتْ</td><td>→</td><td dir=rtl>صَمَّ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>الْفَأَرُ</td><td>→</td><td dir=rtl>الْفَأْرُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>فَتَرَّةٌ،</td><td>→</td><td dir=rtl>فَتْرَةً</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>الصَّغَارُ.</td><td>→</td><td dir=rtl>الصِّغَارِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p6">6</a></td><td dir=rtl>الْقُرْدُ</td><td>→</td><td dir=rtl>الْقِرْدُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p9">9</a></td><td dir=rtl>وَالْقَى</td><td>→</td><td dir=rtl>وَأَلْقَى</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p5">5</a></td><td dir=rtl>حَيَوَانَ</td><td>→</td><td dir=rtl>حَيَوَانٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p2">2</a></td><td dir=rtl>بِكَبَرٍ</td><td>→</td><td dir=rtl>بِكِبْرٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p4">4</a></td><td dir=rtl>فَلْفَلْ</td><td>→</td><td dir=rtl>فُلْفُلُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p4">4</a></td><td dir=rtl>فَلْفَلْ</td><td>→</td><td dir=rtl>فُلْفُلُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p6">6</a></td><td dir=rtl>قَابِلَهُ</td><td>→</td><td dir=rtl>قَابَلَهُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p9">9</a></td><td dir=rtl>فَلْفَلِ</td><td>→</td><td dir=rtl>فَلْفَلُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p2">2</a></td><td dir=rtl>وَيُنْصَرِفُ</td><td>→</td><td dir=rtl>يَنْصَرِفُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p4">4</a></td><td dir=rtl>فَرُفُورٌ</td><td>→</td><td dir=rtl>فَرْفُورٌ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.65</td><td><a href="#p9">9</a></td><td dir=rtl>الشُّوكِ،</td><td>→</td><td dir=rtl>الشَّوْكِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+</table>
+</div>
+
+<div class=page id="p1">
+<div class=page-hd>page 1 — 1 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p001.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الأيداع</span><span class=arrow>&lt;-</span><span>الإيداع</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p001w011</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p2">
+<div class=page-hd>page 2 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p002.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>بِأَشْهَى</span><span class=arrow>&lt;-</span><span>يَتَبَخْتَرُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p002w009</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>بِكَبَرٍ</span><span class=arrow>&lt;-</span><span>بِكِبْرٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p002w020</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَيُنْصَرِفُ</span><span class=arrow>&lt;-</span><span>يَنْصَرِفُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p002w033</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p3">
+<div class=page-hd>page 3 — 4 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p003.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>طَارُ</span><span class=arrow>&lt;-</span><span>طارَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p003w000</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَسَبْقُهُ</span><span class=arrow>&lt;-</span><span>وَسَبَقَهُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p003w005</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَرَدٌ</span><span class=arrow>&lt;-</span><span>فَرَدَّ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.98 · p003w017</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>طَارُ</span><span class=arrow>&lt;-</span><span>طارَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p003w036</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p4">
+<div class=page-hd>page 4 — 6 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p004.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>فَرُفُورٍ،</span><span class=arrow>&lt;-</span><span>بِفَرْفُورٍ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p004w005</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يَقُضِمُ</span><span class=arrow>&lt;-</span><span>يَقْضِمُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p004w019</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَرُفُورٌ</span><span class=arrow>&lt;-</span><span>فَرْفُورٌ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p004w022</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَلْفَلْ</span><span class=arrow>&lt;-</span><span>فُلْفُلُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p004w024</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَلْفَلْ</span><span class=arrow>&lt;-</span><span>فُلْفُلُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p004w036</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَكَلَهُ</span><span class=arrow>&lt;-</span><span>أَكَلْتُهُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p004w044</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p5">
+<div class=page-hd>page 5 — 6 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p005.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>حَيَوَانَ</span><span class=arrow>&lt;-</span><span>حَيَوَانٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p005w008</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>آخَرُ.</span><span class=arrow>&lt;-</span><span>آخَرِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w019</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>صَمَّتْ</span><span class=arrow>&lt;-</span><span>صَمَّ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w020</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْفَأَرُ</span><span class=arrow>&lt;-</span><span>الْفَأْرُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w021</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَتَرَّةٌ،</span><span class=arrow>&lt;-</span><span>فَتْرَةً</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w023</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الصَّغَارُ.</span><span class=arrow>&lt;-</span><span>الصِّغَارِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w030</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p6">
+<div class=page-hd>page 6 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p006.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>قَابِلَهُ</span><span class=arrow>&lt;-</span><span>قَابَلَهُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p006w007</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْقُرْدُ</span><span class=arrow>&lt;-</span><span>الْقِرْدُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p006w008</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يُلْعَبُ</span><span class=arrow>&lt;-</span><span>يَلْعَبُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p006w011</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p9">
+<div class=page-hd>page 9 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../فلفل المغرور/pages/p009.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الشُّوكِ،</span><span class=arrow>&lt;-</span><span>الشَّوْكِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.65 · p009w013</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَالْقَى</span><span class=arrow>&lt;-</span><span>وَأَلْقَى</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p009w016</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَلْفَلِ</span><span class=arrow>&lt;-</span><span>فَلْفَلُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p009w025</span>
+  </div>
+</div></div></div>
+</div>
+
+</div></body></html>

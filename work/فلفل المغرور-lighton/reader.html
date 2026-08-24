@@ -1,0 +1,176 @@
+<!doctype html><html lang=ar dir=rtl><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>فلفل المغرور-lighton — قارئ متزامن</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:26px 18px}
+.pg{max-width:1000px;margin:0 auto}
+.hd{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+h1{font-size:26px;font-weight:700}
+.sub{font-size:12.5px;color:#7a8290;direction:ltr}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:14px;overflow:hidden}
+.bar{display:flex;gap:9px;align-items:center;padding:11px 14px;background:#fafbfc;
+border-bottom:1px solid #eef1f4;flex-wrap:wrap;direction:ltr}
+.bar button{font:inherit;font-size:12.5px;padding:7px 13px;border:1px solid #dfe3e8;
+background:#fff;border-radius:8px;cursor:pointer;color:#3c434c}
+.bar button:hover{border-color:#b9c2cc}
+.bar button.on{background:#14233a;border-color:#14233a;color:#fff}
+.bar button:disabled{opacity:.35;cursor:default}
+.scrub{flex:1;min-width:110px;height:6px;background:#e6eaee;border-radius:3px;position:relative;cursor:pointer}
+.scrub i{position:absolute;inset:0 auto 0 0;width:0;background:#1c4f8f;border-radius:3px;display:block}
+.tm{font-variant-numeric:tabular-nums;font-size:12px;color:#7a8290;min-width:86px;text-align:right}
+.pgsel{display:flex;gap:4px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #eef1f4;direction:ltr}
+.pgsel button{font:inherit;font-size:11.5px;width:30px;height:28px;border:1px solid #dfe3e8;
+background:#fff;border-radius:6px;cursor:pointer;color:#5c646e}
+.pgsel button.on{background:#1c4f8f;border-color:#1c4f8f;color:#fff;font-weight:700}
+.compare{display:flex;align-items:stretch}
+.compare>div{flex:1;min-width:0}
+.txtcol{max-height:75vh;overflow:auto;border-left:1px solid #eef1f4}
+.imgcol{max-height:75vh;overflow:auto;background:#000}
+.compare.textonly .imgcol{display:none}
+.compare.textonly .txtcol{border-left:none}
+@media (max-width:760px){.compare{flex-direction:column} .txtcol{border-left:none;border-bottom:1px solid #eef1f4}}
+.txt{padding:26px 30px;font-size:24px;line-height:2.6;
+font-family:'Amiri','Scheherazade New','Noto Naskh Arabic','Geeza Pro',serif;min-height:220px}
+.w{padding:2px 4px;border-radius:5px;cursor:pointer}
+.w:hover{background:#eef4fc;outline:1px solid #c3d5ee}
+.w.now{background:#ffe9a8;box-shadow:0 0 0 2px #e3b778}
+.w.interp{border-bottom:2px dotted #c3cbd4}
+.w.fixed{background:#f4fbf6}
+.w.fixed.now{background:#ffe9a8}
+.w.flagged{background:#fdeceb;outline:1px solid #e8b4ae}
+.w.flagged.now{background:#ffe9a8}
+.w.verified{background:#fdf3e0;outline:1px solid #e8c98a}
+.w.verified.now{background:#ffe9a8}
+.w.untimed{opacity:.55;cursor:default}
+.imgw{position:relative;line-height:0}
+.imgw img{width:100%;display:block}
+.bx{position:absolute;border:2px solid transparent;border-radius:3px;cursor:pointer}
+.bx:hover{border-color:#1c4f8f;background:#1c4f8f22}
+.bx.now{border-color:#e3a11a;background:#ffd97e55}
+.insp{padding:12px 16px;border-top:1px solid #eef1f4;background:#fafbfc;direction:ltr;
+font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-height:58px}
+.insp b{color:#1a1d21}
+.lg{display:flex;gap:15px;flex-wrap:wrap;font-size:11.5px;color:#5c646e;margin-top:12px;direction:ltr}
+.lg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:16px;direction:ltr}
+.stat div{background:#fff;border:1px solid #dfe3e8;border-radius:10px;padding:11px 13px}
+.stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+.stat span{font-size:10.5px;color:#7a8290}
+</style></head><body><div class=pg>
+
+<div class=hd><h1>فلفل المغرور-lighton</h1>
+<div class=sub>1 pages · 20 tokens · 0.6 min · Kore · text view only — no page image available</div></div>
+
+<div class=card>
+<div class=pgsel id=pgsel></div>
+<div class=bar>
+<button id=play>▶</button>
+<button id=prev>‹</button><button id=next>›</button>
+<div class=scrub id=scrub><i id=bar></i></div>
+<div class=tm id=tm>0.00 / 0.00</div>
+</div>
+<div class=txt id=txt></div>
+<div class=insp id=insp>Hover a word to inspect its token record.</div>
+</div>
+
+<div class=lg>
+<span><i style="background:#ffe9a8"></i>currently spoken</span>
+<span><i style="background:#f4fbf6;border:1px solid #cfe8d8"></i>cleaned by a rule</span>
+<span><i style="border-bottom:2px dotted #c3cbd4;width:14px;height:8px"></i>timing interpolated</span>
+<span><i style="background:#fdeceb;border:1px solid #e8b4ae"></i>disagrees with a second engine, unresolved</span>
+
+</div>
+<div class=stat>
+<div><b>13</b><span>anchored to real timestamps (65%)</span></div>
+<div><b>7</b><span>interpolated between anchors</span></div>
+<div><b>4</b><span>tokens cleaned by an extraction rule</span></div>
+<div><b>9</b><span>unresolved disagreements (45%)</span></div>
+
+<div><b>0.6 min</b><span>real synthesised audio</span></div>
+</div>
+</div>
+<audio id=au preload=metadata></audio>
+<script>
+const P=[{"page":1,"audio":"audio/p001.wav","img":"../فلفل المغرور/pages/p001.jpg","dur":36200,"diac":0.0,"box_level":"none","has_image":true,"compare":false,"voice":"Kore","tokens":[{"i":"p001w000","r":"كتاب","t":"كِتَابِ","m":[0,780],"s":"anchor","f":[],"g":"حِكَايَاتُ"},{"i":"p001w001","r":"الغابنة","t":"الْغَابِنَةِ","m":[780,1920],"s":"anchor","f":[],"g":"الغَابَة"},{"i":"p001w002","r":"فقل","t":"فَقُلْ","m":[1920,2580],"s":"anchor","f":[],"g":"فُلْفُلُ"},{"i":"p001w003","r":"المجرور","t":"الْمجْرُورُ","m":[2580,3400],"s":"anchor","f":[],"g":"المَغْرُورُ"},{"i":"p001w004","r":"تاليف:","t":"تاليفُ:","m":[3400,4740],"s":"interpolated","f":[]},{"i":"p001w005","r":"فاطمة","t":"فاطِمَةُ","m":[4740,5720],"s":"anchor","f":[]},{"i":"p001w006","r":"نعمان","t":"نُعْمان","m":[5720,6500],"s":"anchor","f":[]},{"i":"p001w007","r":"رسوم:","t":"رُسُومُ:","m":[6500,7700],"s":"anchor","f":[]},{"i":"p001w008","r":"سلمى","t":"سلْمى","m":[7700,8780],"s":"interpolated","f":[]},{"i":"p001w009","r":"حافظ","t":"حافظ","m":[8780,9360],"s":"anchor","f":[]},{"i":"p001w010","r":"**رقم","t":"رقْم","m":[9840,10540],"s":"anchor","f":["leading-punct"]},{"i":"p001w011","r":"الأيداع","t":"الأيداع","m":[10540,17067],"s":"interpolated","f":[]},{"i":"p001w012","r":"2021/9746**","t":"2021/9746**","m":[17067,18000],"s":"interpolated","f":[]},{"i":"p001w013","r":"**التوقيع","t":"التوقيع","m":[18000,19360],"s":"anchor","f":["leading-punct"],"g":"الترقيم"},{"i":"p001w014","r":"الدولي","t":"الدولي","m":[19360,20060],"s":"anchor","f":[]},{"i":"p001w015","r":"978-977-808-100-8**","t":"978-977-808-100-8**","m":[20060,32119],"s":"interpolated","f":[]},{"i":"p001w016","r":"*باز","t":"باز","m":[32119,32820],"s":"anchor","f":["leading-punct"],"g":null},{"i":"p001w017","r":"الممتلكات*","t":"الْمُمْتلكَاتِ*","m":[32820,33940],"s":"anchor","f":[],"g":null},{"i":"p001w018","r":"*باز","t":"بَازِ","m":[33940,34505],"s":"interpolated","f":["leading-punct"],"g":null},{"i":"p001w019","r":"الممتلكات*","t":"الْمُمْتَلِكَاتِ*","m":[34505,36200],"s":"interpolated","f":[],"g":null}]}];
+const HAS_COMPARE_LAYOUT=false;
+let cur=0;
+const $=s=>document.querySelector(s);
+const au=$("#au"),txt=$("#txt"),compare=$("#compare"),imgw=$("#imgw"),img=$("#img"),boxes=$("#boxes"),
+      insp=$("#insp"),bar=$("#bar"),tm=$("#tm"),playB=$("#play");
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+$("#pgsel").innerHTML=P.map((p,i)=>`<button data-p="${i}"${i?"":" class=on"}>${p.page}</button>`).join("");
+$("#pgsel").onclick=e=>{const b=e.target.closest("button"); if(b) load(+b.dataset.p);};
+
+function load(i){
+  cur=i; const p=P[i];
+  au.src=p.audio;
+  txt.innerHTML="";
+  if(HAS_COMPARE_LAYOUT){
+    compare.classList.toggle("textonly",!p.compare);
+    if(p.compare){ img.src=p.img; boxes.innerHTML=""; }
+  }
+  p.tokens.forEach((t,j)=>{
+    const s=document.createElement("span");
+    s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")
+      +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
+    s.dataset.j=j; s.textContent=t.t;
+    txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
+    if(p.compare){
+      const b=document.createElement("div");
+      b.className="bx"; b.dataset.j=j;
+      b.style.cssText=`left:${t.b[0]}%;top:${t.b[1]}%;width:${t.b[2]}%;height:${t.b[3]}%`;
+      boxes.appendChild(b);
+    }
+  });
+  document.querySelectorAll("#pgsel button").forEach((b,k)=>b.classList.toggle("on",k===i));
+  $("#prev").disabled=!i; $("#next").disabled=i===P.length-1;
+  wire(); render();
+}
+function wire(){
+  document.querySelectorAll(".w,.bx").forEach(el=>{
+    el.onmouseenter=()=>show(+el.dataset.j);
+    el.onclick=()=>{const m=P[cur].tokens[+el.dataset.j].m; if(m){au.currentTime=m[0]/1000; render();}};
+  });
+}
+function show(j){
+  const t=P[cur].tokens[j];
+  const src=t.s==="anchor"
+    ? '<span style="color:#0f7b4a">anchor — real timestamp</span>'
+    : t.s==="interpolated"
+    ? '<span style="color:#8a8f96">interpolated between anchors</span>'
+    : '<span style="color:#c0392b">no timing available</span>';
+  const fx=t.f.length?`<span style="color:#1c4f8f">cleaned: ${t.f.join(", ")}</span>`
+                     :'<span style="color:#a4abb4">no cleanup needed</span>';
+  const box=P[cur].compare?` &nbsp;·&nbsp; box [${t.b.map(v=>v.toFixed(1)).join(", ")}]`:"";
+  const timing=t.m?`t [${t.m[0]}, ${t.m[1]}] ms · `:"";
+  const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
+  const ens="v" in t
+    ? `<br><span style="color:#9a6b00">ensemble: LightOn <b>${esc(t.t)}</b> vs Gemini <b>${gTxt}</b> → VLM read <b>${esc(t.v)}</b></span>`
+    : "g" in t
+    ? `<br><span style="color:#c0392b">ensemble: LightOn says <b>${esc(t.t)}</b>, Gemini says <b>${gTxt}</b> (unresolved)</span>`
+    : "";
+  insp.innerHTML=`<b>${t.i}</b> &nbsp; raw <b>${esc(t.r)}</b> → <b>${esc(t.t)}</b><br>`
+   +`${timing}${src} &nbsp;·&nbsp; ${fx}${box}${ens}`;
+}
+let last=-1;
+function render(){
+  const ms=au.currentTime*1000, ts=P[cur].tokens;
+  let i=-1;
+  for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){i=k;break;}
+  document.querySelectorAll(".w").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(P[cur].compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(i>=0&&i!==last){show(i);last=i;}
+  const d=P[cur].dur;
+  bar.style.width=Math.min(100,100*ms/d)+"%";
+  tm.textContent=(ms/1000).toFixed(2)+" / "+(d/1000).toFixed(2);
+}
+au.ontimeupdate=render;
+au.onended=()=>{playB.textContent="▶";};
+playB.onclick=()=>{if(au.paused){au.play();playB.textContent="⏸";}else{au.pause();playB.textContent="▶";}};
+$("#prev").onclick=()=>load(cur-1); $("#next").onclick=()=>load(cur+1);
+$("#scrub").onclick=e=>{const r=e.currentTarget.getBoundingClientRect();
+  au.currentTime=P[cur].dur/1000*(e.clientX-r.left)/r.width; render();};
+load(0);
+</script></body></html>

@@ -362,6 +362,72 @@ three providers (Hume, SILMA, Gemini) hit their limits during this build.
 
 ---
 
+## Correcting OCR errors (`tools/`)
+
+`main.py` above gets a book from PDF to reader. It doesn't tell you whether
+the OCR was *right*. LightOn especially can't be checked in isolation — it
+returns no bounding boxes at all (`/parse` and even `/search`'s
+`include_bboxes` — see `tmp/lighton_bbox_support_request.md`), so there's no
+image to crop and verify a suspicious word against. The fix: OCR the same PDF
+a second time with Gemini (which does return boxes and saves the rendered
+page image), and use disagreement between the two engines — plus a
+text-only pass that also checks words they *agree* on — as the detection
+signal. Full design rationale in `docs/ocr-correction-architecture-built.html`.
+
+```
+tools/
+  ensemble_review.py           detect              — diff LightOn vs Gemini OCR of the same PDF, page by page
+  vlm_arbiter.py                resolve             — Gemini vision reads the real page per flagged page, one call not per word
+  apply_corrections.py          apply (word-level)  — writes VERIFIED corrections into pXXX.json; reversible, ocr_txt kept
+  replace_page.py               apply (page-level)  — wholesale-swaps a page LightOn failed almost entirely (>=50% gemini-only)
+  context_detector.py           detect (correlated) — catches LightOn+Gemini agreeing on the SAME wrong word (OpenRouter/DeepSeek, text-only)
+  build_context_review.py       review              — browsable HTML for context_detector.py's findings, sorted by suspicion
+  apply_context_suggestions.py  apply (reviewed)     — applies only human-accepted suggestions from context_decisions.json
+  build_review.py               review (deep audit)  — original-vs-corrected side by side for one page range, dual audio tracks
+  run_full_pipeline.py          orchestrator         — runs the whole automatable chain in one command, stops before the one manual step
+```
+
+Same rule as the base pipeline: every tool is a `run(...)` function other
+tools import, not just a script, and every stage is independently resumable
+— a 429 mid-run costs at most the page it failed on, confirmed by repeated
+real quota exhaustion while building this (see Open items).
+
+### Running the correction pipeline
+
+```bash
+VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+
+# the whole automatable chain, one command — both OCR engines through
+# correlated-error detection, then it stops for the one deliberately-manual step
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/book.pdf"
+
+# ...or run it stage by stage; see docs/full-pipeline-guide.html for the
+# complete copy-pasteable sequence and docs/tools-reference.html for what
+# each tool reads/writes and how to review its output
+python3 tools/ensemble_review.py "work/<book>" "work/<book>-lighton"
+$VX2  tools/vlm_arbiter.py "work/<book>-lighton/ensemble_review.json"
+python3 tools/apply_corrections.py "work/<book>-lighton/ensemble_review.json"
+python3 tools/context_detector.py "work/<book>-lighton/ensemble_review.json"
+python3 tools/build_context_review.py "work/<book>-lighton/context_review.json"
+# -> review work/<book>-lighton/context_decisions.json by hand, then:
+python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.json"
+```
+
+`tools/*.py` only need plain `python3` (stdlib + `requests`/`dotenv`); the
+`vx2lm` env is needed only where Gemini or audio alignment is called
+(`vlm_arbiter.py`, `build_review.py`, and the base pipeline itself).
+
+### Docs
+
+| File | Covers |
+| --- | --- |
+| `docs/ocr-correction-architecture-built.html` | Why it's shaped this way — the LightOn/Gemini asymmetry, detection, arbitration, known blind spots |
+| `docs/tools-reference.html` | Every tool: exact command, env, inputs/outputs, how to review its result |
+| `docs/full-pipeline-guide.html` | One copy-pasteable script, start to finish, plus the known quota constraints |
+| `TESTING.md` | Real scenarios this pipeline has actually hit, and what it did about each |
+
+---
+
 ## Two extraction paths
 
 The corpus splits, and the split matters more than the engine choice.
@@ -402,6 +468,7 @@ instead of implying precision it doesn't have.
 | 06  | Align                  | `speak.py:bind` (native or forced)                            | ✅ Hume native 93.7% anchored on النجوم; Gemini+whisper 51.0% anchored + 47.8% interpolated on المومياوات (1.2% untimed on 2 hard pages — degrades to unhighlightable text, doesn't break) |
 | 07  | Index                  | page JSON in`work/<book>/`                                    | ✅                                                                                                                                                                                                          |
 | 08  | Reader                 | `build_reader.py`                                             | ✅`work/النجوم/reader.html` (full) + `work/المومياوات ناشيونال جيوجرافيك-lighton/reader.html` (text-only, no boxes)                                                    |
+| 09  | Error detection + correction | `tools/*.py`                                            | ✅ ensemble diff + VLM arbitration + word/page-level apply + correlated-error detection, run end to end on two books (see `tools/` above, `TESTING.md`)                    |
 
 ---
 
@@ -502,18 +569,41 @@ boxes are (it predates the text-layer discovery that made real boxes free).
   but returns `[]` in every condition tested live (scanned PDF, text-layer
   PDF, tight single-chunk queries, both `/search` and `/retrieve`). Support
   request drafted in `tmp/lighton_bbox_support_request.md`.
+- ~~The correctness gate is rule-based only~~ — built, end to end, run on two
+  books. `tools/ensemble_review.py` diffs LightOn against a Gemini OCR of the
+  same PDF (234 flagged / 17 pages on the pilot book); `vlm_arbiter.py`
+  resolves each flagged page against the real image (84% of verdicts matched
+  one of the two original reads, 7% were a genuine third answer — e.g. it
+  stripped Gemini's own TOC dot-leader noise correctly, but also once
+  re-guessed an ISBN digit string differently from both originals, which is
+  exactly the class of answer nothing should auto-trust). Word-level fixes
+  (`apply_corrections.py`) and whole-page replacement for pages LightOn
+  failed almost entirely (`replace_page.py`, ≥50% of a page `gemini-only` —
+  found by looking at the actual page image: white text reversed out of a
+  dark background with a ghosted watermark behind it, a genuinely hard case
+  for a 1B-parameter OCR model) cover disagreement. A separate text-only pass
+  (`context_detector.py`, OpenRouter/DeepSeek so a Gemini quota day doesn't
+  also block it) covers the one thing engine-disagreement can never see: both
+  engines agreeing on the same wrong word — 109 and 29 cases caught on the
+  two books tested, one confirmed by hand against the source image
+  (`الْغِنَاءُ` "singing" vs. the real `الْغَنَّاءِ` "lush", describing a forest —
+  and the model's own proposed fix for it was *also* wrong, which is exactly
+  why nothing from this layer auto-applies). Full writeup in
+  `docs/ocr-correction-architecture-built.html`, real scenarios in
+  `TESTING.md`.
 
 **Blocking**
 
 - [ ] **Every TTS/OCR provider tried is quota-exhausted on its free tier** —
   Hume (mid-book on النجوم), SILMA (mid-book earlier), Gemini vision
-  (page 18 of المومياوات), and now Gemini TTS too: both
-  `gemini-2.5-flash-preview-tts` and `gemini-3.1-flash-tts-preview` hit
-  their **10-requests-per-day** free-tier cap synthesising المومياوات (17
-  of 33 pages got through across the two models before both capped out).
-  Every driver resumes, so this is a billing/scheduling question, not an
-  engineering one — the LightOn-extracted book can finish once quota
-  resets or a paid tier is enabled.
+  (page 18 of المومياوات), and Gemini TTS, now measured precisely across two
+  more books built with the correction pipeline: `gemini-3.1-flash-tts` caps
+  at **10 requests/day**, `gemini-3.6-flash` (OCR + VLM arbitration) at **20
+  requests/day**, both free-tier, both per-project-per-model. Every driver
+  resumes, so this is a billing/scheduling question, not an engineering one —
+  confirmed repeatedly: a run cut off by a 429 always finished cleanly the
+  next day from wherever it stopped, at zero wasted cost for anything already
+  done.
 
 **Known limitations of what was built**
 
@@ -529,17 +619,30 @@ boxes are (it predates the text-layer discovery that made real boxes free).
   vs. their spoken word form, and stacked diacritics, both defeat the
   letter-only matching key. `build_reader.py` now renders those tokens as
   plain unhighlightable text instead of crashing on the missing timing.
-- [ ] **A driver resumability check clobbered downstream status once.**
-  `run_tashkel.py` originally treated `status == "diacritised"` as "done"
-  — but `run_speak_gemini.py` advances status to `"spoken"`, which the
-  check didn't recognise, so re-running tashkeel after synthesis briefly
-  reset 13 already-spoken pages back a stage (their audio and bind data
-  were untouched on disk; the reader's `status == "spoken"` filter just
-  stopped seeing them). Fixed to check for `("diacritised", "spoken")`;
-  recovered by re-aligning the existing audio locally, with no repeat
-  API calls. The general lesson — a resume check must recognise every
-  later state, not just the immediately-next one — applies to every
-  driver in this pipeline, not just this one.
+- [ ] **A driver resumability check clobbered downstream status once — then
+  the same class of bug recurred twice more.** `run_tashkel.py` originally
+  treated `status == "diacritised"` as "done" — but `run_speak_gemini.py`
+  advances status to `"spoken"`, which the check didn't recognise, so
+  re-running tashkeel after synthesis briefly reset 13 already-spoken pages
+  back a stage (their audio and bind data were untouched on disk; the
+  reader's `status == "spoken"` filter just stopped seeing them). Fixed to
+  check for `("diacritised", "spoken")`; recovered by re-aligning the
+  existing audio locally, with no repeat API calls. The general lesson — a
+  resume check must recognise every later state, not just the
+  immediately-next one — was written down here but not actually applied to
+  every driver: `run_ocr_gemini.py` and `run_ocr_lighton.py` both still
+  checked only `status == "extracted"`, so re-running `main.py` on a book
+  the correction pipeline had already fixed would silently re-OCR every page
+  from scratch and destroy every applied correction. Caught by building
+  `tools/run_full_pipeline.py` and testing it for idempotency — fixed the
+  same way in both files. A separate but related bug in the same family:
+  `apply_corrections.py`/`apply_context_suggestions.py` compared corrected
+  text against a VLM verdict with exact string equality, and `vlm_arbiter.py`
+  often returns undiacritized text even when the current token is already
+  correctly diacritized — so re-running the apply step stripped diacritics
+  back off already-correct words and forced a pointless re-diacritize/re-TTS
+  cycle. Fixed by comparing letters only (`normalize_for_compare`, the same
+  folding `ensemble_review.py` already used for its own diff).
 - [ ] **Hume's word timestamps are not one-per-word.** Page 14 returned 20 for 29
   tokens, and one interval was inverted (`كريم [12920, 5240]`). The binder
   anchors what it gets and interpolates the rest, recording `t_src` per token.

@@ -1,7 +1,13 @@
 """Layers 01-04 for a scanned book: Gemini OCR -> tokenise -> clean -> route.
 
-Resumable: a page whose record already exists with status 'extracted' is
-skipped, so a quota stall costs one page on retry rather than the whole book.
+Resumable: a page whose record already exists past this stage is skipped,
+so a quota stall costs one page on retry rather than the whole book. "Past
+this stage" means status 'extracted' *or* anything later in the pipeline
+('diacritised', 'spoken') -- checking only the literal string 'extracted'
+would re-OCR (and silently reset to 'extracted', discarding diacritization
+and audio) any page a later stage already finished, exactly the class of
+bug run_tashkel.py's own docstring describes and was fixed for there but
+not here until this comment.
 """
 import hashlib
 import json
@@ -41,7 +47,8 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
         if end and i > end:
             break
         rec_path = out_dir / f"p{i:03d}.json"
-        if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") == "extracted":
+        if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") in (
+                "extracted", "diacritised", "spoken"):
             print(f"{i:>3}  already done, skipping")
             continue
 

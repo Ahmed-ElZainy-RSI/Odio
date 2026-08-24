@@ -12,10 +12,13 @@ gets the same automatic trust a vlm_arbiter.py verdict does.
 Same reversible-write pattern as apply_corrections.py: the pre-suggestion
 word is kept in ocr_txt (or left alone if apply_corrections.py already set
 it earlier), and "context-llm" is appended to fixes[]. A token whose
-current txt no longer matches the ocr_word recorded at detection time is
-skipped and reported rather than blindly overwritten -- something else
-(another correction pass, a manual edit) touched it since, and this tool
-has no way to know which change should win.
+current txt no longer matches the ocr_word recorded at detection time
+(compared letter-only via normalize_for_compare -- a page's diacritization
+can legitimately shift a neighboring KEEP word's diacritics on a re-run
+without changing its letters, see apply_corrections.py's own history of
+this exact bug) is skipped and reported rather than blindly overwritten --
+something else (another correction pass, a manual edit) touched it since,
+and this tool has no way to know which change should win.
 
 Usage:
     python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.json"
@@ -25,6 +28,9 @@ import json
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from ensemble_review import normalize_for_compare  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
 
@@ -58,7 +64,7 @@ def run(review_path: Path) -> None:
             tok = by_id.get(e["id"])
             if tok is None:
                 continue
-            if tok["txt"] != e["ocr_word"]:
+            if normalize_for_compare(tok["txt"]) != normalize_for_compare(e["ocr_word"]):
                 print(f"page {page_no}: {e['id']} changed since detection "
                       f"({e['ocr_word']!r} -> now {tok['txt']!r}), skipping")
                 skipped_stale += 1

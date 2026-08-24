@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full Pipeline — Start to Finish</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --border:#dfe3e8; --ink:#1a1d21; --sub:#5c646e;
+    --muted:#8a92a0; --accent:#1c4f8f; --accent-bg:#eaf1fb;
+    --green:#0f6b3a; --green-bg:#eef8f1; --amber:#9a6b00; --amber-bg:#fdf3e0;
+    --red:#a4392f; --red-bg:#fdeceb; --code-bg:#f1f3f6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--bg)}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:28px;font-weight:800;margin:0 0 6px}
+  .lede{color:var(--sub);font-size:15px;margin-bottom:26px}
+  h2{font-size:20px;font-weight:800;margin:44px 0 6px;padding-top:8px;border-top:1px solid var(--border);
+    display:flex;align-items:center;gap:10px}
+  h2 .step{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+    border-radius:9px;background:var(--accent);color:#fff;font-size:13px;flex:none}
+  h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--sub);margin:18px 0 8px}
+  p{margin:10px 0}
+  code{font:12.5px/1.4 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1.5px 6px;border-radius:5px}
+  pre{background:#20242b;color:#e8eaed;border-radius:10px;padding:14px 18px;overflow-x:auto;
+    font:12.5px/1.6 ui-monospace,Menlo,monospace;margin:10px 0;direction:ltr;text-align:left}
+  pre .c{color:#8a92a0}
+  .callout{border-radius:10px;padding:13px 16px;margin:12px 0;font-size:13.5px}
+  .callout.warn{background:var(--red-bg);border:1px solid #e8b4ae}
+  .callout.warn .t{color:var(--red);font-weight:700;margin-bottom:3px}
+  .callout.info{background:var(--accent-bg);border:1px solid #bcd3ec}
+  .callout.info .t{color:var(--accent);font-weight:700;margin-bottom:3px}
+  .callout.tip{background:var(--green-bg);border:1px solid #b9dcc4}
+  .callout.tip .t{color:var(--green);font-weight:700;margin-bottom:3px}
+  ul,ol{margin:8px 0;padding-left:22px}
+  li{margin:5px 0}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--sub);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+  .toc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:20px 0}
+  .toc a{display:block;color:var(--accent);text-decoration:none;font-size:13.5px;padding:3px 0}
+  .toc a:hover{text-decoration:underline}
+  .files{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:10px 0}
+  .files code{display:block;padding:3px 0;white-space:nowrap;overflow-x:auto}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+  .badge.quota{background:var(--amber-bg);color:var(--amber)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Full Pipeline — Start to Finish</h1>
+<p class="lede">One book, from a raw PDF to a fully corrected, reviewable, listenable result. This is the whole thing end to end, in the order it's actually meant to run — for deep detail on any single tool, see <code>docs/tools-reference.html</code>; for why the architecture is shaped this way, see <code>docs/ocr-correction-architecture-built.html</code>.</p>
+
+<div class="callout info">
+  <div class="t">Two things every step below assumes</div>
+  <b>Two Python environments</b>: plain <code>python3</code> for tools that only touch local JSON, and the conda env for anything calling Gemini or doing audio work:
+  <pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3</pre>
+  <b>Two API keys</b> in <code>.env</code>: <code>GEMINI_API_KEY</code> (OCR, VLM arbitration, TTS) and <code>OPENROUTER_API_KEY</code> (the correlated-error text detector).
+</div>
+
+<div class="toc">
+  <a href="#quickstart">Quick start — the whole script</a>
+  <a href="#s1">1. Run both OCR engines</a>
+  <a href="#s2">2. Detect disagreements</a>
+  <a href="#s3">3. Resolve them against the real image</a>
+  <a href="#s4">4. Apply the corrections</a>
+  <a href="#s5">5. Re-synthesize the corrected pages</a>
+  <a href="#s6">6. Catch errors both engines agreed on</a>
+  <a href="#s7">7. Review and apply accepted suggestions</a>
+  <a href="#s8">8. Get your results</a>
+  <a href="#gotchas">Known constraints you will hit</a>
+</div>
+
+<h2 id="quickstart" style="border-top:none"><span class="step">→</span>Quick start — the whole script</h2>
+<p>Set <code>BOOK</code> to your PDF's filename (without <code>.pdf</code>) and run this top to bottom. It stops naturally wherever a daily API quota runs out — see <a href="#gotchas">Known constraints</a> — just re-run the same failing line later, everything here is resumable.</p>
+<pre><span class="c"># 0. set this once</span>
+BOOK="ثعلوب المكار"
+PDF="assets/PDF Samples/$BOOK.pdf"
+VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+
+<span class="c"># 1. Gemini OCR pass (the reference engine) -- produces work/$BOOK</span>
+$VX2 src/pipeline/main.py "$PDF" --ocr gemini --tts gemini
+
+<span class="c"># 2. LightOn OCR pass -- main.py has no way to output two engines to two
+#    folders on its own, so move the Gemini result aside first</span>
+mv "work/$BOOK" "work/$BOOK-gemini-tmp"
+$VX2 src/pipeline/main.py "$PDF" --ocr lighton --tts gemini
+mv "work/$BOOK" "work/$BOOK-lighton"
+mv "work/$BOOK-gemini-tmp" "work/$BOOK"
+
+<span class="c"># 3. detect disagreements between the two engines</span>
+python3 tools/ensemble_review.py "work/$BOOK" "work/$BOOK-lighton"
+
+<span class="c"># 4. resolve disagreements against the real page image</span>
+$VX2 tools/vlm_arbiter.py "work/$BOOK-lighton/ensemble_review.json"
+
+<span class="c"># 5. check for any page LightOn failed almost entirely (not just a few
+#    wrong words) -- read the printed per-page ratios before applying</span>
+python3 -c "
+import json
+d = json.load(open('work/$BOOK-lighton/ensemble_review.json'))
+for pn, r in sorted(d['pages'].items(), key=lambda x:int(x[0])):
+    if not r: continue
+    go = sum(1 for x in r if x['id'].startswith('gemini-only:'))
+    if go/len(r) >= 0.3: print(f'page {pn}: {go}/{len(r)} gemini-only')
+"
+
+<span class="c"># 6a. wholesale-replace any page that qualified above (edit --page per result)</span>
+python3 tools/replace_page.py "work/$BOOK-lighton/ensemble_review.json"
+
+<span class="c"># 6b. word-level fixes for everything else</span>
+python3 tools/apply_corrections.py "work/$BOOK-lighton/ensemble_review.json"
+
+<span class="c"># 7. re-diacritize + re-synthesize + rebuild the reader for touched pages</span>
+$VX2 -c "
+import sys; sys.path.insert(0,'src')
+from pipeline import run_tashkel, run_speak_gemini, build_reader
+from pathlib import Path
+d = Path('work/$BOOK-lighton')
+run_tashkel.run(d)
+run_speak_gemini.run(d, run_speak_gemini.VOICE)
+build_reader.build(d)
+"
+
+<span class="c"># 8. catch errors BOTH engines agreed on -- runs on every page, takes a
+#    while (reasoning model, several minutes per page is normal)</span>
+python3 tools/context_detector.py "work/$BOOK-lighton/ensemble_review.json"
+
+<span class="c"># 9. build a browsable HTML review of what it found, then open it</span>
+python3 tools/build_context_review.py "work/$BOOK-lighton/context_review.json"
+open "work/$BOOK-lighton/context_review.html"
+
+<span class="c"># --- STOP: this is the one manual step. Edit ---</span>
+<span class="c"># work/$BOOK-lighton/context_decisions.json</span>
+<span class="c"># change "reject" to "accept" (or your own text) for whichever</span>
+<span class="c"># entries you agree with, using the review page to check each one</span>
+<span class="c"># against the real page image first.</span>
+
+<span class="c"># 10. apply only what you accepted, then re-run stage 7 again</span>
+python3 tools/apply_context_suggestions.py "work/$BOOK-lighton/context_review.json"
+$VX2 -c "
+import sys; sys.path.insert(0,'src')
+from pipeline import run_tashkel, run_speak_gemini, build_reader
+from pathlib import Path
+d = Path('work/$BOOK-lighton')
+run_tashkel.run(d)
+run_speak_gemini.run(d, run_speak_gemini.VOICE)
+build_reader.build(d)
+"
+
+<span class="c"># 11. open the finished result</span>
+open "work/$BOOK-lighton/reader.html"</pre>
+
+<h2 id="s1"><span class="step">1</span>Run both OCR engines</h2>
+<p><code>main.py</code> auto-detects whether the PDF has a real embedded text layer — if so it uses the free/exact text-extraction path and <b>ignores <code>--ocr</code> entirely</b>, which means there's nothing to compare (both engines would be moot). Check first if you're unsure:</p>
+<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+import fitz
+doc = fitz.open('assets/PDF Samples/YOUR BOOK.pdf')
+words = sum(len(p.get_text('words')) for p in doc)
+print(words, '-> text-layer path' if words > 50 else '-> genuinely scanned, OCR matters')
+"</pre>
+<p>The full Gemini-then-LightOn-then-rename sequence is in the quick start above (step 1-2). Each run does the whole normal pipeline itself — OCR, diacritize, TTS, reader — so you get two complete, independently-listenable books before any comparison even starts.</p>
+
+<h2 id="s2"><span class="step">2</span>Detect disagreements</h2>
+<p><code>tools/ensemble_review.py</code> — diffs the two engines' text page by page, writes <code>ensemble_review.json</code>. Every other tool from here on reads that one file.</p>
+
+<h2 id="s3"><span class="step">3</span>Resolve them against the real image</h2>
+<p><code>tools/vlm_arbiter.py</code> — one Gemini-vision call per flagged page (not per word), reads the actual pixels and writes what's really there. Updates <code>ensemble_review.json</code> in place.</p>
+
+<h2 id="s4"><span class="step">4</span>Apply the corrections</h2>
+<p>Two different tools for two different failure shapes:</p>
+<table>
+  <tr><th>If a page has...</th><th>Use</th><th>Because</th></tr>
+  <tr><td>A handful of wrong words</td><td><code>apply_corrections.py</code></td><td>Substitutes/deletes individual tokens, keeps the original in <code>ocr_txt</code>.</td></tr>
+  <tr><td>≥50% of words <code>gemini-only</code> (LightOn produced almost nothing)</td><td><code>replace_page.py</code></td><td>Inserting dozens of words one at a time is the wrong tool for a wholesale failure — this swaps the whole page's tokens for Gemini's.</td></tr>
+</table>
+<p>Run the gemini-only ratio check (quick start step 5) <i>before</i> deciding — a page over the threshold should go through <code>replace_page.py</code> first, then whatever's left goes through <code>apply_corrections.py</code>.</p>
+
+<h2 id="s5"><span class="step">5</span>Re-synthesize the corrected pages</h2>
+<p>Both apply tools reset a touched page's <code>status</code> to <code>"extracted"</code> — <code>run_tashkel.py</code> and <code>run_speak_gemini.py</code> already skip anything past that stage for resumability, so this reset is what makes them naturally redo diacritization and audio for exactly the pages that changed, and nothing else.</p>
+
+<h2 id="s6"><span class="step">6</span>Catch errors both engines agreed on</h2>
+<p><code>tools/context_detector.py</code> — the one gap nothing above can see: LightOn and Gemini agreeing on the <i>same</i> wrong word. Runs on every page's agreed-upon (<code>KEEP</code>) text using a text-only LLM (OpenRouter, kept off Gemini deliberately) as a linguistic plausibility check. Writes a <b>separate</b> file, <code>context_review.json</code> — never touches <code>ensemble_review.json</code>.</p>
+<div class="callout warn">
+  <div class="t">This model reasons before answering — expect real per-page latency</div>
+  A page with 50-60 words to check can genuinely take several minutes. That's thinking time, not a hang — check CPU/network activity before assuming it's stuck (see <code>tools-reference.html</code> for how).
+</div>
+
+<h2 id="s7"><span class="step">7</span>Review and apply accepted suggestions</h2>
+<p>This is the one step in the whole chain that's manual on purpose — nothing from step 6 is ever auto-applied, because a text-only guess has no image behind it to check itself against.</p>
+<ol>
+  <li>Build and open the review page: <code>python3 tools/build_context_review.py "work/&lt;book&gt;-lighton/context_review.json"</code> — sorted by suspicion, grouped by page with the real image alongside each flagged word, and a "different word" vs "case-ending only" tag on every entry.</li>
+  <li>Prioritize the <b>different word</b> entries — those are the real correlated-error candidates. Case-ending entries are often just the automated diacritizer's own errors (~6.6% DER), more debatable.</li>
+  <li>Edit <code>context_decisions.json</code>: <code>"reject"</code> → <code>"accept"</code> (take the model's proposal) or any other literal string (write your own correction — useful when, like the worked example in this project's own history, the model's proposal itself turns out to be wrong even though the error it found was real).</li>
+  <li>Run <code>apply_context_suggestions.py</code>, then redo step 5.</li>
+</ol>
+
+<h2 id="s8"><span class="step">8</span>Get your results</h2>
+<div class="files">
+<code>work/&lt;book&gt;-lighton/reader.html</code> — the normal reader: synced audio + text, boxes borrowed from Gemini's images where LightOn has none, flagged/verified words color-coded.
+<code>work/&lt;book&gt;-lighton/context_review.html</code> — the correlated-error review page from step 7.
+<code>work/&lt;book&gt;-lighton/ensemble_review.json</code> — the full audit trail: every token, both engines' reads, what got verified and how.
+</div>
+<p>Optional, for a deep audit of a specific page range: <code>tools/build_review.py</code> builds a side-by-side original-vs-corrected view with two independent audio tracks. See <code>tools-reference.html</code> for that one — it's a separate, one-off tool, not part of this main sequence.</p>
+
+<h2 id="gotchas">Known constraints you will hit</h2>
+<table>
+  <tr><th>Quota</th><th>Limit</th><th>Affects</th></tr>
+  <tr><td><span class="badge quota">gemini-3.1-flash-tts</span></td><td>10 requests/day</td><td>Every TTS call — <code>main.py</code>'s <code>--tts gemini</code>, and step 5/7's re-synthesis. Hit this most often; just resume the same command the next day.</td></tr>
+  <tr><td><span class="badge quota">gemini-3.6-flash</span></td><td>20 requests/day</td><td>Both OCR engines' Gemini calls, and <code>vlm_arbiter.py</code>.</td></tr>
+  <tr><td>OpenRouter/DeepSeek</td><td>No hard cap hit so far</td><td><code>context_detector.py</code> — but expect long per-page latency, not a quota error.</td></tr>
+</table>
+<div class="callout tip">
+  <div class="t">Everything in this chain is resumable</div>
+  Every tool checks what's already done before spending an API call again — a 429 mid-run costs at most the one page it failed on. Re-running the exact same command later always picks up where it stopped.
+</div>
+
+</div>
+</body>
+</html>

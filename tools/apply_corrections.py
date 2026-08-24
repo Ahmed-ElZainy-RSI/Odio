@@ -39,6 +39,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from ensemble_review import normalize_for_compare  # noqa: E402
+
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
 
 
@@ -74,7 +77,13 @@ def run(review_path: Path) -> None:
             if r["verified_txt"] == "":
                 to_delete.add(r["id"])
                 continue
-            if tok["txt"] == r["verified_txt"]:
+            # verified_txt often comes back undiacritized even when tok["txt"]
+            # already has correct diacritics from an earlier run_tashkel pass
+            # -- an exact-string check would treat that as a mismatch, strip
+            # the diacritics back off, and force a wasted re-diacritize +
+            # re-TTS cycle on a page that needed no actual correction. Only
+            # the letters need to differ for this to be a real fix.
+            if normalize_for_compare(tok["txt"]) == normalize_for_compare(r["verified_txt"]):
                 continue
             tok["ocr_txt"] = tok["txt"]
             tok["txt"] = r["verified_txt"]

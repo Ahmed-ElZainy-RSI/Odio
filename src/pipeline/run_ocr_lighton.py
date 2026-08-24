@@ -2,6 +2,17 @@
 
 No bounding boxes from this engine (box_level 'none') -- build_reader.py
 drops the page-image view entirely for books extracted this way.
+
+"Already done" means status 'extracted' *or* anything later ('diacritised',
+'spoken') -- checking only the literal string 'extracted' would re-OCR (and
+silently reset to 'extracted') any page a later stage already finished.
+That matters especially here: tools/apply_corrections.py and
+tools/replace_page.py deliberately reset a corrected page's status to
+'extracted' so run_tashkel.py/run_speak_gemini.py resume it -- re-running
+this against that same book would instead wipe every applied correction
+and re-OCR from scratch, undoing real (paid) vlm_arbiter.py work. See
+run_extract.py's docstring for this exact class of bug happening for real
+on the text-layer path, and run_ocr_gemini.py for the OCR-path version.
 """
 import hashlib
 import json
@@ -38,7 +49,8 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
 
     for i in range(start, (end or total) + 1):
         rec_path = out_dir / f"p{i:03d}.json"
-        if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") == "extracted":
+        if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") in (
+                "extracted", "diacritised", "spoken"):
             print(f"{i:>3}  already done, skipping")
             continue
         try:

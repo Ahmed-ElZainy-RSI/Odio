@@ -1,0 +1,1041 @@
+<!doctype html><html lang=ar dir=rtl><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>المومياوات ناشيونال جيوجرافيك-lighton — مراجعة الأخطاء المتطابقة</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+color:#1a1d21;background:#eef1f4;padding:26px 18px;direction:ltr}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-size:24px;font-weight:800;margin-bottom:4px;direction:rtl;text-align:right}
+.sub{color:#7a8290;font-size:13px;margin-bottom:20px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:#5c646e;margin-bottom:18px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.jump{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:14px 16px;margin-bottom:22px}
+.jump h2{font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:#7a8290;margin-bottom:10px}
+.jump table{width:100%;border-collapse:collapse;font-size:13px}
+.jump th{text-align:left;color:#7a8290;font-size:11px;text-transform:uppercase;padding:4px 8px}
+.jump td{padding:5px 8px;border-top:1px solid #eef1f4}
+.jump a{color:#1c4f8f;text-decoration:none}
+.jump a:hover{text-decoration:underline}
+.tag{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}
+.tag.diff{background:#fdeceb;color:#a4392f}
+.tag.case{background:#eaf1fb;color:#1c4f8f}
+.dec{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}
+.dec.reject{background:#f1f3f6;color:#8a92a0}
+.dec.accept{background:#eef8f1;color:#0f6b3a}
+.dec.custom{background:#fdf3e0;color:#9a6b00}
+.page{background:#fff;border:1px solid #dfe3e8;border-radius:14px;overflow:hidden;margin-bottom:20px}
+.page-hd{padding:10px 16px;background:#fafbfc;border-bottom:1px solid #eef1f4;font-weight:700;font-size:13px}
+.page-body{display:flex;align-items:stretch}
+.page-img{flex:1;min-width:0;max-height:420px;overflow:auto;background:#000}
+.page-img img{width:100%;display:block}
+.page-list{flex:1;min-width:0;max-height:420px;overflow:auto;padding:10px 14px}
+.entry{padding:8px 6px;border-bottom:1px solid #f1f3f6;font-size:14px;direction:rtl}
+.entry:last-child{border-bottom:none}
+.entry .words{display:flex;gap:8px;align-items:baseline;justify-content:flex-end;font-family:'Amiri','Scheherazade New',serif;font-size:19px}
+.entry .arrow{color:#8a92a0;font-size:13px}
+.entry .meta{display:flex;gap:6px;justify-content:flex-end;margin-top:4px;direction:ltr}
+.entry .sus{font-size:10.5px;color:#8a92a0;font-family:ui-monospace,Menlo,monospace}
+@media (max-width:760px){.page-body{flex-direction:column}}
+</style></head><body><div class=wrap>
+
+<h1>المومياوات ناشيونال جيوجرافيك-lighton — مراجعة الأخطاء المتطابقة (context_detector.py)</h1>
+<div class=sub>109 suspicious word(s) across 27 page(s) · sorted by suspicion in the jump list, grouped by page below</div>
+
+<div class=legend>
+<span><i style="background:#fdeceb"></i>different word — check the image first</span>
+<span><i style="background:#eaf1fb"></i>diacritics/case-ending only</span>
+<span class="dec reject">reject</span> default, unreviewed
+<span class="dec accept">accept</span> takes the model's proposal
+<span class="dec custom">custom</span> reviewer wrote their own text
+</div>
+
+<div class=jump>
+<h2>Sorted by suspicion (highest first)</h2>
+<table>
+<tr><th>sus</th><th>pg</th><th>word</th><th></th><th>proposed</th><th>type</th><th>decision</th></tr>
+<tr><td>0.98</td><td><a href="#p12">12</a></td><td dir=rtl>وَجُبَّةُ</td><td>→</td><td dir=rtl>وَجْبَةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.98</td><td><a href="#p14">14</a></td><td dir=rtl>عَلَىَّ</td><td>→</td><td dir=rtl>عَلَى</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.98</td><td><a href="#p14">14</a></td><td dir=rtl>فَقَتْلَةٌ!</td><td>→</td><td dir=rtl>فَقَتَلَهُ!</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p3">3</a></td><td dir=rtl>جُزْءٌ</td><td>→</td><td dir=rtl>جُزْءٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p5">5</a></td><td dir=rtl>بِصُمَّاتِ</td><td>→</td><td dir=rtl>بَصَمَاتِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p6">6</a></td><td dir=rtl>عَلِيَّهَا</td><td>→</td><td dir=rtl>عَلَيْهَا</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p7">7</a></td><td dir=rtl>فَتَلَّتْهُمُ</td><td>→</td><td dir=rtl>فَتَلْتَهِمُهُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p8">8</a></td><td dir=rtl>مومِيَاءً</td><td>→</td><td dir=rtl>مُومِيَاءَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p8">8</a></td><td dir=rtl>مُومِيَاءً!</td><td>→</td><td dir=rtl>مُومِيَاءَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p10">10</a></td><td dir=rtl>الحِيَّةَ</td><td>→</td><td dir=rtl>الْحَيَّةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p10">10</a></td><td dir=rtl>قَمِمِ</td><td>→</td><td dir=rtl>قِمَمِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p10">10</a></td><td dir=rtl>وَتُحَفِظُ</td><td>→</td><td dir=rtl>وَتُحْفَظُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p11">11</a></td><td dir=rtl>تَوَلَّوَنَدَ</td><td>→</td><td dir=rtl>تُولُونْدَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p12">12</a></td><td dir=rtl>الْخُبَرَاءَ</td><td>→</td><td dir=rtl>الْخُبَرَاءُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p14">14</a></td><td dir=rtl>عَثْرَ</td><td>→</td><td dir=rtl>عَثَرَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p14">14</a></td><td dir=rtl>عُرَفَتْ</td><td>→</td><td dir=rtl>عُرِفَتْ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p14">14</a></td><td dir=rtl>أَطْلَقَ</td><td>→</td><td dir=rtl>أُطْلِقَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p14">14</a></td><td dir=rtl>مِنَ</td><td>→</td><td dir=rtl>مَنِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p14">14</a></td><td dir=rtl>قُتَلَ</td><td>→</td><td dir=rtl>قَتَلَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p15">15</a></td><td dir=rtl>تُؤْمَنُ</td><td>→</td><td dir=rtl>تُؤْمِنُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p15">15</a></td><td dir=rtl>عُرْفِ</td><td>→</td><td dir=rtl>عَرَفَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p22">22</a></td><td dir=rtl>أَشْهُرٍ</td><td>→</td><td dir=rtl>أَشْهَرَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p23">23</a></td><td dir=rtl>عِنَخَ</td><td>→</td><td dir=rtl>عَنْخَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p24">24</a></td><td dir=rtl>الْمِلْكِ</td><td>→</td><td dir=rtl>الْمَلِكِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p24">24</a></td><td dir=rtl>الْمِلْكِ</td><td>→</td><td dir=rtl>الْمَلِكِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p25">25</a></td><td dir=rtl>الأَسِرَّةُ</td><td>→</td><td dir=rtl>الْأُسْرَةُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p28">28</a></td><td dir=rtl>كَانَ</td><td>→</td><td dir=rtl>كَانَا</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p33">33</a></td><td dir=rtl>بِكَتِيرِيًّا:</td><td>→</td><td dir=rtl>بَكْتِيرِيَا</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.95</td><td><a href="#p33">33</a></td><td dir=rtl>الْمُجْهِرِ،</td><td>→</td><td dir=rtl>الْمِجْهَرِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p3">3</a></td><td dir=rtl>أَيُّ</td><td>→</td><td dir=rtl>أَيِّ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p5">5</a></td><td dir=rtl>الْمُزَارِعِينَ</td><td>→</td><td dir=rtl>الْمُزَارِعُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p8">8</a></td><td dir=rtl>لِمْ</td><td>→</td><td dir=rtl>لَمْ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p8">8</a></td><td dir=rtl>جَثَّةٌ</td><td>→</td><td dir=rtl>جَثَّةُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p10">10</a></td><td dir=rtl>تُعْرِفُ</td><td>→</td><td dir=rtl>تُعْرَفُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p12">12</a></td><td dir=rtl>حَبَلُ</td><td>→</td><td dir=rtl>حَبْلٌ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p12">12</a></td><td dir=rtl>آخَرَ</td><td>→</td><td dir=rtl>آخِرِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p14">14</a></td><td dir=rtl>شَخْصَانَ</td><td>→</td><td dir=rtl>شَخْصَانِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p14">14</a></td><td dir=rtl>قَتْلَ</td><td>→</td><td dir=rtl>قَتْلٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p14">14</a></td><td dir=rtl>جُثَّةً</td><td>→</td><td dir=rtl>جُثَّةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p15">15</a></td><td dir=rtl>التَّحْنِيطَ»،</td><td>→</td><td dir=rtl>التَّحْنِيطِ»</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p21">21</a></td><td dir=rtl>كَارْتَرَّ</td><td>→</td><td dir=rtl>كَارْتَرُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p24">24</a></td><td dir=rtl>تُوتٌ،</td><td>→</td><td dir=rtl>تُوتٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p24">24</a></td><td dir=rtl>تُوتٌ</td><td>→</td><td dir=rtl>تُوتٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p24">24</a></td><td dir=rtl>تُوتٌ</td><td>→</td><td dir=rtl>تُوتٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p24">24</a></td><td dir=rtl>أَحَدَ</td><td>→</td><td dir=rtl>أَحَدُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p25">25</a></td><td dir=rtl>الْقُدَمَاءَ</td><td>→</td><td dir=rtl>الْقُدَمَاءُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p25">25</a></td><td dir=rtl>الْحِدَّادَ</td><td>→</td><td dir=rtl>الْحِدَادَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p26">26</a></td><td dir=rtl>تَرْضَى</td><td>→</td><td dir=rtl>تُرْضِي</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p27">27</a></td><td dir=rtl>منذٌ</td><td>→</td><td dir=rtl>منذُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p27">27</a></td><td dir=rtl>سنةٌ</td><td>→</td><td dir=rtl>سنةٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p27">27</a></td><td dir=rtl>جثَةُ</td><td>→</td><td dir=rtl>جثّةُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p27">27</a></td><td dir=rtl>الجثَة،</td><td>→</td><td dir=rtl>الجثّةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p27">27</a></td><td dir=rtl>طبقةٌ</td><td>→</td><td dir=rtl>طبقةٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p28">28</a></td><td dir=rtl>وَالطَّمِّيِّ.</td><td>→</td><td dir=rtl>وَالطَّمْيِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p28">28</a></td><td dir=rtl>يَزَالُ</td><td>→</td><td dir=rtl>يَزَالانِ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p28">28</a></td><td dir=rtl>نَاعِمًا.</td><td>→</td><td dir=rtl>نَاعِمَيْنِ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>فِي</td><td>→</td><td dir=rtl>فَ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>الْحَدِيثَ.</td><td>→</td><td dir=rtl>الْحَدِيثِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>يَسْتَخْدِمَ</td><td>→</td><td dir=rtl>يُسْتَخْدَمَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>طُلَّابَ</td><td>→</td><td dir=rtl>طُلَّابُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>أَعْضَاءِ</td><td>→</td><td dir=rtl>أَعْضَاءَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>الْعَظَمِيُّ</td><td>→</td><td dir=rtl>الْعَظَمِيَّ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>يُزَالُ</td><td>→</td><td dir=rtl>يَزَالُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p29">29</a></td><td dir=rtl>لِرُؤْيَتِهِ</td><td>→</td><td dir=rtl>رُؤْيَتُهُ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p32">32</a></td><td dir=rtl>آلَةُ</td><td>→</td><td dir=rtl>آلَةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.90</td><td><a href="#p33">33</a></td><td dir=rtl>الْمُسْتَنْقِعُ:</td><td>→</td><td dir=rtl>الْمُسْتَنْقَعُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p3">3</a></td><td dir=rtl>نَهْضَةُ</td><td>→</td><td dir=rtl>نَهْضَةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p4">4</a></td><td dir=rtl>مُومياوَاتٌ</td><td>→</td><td dir=rtl>مُومِيَاوَاتٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p6">6</a></td><td dir=rtl>غُرُوبَال،</td><td>→</td><td dir=rtl>غِرْبَال،</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p10">10</a></td><td dir=rtl>مَعْرِفَةً</td><td>→</td><td dir=rtl>مَعْرِفَةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p12">12</a></td><td dir=rtl>دَاخِلُ</td><td>→</td><td dir=rtl>دَاخِلَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p18">18</a></td><td dir=rtl>شِعْبُ</td><td>→</td><td dir=rtl>شَعْبُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p20">20</a></td><td dir=rtl>يَلَفُ</td><td>→</td><td dir=rtl>يَلُفُّ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p21">21</a></td><td dir=rtl>عَثْرَ</td><td>→</td><td dir=rtl>عَثَرَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p22">22</a></td><td dir=rtl>الْمَلْكَ</td><td>→</td><td dir=rtl>الْمَلِكُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p23">23</a></td><td dir=rtl>هَاوَرَدٌ</td><td>→</td><td dir=rtl>هَاوَارْد</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p26">26</a></td><td dir=rtl>وَالتَّعْبِيرُ</td><td>→</td><td dir=rtl>وَالتَّعْبِيرِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p29">29</a></td><td dir=rtl>بِنِثَامٍ</td><td>→</td><td dir=rtl>بِنْثَام</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p29">29</a></td><td dir=rtl>الدَّاخِلِيَّةِ،</td><td>→</td><td dir=rtl>الدَّاخِلِيَّةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p32">32</a></td><td dir=rtl>طَبِيعَةٍ</td><td>→</td><td dir=rtl>طَبِيعَةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.85</td><td><a href="#p33">33</a></td><td dir=rtl>وَتَزْدَهِرَّ.</td><td>→</td><td dir=rtl>وَتَزْدَهِرَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p2">2</a></td><td dir=rtl>كَارِنِي</td><td>→</td><td dir=rtl>كارنيه</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p4">4</a></td><td dir=rtl>تَحْنِيطُ</td><td>→</td><td dir=rtl>تَحْنِيطِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p17">17</a></td><td dir=rtl>عُمَرُ</td><td>→</td><td dir=rtl>عُمْرُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p18">18</a></td><td dir=rtl>أَكْبَرُ</td><td>→</td><td dir=rtl>أَكْبَرِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p21">21</a></td><td dir=rtl>تَرْكَ</td><td>→</td><td dir=rtl>تَرَكَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p21">21</a></td><td dir=rtl>عَالِمٍ</td><td>→</td><td dir=rtl>عَالِمُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p21">21</a></td><td dir=rtl>مُعْتَمَّةٍ</td><td>→</td><td dir=rtl>مُعْتِمَةٍ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p26">26</a></td><td dir=rtl>الْكِلَابُ</td><td>→</td><td dir=rtl>الْكِلَابَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p26">26</a></td><td dir=rtl>وَالْقُرُودُ</td><td>→</td><td dir=rtl>وَالْقُرُودَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p26">26</a></td><td dir=rtl>وَالطُّيُورُ،</td><td>→</td><td dir=rtl>وَالطُّيُورَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p27">27</a></td><td dir=rtl>سَيِدَةٌ</td><td>→</td><td dir=rtl>سيّدةٌ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p29">29</a></td><td dir=rtl>جَيْرِيمِيٌّ</td><td>→</td><td dir=rtl>جِيرِيمِي</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p32">32</a></td><td dir=rtl>الْمَوْجُودَةِ</td><td>→</td><td dir=rtl>الْمَوْجُودَةُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.80</td><td><a href="#p33">33</a></td><td dir=rtl>يُعَيِّنُ</td><td>→</td><td dir=rtl>يُعِينُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p18">18</a></td><td dir=rtl>تَبْقَى</td><td>→</td><td dir=rtl>تَبَقَّى</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p21">21</a></td><td dir=rtl>قُدَمَاءَ</td><td>→</td><td dir=rtl>قُدَمَاءُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p22">22</a></td><td dir=rtl>الْمَلْكَ</td><td>→</td><td dir=rtl>الْمَلِكَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p32">32</a></td><td dir=rtl>وَالأَشْيَاءِ</td><td>→</td><td dir=rtl>الأَشْيَاءَ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p32">32</a></td><td dir=rtl>الْمَدْفُونَةِ</td><td>→</td><td dir=rtl>الْمَدْفُونَةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.75</td><td><a href="#p33">33</a></td><td dir=rtl>تَسَبَّبَ</td><td>→</td><td dir=rtl>تَسَبَّبَتْ</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p9">9</a></td><td dir=rtl>مَان»</td><td>→</td><td dir=rtl>مَنْ»</td><td><span class="tag diff">different word</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p17">17</a></td><td dir=rtl>شِعْبُ</td><td>→</td><td dir=rtl>شَعْبُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p17">17</a></td><td dir=rtl>الْجُنُوبِيَّةُ</td><td>→</td><td dir=rtl>الْجُنُوبِيَّةِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p20">20</a></td><td dir=rtl>الجَثَةُ</td><td>→</td><td dir=rtl>الجُثَّةُ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p33">33</a></td><td dir=rtl>الْمَوْجُودَةُ</td><td>→</td><td dir=rtl>الْمَوْجُودَةَ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.70</td><td><a href="#p33">33</a></td><td dir=rtl>الْبَكْتِيرِيَّا</td><td>→</td><td dir=rtl>الْبَكْتِيرِيَا</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.60</td><td><a href="#p29">29</a></td><td dir=rtl>عَامٍ</td><td>→</td><td dir=rtl>عَامِ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+<tr><td>0.60</td><td><a href="#p33">33</a></td><td dir=rtl>صَغِيرَةِ</td><td>→</td><td dir=rtl>صَغِيرَةٌ</td><td><span class="tag case">case-ending</span></td><td><span class="dec reject">reject</span></td></tr>
+</table>
+</div>
+
+<div class=page id="p2">
+<div class=page-hd>page 2 — 1 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p002.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>كَارِنِي</span><span class=arrow>&lt;-</span><span>كارنيه</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p002w002</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p3">
+<div class=page-hd>page 3 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p003.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>نَهْضَةُ</span><span class=arrow>&lt;-</span><span>نَهْضَةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p003w024</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَيُّ</span><span class=arrow>&lt;-</span><span>أَيِّ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p003w128</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>جُزْءٌ</span><span class=arrow>&lt;-</span><span>جُزْءٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p003w129</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p4">
+<div class=page-hd>page 4 — 2 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p004.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>تَحْنِيطُ</span><span class=arrow>&lt;-</span><span>تَحْنِيطِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p004w004</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مُومياوَاتٌ</span><span class=arrow>&lt;-</span><span>مُومِيَاوَاتٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p004w006</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p5">
+<div class=page-hd>page 5 — 2 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p005.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْمُزَارِعِينَ</span><span class=arrow>&lt;-</span><span>الْمُزَارِعُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p005w005</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>بِصُمَّاتِ</span><span class=arrow>&lt;-</span><span>بَصَمَاتِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p005w026</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p6">
+<div class=page-hd>page 6 — 2 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p006.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>غُرُوبَال،</span><span class=arrow>&lt;-</span><span>غِرْبَال،</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p006w002</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عَلِيَّهَا</span><span class=arrow>&lt;-</span><span>عَلَيْهَا</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p006w004</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p7">
+<div class=page-hd>page 7 — 1 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p007.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>فَتَلَّتْهُمُ</span><span class=arrow>&lt;-</span><span>فَتَلْتَهِمُهُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p007w009</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p8">
+<div class=page-hd>page 8 — 4 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p008.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>لِمْ</span><span class=arrow>&lt;-</span><span>لَمْ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p008w024</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مومِيَاءً</span><span class=arrow>&lt;-</span><span>مُومِيَاءَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p008w046</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>جَثَّةٌ</span><span class=arrow>&lt;-</span><span>جَثَّةُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p008w060</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مُومِيَاءً!</span><span class=arrow>&lt;-</span><span>مُومِيَاءَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p008w066</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p9">
+<div class=page-hd>page 9 — 1 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p009.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>مَان»</span><span class=arrow>&lt;-</span><span>مَنْ»</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p009w008</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p10">
+<div class=page-hd>page 10 — 5 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p010.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الحِيَّةَ</span><span class=arrow>&lt;-</span><span>الْحَيَّةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p010w019</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تُعْرِفُ</span><span class=arrow>&lt;-</span><span>تُعْرَفُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p010w035</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>قَمِمِ</span><span class=arrow>&lt;-</span><span>قِمَمِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p010w044</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَتُحَفِظُ</span><span class=arrow>&lt;-</span><span>وَتُحْفَظُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p010w058</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مَعْرِفَةً</span><span class=arrow>&lt;-</span><span>مَعْرِفَةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p010w069</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p11">
+<div class=page-hd>page 11 — 1 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p011.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>تَوَلَّوَنَدَ</span><span class=arrow>&lt;-</span><span>تُولُونْدَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p011w014</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p12">
+<div class=page-hd>page 12 — 5 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p012.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>حَبَلُ</span><span class=arrow>&lt;-</span><span>حَبْلٌ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p012w010</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْخُبَرَاءَ</span><span class=arrow>&lt;-</span><span>الْخُبَرَاءُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p012w014</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>آخَرَ</span><span class=arrow>&lt;-</span><span>آخِرِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p012w028</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَجُبَّةُ</span><span class=arrow>&lt;-</span><span>وَجْبَةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.98 · p012w029</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>دَاخِلُ</span><span class=arrow>&lt;-</span><span>دَاخِلَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p012w039</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p14">
+<div class=page-hd>page 14 — 10 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p014.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>عَثْرَ</span><span class=arrow>&lt;-</span><span>عَثَرَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p014w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>شَخْصَانَ</span><span class=arrow>&lt;-</span><span>شَخْصَانِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p014w004</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>قَتْلَ</span><span class=arrow>&lt;-</span><span>قَتْلٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p014w021</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عُرَفَتْ</span><span class=arrow>&lt;-</span><span>عُرِفَتْ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p014w032</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>جُثَّةً</span><span class=arrow>&lt;-</span><span>جُثَّةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p014w059</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَطْلَقَ</span><span class=arrow>&lt;-</span><span>أُطْلِقَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p014w074</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عَلَىَّ</span><span class=arrow>&lt;-</span><span>عَلَى</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.98 · p014w076</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>فَقَتْلَةٌ!</span><span class=arrow>&lt;-</span><span>فَقَتَلَهُ!</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.98 · p014w080</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مِنَ</span><span class=arrow>&lt;-</span><span>مَنِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p014w081</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>قُتَلَ</span><span class=arrow>&lt;-</span><span>قَتَلَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p014w083</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p15">
+<div class=page-hd>page 15 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p015.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>تُؤْمَنُ</span><span class=arrow>&lt;-</span><span>تُؤْمِنُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p015w016</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>التَّحْنِيطَ»،</span><span class=arrow>&lt;-</span><span>التَّحْنِيطِ»</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p015w027</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عُرْفِ</span><span class=arrow>&lt;-</span><span>عَرَفَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p015w033</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p17">
+<div class=page-hd>page 17 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p017.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>شِعْبُ</span><span class=arrow>&lt;-</span><span>شَعْبُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p017w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْجُنُوبِيَّةُ</span><span class=arrow>&lt;-</span><span>الْجُنُوبِيَّةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p017w007</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عُمَرُ</span><span class=arrow>&lt;-</span><span>عُمْرُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p017w014</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p18">
+<div class=page-hd>page 18 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p018.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>شِعْبُ</span><span class=arrow>&lt;-</span><span>شَعْبُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p018w001</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَكْبَرُ</span><span class=arrow>&lt;-</span><span>أَكْبَرِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p018w011</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تَبْقَى</span><span class=arrow>&lt;-</span><span>تَبَقَّى</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p018w045</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p20">
+<div class=page-hd>page 20 — 2 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p020.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الجَثَةُ</span><span class=arrow>&lt;-</span><span>الجُثَّةُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p020w006</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يَلَفُ</span><span class=arrow>&lt;-</span><span>يَلُفُّ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p020w011</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p21">
+<div class=page-hd>page 21 — 6 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p021.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>تَرْكَ</span><span class=arrow>&lt;-</span><span>تَرَكَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p021w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>قُدَمَاءَ</span><span class=arrow>&lt;-</span><span>قُدَمَاءُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p021w004</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عَثْرَ</span><span class=arrow>&lt;-</span><span>عَثَرَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p021w011</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عَالِمٍ</span><span class=arrow>&lt;-</span><span>عَالِمُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p021w012</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>كَارْتَرَّ</span><span class=arrow>&lt;-</span><span>كَارْتَرُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p021w024</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>مُعْتَمَّةٍ</span><span class=arrow>&lt;-</span><span>مُعْتِمَةٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p021w028</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p22">
+<div class=page-hd>page 22 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p022.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْمَلْكَ</span><span class=arrow>&lt;-</span><span>الْمَلِكُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p022w010</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمَلْكَ</span><span class=arrow>&lt;-</span><span>الْمَلِكَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p022w039</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَشْهُرٍ</span><span class=arrow>&lt;-</span><span>أَشْهَرَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p022w041</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p23">
+<div class=page-hd>page 23 — 2 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p023.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>هَاوَرَدٌ</span><span class=arrow>&lt;-</span><span>هَاوَارْد</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p023w002</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عِنَخَ</span><span class=arrow>&lt;-</span><span>عَنْخَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p023w008</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p24">
+<div class=page-hd>page 24 — 6 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p024.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْمِلْكِ</span><span class=arrow>&lt;-</span><span>الْمَلِكِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p024w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تُوتٌ،</span><span class=arrow>&lt;-</span><span>تُوتٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p024w004</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمِلْكِ</span><span class=arrow>&lt;-</span><span>الْمَلِكِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p024w025</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تُوتٌ</span><span class=arrow>&lt;-</span><span>تُوتٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p024w026</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تُوتٌ</span><span class=arrow>&lt;-</span><span>تُوتٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p024w035</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَحَدَ</span><span class=arrow>&lt;-</span><span>أَحَدُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p024w037</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p25">
+<div class=page-hd>page 25 — 3 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p025.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْقُدَمَاءَ</span><span class=arrow>&lt;-</span><span>الْقُدَمَاءُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p025w005</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الأَسِرَّةُ</span><span class=arrow>&lt;-</span><span>الْأُسْرَةُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p025w037</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْحِدَّادَ</span><span class=arrow>&lt;-</span><span>الْحِدَادَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p025w040</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p26">
+<div class=page-hd>page 26 — 5 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p026.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْكِلَابُ</span><span class=arrow>&lt;-</span><span>الْكِلَابَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p026w008</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَالْقُرُودُ</span><span class=arrow>&lt;-</span><span>وَالْقُرُودَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p026w010</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَالطُّيُورُ،</span><span class=arrow>&lt;-</span><span>وَالطُّيُورَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p026w011</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تَرْضَى</span><span class=arrow>&lt;-</span><span>تُرْضِي</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p026w017</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَالتَّعْبِيرُ</span><span class=arrow>&lt;-</span><span>وَالتَّعْبِيرِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p026w024</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p27">
+<div class=page-hd>page 27 — 6 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p027.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>منذٌ</span><span class=arrow>&lt;-</span><span>منذُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p027w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>سنةٌ</span><span class=arrow>&lt;-</span><span>سنةٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p027w007</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>سَيِدَةٌ</span><span class=arrow>&lt;-</span><span>سيّدةٌ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p027w009</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>جثَةُ</span><span class=arrow>&lt;-</span><span>جثّةُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p027w017</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الجثَة،</span><span class=arrow>&lt;-</span><span>الجثّةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p027w027</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>طبقةٌ</span><span class=arrow>&lt;-</span><span>طبقةٍ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p027w038</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p28">
+<div class=page-hd>page 28 — 4 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p028.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>وَالطَّمِّيِّ.</span><span class=arrow>&lt;-</span><span>وَالطَّمْيِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p028w016</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>كَانَ</span><span class=arrow>&lt;-</span><span>كَانَا</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p028w037</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يَزَالُ</span><span class=arrow>&lt;-</span><span>يَزَالانِ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p028w040</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>نَاعِمًا.</span><span class=arrow>&lt;-</span><span>نَاعِمَيْنِ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p028w041</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p29">
+<div class=page-hd>page 29 — 12 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p029.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>فِي</span><span class=arrow>&lt;-</span><span>فَ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w001</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْحَدِيثَ.</span><span class=arrow>&lt;-</span><span>الْحَدِيثِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w018</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>جَيْرِيمِيٌّ</span><span class=arrow>&lt;-</span><span>جِيرِيمِي</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p029w022</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>بِنِثَامٍ</span><span class=arrow>&lt;-</span><span>بِنْثَام</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p029w023</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>عَامٍ</span><span class=arrow>&lt;-</span><span>عَامِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.60 · p029w025</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يَسْتَخْدِمَ</span><span class=arrow>&lt;-</span><span>يُسْتَخْدَمَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w030</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>طُلَّابَ</span><span class=arrow>&lt;-</span><span>طُلَّابُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w036</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>أَعْضَاءِ</span><span class=arrow>&lt;-</span><span>أَعْضَاءَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w037</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الدَّاخِلِيَّةِ،</span><span class=arrow>&lt;-</span><span>الدَّاخِلِيَّةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p029w039</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْعَظَمِيُّ</span><span class=arrow>&lt;-</span><span>الْعَظَمِيَّ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w046</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يُزَالُ</span><span class=arrow>&lt;-</span><span>يَزَالُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w053</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>لِرُؤْيَتِهِ</span><span class=arrow>&lt;-</span><span>رُؤْيَتُهُ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p029w058</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p32">
+<div class=page-hd>page 32 — 5 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p032.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>الْمَوْجُودَةِ</span><span class=arrow>&lt;-</span><span>الْمَوْجُودَةُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p032w003</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>طَبِيعَةٍ</span><span class=arrow>&lt;-</span><span>طَبِيعَةِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p032w022</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَالأَشْيَاءِ</span><span class=arrow>&lt;-</span><span>الأَشْيَاءَ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p032w039</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمَدْفُونَةِ</span><span class=arrow>&lt;-</span><span>الْمَدْفُونَةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p032w040</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>آلَةُ</span><span class=arrow>&lt;-</span><span>آلَةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p032w059</span>
+  </div>
+</div></div></div>
+</div>
+<div class=page id="p33">
+<div class=page-hd>page 33 — 9 suspicious</div>
+<div class=page-body><div class=page-img><img src="../المومياوات ناشيونال جيوجرافيك/pages/p033.jpg" alt=""></div><div class=page-list><div class=entry>
+  <div class=words><span>بِكَتِيرِيًّا:</span><span class=arrow>&lt;-</span><span>بَكْتِيرِيَا</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p033w007</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>صَغِيرَةِ</span><span class=arrow>&lt;-</span><span>صَغِيرَةٌ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.60 · p033w010</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمُجْهِرِ،</span><span class=arrow>&lt;-</span><span>الْمِجْهَرِ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.95 · p033w018</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>تَسَبَّبَ</span><span class=arrow>&lt;-</span><span>تَسَبَّبَتْ</span></div>
+  <div class=meta>
+    <span class="tag diff">different word</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.75 · p033w020</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمُسْتَنْقِعُ:</span><span class=arrow>&lt;-</span><span>الْمُسْتَنْقَعُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.90 · p033w024</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْمَوْجُودَةُ</span><span class=arrow>&lt;-</span><span>الْمَوْجُودَةَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p033w035</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>الْبَكْتِيرِيَّا</span><span class=arrow>&lt;-</span><span>الْبَكْتِيرِيَا</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.70 · p033w040</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>وَتَزْدَهِرَّ.</span><span class=arrow>&lt;-</span><span>وَتَزْدَهِرَ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.85 · p033w043</span>
+  </div>
+</div><div class=entry>
+  <div class=words><span>يُعَيِّنُ</span><span class=arrow>&lt;-</span><span>يُعِينُ</span></div>
+  <div class=meta>
+    <span class="tag case">case-ending</span>
+    <span class="dec reject">reject</span>
+    <span class=sus>sus 0.80 · p033w047</span>
+  </div>
+</div></div></div>
+</div>
+
+</div></body></html>
