@@ -401,6 +401,11 @@ VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
 # correlated-error detection, then it stops for the one deliberately-manual step
 $VX2 tools/run_full_pipeline.py "assets/PDF Samples/book.pdf"
 
+# scope it to specific pages (passed through to both OCR passes; same
+# convention as main.py's --pages) — a plain count or an explicit range
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/book.pdf" --pages 2
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/book.pdf" --pages 11:15
+
 # ...or run it stage by stage; see docs/full-pipeline-guide.html for the
 # complete copy-pasteable sequence and docs/tools-reference.html for what
 # each tool reads/writes and how to review its output
