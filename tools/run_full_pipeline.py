@@ -19,6 +19,10 @@ picks up wherever it stopped, at zero wasted cost for whatever finished.
 Needs the vx2lm conda env (fitz, google-genai, faster-whisper):
     /Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 \\
         tools/run_full_pipeline.py "assets/PDF Samples/<book>.pdf"
+
+    # scope the whole run to just pages 1-2 (both engines, and everything
+    # downstream naturally follows -- see --pages' help text)
+    ... tools/run_full_pipeline.py "assets/PDF Samples/<book>.pdf" --pages 2
 """
 import argparse
 import json
@@ -44,22 +48,22 @@ def step(n: str, title: str):
     print(f"\n{'='*70}\n[{n}] {title}\n{'='*70}")
 
 
-def run(pdf_path: Path) -> Path:
+def run(pdf_path: Path, pages: str = "0") -> Path:
     book = pdf_path.stem.strip()
     gemini_dir = Path(f"work/{book}")
     lighton_dir = Path(f"work/{book}-lighton")
 
-    step("1/8", f"Gemini OCR pass -> {gemini_dir}")
-    main_pipeline.run_pipeline(pdf_path, ocr="gemini", tts="gemini")
+    step("1/8", f"Gemini OCR pass -> {gemini_dir} (pages={pages})")
+    main_pipeline.run_pipeline(pdf_path, ocr="gemini", tts="gemini", pages=pages)
 
-    step("2/8", f"LightOn OCR pass -> {lighton_dir}")
+    step("2/8", f"LightOn OCR pass -> {lighton_dir} (pages={pages})")
     if not lighton_dir.exists():
         # main.py always writes to work/<book> with no engine suffix -- move
         # the just-finished Gemini result aside so the LightOn run doesn't
         # collide with it, then rename LightOn's result into place
         tmp = Path(f"work/{book}-gemini-tmp")
         shutil.move(str(gemini_dir), str(tmp))
-        main_pipeline.run_pipeline(pdf_path, ocr="lighton", tts="gemini")
+        main_pipeline.run_pipeline(pdf_path, ocr="lighton", tts="gemini", pages=pages)
         shutil.move(str(gemini_dir), str(lighton_dir))
         shutil.move(str(tmp), str(gemini_dir))
     else:
@@ -117,12 +121,18 @@ def main():
     ap = argparse.ArgumentParser(
         description="Run the full OCR-correction chain on one PDF, stopping before the one manual review step.")
     ap.add_argument("pdf", help="path to the book PDF")
+    ap.add_argument("--pages", default="0",
+                     help="limit which pages get OCR'd by BOTH engines (0 = all): "
+                          "'2' = pages 1-2, '13:20' = pages 13-20, '13:' = page 13 to the end -- "
+                          "same convention as main.py's --pages. Every later stage (ensemble "
+                          "review, arbitration, correction, context detection) naturally only "
+                          "sees whatever pages exist on disk, so this one flag scopes the whole run.")
     args = ap.parse_args()
 
     pdf_path = Path(args.pdf)
     if not pdf_path.exists():
         sys.exit(f"no such file: {pdf_path}")
-    run(pdf_path)
+    run(pdf_path, args.pages)
 
 
 if __name__ == "__main__":

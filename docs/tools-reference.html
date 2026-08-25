@@ -71,30 +71,64 @@
 </div>
 
 <div class="toc">
+  <a href="#orchestrator">0. run_full_pipeline.py — the one-command orchestrator</a>
   <a href="#chain">The full chain, in order</a>
   <a href="#ensemble_review">1. ensemble_review.py — detect disagreements</a>
   <a href="#vlm_arbiter">2. vlm_arbiter.py — resolve disagreements visually</a>
   <a href="#apply_corrections">3. apply_corrections.py — write word-level fixes</a>
   <a href="#replace_page">4. replace_page.py — replace a failed page wholesale</a>
   <a href="#context_detector">5. context_detector.py — catch errors both engines agreed on</a>
-  <a href="#apply_context_suggestions">6. apply_context_suggestions.py — apply accepted suggestions</a>
-  <a href="#build_review">7. build_review.py — original-vs-corrected comparison page</a>
+  <a href="#build_context_review">6. build_context_review.py — browsable HTML for those findings</a>
+  <a href="#apply_context_suggestions">7. apply_context_suggestions.py — apply accepted suggestions</a>
+  <a href="#build_review">8. build_review.py — original-vs-corrected comparison page</a>
   <a href="#build_reader">Reminder: build_reader.py picks up everything automatically</a>
 </div>
 
-<h2 id="chain" style="border-top:none"><span class="step">→</span>The full chain, in order</h2>
+<h2 id="orchestrator" style="border-top:none"><span class="step">0</span><code>run_full_pipeline.py</code></h2>
+<p class="purpose">Runs steps 1-6 below in one command — both OCR engines, detection, arbitration, corrections, re-synthesis, correlated-error detection — then stops cleanly at the one deliberately-manual review step (step 7). Everything after that point still needs the individual commands below.</p>
+<div class="meta-row">
+  <span class="pill env">vx2lm env</span>
+  <span class="pill key">GEMINI_API_KEY + OPENROUTER_API_KEY</span>
+</div>
+<pre>VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+
+<span class="c"># the whole book</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf"
+
+<span class="c"># scoped to the first N pages -- same convention as main.py's --pages</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 2
+
+<span class="c"># an explicit page range</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 11:15
+
+<span class="c"># page 13 to the end</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 13:</pre>
+<table>
+  <tr><th>Requires</th><td>Nothing pre-existing for a fresh book — it does the whole Gemini-then-LightOn-then-rename dance itself (see step 1's note on why that dance exists at all).</td></tr>
+  <tr><th>Writes</th><td>Everything steps 1-6 individually write, in sequence.</td></tr>
+  <tr><th>Resumable</th><td>Yes, at every level — a quota wall on any internal step just means re-running this same command later; already-finished work (including a book whose <code>work/&lt;book&gt;-lighton</code> already exists) is detected and skipped.</td></tr>
+</table>
+<div class="callout info">
+  <div class="t">--pages only scopes what gets freshly OCR'd, not the whole run</div>
+  It's passed straight through to both OCR passes. Every later step just operates on whatever pages already exist on disk for that book -- so on a book with prior work, <code>--pages 2</code> won't shrink an already-larger <code>ensemble_review.json</code> down to 2 pages, it only limits what's freshly fetched this run. For a truly isolated N-page run, delete <code>work/&lt;book&gt;</code> and <code>work/&lt;book&gt;-lighton</code> first.
+</div>
+<h3>How to review</h3>
+<p>Its own console output narrates each of the 8 steps as it runs, and prints the exact next commands (steps 7 onward) when it stops. Same review guidance as steps 1-6 below apply to whatever it produced.</p>
+
+<h2 id="chain"><span class="step">→</span>The full chain, in order</h2>
 <div class="chain">
   Gemini OCR of the same PDF <span class="arrow">→</span>
   <b>ensemble_review.py</b> <span class="arrow">→</span>
   <b>vlm_arbiter.py</b> <span class="arrow">→</span>
   <b>apply_corrections.py</b> + <b>replace_page.py</b> <span class="arrow">→</span>
   re-diacritize + re-TTS <span class="arrow">→</span>
-  <b>context_detector.py</b> <span class="arrow">→</span> (human review) <span class="arrow">→</span>
+  <b>context_detector.py</b> <span class="arrow">→</span>
+  <b>build_context_review.py</b> <span class="arrow">→</span> (human review) <span class="arrow">→</span>
   <b>apply_context_suggestions.py</b> <span class="arrow">→</span>
   re-diacritize + re-TTS <span class="arrow">→</span>
   <code>build_reader.py</code> (or <b>build_review.py</b> for a side-by-side view)
 </div>
-<p>Steps 1-2 and 5-6 each write a JSON report first, then a separate step applies it — nothing ever writes to <code>pXXX.json</code> without a distinct, previewable file existing first.</p>
+<p><code>run_full_pipeline.py</code> (step 0 above) runs everything up through <code>build_context_review.py</code> in one command, then stops for the human review step. Steps 1-2 and 5-6 each write a JSON report first, then a separate step applies it — nothing ever writes to <code>pXXX.json</code> without a distinct, previewable file existing first.</p>
 
 <h2 id="ensemble_review"><span class="step">1</span><code>ensemble_review.py</code></h2>
 <p class="purpose">Diffs LightOn's OCR against a Gemini OCR of the same PDF, page by page. Produces <code>ensemble_review.json</code> — the file every other tool in this chain reads.</p>
@@ -206,18 +240,34 @@ python3 tools/replace_page.py \
   <div class="t">Per-page latency varies a lot — this is expected, not a hang</div>
   Because it's a reasoning model, a page with many agreed-upon words to check can take several minutes of real "thinking" time, not seconds. Don't assume it's stuck under ~8 minutes on a large page.
 </div>
+<h3>How to review</h3>
+<p>Don't read the raw JSON directly — build the browsable HTML view first (step 6 below), which shows every flagged word next to the real page image.</p>
+
+<h2 id="build_context_review"><span class="step">6</span><code>build_context_review.py</code></h2>
+<p class="purpose">A browsable HTML review page for <code>context_review.json</code>'s findings — grouped by page with the real page image inline, a suspicion-sorted jump list at the top, and every entry tagged "different word" (check the image — a real correlated-error candidate) or "case-ending" (often just the diacritizer, more debatable). Writes nothing; pure review aid.</p>
+<div class="meta-row">
+  <span class="pill env">plain python3</span>
+  <span class="pill nokey">no API key</span>
+</div>
+<pre>python3 tools/build_context_review.py \
+  "work/المومياوات ناشيونال جيوجرافيك-lighton/context_review.json"
+open "work/المومياوات ناشيونال جيوجرافيك-lighton/context_review.html"</pre>
+<table>
+  <tr><th>Requires</th><td><code>context_review.json</code> (step 5); reads the sibling <code>ensemble_review.json</code> to locate page images, and <code>context_decisions.json</code> if it exists yet (to show current accept/reject state).</td></tr>
+  <tr><th>Writes</th><td><code>&lt;lighton_dir&gt;/context_review.html</code> only — never touches any JSON.</td></tr>
+</table>
 <h3>How to review — this is the one manual step in the whole chain</h3>
 <ol>
-  <li>Open <code>context_review.json</code>. Each entry: <code>ocr_word</code> (current text), <code>proposed</code> (the model's guess), <code>suspicion</code> (0–1).</li>
-  <li>Open <code>context_decisions.json</code>. For each id you agree with, change its value from <code>"reject"</code> to <code>"accept"</code> (use the proposed word) — or to any other literal string to use your own correction instead.</li>
-  <li>Leave everything else as <code>"reject"</code>. Nothing is applied until step 6 runs.</li>
+  <li>Open the HTML this just built. Use the suspicion-sorted jump list at the top to triage, prioritizing "different word" tags.</li>
+  <li>For each entry you agree with, open <code>context_decisions.json</code> and change its value from <code>"reject"</code> to <code>"accept"</code> (use the proposed word) — or to any other literal string to use your own correction instead.</li>
+  <li>Leave everything else as <code>"reject"</code>. Nothing is applied until step 7 runs. Re-run this tool afterward to see your decisions reflected in the page.</li>
 </ol>
 <div class="callout info">
   <div class="t">A pattern worth knowing before you accept things</div>
-  Many flagged words are case-ending (i'rab) corrections rather than letter-level misreadings — this layer also catches the automated diacritizer's own errors (~6.6% DER), since it runs on already-diacritized text. Sort by <code>suspicion</code> and prioritize ones that look like unambiguous typos over debatable grammatical case calls.
+  Many flagged words are case-ending (i'rab) corrections rather than letter-level misreadings — this layer also catches the automated diacritizer's own errors (~6.6% DER), since it runs on already-diacritized text. That's exactly what the "case-ending" tag flags, so you don't have to work it out per entry.
 </div>
 
-<h2 id="apply_context_suggestions"><span class="step">6</span><code>apply_context_suggestions.py</code></h2>
+<h2 id="apply_context_suggestions"><span class="step">7</span><code>apply_context_suggestions.py</code></h2>
 <p class="purpose">Applies only what you explicitly accepted in <code>context_decisions.json</code>. Nothing here is automatic — this is the gate between an LLM's linguistic guess and the actual pipeline data.</p>
 <div class="meta-row">
   <span class="pill env">plain python3</span>
@@ -233,7 +283,7 @@ python3 tools/replace_page.py \
 <h3>How to review</h3>
 <p>Console prints <code>N tokens corrected, M skipped (changed since detection)</code>. Same re-run step (diacritize/TTS/reader) applies afterward if <code>N &gt; 0</code>.</p>
 
-<h2 id="build_review"><span class="step">7</span><code>build_review.py</code></h2>
+<h2 id="build_review"><span class="step">8</span><code>build_review.py</code></h2>
 <p class="purpose">A separate, one-off side-by-side page for a specific page range — original-OCR audio vs. corrected audio, inline strikethrough-correction pairs, color-coded image boxes. Not part of the normal reader; built for manually auditing a slice of a book in depth.</p>
 <div class="meta-row">
   <span class="pill env">vx2lm env</span>

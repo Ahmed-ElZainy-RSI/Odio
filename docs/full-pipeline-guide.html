@@ -74,8 +74,28 @@
   <a href="#gotchas">Known constraints you will hit</a>
 </div>
 
-<h2 id="quickstart" style="border-top:none"><span class="step">→</span>Quick start — the whole script</h2>
-<p>Set <code>BOOK</code> to your PDF's filename (without <code>.pdf</code>) and run this top to bottom. It stops naturally wherever a daily API quota runs out — see <a href="#gotchas">Known constraints</a> — just re-run the same failing line later, everything here is resumable.</p>
+<h2 id="quickstart" style="border-top:none"><span class="step">→</span>Quick start — one command</h2>
+<p><code>tools/run_full_pipeline.py</code> runs steps 1–9 below for you — both OCR engines, detection, arbitration, corrections, re-synthesis, and correlated-error detection — then stops cleanly at the one deliberately-manual review step. It's resumable exactly like every command it calls: a quota wall mid-run just means re-running the same line later.</p>
+<pre>VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+
+<span class="c"># the whole book</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf"
+
+<span class="c"># scoped to the first N pages -- same --pages convention as main.py</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 2
+
+<span class="c"># scoped to an explicit page range</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 11:15
+
+<span class="c"># page 13 through the end</span>
+$VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 13:</pre>
+<div class="callout info">
+  <div class="t">--pages only scopes what gets freshly OCR'd</div>
+  It's passed straight through to both OCR passes. Every later stage (detection, arbitration, correction, context detection) just operates on whatever pages already exist on disk for that book — so on a book with prior work, <code>--pages 2</code> won't shrink an already-larger <code>ensemble_review.json</code> down to 2 pages; it only controls what's freshly fetched this run. For a truly isolated N-page run, delete <code>work/&lt;book&gt;</code> and <code>work/&lt;book&gt;-lighton</code> first.
+</div>
+
+<h3>Or, step by step</h3>
+<p>Set <code>BOOK</code> to your PDF's filename (without <code>.pdf</code>) and run this top to bottom — this is what the one-command version above does internally, useful for inspecting or restarting a single stage.</p>
 <pre><span class="c"># 0. set this once</span>
 BOOK="ثعلوب المكار"
 PDF="assets/PDF Samples/$BOOK.pdf"
