@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime output (uploads, job artifacts, generated audio/text)
+api_output/
+full_pipeline_output/
+output/
+
+# OS
+.DS_Store

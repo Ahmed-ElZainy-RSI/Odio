@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reading-first-ai-engine"
+version = "0.1.0"
+description = "Reading First AI Engine — OCR and audio generation service (V1 backend integration)"
+requires-python = ">=3.11"
+
+# Phase 1/2 runtime. Versions are floors here; a lock file is T-0.1's deliverable.
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+  "httpx>=0.27",
+  "pyjwt[crypto]>=2.8",
+  "structlog>=24.1",
+  "tenacity>=8.3",
+]
+
+[project.optional-dependencies]
+# The default durable store is SQLite via the stdlib, so it needs nothing here. This extra
+# is for the Postgres adapter (T-4.1 proper); `POSTGRES_DELTA` in
+# `ai_engine/adapters/persistence/sql.py` records exactly what changes.
+sql = ["sqlalchemy>=2.0", "alembic>=1.13", "psycopg[binary]>=3.1"]
+metrics = ["prometheus-client>=0.20"]
+# The legacy AI pipelines this service wraps (adapters only). See LEGACY_REPO_ROOT.
+ai = ["pypdfium2", "pymupdf", "pypdf", "pillow", "numpy", "requests",
+      "openai", "google-genai", "faster-whisper"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "respx>=0.21", "ruff>=0.5",
+       "hypothesis>=6.100", "prometheus-client>=0.20"]
+
+[project.scripts]
+ai-engine-api = "ai_engine.main:run_api"
+ai-engine-worker = "ai_engine.main:run_worker"
+ai-engine-reconciler = "ai_engine.main:run_reconciler"
+
+[tool.setuptools.packages.find]
+include = ["ai_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"
+markers = [
+  "slow: real PDF rendering over many pages; excluded by `-m 'not slow'`",
+]
+filterwarnings = [
+  "error::DeprecationWarning:ai_engine.*",
+  # PyMuPDF ships SWIG bindings that trip this on import; not ours to fix.
+  "ignore:builtin type Swig.*:DeprecationWarning",
+  "ignore:builtin type swigvarlink.*:DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = [
+  # This project's domain language is Arabic. RUF001-003 flag every Arabic letter as
+  # "ambiguous" against a Latin lookalike, which is pure noise here and would push real
+  # findings off the screen.
+  "RUF001", "RUF002", "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# SIM300 misreads `assert MODULE_CONSTANT == expected_literal` as a Yoda condition.
+# `actual == expected` is the correct order for a pytest assertion, so the rule is wrong
+# here rather than the code.
+"tests/**" = ["SIM300"]

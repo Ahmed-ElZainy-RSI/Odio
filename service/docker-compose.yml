@@ -1,0 +1,99 @@
+# Local integration stack (T-7.2).
+#
+#     docker compose -f service/docker-compose.yml up --build
+#
+# Run it from the repository root: the build context is `..` because the service wraps the
+# legacy pipeline in `src/`.
+#
+# One image, three roles, one shared database. That split is the point: the API stays
+# responsive while the worker does 5-second-per-page CPU work, and the reconciler is the
+# only thing that can declare a job dead.
+
+name: ai-engine
+
+x-service: &engine
+  build:
+    context: ..
+    dockerfile: service/Dockerfile
+  image: ai-engine:dev
+  environment: &engine-env
+    AI_ENGINE_LOG_LEVEL: INFO
+    AI_ENGINE_JSON_LOGS: "true"
+    # Both roles must point at the SAME database file: the API writes the job, the worker
+    # claims it. This is the whole reason `JOB_STORE=memory` is only a toy.
+    JOB_STORE: sqlite
+    JOB_STORE_PATH: /var/lib/ai-engine/jobs.db
+    SCRATCH_DIR: /var/lib/ai-engine/scratch
+    LEGACY_REPO_ROOT: /app
+    # Point these at the real Backend and Keycloak, or at the contract fake.
+    BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://backend-fake:9100}
+    TOKEN_URL: ${TOKEN_URL:-http://backend-fake:9100/realms/reading-first/protocol/openid-connect/token}
+    AI_ENGINE_CLIENT_ID: ${AI_ENGINE_CLIENT_ID:-reading-first-ocr-engine}
+    AI_ENGINE_CLIENT_SECRET: ${AI_ENGINE_CLIENT_SECRET:-dev-secret}
+    SOURCE_URL_ALLOWED_HOSTS: ${SOURCE_URL_ALLOWED_HOSTS:-backend-fake}
+    # Inbound token validation stays off until Q-01 is answered; see docs/12-security.md.
+    AUTH_ENFORCE: ${AUTH_ENFORCE:-false}
+    OCR_ENGINE: ${OCR_ENGINE:-auto}
+    GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    LIGHTON_API_KEY: ${LIGHTON_API_KEY:-}
+    # The real Gemini free tier is 10 requests/day per model (README.md:491). Set this and
+    # a book that hits the wall parks instead of burning attempts.
+    PROVIDER_CALL_BUDGETS: ${PROVIDER_CALL_BUDGETS:-}
+  volumes:
+    # The job ledger, the outbox and the provider budget all live in this one file, so it
+    # has to be a named volume rather than a container-local path.
+    - engine-state:/var/lib/ai-engine
+    # The whisper weights: ~464 MB, downloaded once, shared by every worker.
+    - model-cache:/models
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *engine
+    command: ["ai-engine-api"]
+    environment:
+      <<: *engine-env
+      AI_ENGINE_ROLE: api
+    ports:
+      - "${AI_ENGINE_PORT:-9099}:9099"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:9099/health', timeout=2).status == 200 else 1)"
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  worker:
+    <<: *engine
+    command: ["ai-engine-worker"]
+    environment:
+      <<: *engine-env
+      AI_ENGINE_ROLE: worker
+    # Scale this, not the API: page work is the slow part. `docker compose up --scale
+    # worker=3`. The lease in the job store is what makes that safe, and the provider
+    # budget is what keeps three workers from tripling the paid call rate.
+    depends_on:
+      api:
+        condition: service_started
+
+  reconciler:
+    <<: *engine
+    command: ["ai-engine-reconciler"]
+    environment:
+      <<: *engine-env
+      AI_ENGINE_ROLE: reconciler
+    # Exactly one. It is the deadline enforcer: two of them racing would double-report
+    # the pages of an abandoned job.
+    deploy:
+      replicas: 1
+    depends_on:
+      api:
+        condition: service_started
+
+volumes:
+  engine-state:
+  model-cache:

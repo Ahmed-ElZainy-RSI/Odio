@@ -1,0 +1,33 @@
+# Build context for `service/Dockerfile`, whose context is this repository root.
+#
+# The root holds 780 MB of `assets/` (sample PDFs, WAVs, MP3s) and 115 MB of `tmp/`. None
+# of it belongs in an image, and sending it to the daemon on every build is minutes of
+# nothing. So: deny everything, then re-admit the three directories the service actually
+# needs.
+#
+#   service/  the service itself
+#   src/      the legacy AI pipeline it wraps -- `pipeline.extract`, `pipeline.speak`,
+#             `pipeline.align_whisper`. See ai_engine/adapters/ai/legacy.py; the image is
+#             non-functional without it.
+#   tools/    the correction/verification helpers those modules import.
+*
+
+!service/
+!src/
+!tools/
+
+# Nothing generated, cached, or secret, even from the admitted directories.
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.DS_Store
+**/.env
+**/.env.*
+**/*.db
+**/*.db-wal
+**/*.db-shm
+service/.venv/
+service/htmlcov/
+service/.coverage

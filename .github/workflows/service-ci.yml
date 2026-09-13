@@ -1,0 +1,130 @@
+# CI for `service/` (T-6.6). There was no CI in this repository at all before this file.
+#
+# Two suites run, and both must stay green:
+#
+#   service/tests   the 600+ tests for the integration service
+#   src/tests       the 56 pre-existing tests for the legacy pipeline this service wraps.
+#                   They are in the gate because `service/` calls into `src/pipeline`
+#                   directly (ai_engine/adapters/ai/legacy.py) -- breaking them breaks the
+#                   service, and the failure would otherwise show up in production.
+#
+# The slow tests (real 16-page PDF renders) run in the same job: the whole suite is under
+# a minute locally and buys the end-to-end Job A and Job B paths against the contract fake.
+
+name: service-ci
+
+on:
+  push:
+    paths:
+      - "service/**"
+      - "src/**"
+      - "tools/**"
+      - ".github/workflows/service-ci.yml"
+  pull_request:
+    paths:
+      - "service/**"
+      - "src/**"
+      - "tools/**"
+      - ".github/workflows/service-ci.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: service-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # No test may reach a paid provider. Absent keys make the adapters refuse at selection
+  # time, which is itself asserted by the suite.
+  GEMINI_API_KEY: ""
+  LIGHTON_API_KEY: ""
+  # Belt and braces: the tests inject settings directly, but a stray real read of the
+  # environment must not pick up a writable production path.
+  JOB_STORE: memory
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        working-directory: service
+        run: |
+          python -m pip install --upgrade pip
+          # `ai` brings the legacy pipeline's dependencies; `src/tests` needs them too.
+          pip install -e '.[ai,metrics,dev]'
+
+      - name: Lint
+        working-directory: service
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: No dotenv, no secrets, no direct legacy imports
+        working-directory: service
+        # These three properties are enforced by tests rather than by review, because
+        # every one of them has been violated at least once in this repository.
+        run: pytest tests/unit/test_domain_purity.py tests/unit/test_config.py -q
+
+      - name: Service tests
+        working-directory: service
+        run: pytest -q
+
+      - name: Legacy pipeline tests
+        # From the repository root: `src/tests` has its own pytest.ini at the root.
+        run: pytest src/tests -q
+
+      - name: Build the image
+        # The Dockerfile's context is the repository root -- it needs `src/` and `tools/`.
+        run: docker build -f service/Dockerfile -t ai-engine:ci .
+
+      - name: The image serves /health, /ready and /ops/budget
+        run: |
+          docker run -d --name ci-smoke -p 9099:9099 \
+            -e SOURCE_URL_ALLOWED_HOSTS=storage.example.com \
+            -e AI_ENGINE_CLIENT_SECRET=ci-secret \
+            -e PROVIDER_CALL_BUDGETS=gemini=10/86400 \
+            ai-engine:ci
+          for _ in $(seq 1 30); do
+            curl -sf http://127.0.0.1:9099/health >/dev/null && break
+            sleep 1
+          done
+          curl -sf http://127.0.0.1:9099/health | tee /dev/stderr | grep -q '"status":"ok"'
+          curl -sf http://127.0.0.1:9099/ready  | tee /dev/stderr | grep -q '"status":"ready"'
+          curl -sf http://127.0.0.1:9099/ops/budget | tee /dev/stderr | grep -q '"provider":"gemini"'
+
+      - name: A job accepted by the API is claimable by a worker
+        # The regression this proves: the API used to serve with an in-memory store, so
+        # accepted jobs were invisible to every worker. 202 and then nothing.
+        run: |
+          JOB=$(python -c 'import uuid; print(uuid.uuid4())')
+          curl -sf -X POST http://127.0.0.1:9099/api/jobs \
+            -H 'content-type: application/json' \
+            -d "{\"jobId\":\"$JOB\",\"jobType\":\"PAGES_IMG_AND_TEXT_EXTRACTION\",\"fileId\":\"book-1\",\"folderId\":\"f\",\"pathPrefix\":\"p\",\"sourceDownloadUrl\":\"https://storage.example.com/b.pdf\"}"
+          docker exec -i ci-smoke python - <<'PY'
+          import asyncio, sys
+          from ai_engine.adapters.persistence.sql import SqliteJobStore
+
+
+          async def main() -> None:
+              async with SqliteJobStore("/var/lib/ai-engine/jobs.db") as store:
+                  job = await store.claim_job("ci")
+                  sys.exit(0 if job is not None else 1)
+
+
+          asyncio.run(main())
+          PY
+
+      - name: Container logs
+        if: always()
+        run: docker logs ci-smoke || true
+
+      - name: Stop the container
+        if: always()
+        run: docker rm -f ci-smoke || true
