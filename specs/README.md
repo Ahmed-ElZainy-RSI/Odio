@@ -26,7 +26,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 |---|---|---|---|---|---|
 | 005 | [walidapro-recovery](005-walidapro-recovery/) | walidapro | **P0** | — (needs Waleed) | blocks all ports |
 | 006 | [letter-preservation-guard](006-letter-preservation-guard/) | both tiers | ✅ done (CLI) | — | free |
-| 007 | [reraise-programming-errors](007-reraise-programming-errors/) | service + CLI | ◐ CLI done, service open | — | free |
+| 007 | [reraise-programming-errors](007-reraise-programming-errors/) | service + CLI | ✅ done | — | free |
 | 008 | [page-failure-isolation](008-page-failure-isolation/) | CLI pipeline | ✅ done | 007 | free |
 | 009 | [page-record-schema-validation](009-page-record-schema-validation/) | CLI pipeline | P2 | 008 | free |
 | 010 | [pymupdf-import-rename](010-pymupdf-import-rename/) | all | P3 | — | free |

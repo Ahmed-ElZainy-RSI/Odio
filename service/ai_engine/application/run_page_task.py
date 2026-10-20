@@ -25,6 +25,7 @@ from ai_engine.artifacts.text_builder import build_text_artifact
 from ai_engine.domain.callbacks import CallbackEnvelope
 from ai_engine.domain.enums import ARTIFACT_ORDER, ArtifactType, CallbackKind, PageState
 from ai_engine.domain.errors import (
+    PROGRAMMING_ERRORS,
     AiEngineError,
     ErrorCode,
     FailureReason,
@@ -142,6 +143,15 @@ class PageTaskExecutor:
                 return await self._report_failed(job_id, page, exc.reason)
             except AiEngineError as exc:
                 return await self._report_failed(job_id, page, exc.reason)
+            except PROGRAMMING_ERRORS as exc:
+                # Adapters let these through on purpose (spec 007): a bug in our code, not a
+                # provider outage. Still exactly one terminal report, but say what it is.
+                reason = FailureReason(
+                    ErrorCode.INTERNAL_ERROR,
+                    f"internal error ({type(exc).__name__}) in the engine's own code",
+                )
+                log.error("page.programming_error", exc_info=exc)
+                return await self._report_failed(job_id, page, reason)
             except BaseException as exc:
                 # An unanticipated error must still produce a terminal report, otherwise
                 # the Backend waits for this page forever.

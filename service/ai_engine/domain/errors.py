@@ -49,6 +49,14 @@ def redact(text: str) -> str:
     return out
 
 
+#: Exceptions that mean *our* code is wrong, not that a provider, a file or the network
+#: failed. Adapters that wrap provider failures into typed errors re-raise these untouched,
+#: so a bug surfaces as INTERNAL_ERROR with a stack trace instead of masquerading as an
+#: outage (spec 007; the same set walidapro's functional audit enforces). KeyError is
+#: deliberately absent: a malformed provider payload raises it, and that is provider data.
+PROGRAMMING_ERRORS: tuple[type[BaseException], ...] = (NameError, AttributeError, TypeError)
+
+
 class ErrorCode(StrEnum):
     """The complete taxonomy. Every failure in the system maps to exactly one of these."""
 

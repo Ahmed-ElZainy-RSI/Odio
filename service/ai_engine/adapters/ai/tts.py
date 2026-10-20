@@ -25,7 +25,7 @@ import struct
 import wave
 
 from ai_engine.adapters.ai.aligner_whisper import measure_wav_duration_ms
-from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
+from ai_engine.domain.errors import PROGRAMMING_ERRORS, AiInferenceError, ModelUnavailableError
 from ai_engine.domain.tokens import AudioFormat
 from ai_engine.observability.logging import get_logger
 
@@ -137,6 +137,8 @@ class GeminiTts:
             pcm = self._request(client, text, voice or self._voice)
         except (AiInferenceError, ModelUnavailableError):
             raise
+        except PROGRAMMING_ERRORS:
+            raise  # our bug, not the provider's: surfaces as INTERNAL_ERROR (spec 007)
         except Exception as exc:
             # Retries are owned by one layer; this adapter reports and does not loop.
             raise AiInferenceError(f"TTS provider failed: {type(exc).__name__}") from exc
@@ -173,7 +175,23 @@ class GeminiTts:
                 ),
             ),
         )
-        return response.candidates[0].content.parts[0].inline_data.data
+        return self._audio_bytes(response)
+
+    @staticmethod
+    def _audio_bytes(response: object) -> bytes:
+        """Dig the PCM out of a response, checking the shape on the way.
+
+        Indexing straight into it turned an empty provider response into a TypeError or
+        IndexError -- provider data that would then look like a bug in our code.
+        """
+        candidates = getattr(response, "candidates", None) or []
+        content = getattr(candidates[0], "content", None) if candidates else None
+        parts = getattr(content, "parts", None) or []
+        inline = getattr(parts[0], "inline_data", None) if parts else None
+        data = getattr(inline, "data", None)
+        if not data:
+            raise AiInferenceError("TTS provider response contained no audio part")
+        return data
 
     @staticmethod
     def _check_duration_is_sane(text: str, duration_ms: int) -> None:

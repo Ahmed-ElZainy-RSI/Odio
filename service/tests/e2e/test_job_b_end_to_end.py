@@ -475,3 +475,25 @@ async def test_ledger_records_both_artifacts(tmp_path: Path, text_fake: FakeBack
     _outcome, store, _metrics, job, _fake = await run_audio(tmp_path, text_fake)
     artifacts = await store.artifacts_for(job.job_id, PAGE)
     assert set(artifacts) == {ArtifactType.AUDIO, ArtifactType.JSON}
+
+
+async def test_a_programming_error_is_reported_as_internal_not_as_the_provider(
+    tmp_path: Path, text_fake: FakeBackend
+) -> None:
+    """Spec 007: a TypeError in our own code still fails the page exactly once (INVARIANT-1),
+    but as INTERNAL_ERROR -- never as "TTS provider failed", which would read as an outage."""
+    from ai_engine.adapters.ai.tts import GeminiTts
+
+    class BuggyTts(GeminiTts):
+        def _request(self, client, text, voice):
+            raise TypeError("unsupported operand type(s) for +: 'int' and 'str'")
+
+    outcome, _store, _metrics, _job, fake = await run_audio(
+        tmp_path, text_fake, tts=BuggyTts(client=object())
+    )
+
+    assert fake.terminal_reports() == {PAGE: "failed"}
+    assert outcome.error_code is ErrorCode.INTERNAL_ERROR
+    reason = next(b["reason"] for _j, _p, k, b in fake.page_reports if k == "failed")
+    assert "internal error" in reason
+    assert "provider" not in reason

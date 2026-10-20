@@ -34,7 +34,7 @@ from pathlib import Path
 
 from ai_engine.adapters.ai.legacy import LegacyPipelineUnavailable, ensure_legacy_on_path
 from ai_engine.domain.enums import TimingSource
-from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
+from ai_engine.domain.errors import PROGRAMMING_ERRORS, AiInferenceError, ModelUnavailableError
 from ai_engine.domain.tokens import AudioFormat, BindReport, TimedToken, Token
 from ai_engine.observability.logging import get_logger
 
@@ -87,6 +87,8 @@ class WhisperAligner:
             raise ModelUnavailableError(f"the alignment model could not be loaded: {exc}") from exc
         try:
             return align_words(audio_path)
+        except PROGRAMMING_ERRORS:
+            raise  # a bug, not a model failure (spec 007)
         except Exception as exc:
             raise AiInferenceError(f"forced alignment failed: {type(exc).__name__}") from exc
 

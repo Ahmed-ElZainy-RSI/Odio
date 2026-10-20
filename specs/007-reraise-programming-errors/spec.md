@@ -1,6 +1,6 @@
 # Feature Specification: Programming errors are never treated as provider failures
 
-**Feature:** `007-reraise-programming-errors` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `007-reraise-programming-errors` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-20 (branch `dev`) · **Epic:** 004
 **Priority:** P2
 
 ## Problem

@@ -29,6 +29,7 @@ import httpx
 from ai_engine.adapters.ai.legacy import LegacyPipelineUnavailable, ensure_legacy_on_path
 from ai_engine.adapters.http.retry import RetryExhausted, RetryPolicy, send_with_retry
 from ai_engine.domain.errors import (
+    PROGRAMMING_ERRORS,
     AiInferenceError,
     ErrorCode,
     ModelUnavailableError,
@@ -137,6 +138,8 @@ class GeminiVisionOcr:
         except (AiInferenceError, ModelUnavailableError) as exc:
             self._count_failure(exc)
             raise
+        except PROGRAMMING_ERRORS:
+            raise  # our bug: not a provider failure, not counted as one (spec 007)
         except Exception as exc:
             # Retries are owned by one layer. This adapter reports and does not loop.
             failure = AiInferenceError(f"OCR provider failed: {type(exc).__name__}")

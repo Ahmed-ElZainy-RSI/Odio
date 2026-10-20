@@ -29,6 +29,7 @@ from ai_engine.artifacts.tokenizer import tokenize
 from ai_engine.domain.callbacks import CallbackEnvelope
 from ai_engine.domain.enums import ARTIFACT_ORDER, ArtifactType, CallbackKind, JobState, PageState
 from ai_engine.domain.errors import (
+    PROGRAMMING_ERRORS,
     AiEngineError,
     ErrorCode,
     FailureReason,
@@ -128,6 +129,17 @@ class RunAudioJob:
                 )
             except AiEngineError as exc:
                 return await self._fail_page(job, page, exc.reason)
+            except PROGRAMMING_ERRORS as exc:
+                # Adapters let these through on purpose (spec 007): a bug, not an outage.
+                log.error("audio_job.programming_error", exc_info=exc)
+                return await self._fail_page(
+                    job,
+                    page,
+                    FailureReason(
+                        ErrorCode.INTERNAL_ERROR,
+                        f"internal error ({type(exc).__name__}) in the engine's own code",
+                    ),
+                )
             except BaseException as exc:
                 log.error("audio_job.unexpected_error", exc_info=exc)
                 return await self._fail_page(
