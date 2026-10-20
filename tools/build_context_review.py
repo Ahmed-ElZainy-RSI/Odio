@@ -13,6 +13,11 @@ diacritizer's error, not the OCR engines', and more debatable). The current
 decision from context_decisions.json (if any) is shown so review progress
 is visible at a glance.
 
+vlm_review.json entries, when present, are merged in and tagged: VLM
+verdicts neither OCR engine produced, which apply_corrections.py queues
+for a human instead of applying (spec 017). They carry suspicion 1.0, so
+they sort to the top of the jump list.
+
 Usage:
     python3 tools/build_context_review.py "work/<book>-lighton/context_review.json"
 """
@@ -62,6 +67,7 @@ h1{{font-size:24px;font-weight:800;margin-bottom:4px;direction:rtl;text-align:ri
 .tag{{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}}
 .tag.diff{{background:#fdeceb;color:#a4392f}}
 .tag.case{{background:#eaf1fb;color:#1c4f8f}}
+.tag.vlm{{background:#f3ecfb;color:#6b3fa0}}
 .dec{{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px}}
 .dec.reject{{background:#f1f3f6;color:#8a92a0}}
 .dec.accept{{background:#eef8f1;color:#0f6b3a}}
@@ -82,7 +88,7 @@ h1{{font-size:24px;font-weight:800;margin-bottom:4px;direction:rtl;text-align:ri
 </style></head><body><div class=wrap>
 
 <h1>{book} — مراجعة الأخطاء المتطابقة (context_detector.py)</h1>
-<div class=sub>{n_total} suspicious word(s) across {n_pages} page(s) · sorted by suspicion in the jump list, grouped by page below</div>
+<div class=sub>{n_total} suspicious word(s) across {n_pages} page(s) · {n_vlm} VLM answer(s) neither engine read · sorted by suspicion in the jump list, grouped by page below</div>
 
 <div class=legend>
 <span><i style="background:#fdeceb"></i>different word — check the image first</span>
@@ -114,11 +120,25 @@ def run(review_path: Path) -> Path:
     decisions_path = lighton_dir / "context_decisions.json"
     decisions = json.loads(decisions_path.read_text(encoding="utf-8")) if decisions_path.exists() else {}
 
+    pages: dict[str, list[dict]] = {p: list(v) for p, v in review["pages"].items()}
+    vlm_path = lighton_dir / "vlm_review.json"
+    if vlm_path.exists():
+        for page_str, entries in json.loads(vlm_path.read_text(encoding="utf-8"))["pages"].items():
+            pages.setdefault(page_str, []).extend(entries)
+
     all_entries = []
-    for page_str, entries in review["pages"].items():
+    for page_str, entries in pages.items():
         for e in entries:
             all_entries.append({**e, "page": int(page_str)})
     all_entries.sort(key=lambda e: -float(e["suspicion"]))
+    n_vlm = sum(1 for e in all_entries if e.get("source", "").startswith("vlm-"))
+
+    def source_tag(e: dict) -> str:
+        source = e.get("source", "")
+        if not source.startswith("vlm-"):
+            return ""
+        label = "VLM multi-word" if source == "vlm-multi-word" else "VLM third answer"
+        return f'<span class="tag vlm" title="lighton: {e.get("lighton_txt")} · gemini: {e.get("gemini_txt")}">{label}</span>'
 
     def decision_badge(id_: str) -> str:
         d = decisions.get(id_, "reject")
@@ -134,13 +154,13 @@ def run(review_path: Path) -> Path:
         jump_rows.append(
             f'<tr><td>{e["suspicion"]:.2f}</td><td><a href="#p{e["page"]}">{e["page"]}</a></td>'
             f'<td dir=rtl>{e["ocr_word"]}</td><td>→</td><td dir=rtl>{e["proposed"]}</td>'
-            f'<td><span class="tag {cls}">{"different word" if cls=="diff" else "case-ending"}</span></td>'
+            f'<td><span class="tag {cls}">{"different word" if cls=="diff" else "case-ending"}</span>{source_tag(e)}</td>'
             f'<td>{decision_badge(e["id"])}</td></tr>'
         )
 
     page_sections = []
-    for page_str in sorted(review["pages"].keys(), key=int):
-        entries = review["pages"][page_str]
+    for page_str in sorted(pages.keys(), key=int):
+        entries = pages[page_str]
         if not entries:
             continue
         page_no = int(page_str)
@@ -152,6 +172,7 @@ def run(review_path: Path) -> Path:
   <div class=words><span>{e['ocr_word']}</span><span class=arrow>&lt;-</span><span>{e['proposed']}</span></div>
   <div class=meta>
     <span class="tag {cls}">{'different word' if cls=='diff' else 'case-ending'}</span>
+    {source_tag(e)}
     {decision_badge(e['id'])}
     <span class=sus>sus {e['suspicion']:.2f} · {e['id']}</span>
   </div>
@@ -164,8 +185,8 @@ def run(review_path: Path) -> Path:
 </div>""")
 
     html = HTML_TEMPLATE.format(
-        book=lighton_dir.name, n_total=len(all_entries),
-        n_pages=sum(1 for v in review["pages"].values() if v),
+        book=lighton_dir.name, n_total=len(all_entries), n_vlm=n_vlm,
+        n_pages=sum(1 for v in pages.values() if v),
         jump_rows="\n".join(jump_rows), page_sections="\n".join(page_sections))
 
     out = lighton_dir / "context_review.html"

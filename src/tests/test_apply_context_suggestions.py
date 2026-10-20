@@ -104,3 +104,37 @@ class TestMissingDecisionsFile:
         write_context_review(lighton_dir, {"1": [suggestion("p001w000", "a", "b")]})
         with pytest.raises(SystemExit):
             run(lighton_dir / "context_review.json")
+
+
+class TestVlmReviewQueue:
+    """Spec 017: third answers routed by apply_corrections.py land in
+    vlm_review.json and are applied here only once a reviewer accepts them."""
+
+    def write_vlm_review(self, lighton_dir, pages):
+        (lighton_dir / "vlm_review.json").write_text(
+            json.dumps({"lighton_dir": str(lighton_dir), "pages": pages}), encoding="utf-8")
+
+    def entry(self, id_, ocr_word, proposed):
+        return {**suggestion(id_, ocr_word, proposed, 1.0), "source": "vlm-third-answer",
+                "lighton_txt": ocr_word, "gemini_txt": "x"}
+
+    def test_accepted_third_answer_is_applied_with_its_own_fix_label(self, lighton_dir):
+        write_page(lighton_dir, 1, [make_token("p001w000", "الغناء")], status="spoken")
+        write_context_review(lighton_dir, {})
+        self.write_vlm_review(lighton_dir, {"1": [self.entry("p001w000", "الغناء", "الغابة")]})
+        write_decisions(lighton_dir, {"p001w000": "accept"})
+
+        run(lighton_dir / "context_review.json")
+
+        tok = read_page(lighton_dir, 1)["tokens"][0]
+        assert tok["txt"] == "الغابة"
+        assert tok["ocr_txt"] == "الغناء"
+        assert tok["fixes"] == ["vlm-reviewed"]
+
+    def test_unreviewed_third_answer_is_not_applied(self, lighton_dir):
+        write_page(lighton_dir, 1, [make_token("p001w000", "الغناء")], status="spoken")
+        write_context_review(lighton_dir, {})
+        self.write_vlm_review(lighton_dir, {"1": [self.entry("p001w000", "الغناء", "الغابة")]})
+        write_decisions(lighton_dir, {"p001w000": "reject"})
+        run(lighton_dir / "context_review.json")
+        assert read_page(lighton_dir, 1)["tokens"][0]["txt"] == "الغناء"

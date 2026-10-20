@@ -64,3 +64,26 @@ class TestRunEndToEnd:
         assert 'class="dec reject"' in html  # p001w001 defaults to reject
         assert "p001w000" in html
         assert "0.96" in html
+
+
+class TestVlmReviewEntries:
+    def test_vlm_third_answers_are_shown_and_tagged(self, gemini_dir, lighton_dir):
+        (lighton_dir / "ensemble_review.json").write_text(
+            json.dumps({"gemini_dir": str(gemini_dir), "lighton_dir": str(lighton_dir), "pages": {}}),
+            encoding="utf-8")
+        review_path = lighton_dir / "context_review.json"
+        review_path.write_text(json.dumps({"lighton_dir": str(lighton_dir), "pages": {}}),
+                               encoding="utf-8")
+        (lighton_dir / "vlm_review.json").write_text(json.dumps({
+            "lighton_dir": str(lighton_dir),
+            "pages": {"2": [{"id": "p002w003", "ocr_word": "الغناء", "proposed": "الغابة",
+                             "suspicion": 1.0, "source": "vlm-third-answer",
+                             "lighton_txt": "الغناء", "gemini_txt": "الغنا"}]},
+        }, ensure_ascii=False), encoding="utf-8")
+
+        html = run(review_path).read_text(encoding="utf-8")
+
+        assert "p002w003" in html
+        assert 'class="tag vlm"' in html
+        assert "VLM third answer" in html
+        assert "1 VLM answer(s) neither engine read" in html

@@ -30,6 +30,21 @@ run_tashkel.py / run_speak_*.py naturally redo it -- their own resumability
 checks skip anything already 'diacritised' or 'spoken', which would
 otherwise leave stale audio narrating the pre-correction word.
 
+A verdict is only applied when it agrees with one of the two engines'
+reads, compared via normalize_for_compare -- which keeps only letters and
+digits, so a verdict that merely drops punctuation or noise (Gemini's TOC
+dot leaders) still agrees, while one that changes a digit does not
+(spec 017). A verdict neither engine produced is the VLM inventing
+text: on the pilot book 7% of verdicts were like that, some right and some
+not (it re-guessed an ISBN digit string differently from both engines).
+Those, and verdicts that are several words for one token, are never
+applied here. They are queued in vlm_review.json, seeded "reject" in the
+same context_decisions.json the context_detector.py review uses, so they
+go through the same human review (build_context_review.py) and are applied
+only once accepted (apply_context_suggestions.py). Verdicts are stripped of
+surrounding whitespace first: a trailing space once reached a token
+('يَصْرُخُ؟! ') and made tashkel.py reject the page.
+
 Usage:
     python3 tools/apply_corrections.py "work/<book>-lighton/ensemble_review.json"
 """
@@ -43,6 +58,46 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ensemble_review import normalize_for_compare  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
+
+# verdict kinds that are never applied automatically -- queued for a human instead
+ROUTED_TO_REVIEW = ("third-answer", "multi-word")
+
+
+def classify_verdict(entry: dict, verdict: str) -> str:
+    """How a (whitespace-stripped, non-empty) VLM verdict relates to the two engine reads.
+
+    'match-lighton' / 'match-gemini' -- same letters and digits as that
+                      engine's read (punctuation, diacritics and orthographic
+                      variants folded by normalize_for_compare).
+    'multi-word'    -- several words for one token; can't be one token's text.
+    'third-answer'  -- neither engine read this. Not applied automatically.
+    """
+    if any(c.isspace() for c in verdict):
+        return "multi-word"
+    reads = {"match-lighton": entry.get("lighton_txt"), "match-gemini": entry.get("gemini_txt")}
+    for kind, read in reads.items():
+        if read is not None and normalize_for_compare(read) == normalize_for_compare(verdict):
+            return kind
+    return "third-answer"
+
+
+def _queue_for_review(lighton_dir: Path, queued: dict[int, list[dict]]) -> None:
+    """Write vlm_review.json (rebuilt every run) and seed new ids as "reject"
+    in context_decisions.json without touching decisions already made."""
+    queue_path = lighton_dir / "vlm_review.json"
+    if not queued and not queue_path.exists():
+        return
+    queue_path.write_text(json.dumps(
+        {"lighton_dir": str(lighton_dir),
+         "pages": {str(p): entries for p, entries in sorted(queued.items())}},
+        ensure_ascii=False, indent=1), encoding="utf-8")
+
+    decisions_path = lighton_dir / "context_decisions.json"
+    decisions = json.loads(decisions_path.read_text(encoding="utf-8")) if decisions_path.exists() else {}
+    new_ids = [e["id"] for entries in queued.values() for e in entries if e["id"] not in decisions]
+    if new_ids:
+        decisions.update({id_: "reject" for id_ in new_ids})
+        decisions_path.write_text(json.dumps(decisions, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def run(review_path: Path) -> None:
@@ -63,6 +118,8 @@ def run(review_path: Path) -> None:
             by_page.setdefault(int(m.group(1)), []).append(r)
 
     corrected = deleted = 0
+    kinds: dict[str, int] = {}
+    queued: dict[int, list[dict]] = {}
     for page_no, corrections in sorted(by_page.items()):
         page_path = lighton_dir / f"p{page_no:03d}.json"
         rec = json.loads(page_path.read_text(encoding="utf-8"))
@@ -74,7 +131,8 @@ def run(review_path: Path) -> None:
             tok = by_id.get(r["id"])
             if tok is None:
                 continue
-            if r["verified_txt"] == "":
+            verdict = r["verified_txt"].strip()
+            if verdict == "":
                 to_delete.add(r["id"])
                 continue
             # verified_txt often comes back undiacritized even when tok["txt"]
@@ -83,10 +141,19 @@ def run(review_path: Path) -> None:
             # the diacritics back off, and force a wasted re-diacritize +
             # re-TTS cycle on a page that needed no actual correction. Only
             # the letters need to differ for this to be a real fix.
-            if normalize_for_compare(tok["txt"]) == normalize_for_compare(r["verified_txt"]):
+            if normalize_for_compare(tok["txt"]) == normalize_for_compare(verdict):
+                continue
+            kind = classify_verdict(r, verdict)
+            kinds[kind] = kinds.get(kind, 0) + 1
+            if kind in ROUTED_TO_REVIEW:
+                queued.setdefault(page_no, []).append({
+                    "id": r["id"], "ocr_word": tok["txt"], "proposed": verdict,
+                    "suspicion": 1.0, "source": f"vlm-{kind}",
+                    "lighton_txt": r.get("lighton_txt"), "gemini_txt": r.get("gemini_txt"),
+                })
                 continue
             tok["ocr_txt"] = tok["txt"]
-            tok["txt"] = r["verified_txt"]
+            tok["txt"] = verdict
             tok["fixes"] = tok["fixes"] + ["ensemble-vlm"]
             page_corrected += 1
 
@@ -101,7 +168,16 @@ def run(review_path: Path) -> None:
             print(f"page {page_no}: {page_corrected} correction(s), "
                   f"{len(to_delete)} deletion(s), status reset")
 
+    _queue_for_review(lighton_dir, queued)
+
     print(f"\n{corrected} tokens corrected, {deleted} deleted, across {len(by_page)} page(s)")
+    if kinds:
+        print("verdicts by agreement: " + ", ".join(f"{k} {n}" for k, n in sorted(kinds.items())))
+    n_queued = sum(len(v) for v in queued.values())
+    if n_queued:
+        print(f"{n_queued} verdict(s) neither engine read NOT applied -> "
+              f"{lighton_dir / 'vlm_review.json'} (review with build_context_review.py, "
+              f"decide in context_decisions.json)")
     if inserts_by_page:
         total_inserts = sum(inserts_by_page.values())
         print(f"{total_inserts} gemini-only words not applied (no LightOn token to attach to) -- by page:")

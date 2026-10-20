@@ -20,6 +20,12 @@ this exact bug) is skipped and reported rather than blindly overwritten --
 something else (another correction pass, a manual edit) touched it since,
 and this tool has no way to know which change should win.
 
+The same review also covers vlm_review.json, when present: VLM verdicts
+neither OCR engine produced, which apply_corrections.py refuses to apply on
+its own (spec 017). They share context_decisions.json and are applied the
+same way, but recorded as "vlm-reviewed" in fixes[] so the source stays
+visible.
+
 Usage:
     python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.json"
 """
@@ -43,8 +49,13 @@ def run(review_path: Path) -> None:
         raise SystemExit(f"no decisions file at {decisions_path} -- run context_detector.py first")
     decisions = json.loads(decisions_path.read_text(encoding="utf-8"))
 
+    sources = [review]
+    vlm_path = lighton_dir / "vlm_review.json"
+    if vlm_path.exists() and vlm_path.resolve() != review_path.resolve():
+        sources.append(json.loads(vlm_path.read_text(encoding="utf-8")))
+
     by_page: dict[int, list[tuple[dict, str]]] = {}
-    for entries in review["pages"].values():
+    for entries in (e for src in sources for e in src["pages"].values()):
         for e in entries:
             decision = decisions.get(e["id"], "reject")
             if decision == "reject":
@@ -72,7 +83,8 @@ def run(review_path: Path) -> None:
             if "ocr_txt" not in tok:
                 tok["ocr_txt"] = tok["txt"]
             tok["txt"] = new_txt
-            tok["fixes"] = tok["fixes"] + ["context-llm"]
+            label = "vlm-reviewed" if e.get("source", "").startswith("vlm-") else "context-llm"
+            tok["fixes"] = tok["fixes"] + [label]
             applied += 1
             changed = True
 
