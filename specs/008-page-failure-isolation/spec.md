@@ -1,6 +1,12 @@
 # Feature Specification: One bad page doesn't stop the book (CLI pipeline)
 
-**Feature:** `008-page-failure-isolation` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `008-page-failure-isolation` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-20 (branch `dev`)
+
+> **Design change during implementation:** failures are recorded in `work/<book>/failures.json`
+> (keyed by page, then stage) and the page's `status` is **never** changed. Marking a page
+> `status: "failed"`, as first written below, would break resume. A TTS failure on a
+> `diacritised` page would make `run_tashkel.py` diacritise it again, and an OCR failure has
+> no page record to mark. FR-002 and FR-003 are superseded by this; the rest stands.
 **Priority:** P1
 
 ## Problem

@@ -60,7 +60,11 @@ class TestGeminiOcrResumability:
 
     def test_a_genuinely_new_page_does_proceed_to_render(self, tiny_pdf, tmp_path, monkeypatch):
         """Sanity check the mock above is actually wired: a page with NO
-        existing record must reach render_page (proven by it raising)."""
+        existing record must reach render_page (proven by it raising).
+
+        Since spec 008 a render failure is a page failure like any other --
+        recorded in failures.json, not propagated -- so the proof that the
+        skip branch was NOT taken is the recorded failure."""
         out_dir = tmp_path / "out"
         monkeypatch.setenv("GEMINI_API_KEY", "dummy-key-never-used")
 
@@ -68,10 +72,10 @@ class TestGeminiOcrResumability:
             raise RuntimeError("reached render_page as expected")
         monkeypatch.setattr(run_ocr_gemini, "render_page", _raises)
 
-        # run() catches exceptions from ocr_page, not render_page, so this
-        # propagates -- proving the skip branch was NOT taken
-        with pytest.raises(RuntimeError, match="reached render_page"):
-            run_ocr_gemini.run(tiny_pdf, out_dir, pages="1")
+        run_ocr_gemini.run(tiny_pdf, out_dir, pages="1")
+
+        recorded = json.loads((out_dir / "failures.json").read_text(encoding="utf-8"))
+        assert recorded["1"]["ocr"]["message"] == "reached render_page as expected"
 
 
 class TestLightonOcrResumability:

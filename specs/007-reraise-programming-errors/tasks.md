@@ -5,4 +5,4 @@
 - [ ] T003 `PROGRAMMING_ERRORS` tuple + internal code in `domain/errors.py`
 - [ ] T004 `retry.classify` checks it first
 - [ ] T005 `run_page_task` maps it
-- [ ] T006 Apply to `src/pipeline` drivers together with 008
+- [x] T006 Applied to `src/pipeline` drivers together with 008: `failures.PROGRAMMING_ERRORS = (NameError, AttributeError, TypeError)`, the same set walidapro uses. `KeyError` is deliberately not included on the CLI side, because a malformed provider JSON response raises it and that is a page failure, not a bug. Revisit for the service side.

@@ -25,6 +25,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from pipeline import failures
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_lighton import (slice_page, parse_page, clean_markdown,
                                    text_to_tokens, ENGINE)
@@ -47,6 +48,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     print(f"{'pg':>3} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")
     print("-" * 52)
 
+    summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for i in range(start, (end or total) + 1):
         rec_path = out_dir / f"p{i:03d}.json"
         if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") in (
@@ -56,9 +58,12 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
         try:
             md = parse_page(slice_page(reader, i - 1), key, f"p{i:03d}.pdf")
         except Exception as e:
-            print(f"{i:>3}  FAILED: {str(e)[:120]}")
-            print("     stopping — rerun to resume from this page")
-            break
+            # a page-level failure is recorded and skipped; only quota stops the run (spec 008)
+            if failures.handle(out_dir, i, "ocr", e, f"{i:>3}") == "quota":
+                summary["stopped_on_quota"] = True
+                break
+            summary["failed"] += 1
+            continue
 
         text = clean_markdown(md)
         tokens = text_to_tokens(text, i, clean_word)
@@ -74,7 +79,12 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             "status": "extracted", "tokens": tokens,
         }
         rec_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        failures.clear(out_dir, i, "ocr")
+        summary["done"] += 1
         print(f"{i:>3} {len(tokens):>7} {len(joined):>6} {ratio:>6.2f} {fixed:>6}  {rec['path']}")
+    print(f"\n{summary['done']} extracted, {summary['failed']} failed"
+          + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
+    return summary
 
 
 def main():

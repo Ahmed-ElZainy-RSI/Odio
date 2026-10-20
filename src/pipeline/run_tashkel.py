@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from pipeline import failures
 from pipeline.tashkel import diacritize_tokens
 
 
@@ -46,7 +47,14 @@ def run(work_dir: Path):
             skipped += 1
             continue
 
-        tokens, report = diacritize_tokens(rec["tokens"])
+        try:
+            tokens, report = diacritize_tokens(rec["tokens"])
+        except Exception as e:
+            # local model, so no quota: a crash on one page is recorded and the
+            # rest of the book still gets diacritised (spec 008)
+            failures.handle(work_dir, page, "diacritise", e, f"{page:>3}")
+            continue
+        failures.clear(work_dir, page, "diacritise")
         if report["mismatch"]:
             print(f"{page:>3}  diacritise   MISMATCH expected {report['expected']} "
                   f"got {report['got']} tokens — left untouched")

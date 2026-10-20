@@ -23,7 +23,7 @@ A one-off command validates every record under `work/` and lists violations by t
 
 ## Requirements
 
-- **FR-001** Schema covers every status actually written: `extracted`, `diacritised`, `spoken`, `skipped-empty`, `skipped-front-matter`, `failed` (008).
+- **FR-001** Schema covers every status actually written: `extracted`, `diacritised`, `spoken`, `skipped-empty`, `skipped-front-matter`, plus the optional `diac_error` object (006). There is no `failed` status: 008 records failures in `failures.json` instead.
 - **FR-002** A single `write_record(path, rec)` helper used by every writer (`src/pipeline` + `tools/`).
 - **FR-003** Validation mode via env `PAGE_RECORD_VALIDATION=strict|warn|off` (tests: strict, default: warn).
 - **FR-004** Token id pattern `^p\d{3}w\d{3}$`; `txt` has no whitespace (same rule as `service/ai_engine/domain/tokens.py`).

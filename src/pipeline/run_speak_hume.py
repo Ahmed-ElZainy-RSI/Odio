@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from hume import AsyncHumeClient
 
+from pipeline import failures
 from pipeline.speak import bind
 from pipeline.tts_hume import synthesize, VOICE
 
@@ -56,14 +57,22 @@ async def _run_async(work_dir: Path, voice: str):
     audio_dir = work_dir / "audio"
     all_pages = sorted(work_dir.glob("p*.json"))
     print(f"{work_dir.name} — {len(all_pages)} pages, voice: {voice}\n")
+    summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for p in all_pages:
+        page = int(p.stem[1:])
         try:
             await do_page(client, p, audio_dir, voice)
         except Exception as e:
-            print(f"  {p.name}  FAILED: {type(e).__name__}: {str(e)[:150]}")
-            print("  stopping — rerun to resume from here")
-            return
-    print("\ndone")
+            # recorded and skipped; Hume's credit ceiling counts as quota and stops (spec 008)
+            if failures.handle(work_dir, page, "tts", e, f"  {p.name}") == "quota":
+                summary["stopped_on_quota"] = True
+                break
+            summary["failed"] += 1
+            continue
+        failures.clear(work_dir, page, "tts")
+        summary["done"] += 1
+    print(f"\n{summary['failed']} failed" if summary["failed"] else "\ndone")
+    return summary
 
 
 def run(work_dir: Path, voice: str = VOICE):
@@ -74,7 +83,7 @@ def run(work_dir: Path, voice: str = VOICE):
     processes everything not yet spoken, so it also catches up any earlier
     pages left unsynthesised instead of hiding that backlog behind a filter.
     """
-    asyncio.run(_run_async(work_dir, voice))
+    return asyncio.run(_run_async(work_dir, voice))
 
 
 def main():

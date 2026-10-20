@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from google import genai
 
+from pipeline import failures
 from pipeline.speak import bind
 from pipeline.tts_gemini import synthesize, VOICE, MODEL, SAMPLE_RATE
 from pipeline.align_whisper import align_words
@@ -69,20 +70,30 @@ def run(work_dir: Path, voice: str = VOICE):
     pages get fetched during extraction/OCR. Once pages exist on disk, this
     processes everything not yet spoken, so it also catches up any earlier
     pages left unsynthesised instead of hiding that backlog behind a filter.
+
+    A page that fails is recorded in failures.json and skipped; a quota
+    error stops the run (spec 008, see failures.py).
     """
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     audio_dir = work_dir / "audio"
     all_pages = sorted(work_dir.glob("p*.json"))
     print(f"{work_dir.name} — {len(all_pages)} pages, "
           f"{MODEL} voice={voice!r} + faster-whisper alignment\n")
+    summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for p in all_pages:
+        page = int(p.stem[1:])
         try:
             do_page(client, p, audio_dir, voice)
         except Exception as e:
-            print(f"  {p.name}  FAILED: {type(e).__name__}: {str(e)[:150]}")
-            print("  stopping — rerun to resume from here")
-            return
-    print("\ndone")
+            if failures.handle(work_dir, page, "tts", e, f"  {p.name}") == "quota":
+                summary["stopped_on_quota"] = True
+                break
+            summary["failed"] += 1
+            continue
+        failures.clear(work_dir, page, "tts")
+        summary["done"] += 1
+    print(f"\n{summary['failed']} failed" if summary["failed"] else "\ndone")
+    return summary
 
 
 def main():

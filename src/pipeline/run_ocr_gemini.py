@@ -8,6 +8,10 @@ would re-OCR (and silently reset to 'extracted', discarding diacritization
 and audio) any page a later stage already finished, exactly the class of
 bug run_tashkel.py's own docstring describes and was fixed for there but
 not here until this comment.
+
+A page that fails (unrenderable, malformed model response) is recorded in
+failures.json and the run moves on; only a quota error stops it (spec 008,
+see failures.py).
 """
 import hashlib
 import json
@@ -21,6 +25,7 @@ load_dotenv()
 from google import genai
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from pipeline import failures
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_gemini import render_page, ocr_page, lines_to_tokens, MODEL
 from pipeline.pages import parse_pages
@@ -41,6 +46,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     print(f"{'pg':>3} {'lines':>6} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")
     print("-" * 60)
 
+    summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for i, page in enumerate(doc, start=1):
         if i < start:
             continue
@@ -52,14 +58,16 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             print(f"{i:>3}  already done, skipping")
             continue
 
-        jpeg, size = render_page(page)
-        (out_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
         try:
+            jpeg, size = render_page(page)
+            (out_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
             lines = ocr_page(client, jpeg)
         except Exception as e:
-            print(f"{i:>3}  FAILED: {type(e).__name__}: {str(e)[:110]}")
-            print("     stopping — rerun to resume from this page")
-            break
+            if failures.handle(out_dir, i, "ocr", e, f"{i:>3}") == "quota":
+                summary["stopped_on_quota"] = True
+                break
+            summary["failed"] += 1
+            continue
 
         tokens = lines_to_tokens(lines, i, clean_word)
         text = " ".join(t["txt"] for t in tokens)
@@ -75,8 +83,13 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             "status": "extracted", "tokens": tokens,
         }
         rec_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        failures.clear(out_dir, i, "ocr")
+        summary["done"] += 1
         print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {ratio:>6.2f} {fixed:>6}  {rec['path']}")
     doc.close()
+    print(f"\n{summary['done']} extracted, {summary['failed']} failed"
+          + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
+    return summary
 
 
 def main():
