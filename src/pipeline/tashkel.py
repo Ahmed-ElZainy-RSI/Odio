@@ -19,8 +19,15 @@ neighbouring words) but returns exactly one output word per input word. Tokens
 are therefore matched back to their diacritised form by position, not by
 re-tokenising the output — re-tokenising could silently drift a token off the
 stable id everything downstream (boxes, timings) anchors to.
+
+Matching word counts are not enough: the model could still change a letter inside a
+word (الفصل -> الْفَضْلِ is a valid word, diacritised fluently and spoken wrong). Every
+output is therefore checked letter by letter against its input with marks stripped
+(preservation.py, spec 006), and a page that fails is left untouched, all or nothing.
 """
 from diacritize import Diacritizer
+
+from pipeline.preservation import check_letters_preserved
 
 _model = None
 
@@ -43,7 +50,7 @@ def diacritize_tokens(tokens):
     """
     words = [t["txt"] for t in tokens]
     if not words:
-        return tokens, {"diacritized": 0, "mismatch": False}
+        return tokens, {"diacritized": 0, "mismatch": False, "preserved": True}
 
     out = _get_model().diacritize(" ".join(words)).split()
 
@@ -51,6 +58,13 @@ def diacritize_tokens(tokens):
         return tokens, {"diacritized": 0, "mismatch": True,
                          "expected": len(words), "got": len(out)}
 
+    check = check_letters_preserved(words, out)
+    if not check.preserved:
+        diff = check.first_difference
+        return tokens, {"diacritized": 0, "mismatch": False, "preserved": False,
+                         "first_diff": {"id": tokens[diff.index]["id"], "before": diff.before,
+                                        "after": diff.after, "reason": diff.reason}}
+
     for t, w in zip(tokens, out):
         t["txt"] = w
-    return tokens, {"diacritized": len(tokens), "mismatch": False}
+    return tokens, {"diacritized": len(tokens), "mismatch": False, "preserved": True}

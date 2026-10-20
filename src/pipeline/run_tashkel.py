@@ -32,7 +32,7 @@ def run(work_dir: Path):
     print(f"{'pg':>3}  path         result")
     print("-" * 50)
 
-    done = skipped = mismatched = 0
+    done = skipped = mismatched = rejected = 0
     for p in all_pages:
         rec = json.loads(p.read_text(encoding="utf-8"))
         page = rec.get("page", "?")
@@ -52,16 +52,29 @@ def run(work_dir: Path):
                   f"got {report['got']} tokens — left untouched")
             mismatched += 1
             continue
+        if not report["preserved"]:
+            # The diacritiser changed a letter, not just marks. Keep the page as it was
+            # and record where, so it can be checked by hand; status stays put, so the
+            # next run tries again.
+            diff = report["first_diff"]
+            rec["diac_error"] = diff
+            p.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+            print(f"{page:>3}  diacritise   REJECTED {diff['id']} {diff['before']} -> "
+                  f"{diff['after']} ({diff['reason']}) — left untouched")
+            rejected += 1
+            continue
 
         rec["tokens"] = tokens
         rec["status"] = "diacritised"
         rec["tashkeel_engine"] = "arabic-diacritizer"
+        rec.pop("diac_error", None)
         p.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{page:>3}  diacritise   {report['diacritized']} tokens diacritised")
         done += 1
 
-    print(f"\n{done} diacritised, {skipped} skipped, {mismatched} mismatched")
-    return done, skipped, mismatched
+    print(f"\n{done} diacritised, {skipped} skipped, {mismatched} mismatched, "
+          f"{rejected} rejected (letters changed)")
+    return done, skipped, mismatched, rejected
 
 
 def main():
