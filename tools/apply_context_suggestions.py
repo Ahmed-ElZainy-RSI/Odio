@@ -37,6 +37,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ensemble_review import normalize_for_compare  # noqa: E402
+from pipeline.records import write_record  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
 
@@ -90,7 +91,7 @@ def run(review_path: Path) -> None:
 
         if changed:
             rec["status"] = "extracted"
-            page_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+            write_record(page_path, rec)
             print(f"page {page_no}: {sum(1 for _ in accepted)} accepted suggestion(s) applied, status reset")
 
     print(f"\n{applied} tokens corrected, {skipped_stale} skipped (changed since detection)")

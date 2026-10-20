@@ -16,6 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline import failures
+from pipeline.records import write_record
 from pipeline.tashkel import diacritize_tokens
 
 
@@ -66,7 +67,7 @@ def run(work_dir: Path):
             # next run tries again.
             diff = report["first_diff"]
             rec["diac_error"] = diff
-            p.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+            write_record(p, rec)
             print(f"{page:>3}  diacritise   REJECTED {diff['id']} {diff['before']} -> "
                   f"{diff['after']} ({diff['reason']}) — left untouched")
             rejected += 1
@@ -76,7 +77,7 @@ def run(work_dir: Path):
         rec["status"] = "diacritised"
         rec["tashkeel_engine"] = "arabic-diacritizer"
         rec.pop("diac_error", None)
-        p.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_record(p, rec)
         print(f"{page:>3}  diacritise   {report['diacritized']} tokens diacritised")
         done += 1
 

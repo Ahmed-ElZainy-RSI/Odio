@@ -21,6 +21,7 @@ load_dotenv()
 from google import genai
 
 from pipeline import failures
+from pipeline.records import write_record
 from pipeline.speak import bind
 from pipeline.tts_gemini import synthesize, VOICE, MODEL, SAMPLE_RATE
 from pipeline.align_whisper import align_words
@@ -32,7 +33,7 @@ def do_page(client, path, audio_dir, voice):
 
     if not rec["tokens"]:
         rec["status"] = "skipped-empty"
-        path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_record(path, rec)
         print(f"  p{rec['page']:03d}  0 tokens, skipped")
         return
     if wav.exists() and rec.get("status") == "spoken":
@@ -56,7 +57,7 @@ def do_page(client, path, audio_dir, voice):
                 "duration_ms": int(duration_ms),
                 "audio": f"audio/p{rec['page']:03d}.wav",
                 "bind_report": report, "status": "spoken"})
-    path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    write_record(path, rec)
     print(f"  p{rec['page']:03d}  {duration_ms/1000:>6.2f}s  "
           f"whisper {report['hume_timestamps']:>3} words -> {report['anchored']:>3} anchored + "
           f"{report['interpolated']:>3} interp = {report['tokens']:>3}  "

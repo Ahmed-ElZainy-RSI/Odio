@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ocr_review_models/page-record.schema.json",
+  "title": "Page record (work/<book>/pNNN.json)",
+  "description": "The single source of truth for one page. Matches what src/pipeline and tools/ actually write (profiled over 92 real records / 3,919 tokens, 2026-10-20). Extra fields are allowed: drivers add provenance (tts, voice, align, render_size, ...) freely.",
+  "type": "object",
+  "required": ["page", "source", "diac_ratio", "path", "status", "tokens"],
+  "properties": {
+    "book": { "type": "string" },
+    "source_pdf": { "type": "string" },
+    "pdf_sha256_16": { "type": "string" },
+    "page": { "type": "integer", "minimum": 1 },
+    "source": { "enum": ["pdf-text-layer", "ocr"] },
+    "ocr_engine": { "type": "string" },
+    "box_level": {
+      "description": "Absent on the text-layer path, where boxes are measured per word.",
+      "enum": ["word", "line", "none"]
+    },
+    "diac_ratio": { "type": "number", "minimum": 0 },
+    "path": { "enum": ["keep", "diacritise"] },
+    "status": {
+      "enum": ["extracted", "diacritised", "spoken", "skipped-empty", "skipped-front-matter"]
+    },
+    "tashkeel_engine": { "type": "string" },
+    "tts": { "type": "string" },
+    "voice": { "type": "string" },
+    "align": { "type": "string" },
+    "audio": { "type": "string" },
+    "duration_ms": { "type": "integer", "minimum": 0 },
+    "bind_report": {
+      "type": "object",
+      "properties": {
+        "tokens": { "type": "integer" },
+        "anchored": { "type": "integer" },
+        "interpolated": { "type": "integer" },
+        "untimed": { "type": "integer" },
+        "monotonic": { "type": "boolean" }
+      }
+    },
+    "diac_error": {
+      "description": "Set by run_tashkel.py when the diacritiser changed a letter (spec 006); cleared on success.",
+      "type": "object",
+      "required": ["id", "reason"],
+      "properties": {
+        "id": { "$ref": "#/$defs/tokenId" },
+        "before": { "type": "string" },
+        "after": { "type": "string" },
+        "reason": { "enum": ["letters_changed", "word_count"] }
+      }
+    },
+    "tokens": { "type": "array", "items": { "$ref": "#/$defs/token" } }
+  },
+  "$defs": {
+    "tokenId": {
+      "description": "p{page:03d}w{index:03d} -- the anchor. Grows past 3 digits rather than wrapping.",
+      "type": "string",
+      "pattern": "^p[0-9]{3,}w[0-9]{3,}$"
+    },
+    "token": {
+      "type": "object",
+      "required": ["id", "raw", "txt", "fixes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/tokenId" },
+        "raw": { "type": "string" },
+        "txt": {
+          "description": "Reading text. No whitespace: tashkel.py joins and splits on it.",
+          "type": "string",
+          "pattern": "^\\S+$"
+        },
+        "ocr_txt": { "type": "string" },
+        "fixes": {
+          "description": "Names of what changed this token: clean_word rules (kashida, dropped-hamza, ...) and correction sources (ensemble-vlm, context-llm, vlm-reviewed).",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "box": {
+          "description": "[x, y, width, height] as percentages of the page.",
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "t": {
+          "description": "[begin_ms, end_ms] into the page audio. Absent when untimed.",
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "t_src": { "enum": ["anchor", "interpolated"] }
+      },
+      "dependentRequired": { "t": ["t_src"], "t_src": ["t"] }
+    }
+  }
+}

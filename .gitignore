@@ -30,6 +30,8 @@ share/python-wheels/
 MANIFEST
 *.wav
 *.json
+# ...but JSON Schemas are source, not output (src/pipeline/records.py needs this one)
+!*.schema.json
 
 
 # PyInstaller

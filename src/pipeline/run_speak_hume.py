@@ -15,6 +15,7 @@ load_dotenv()
 from hume import AsyncHumeClient
 
 from pipeline import failures
+from pipeline.records import write_record
 from pipeline.speak import bind
 from pipeline.tts_hume import synthesize, VOICE
 
@@ -26,7 +27,7 @@ async def do_page(client, path, audio_dir, voice):
     if rec["page"] == 1:
         # front matter: title, deposit number, ISBN. Not narration.
         rec["status"] = "skipped-front-matter"
-        path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_record(path, rec)
         print(f"  p{rec['page']:03d}  front matter, skipped")
         return
     if mp3.exists() and rec.get("status") == "spoken":
@@ -45,7 +46,7 @@ async def do_page(client, path, audio_dir, voice):
                 "duration_ms": duration_ms,
                 "audio": f"audio/p{rec['page']:03d}.mp3",
                 "bind_report": report, "status": "spoken"})
-    path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    write_record(path, rec)
     print(f"  p{rec['page']:03d}  {duration_ms/1000:>6.2f}s  "
           f"hume {report['hume_timestamps']:>3} ts -> {report['anchored']:>3} anchored + "
           f"{report['interpolated']:>3} interp = {report['tokens']:>3}  "

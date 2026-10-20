@@ -20,6 +20,7 @@ import fitz
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.extract import extract_page, diacritic_ratio
+from pipeline.records import write_record
 from pipeline.ocr_gemini import render_page
 from pipeline.pages import parse_pages
 
@@ -71,8 +72,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             "status": "extracted",
             "tokens": tokens,
         }
-        (out_dir / f"p{i:03d}.json").write_text(
-            json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_record(out_dir / f"p{i:03d}.json", rec)
         fixed = sum(1 for t in tokens if t["fixes"])
         summary.append((i, len(tokens), len(text), ratio, rec["path"], fixed))
     doc.close()

@@ -31,9 +31,19 @@ def make_token(id_: str, txt: str, raw: str | None = None,
     return tok
 
 
+@pytest.fixture(autouse=True)
+def strict_page_records(monkeypatch):
+    """Any page record a test makes the code write must satisfy the schema (spec 009)."""
+    monkeypatch.setenv("PAGE_RECORD_VALIDATION", "strict")
+
+
 def write_page(dir_: Path, page_no: int, tokens: list[dict], **extra) -> Path:
+    # defaults make a schema-valid record, like the ones the real drivers write
     rec = {
         "book": "test-book", "page": page_no,
+        "source": extra.pop("source", "ocr"),
+        "diac_ratio": extra.pop("diac_ratio", 0.0),
+        "path": extra.pop("path", "keep"),
         "status": extra.pop("status", "spoken"),
         "box_level": extra.pop("box_level", "word"),
         "ocr_engine": extra.pop("ocr_engine", "test-engine"),

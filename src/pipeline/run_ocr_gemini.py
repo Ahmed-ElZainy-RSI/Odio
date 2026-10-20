@@ -26,6 +26,7 @@ from google import genai
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline import failures
+from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_gemini import render_page, ocr_page, lines_to_tokens, MODEL
 from pipeline.pages import parse_pages
@@ -82,7 +83,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             "path": "keep" if ratio >= DIAC_THRESHOLD else "diacritise",
             "status": "extracted", "tokens": tokens,
         }
-        rec_path.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_record(rec_path, rec)
         failures.clear(out_dir, i, "ocr")
         summary["done"] += 1
         print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {ratio:>6.2f} {fixed:>6}  {rec['path']}")

@@ -26,6 +26,9 @@ import json
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from pipeline.records import write_record  # noqa: E402
+
 
 def find_candidates(review: dict, threshold: float) -> list[int]:
     candidates = []
@@ -53,7 +56,7 @@ def replace_page(lighton_dir: Path, gemini_dir: Path, page_no: int) -> bool:
     lighton_rec["ocr_engine_replaced_from"] = lighton_rec.get("ocr_engine")
     lighton_rec["ocr_engine"] = gemini_rec.get("ocr_engine", "gemini")
     lighton_rec["status"] = "extracted"
-    lighton_path.write_text(json.dumps(lighton_rec, ensure_ascii=False, indent=1), encoding="utf-8")
+    write_record(lighton_path, lighton_rec)
     print(f"page {page_no}: replaced {len(lighton_rec['tokens'])} tokens from Gemini, status reset")
     return True
 

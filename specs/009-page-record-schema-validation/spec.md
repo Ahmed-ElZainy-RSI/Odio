@@ -1,6 +1,6 @@
 # Feature Specification: Page records are validated against a schema
 
-**Feature:** `009-page-record-schema-validation` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `009-page-record-schema-validation` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-20 (branch `dev`)
 **Priority:** P2
 
 ## Problem
