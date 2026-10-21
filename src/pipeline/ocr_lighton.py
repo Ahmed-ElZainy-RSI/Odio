@@ -36,6 +36,8 @@ import os
 import re
 
 import requests
+
+from pipeline import usage
 from pypdf import PdfReader, PdfWriter
 
 ENDPOINT = "https://api.lighton.ai/api/v3/parse"
@@ -68,6 +70,7 @@ def parse_page(pdf_bytes: bytes, api_key: str, name="page.pdf"):
                       files={"file": (name, pdf_bytes)})
     if r.status_code != 200:
         raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+    usage.record("lighton", ENGINE, "ocr", pages=1)
     pages = r.json()["result"]["pages"]
     return pages[0]["markdown"] if pages else ""
 

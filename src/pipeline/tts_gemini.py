@@ -13,6 +13,8 @@ Output is raw 16-bit PCM mono at 24 kHz, per Gemini's documented mime type
 from google import genai
 from google.genai import types
 
+from pipeline import usage
+
 MODEL = "gemini-3.1-flash-tts-preview"
 VOICE = "Kore"
 SAMPLE_RATE = 24000
@@ -32,8 +34,14 @@ def synthesize(client: genai.Client, text: str, voice: str = VOICE):
             ),
         ),
     )
-    pcm = resp.candidates[0].content.parts[0].inline_data.data
+    units = usage.gemini_units(resp)
+    try:
+        pcm = resp.candidates[0].content.parts[0].inline_data.data
+    except (AttributeError, IndexError, TypeError):
+        usage.record("gemini", MODEL, "tts", chars=len(text), **units)  # billed, no audio
+        raise
     duration_ms = len(pcm) / (2 * SAMPLE_RATE) * 1000
+    usage.record("gemini", MODEL, "tts", chars=len(text), audio_ms=int(duration_ms), **units)
     return pcm, duration_ms
 
 

@@ -30,6 +30,7 @@ from google import genai
 from google.genai import types
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from pipeline import usage  # noqa: E402
 from pipeline.ocr_gemini import MODEL  # noqa: E402
 
 SCHEMA = types.Schema(
@@ -73,6 +74,7 @@ def arbitrate_page(client, jpeg: bytes, flagged: list[dict], retries=4) -> dict[
                     response_schema=SCHEMA,
                 ),
             )
+            usage.record("gemini", MODEL, "vlm-arbiter", images=1, **usage.gemini_units(r))
             out = json.loads(r.text)
             return {row["id"]: row["text"] for row in out}
         except Exception as e:
@@ -81,7 +83,7 @@ def arbitrate_page(client, jpeg: bytes, flagged: list[dict], retries=4) -> dict[
     raise last
 
 
-def run(review_path: Path) -> Path:
+def _run(review_path: Path) -> Path:
     review = json.loads(review_path.read_text(encoding="utf-8"))
     gemini_dir = Path(review["gemini_dir"])
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
@@ -97,7 +99,8 @@ def run(review_path: Path) -> Path:
             continue
 
         try:
-            verdicts = arbitrate_page(client, jpeg_path.read_bytes(), flagged)
+            with usage.page(int(page_no)):
+                verdicts = arbitrate_page(client, jpeg_path.read_bytes(), flagged)
         except Exception as e:
             # write what's already been arbitrated before stopping -- a
             # crash (quota, network) used to lose every page done so far
@@ -120,6 +123,12 @@ def run(review_path: Path) -> Path:
 
     print(f"\n{arbitrated} tokens arbitrated -> {review_path}")
     return review_path
+
+
+def run(review_path: Path) -> Path:
+    """Arbitrate flagged pages, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(review_path.parent, "vlm-arbiter"):
+        return _run(review_path)
 
 
 def main():

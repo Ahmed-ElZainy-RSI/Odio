@@ -25,6 +25,8 @@ from PIL import Image
 from google import genai
 from google.genai import types
 
+from pipeline import usage
+
 MODEL = "gemini-3.6-flash"
 RENDER_SCALE = 2.0
 MAX_EDGE = 1100
@@ -76,6 +78,8 @@ def ocr_page(client, jpeg: bytes, retries=4):
                     response_schema=SCHEMA,
                 ),
             )
+            # recorded before parsing: a response that fails to parse was still billed
+            usage.record("gemini", MODEL, "ocr", images=1, **usage.gemini_units(r))
             return json.loads(r.text)
         except Exception as e:
             last = e

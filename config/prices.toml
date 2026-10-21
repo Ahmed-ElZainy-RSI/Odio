@@ -1,0 +1,51 @@
+# Provider prices, used by tools/cost_report.py and the service's cost metering (spec 025).
+#
+# Configuration, not code: update a rate here when a provider changes it, with the source
+# and the date you read it. A model or unit missing from this file is reported as
+# "unpriced" -- never counted as free.
+#
+# Units (any subset per entry):
+#   input_per_1m_tokens, output_per_1m_tokens  USD per 1M tokens
+#   per_1m_chars                               USD per 1M characters
+#   per_audio_minute                           USD per minute of audio produced
+#   per_page, per_image                        USD each
+# valid_from / valid_until are inclusive dates; omit for open-ended.
+
+as_of = "2026-10-21"
+
+# ── Google Gemini, paid tier (Standard) ─────────────────────────────────────────
+# Source: https://ai.google.dev/gemini-api/docs/pricing ("Last updated 2026-10-19 UTC").
+# OCR (src/pipeline/ocr_gemini.py) and VLM arbitration (tools/vlm_arbiter.py) both use
+# gemini-3.6-flash; its price doubles on 2027-01-01.
+
+[[price]]
+provider = "gemini"
+model = "gemini-3.6-flash"
+input_per_1m_tokens = 0.75
+output_per_1m_tokens = 3.75
+valid_until = 2026-12-31
+source = "https://ai.google.dev/gemini-api/docs/pricing (2026-10-19)"
+
+[[price]]
+provider = "gemini"
+model = "gemini-3.6-flash"
+input_per_1m_tokens = 1.50
+output_per_1m_tokens = 7.50
+valid_from = 2027-01-01
+source = "https://ai.google.dev/gemini-api/docs/pricing (2026-10-19)"
+
+# TTS: input is text tokens, output is audio tokens (both reported in usage_metadata).
+[[price]]
+provider = "gemini"
+model = "gemini-3.1-flash-tts-preview"
+input_per_1m_tokens = 1.00
+output_per_1m_tokens = 20.00
+source = "https://ai.google.dev/gemini-api/docs/pricing (2026-10-19)"
+
+# ── OpenRouter (tools/context_detector.py) ──────────────────────────────────────
+# Not listed: OpenRouter reports the exact billed cost of each call in its response
+# (usage accounting), which is recorded as reported_cost_usd and wins over any rate here.
+
+# ── Not priced yet: plan-dependent, fill in from the account's contract ─────────
+# LightOn parse-v3 (per page)      provider = "lighton", model = "lighton/parse-v3"
+# Hume TTS (per character)         provider = "hume",    model = "octave-2"
