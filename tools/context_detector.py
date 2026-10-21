@@ -132,7 +132,8 @@ def run(review_path: Path, out_path: Path | None = None) -> Path:
 
         by_id = {r["id"]: r["lighton_txt"] for r in keep_entries}
         entries = [{"id": f["id"], "ocr_word": by_id.get(f["id"], "?"),
-                    "suspicion": f["suspicion"], "proposed": f["proposed"]}
+                    "suspicion": f["suspicion"], "proposed": f["proposed"],
+                    "model": MODEL}
                    for f in flagged if f["id"] in by_id]
         report["pages"][page_no] = entries
         suspicious_total += len(entries)

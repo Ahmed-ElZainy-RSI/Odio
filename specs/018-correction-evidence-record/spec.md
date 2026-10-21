@@ -1,6 +1,6 @@
 # Feature Specification: Every correction carries its evidence
 
-**Feature:** `018-correction-evidence-record` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `018-correction-evidence-record` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21
 **Priority:** P2
 
 ## Problem

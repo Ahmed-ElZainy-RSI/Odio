@@ -37,7 +37,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 015 | [parallel-book-runner](015-parallel-book-runner/) | CLI pipeline | P3 | 008, 013 | free |
 | 016 | [service-diacritization](016-service-diacritization/) | service | **P1** | 006 | free (CPU) |
 | 017 | [vlm-third-answer-routing](017-vlm-third-answer-routing/) | tools | ✅ done | — | free |
-| 018 | [correction-evidence-record](018-correction-evidence-record/) | tools + service | P2 | — | free |
+| 018 | [correction-evidence-record](018-correction-evidence-record/) | tools + service | ✅ done | — | free |
 | 019 | [correction-accuracy-harness](019-correction-accuracy-harness/) | tools | **P1** | reference transcripts | free (manual transcripts) |
 | 020 | [page-verifier-port](020-page-verifier-port/) | service | **P1** | 018 | free |
 | 021 | [provider-call-cache](021-provider-call-cache/) | service + CLI | P2 | — | saves money |

@@ -37,6 +37,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ensemble_review import normalize_for_compare  # noqa: E402
+from pipeline.evidence import Evidence  # noqa: E402
 from pipeline.records import write_record  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
@@ -63,7 +64,7 @@ def run(review_path: Path) -> None:
                 continue
             new_txt = e["proposed"] if decision == "accept" else decision
             m = PAGE_FROM_ID.match(e["id"])
-            by_page.setdefault(int(m.group(1)), []).append((e, new_txt))
+            by_page.setdefault(int(m.group(1)), []).append((e, new_txt, decision))
 
     applied = skipped_stale = 0
     for page_no, accepted in sorted(by_page.items()):
@@ -72,7 +73,7 @@ def run(review_path: Path) -> None:
         by_id = {t["id"]: t for t in rec["tokens"]}
 
         changed = False
-        for e, new_txt in accepted:
+        for e, new_txt, decision in accepted:
             tok = by_id.get(e["id"])
             if tok is None:
                 continue
@@ -81,18 +82,29 @@ def run(review_path: Path) -> None:
                       f"({e['ocr_word']!r} -> now {tok['txt']!r}), skipping")
                 skipped_stale += 1
                 continue
+            from_vlm = e.get("source", "").startswith("vlm-")
+            evidence = Evidence(
+                token_id=e["id"], original=tok["txt"], candidate=new_txt, applied=True,
+                status="ACCEPT", detector="ensemble" if from_vlm else "context",
+                decided_by="human",
+                rule="human-accept" if decision == "accept" else "human-custom",
+                reads=({"lighton": e.get("lighton_txt"), "gemini": e.get("gemini_txt"),
+                        "vlm": e["proposed"]} if from_vlm else {"llm": e["proposed"]}),
+                scores={"suspicion": float(e["suspicion"])} if "suspicion" in e else {},
+                models={"llm": e["model"]} if e.get("model") else {},
+            )
             if "ocr_txt" not in tok:
                 tok["ocr_txt"] = tok["txt"]
             tok["txt"] = new_txt
-            label = "vlm-reviewed" if e.get("source", "").startswith("vlm-") else "context-llm"
-            tok["fixes"] = tok["fixes"] + [label]
+            tok["fixes"] = tok["fixes"] + ["vlm-reviewed" if from_vlm else "context-llm"]
+            tok["evidence"] = tok.get("evidence", []) + [evidence.to_dict()]
             applied += 1
             changed = True
 
         if changed:
             rec["status"] = "extracted"
             write_record(page_path, rec)
-            print(f"page {page_no}: {sum(1 for _ in accepted)} accepted suggestion(s) applied, status reset")
+            print(f"page {page_no}: {len(accepted)} accepted suggestion(s) applied, status reset")
 
     print(f"\n{applied} tokens corrected, {skipped_stale} skipped (changed since detection)")
     if applied:

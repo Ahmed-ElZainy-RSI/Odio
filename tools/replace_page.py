@@ -27,21 +27,24 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from pipeline.evidence import utc_now  # noqa: E402
 from pipeline.records import write_record  # noqa: E402
 
 
+def gemini_only_ratio(results: list[dict]) -> float:
+    if not results:
+        return 0.0
+    return sum(1 for r in results if r["id"].startswith("gemini-only:")) / len(results)
+
+
 def find_candidates(review: dict, threshold: float) -> list[int]:
-    candidates = []
-    for page_str, results in review["pages"].items():
-        if not results:
-            continue
-        gemini_only = sum(1 for r in results if r["id"].startswith("gemini-only:"))
-        if gemini_only / len(results) >= threshold:
-            candidates.append(int(page_str))
-    return sorted(candidates)
+    return sorted(int(page_str) for page_str, results in review["pages"].items()
+                  if results and gemini_only_ratio(results) >= threshold)
 
 
-def replace_page(lighton_dir: Path, gemini_dir: Path, page_no: int) -> bool:
+def replace_page(lighton_dir: Path, gemini_dir: Path, page_no: int, *,
+                 rule: str = "manual", decided_by: str = "human",
+                 ratio: float | None = None) -> bool:
     lighton_path = lighton_dir / f"p{page_no:03d}.json"
     gemini_path = gemini_dir / f"p{page_no:03d}.json"
     if not gemini_path.exists():
@@ -51,6 +54,15 @@ def replace_page(lighton_dir: Path, gemini_dir: Path, page_no: int) -> bool:
     lighton_rec = json.loads(lighton_path.read_text(encoding="utf-8"))
     gemini_rec = json.loads(gemini_path.read_text(encoding="utf-8"))
 
+    evidence = {
+        "detector": "ensemble", "decided_by": decided_by, "rule": rule,
+        "replaced_engine": lighton_rec.get("ocr_engine"),
+        "replacement_engine": gemini_rec.get("ocr_engine"),
+        "replaced_tokens": len(lighton_rec["tokens"]), "at": utc_now(),
+    }
+    if ratio is not None:
+        evidence["gemini_only_ratio"] = round(ratio, 3)
+    lighton_rec["page_evidence"] = lighton_rec.get("page_evidence", []) + [evidence]
     lighton_rec["tokens"] = gemini_rec["tokens"]
     lighton_rec["box_level"] = gemini_rec.get("box_level", "line")
     lighton_rec["ocr_engine_replaced_from"] = lighton_rec.get("ocr_engine")
@@ -71,7 +83,12 @@ def run(review_path: Path, threshold: float, only_page: int | None) -> None:
         print(f"no pages at or above {threshold:.0%} gemini-only")
         return
 
-    replaced = [p for p in pages if replace_page(lighton_dir, gemini_dir, p)]
+    if only_page:
+        how = {"rule": "manual --page", "decided_by": "human"}
+    else:
+        how = {"rule": f"gemini-only >= {threshold:.0%}", "decided_by": "rule"}
+    replaced = [p for p in pages if replace_page(
+        lighton_dir, gemini_dir, p, ratio=gemini_only_ratio(review["pages"].get(str(p), [])), **how)]
     if replaced:
         print(f"\n{len(replaced)} page(s) replaced: {replaced}")
         print("re-run diacritise/TTS/reader for this book to pick up the swap")
