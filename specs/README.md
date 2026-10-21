@@ -39,7 +39,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 017 | [vlm-third-answer-routing](017-vlm-third-answer-routing/) | tools | ✅ done | — | free |
 | 018 | [correction-evidence-record](018-correction-evidence-record/) | tools + service | ✅ done | — | free |
 | 019 | [correction-accuracy-harness](019-correction-accuracy-harness/) | tools | **P1** | reference transcripts | free (manual transcripts) |
-| 020 | [page-verifier-port](020-page-verifier-port/) | service | **P1** | 018 | free |
+| 020 | [page-verifier-port](020-page-verifier-port/) | service | ✅ done | 018 | free |
 | 021 | [provider-call-cache](021-provider-call-cache/) | service + CLI | P2 | — | saves money |
 | 022 | [verified-ocr](022-verified-ocr/) | service | P1 (epic) | 005, 018, 020, 021 | 40–200 calls/page, opt-in |
 | 023 | [visual-diacritics](023-visual-diacritics/) | service | P2 (epic) | 006, 020, 021, 022 | 1 call/word, opt-in |

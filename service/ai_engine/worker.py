@@ -14,6 +14,7 @@ from ai_engine.adapters.ai.aligner_whisper import WhisperAligner
 from ai_engine.adapters.ai.ocr_providers import build_ocr_engine
 from ai_engine.adapters.ai.renderer_pymupdf import PyMuPdfRenderer
 from ai_engine.adapters.ai.tts import GeminiTts, SyntheticTts
+from ai_engine.adapters.ai.verifier_passthrough import PassThroughVerifier
 from ai_engine.adapters.backend.files_client import BackendFilesClient
 from ai_engine.adapters.backend.jobs_client import BackendJobsClient
 from ai_engine.adapters.backend.token_provider import KeycloakTokenProvider
@@ -112,6 +113,7 @@ def build_worker(
     transcriber: object | None = None,
     ocr: object | None = None,
     budget: RateBudget | None = None,
+    verifier: object | None = None,
 ) -> WorkerContext:
     """Compose the worker.
 
@@ -213,6 +215,11 @@ def build_worker(
             )
         )
 
+    # The verified tier is wired only while ENABLE_VERIFIED_TIER is on (spec 020). Until a
+    # real verifier lands (spec 022) the pass-through stands in, so the routing and the
+    # contract check are exercised for real.
+    verifier = (verifier or PassThroughVerifier()) if settings.enable_verified_tier else None
+
     page_executor = PageTaskExecutor(
         store=store,
         renderer=renderer,
@@ -221,6 +228,7 @@ def build_worker(
         metrics=metrics,
         page_timeout_seconds=float(settings.page_task_timeout_seconds),
         budget=budget,
+        verifier=verifier,
     )
     drainer = OutboxDrainer(
         store=store,

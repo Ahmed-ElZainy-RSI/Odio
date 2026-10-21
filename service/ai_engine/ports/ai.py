@@ -17,6 +17,7 @@ from ai_engine.domain.tokens import (
     TimedToken,
     Token,
 )
+from ai_engine.domain.verification import VerificationResult
 
 
 @runtime_checkable
@@ -133,3 +134,27 @@ class Aligner(Protocol):
         duration_ms: int,
         tokens: Sequence[Token],
     ) -> tuple[Sequence[TimedToken], BindReport]: ...
+
+
+@runtime_checkable
+class PageVerifier(Protocol):
+    """Verify an OCR'd page word by word against its image (the verified tier, spec 020).
+
+    Contract (checked by the caller with ``domain.verification.contract_violations``, not
+    trusted):
+      - Token ids, their count and their order are unchanged.
+      - Only a token with an ``ACCEPT`` verdict may change its ``text``; the verdict's
+        evidence says why (spec 018).
+      - Tokens the verifier did not flag get no verdict.
+      - ``calls_made`` reports paid calls per provider, for budget and cost metering.
+
+    Raises:
+        AiInferenceError: a provider failed or returned unusable output.
+        ModelUnavailableError: a provider is down or over quota.
+    """
+
+    name: str
+
+    def verify(
+        self, *, page_image: bytes, tokens: Sequence[Token], page_number: int
+    ) -> VerificationResult: ...

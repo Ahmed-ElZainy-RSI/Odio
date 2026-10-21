@@ -16,14 +16,20 @@ because an unhandled error escaping a page task is exactly what strands a book.
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import UUID
 
 from ai_engine.artifacts.text_builder import build_text_artifact
 from ai_engine.domain.callbacks import CallbackEnvelope
-from ai_engine.domain.enums import ARTIFACT_ORDER, ArtifactType, CallbackKind, PageState
+from ai_engine.domain.enums import (
+    ARTIFACT_ORDER,
+    ArtifactType,
+    CallbackKind,
+    PageState,
+    QualityTier,
+)
 from ai_engine.domain.errors import (
     PROGRAMMING_ERRORS,
     AiEngineError,
@@ -33,6 +39,8 @@ from ai_engine.domain.errors import (
     RateLimitedError,
 )
 from ai_engine.domain.job import Artifact, ArtifactDescriptor, Job
+from ai_engine.domain.tokens import Token
+from ai_engine.domain.verification import VerifierContractViolation, contract_violations
 from ai_engine.observability.context import bind
 from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import PAGES_TOTAL, Metrics
@@ -89,6 +97,7 @@ class PageTaskExecutor:
         page_timeout_seconds: float | None = 900.0,
         ocr_for: Callable[[str], object] | None = None,
         budget: RateBudget | None = None,
+        verifier: object | None = None,
     ) -> None:
         self._store = store
         self._renderer = renderer
@@ -100,6 +109,10 @@ class PageTaskExecutor:
         self._ocr_for = ocr_for or (lambda _path: ocr)
         self._engines: dict[str, object] = {}
         self._budget = budget
+        # The verified tier (spec 020). None unless ENABLE_VERIFIED_TIER is on -- the worker
+        # decides, so a job accepted as `verified` before the flag was turned off is
+        # served as fast instead of verified.
+        self._verifier = verifier
         self._uploader = uploader
         self._metrics = metrics
         # A wall-clock deadline turns a hang into a reported failure. Without one, a stuck
@@ -190,6 +203,7 @@ class PageTaskExecutor:
         tokens, _provenance = engine.extract_page(  # type: ignore[attr-defined]
             page_image=image, pdf_path=spec.source_path, page_number=page
         )
+        tokens = self._verify(spec, engine, image, tokens)
         text_artifact = build_text_artifact(tokens, page)
         image_artifact = ArtifactDescriptor(
             artifact_type=ArtifactType.IMAGE,
@@ -197,6 +211,40 @@ class PageTaskExecutor:
             file_name=f"p{page:03d}.jpg",
         )
         return {ArtifactType.IMAGE: image_artifact, ArtifactType.TEXT: text_artifact}
+
+    def _verify(
+        self, spec: PageTaskSpec, engine: object, image: bytes, tokens: Sequence[Token]
+    ) -> Sequence[Token]:
+        """Run the verified tier on an OCR'd page, and check it kept its contract."""
+        if spec.job.quality_tier is not QualityTier.VERIFIED:
+            return tokens
+        if self._verifier is None:
+            log.warning("page.verified_tier_unavailable", fallback="fast")
+            return tokens
+        if getattr(engine, "name", None) == "pdf-text-layer":
+            # Exact embedded text: there is no recognition step to verify (constitution VI).
+            log.info("page.verification_skipped", reason="text_layer")
+            return tokens
+
+        result = self._verifier.verify(  # type: ignore[attr-defined]
+            page_image=image, tokens=tokens, page_number=spec.page_number
+        )
+        problems = contract_violations(tokens, result)
+        if problems:
+            name = getattr(self._verifier, "name", type(self._verifier).__name__)
+            raise VerifierContractViolation(
+                f"verifier {name} broke its contract: {problems[0]}"
+                + (f" (+{len(problems) - 1} more)" if len(problems) > 1 else "")
+            )
+        log.info(
+            "page.verified",
+            verifier=getattr(self._verifier, "name", "?"),
+            flagged=len(result.verdicts),
+            accepted=result.accepted,
+            needs_review=result.needs_review,
+            calls=dict(result.calls_made),
+        )
+        return result.tokens
 
     async def _upload_in_order(
         self, spec: PageTaskSpec, descriptors: dict[ArtifactType, ArtifactDescriptor]
