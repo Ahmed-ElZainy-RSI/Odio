@@ -1,6 +1,6 @@
 # Feature Specification: Fingerprinted cache for paid calls + atomic writes
 
-**Feature:** `021-provider-call-cache` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `021-provider-call-cache` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (filesystem store; SQL store deferred to 027) · **Epic:** 004
 **Priority:** P2
 
 ## Problem
