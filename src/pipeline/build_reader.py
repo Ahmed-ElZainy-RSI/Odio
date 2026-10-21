@@ -68,6 +68,15 @@ def build(work_dir: Path):
     if review_path.exists():
         review = json.loads(review_path.read_text(encoding="utf-8"))
         gemini_dir = Path(review["gemini_dir"])
+        # ensemble_review.json records gemini_dir as it stood when the review
+        # ran (e.g. "work/<book>"). Once a book tree is moved or renamed that
+        # path stops resolving, which silently costs the -lighton variants
+        # every page image they borrow. Fall back to the sibling directory of
+        # the same name, which is where the pair actually lives.
+        if not gemini_dir.is_dir():
+            sibling = work_dir.parent / gemini_dir.name
+            if sibling.is_dir():
+                gemini_dir = sibling
         for results in review["pages"].values():
             for r in results:
                 # "gemini-only:..." ids have no corresponding LightOn token
@@ -77,10 +86,14 @@ def build(work_dir: Path):
                     review_by_id[r["id"]] = r
 
     pages = []
+    skipped = []
     for f in sorted(work_dir.glob("p*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
-        if r["status"] != "spoken":
-            continue
+        # A page is rendered only when all three artefacts genuinely exist:
+        # this JSON record, a synthesised audio file on disk, and a page image.
+        # Anything less is skipped and reported, never shown half-working.
+        # (The image is resolved further down -- it may be borrowed -- so the
+        # completeness decision is made just before the page is appended.)
         # run_extract.py's text-layer records predate box_level and never set it —
         # they always have word boxes, so an absent key defaults to "word", not "none"
         has_boxes = r.get("box_level", "word") not in (None, "none")
@@ -127,15 +140,30 @@ def build(work_dir: Path):
         elif has_boxes:
             for t, src in zip(tok, r["tokens"]):
                 t["b"] = src["box"]
-        pages.append({"page": r["page"], "audio": r["audio"],
+        audio_rel = r.get("audio")
+        why = []
+        if not audio_rel or not (work_dir / audio_rel).exists():
+            why.append("no audio file")
+        elif not r.get("duration_ms"):
+            why.append("audio has no duration")
+        if not has_image:
+            why.append("no page image")
+        if why:
+            skipped.append((r["page"], r.get("status", "?"), " + ".join(why)))
+            continue
+
+        pages.append({"page": r["page"], "audio": audio_rel,
             "img": img_path, "dur": r["duration_ms"],
             "diac": r["diac_ratio"], "box_level": r.get("box_level", "word"),
             "has_image": has_image, "compare": has_boxes and has_image,
             "voice": r.get("voice", ""), "tokens": tok})
 
     if not pages:
-        print(f"0 of {len(list(work_dir.glob('p*.json')))} pages have status 'spoken' — "
-              f"nothing to build yet. Run the TTS step for {book!r} first.")
+        total = len(list(work_dir.glob("p*.json")))
+        print(f"{work_dir.name}: 0 of {total} pages are complete (need JSON + audio file + page image) "
+              f"— nothing to build.")
+        for pg, st, why in skipped:
+            print(f"    p{pg:03d}  [{st}]  {why}")
         return None
 
     # per-page "compare" already decides native vs. borrowed vs. neither;
@@ -145,7 +173,9 @@ def build(work_dir: Path):
     voice = pages[0]["voice"]
     data = json.dumps(pages, ensure_ascii=False, separators=(",", ":"))
     n_tok = sum(len(p["tokens"]) for p in pages)
+    n_timed = sum(1 for p in pages for t in p["tokens"] if t["m"])
     n_anc = sum(1 for p in pages for t in p["tokens"] if t["s"] == "anchor")
+    n_interp = sum(1 for p in pages for t in p["tokens"] if t["s"] == "interpolated")
     n_fix = sum(1 for p in pages for t in p["tokens"] if t["f"])
     n_flag = sum(1 for p in pages for t in p["tokens"] if "g" in t and "v" not in t)
     n_verified = sum(1 for p in pages for t in p["tokens"] if "v" in t)
@@ -176,6 +206,7 @@ background:#fff;border-radius:8px;cursor:pointer;color:#3c434c}}
 .pgsel button{{font:inherit;font-size:11.5px;width:30px;height:28px;border:1px solid #dfe3e8;
 background:#fff;border-radius:6px;cursor:pointer;color:#5c646e}}
 .pgsel button.on{{background:#1c4f8f;border-color:#1c4f8f;color:#fff;font-weight:700}}
+
 .compare{{display:flex;align-items:stretch}}
 .compare>div{{flex:1;min-width:0}}
 .txtcol{{max-height:75vh;overflow:auto;border-left:1px solid #eef1f4}}
@@ -235,8 +266,8 @@ font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#5c646e;min-heig
 {'<span><i style="background:#fdf3e0;border:1px solid #e8c98a"></i>disagreement, VLM-verified reading available</span>' if n_verified else ''}
 </div>
 <div class=stat>
-<div><b>{n_anc}</b><span>anchored to real timestamps ({100*n_anc/n_tok:.0f}%)</span></div>
-<div><b>{n_tok-n_anc}</b><span>interpolated between anchors</span></div>
+<div><b>{n_anc}</b><span>anchored to real timestamps{f" ({100*n_anc/n_timed:.0f}% of timed)" if n_timed else ""}</span></div>
+<div><b>{n_interp}</b><span>interpolated between anchors</span></div>
 <div><b>{n_fix}</b><span>tokens cleaned by an extraction rule</span></div>
 {f'<div><b>{n_flag}</b><span>unresolved disagreements ({100*n_flag/n_tok:.0f}%)</span></div>' if n_flag else ''}
 {f'<div><b>{n_verified}</b><span>VLM-verified disagreements ({100*n_verified/n_tok:.0f}%)</span></div>' if n_verified else ''}
@@ -253,12 +284,18 @@ const au=$("#au"),txt=$("#txt"),compare=$("#compare"),imgw=$("#imgw"),img=$("#im
       insp=$("#insp"),bar=$("#bar"),tm=$("#tm"),playB=$("#play");
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 
-$("#pgsel").innerHTML=P.map((p,i)=>`<button data-p="${{i}}"${{i?"":" class=on"}}>${{p.page}}</button>`).join("");
+$("#pgsel").innerHTML=P.map((p,i)=>`<button data-p="${{i}}"${{i?"":" class=on"}} title="page ${{p.page}}">${{p.page}}</button>`).join("");
 $("#pgsel").onclick=e=>{{const b=e.target.closest("button"); if(b) load(+b.dataset.p);}};
 
 function load(i){{
   cur=i; const p=P[i];
-  au.src=p.audio;
+  // A page without audio must not set au.src -- an empty/missing src fires a
+  // network error and leaves the previous page's audio loaded and playable.
+  au.pause();
+  if(p.audio){{ au.src=p.audio; }} else {{ au.removeAttribute("src"); au.load(); }}
+  playB.disabled=!p.audio; playB.textContent="\u25b6";
+  $("#scrub").style.opacity=p.audio?"":"0.35";
+  $("#scrub").style.cursor=p.audio?"":"default";
   txt.innerHTML="";
   if(HAS_COMPARE_LAYOUT){{
     compare.classList.toggle("textonly",!p.compare);
@@ -284,7 +321,8 @@ function load(i){{
 function wire(){{
   document.querySelectorAll(".w,.bx").forEach(el=>{{
     el.onmouseenter=()=>show(+el.dataset.j);
-    el.onclick=()=>{{const m=P[cur].tokens[+el.dataset.j].m; if(m){{au.currentTime=m[0]/1000; render();}}}};
+    el.onclick=()=>{{const m=P[cur].tokens[+el.dataset.j].m;
+      if(m&&P[cur].audio){{au.currentTime=m[0]/1000; render();}}}};
   }});
 }}
 function show(j){{
@@ -309,21 +347,28 @@ function show(j){{
 }}
 let last=-1;
 function render(){{
-  const ms=au.currentTime*1000, ts=P[cur].tokens;
+  const p=P[cur];
+  if(!p.dur){{
+    document.querySelectorAll(".w.now,.bx.now").forEach(e=>e.classList.remove("now"));
+    bar.style.width="0%"; tm.textContent="— / —"; last=-1;
+    return;
+  }}
+  const ms=au.currentTime*1000, ts=p.tokens;
   let i=-1;
   for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){{i=k;break;}}
   document.querySelectorAll(".w").forEach((e,k)=>e.classList.toggle("now",k===i));
-  if(P[cur].compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(p.compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
   if(i>=0&&i!==last){{show(i);last=i;}}
-  const d=P[cur].dur;
+  const d=p.dur;
   bar.style.width=Math.min(100,100*ms/d)+"%";
   tm.textContent=(ms/1000).toFixed(2)+" / "+(d/1000).toFixed(2);
 }}
 au.ontimeupdate=render;
 au.onended=()=>{{playB.textContent="▶";}};
-playB.onclick=()=>{{if(au.paused){{au.play();playB.textContent="⏸";}}else{{au.pause();playB.textContent="▶";}}}};
+playB.onclick=()=>{{if(!P[cur].audio)return;
+  if(au.paused){{au.play();playB.textContent="⏸";}}else{{au.pause();playB.textContent="▶";}}}};
 $("#prev").onclick=()=>load(cur-1); $("#next").onclick=()=>load(cur+1);
-$("#scrub").onclick=e=>{{const r=e.currentTarget.getBoundingClientRect();
+$("#scrub").onclick=e=>{{if(!P[cur].dur)return; const r=e.currentTarget.getBoundingClientRect();
   au.currentTime=P[cur].dur/1000*(e.clientX-r.left)/r.width; render();}};
 load(0);
 </script></body></html>"""
@@ -331,6 +376,10 @@ load(0);
     out.write_text(html, encoding="utf-8")
     print(f"wrote {out} ({out.stat().st_size/1024:.0f} KB)")
     print(f"{len(pages)} pages · {n_tok} tokens · {n_anc} anchored · {n_fix} cleaned · {dur/60:.1f} min")
+    if skipped:
+        print(f"    skipped {len(skipped)} incomplete page(s):")
+        for pg, st, why in skipped:
+            print(f"      p{pg:03d}  [{st}]  {why}")
     return out
 
 
