@@ -18,3 +18,4 @@ Implementation:
 - [ ] T016 Settings + `worker.py` wiring
 - [ ] T017 Dockerfile `worker-verified` target
 - [ ] T018 e2e on the recorded page
+- [ ] T019 Persist verdicts per page (moved from 020 FR-005): table in the job store or a per-page artifact. Choose once real verdict volume is known; today `page.verified` is only logged
