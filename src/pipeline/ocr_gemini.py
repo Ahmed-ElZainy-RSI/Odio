@@ -25,7 +25,7 @@ from PIL import Image
 from google import genai
 from google.genai import types
 
-from pipeline import usage
+from pipeline import ratelimit, usage
 
 MODEL = "gemini-3.6-flash"
 RENDER_SCALE = 2.0
@@ -68,6 +68,7 @@ def ocr_page(client, jpeg: bytes, retries=4):
     """Returns [{text, box_2d}] or raises after exhausting retries."""
     last = None
     for attempt in range(retries):
+        ratelimit.acquire("gemini", MODEL)  # outside the try: an exhausted window must not be retried
         try:
             r = client.models.generate_content(
                 model=MODEL,

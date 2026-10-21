@@ -1,6 +1,6 @@
 # Feature Specification: Run many books in parallel (CLI)
 
-**Feature:** `015-parallel-book-runner` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `015-parallel-book-runner` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21
 **Priority:** P3 (the service already parallelizes; this is for offline batch production)
 
 ## Problem

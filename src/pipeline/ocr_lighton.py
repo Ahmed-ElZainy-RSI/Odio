@@ -37,7 +37,7 @@ import re
 
 import requests
 
-from pipeline import usage
+from pipeline import ratelimit, usage
 from pypdf import PdfReader, PdfWriter
 
 ENDPOINT = "https://api.lighton.ai/api/v3/parse"
@@ -65,6 +65,7 @@ def slice_page(reader: PdfReader, index: int) -> bytes:
 
 
 def parse_page(pdf_bytes: bytes, api_key: str, name="page.pdf"):
+    ratelimit.acquire("lighton", ENGINE)
     r = requests.post(ENDPOINT,
                       headers={"Authorization": f"Bearer {api_key}"},
                       files={"file": (name, pdf_bytes)})

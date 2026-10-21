@@ -34,7 +34,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 012 | [text-layer-trust-check](012-text-layer-trust-check/) | CLI + service | ◐ CLI done | — | ≤ 2 OCR calls/book |
 | 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | ✅ done | — | free |
 | 014 | [front-matter-handling](014-front-matter-handling/) | TTS | P3 | product decision | free |
-| 015 | [parallel-book-runner](015-parallel-book-runner/) | CLI pipeline | P3 | 008, 013 | free |
+| 015 | [parallel-book-runner](015-parallel-book-runner/) | CLI pipeline | ✅ done | 008, 013 | free |
 | 016 | [service-diacritization](016-service-diacritization/) | service | ✅ done (opt-in) | 006 | free (CPU) |
 | 017 | [vlm-third-answer-routing](017-vlm-third-answer-routing/) | tools | ✅ done | — | free |
 | 018 | [correction-evidence-record](018-correction-evidence-record/) | tools + service | ✅ done | — | free |
