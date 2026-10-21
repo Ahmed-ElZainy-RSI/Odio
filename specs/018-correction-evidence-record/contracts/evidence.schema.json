@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ocr_review_models/evidence.schema.json",
+  "title": "Correction evidence (spec 018)",
+  "description": "Why one token's text was (or was not) changed. One shape for every detector and both tiers; mirrors walidapro's SuspiciousWord (spec 018).",
+  "type": "object",
+  "required": [
+    "token_id",
+    "original",
+    "candidate",
+    "applied",
+    "status",
+    "detector",
+    "decided_by",
+    "rule",
+    "at"
+  ],
+  "properties": {
+    "token_id": {
+      "$ref": "#/$defs/tokenId"
+    },
+    "original": {
+      "type": "string",
+      "description": "txt before this change"
+    },
+    "candidate": {
+      "type": "string",
+      "description": "the proposed text"
+    },
+    "applied": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": [
+        "ACCEPT",
+        "REVIEW",
+        "REJECT"
+      ]
+    },
+    "detector": {
+      "enum": [
+        "ensemble",
+        "context",
+        "reviewer",
+        "verifier"
+      ],
+      "description": "what flagged the token"
+    },
+    "decided_by": {
+      "enum": [
+        "rule",
+        "human",
+        "verifier"
+      ],
+      "description": "what authorised the change"
+    },
+    "rule": {
+      "type": "string",
+      "description": "e.g. match-gemini, human-accept, human-custom, decide()"
+    },
+    "reads": {
+      "type": "object",
+      "description": "every independent reading of the word that fed the decision",
+      "properties": {
+        "lighton": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gemini": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vlm": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "llm": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "blind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paddle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "number",
+          "null"
+        ]
+      }
+    },
+    "bbox": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "crop_ref": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "at": {
+      "type": "string",
+      "description": "ISO-8601 UTC"
+    }
+  },
+  "$defs": {
+    "tokenId": {
+      "description": "p{page:03d}w{index:03d} -- the anchor. Grows past 3 digits rather than wrapping.",
+      "type": "string",
+      "pattern": "^p[0-9]{3,}w[0-9]{3,}$"
+    }
+  }
+}

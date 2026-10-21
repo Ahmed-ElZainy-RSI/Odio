@@ -124,6 +124,11 @@ def build(work_dir: Path):
         for t in r["tokens"]:
             entry = {"i": t["id"], "r": t["raw"], "t": t["txt"],
                       "m": t.get("t"), "s": t.get("t_src", "untimed"), "f": t["fixes"]}
+            if t.get("evidence"):
+                # the latest correction only, compact: what the inspector shows (spec 018)
+                ev = t["evidence"][-1]
+                entry["e"] = {"o": ev["original"], "x": ev["detector"],
+                              "d": ev["decided_by"], "r": ev["rule"], "at": ev["at"][:10]}
             rv = review_by_id.get(t["id"])
             if rv:
                 # gemini_txt/verified_txt are only added when a review row
@@ -342,8 +347,12 @@ function show(j){{
     : "g" in t
     ? `<br><span style="color:#c0392b">ensemble: LightOn says <b>${{esc(t.t)}}</b>, Gemini says <b>${{gTxt}}</b> (unresolved)</span>`
     : "";
+  const evd=t.e
+    ? `<br><span style="color:#0f6b3a">corrected from <b>${{esc(t.e.o)}}</b> · ${{esc(t.e.x)}} detector, `
+      +`decided by ${{esc(t.e.d)}} (${{esc(t.e.r)}}) · ${{esc(t.e.at)}}</span>`
+    : "";
   insp.innerHTML=`<b>${{t.i}}</b> &nbsp; raw <b>${{esc(t.r)}}</b> → <b>${{esc(t.t)}}</b><br>`
-   +`${{timing}}${{src}} &nbsp;·&nbsp; ${{fx}}${{box}}${{ens}}`;
+   +`${{timing}}${{src}} &nbsp;·&nbsp; ${{fx}}${{box}}${{ens}}${{evd}}`;
 }}
 let last=-1;
 function render(){{

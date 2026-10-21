@@ -56,6 +56,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ensemble_review import normalize_for_compare  # noqa: E402
+from pipeline.evidence import Evidence  # noqa: E402
 from pipeline.records import write_record  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
@@ -153,8 +154,16 @@ def run(review_path: Path) -> None:
                     "lighton_txt": r.get("lighton_txt"), "gemini_txt": r.get("gemini_txt"),
                 })
                 continue
+            evidence = Evidence(
+                token_id=r["id"], original=tok["txt"], candidate=verdict, applied=True,
+                status="ACCEPT", detector="ensemble", decided_by="rule", rule=kind,
+                reads={"lighton": r.get("lighton_txt"), "gemini": r.get("gemini_txt"),
+                       "vlm": verdict},
+                models={"vlm": r["vlm_model"]} if r.get("vlm_model") else {},
+            )
             tok["ocr_txt"] = tok["txt"]
             tok["txt"] = verdict
+            tok["evidence"] = tok.get("evidence", []) + [evidence.to_dict()]
             tok["fixes"] = tok["fixes"] + ["ensemble-vlm"]
             page_corrected += 1
 

@@ -112,6 +112,7 @@ def run(review_path: Path) -> Path:
             if r["id"] in verdicts:
                 r["verified_txt"] = verdicts[r["id"]]
                 r["action"] = "VERIFIED"
+                r["vlm_model"] = MODEL  # provenance for the evidence record (spec 018)
                 arbitrated += 1
         print(f"page {page_no}: {len(verdicts)}/{len(flagged)} arbitrated")
         # persisted every page, not just at the end, for the same reason
