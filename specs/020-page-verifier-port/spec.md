@@ -1,6 +1,6 @@
 # Feature Specification: PageVerifier port and quality-tier routing
 
-**Feature:** `020-page-verifier-port` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `020-page-verifier-port` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (verdict persistence moved to 022) · **Epic:** 004
 **Priority:** P1 (must exist before any verified-tier logic)
 
 ## Problem
