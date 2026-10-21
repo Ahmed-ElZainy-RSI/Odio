@@ -26,7 +26,6 @@ Needs the vx2lm conda env (pymupdf, google-genai, faster-whisper):
 """
 import argparse
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -39,7 +38,7 @@ import context_detector
 import ensemble_review
 import replace_page
 import vlm_arbiter
-from pipeline import build_reader, main as main_pipeline, run_speak_gemini, run_tashkel
+from pipeline import books, build_reader, main as main_pipeline, run_speak_gemini, run_tashkel
 
 REPLACE_THRESHOLD = 0.5  # matches replace_page.py's own default
 
@@ -49,25 +48,21 @@ def step(n: str, title: str):
 
 
 def run(pdf_path: Path, pages: str = "0") -> Path:
-    book = pdf_path.stem.strip()
-    gemini_dir = Path(f"work/{book}")
-    lighton_dir = Path(f"work/{book}-lighton")
+    # Both directories come from the PDF's content (books.py, spec 013). Each pass is
+    # told where to write, so the old move-aside dance -- rename the Gemini result away,
+    # run LightOn into its path, rename everything back, which left the folders swapped
+    # if anything crashed in between -- is gone. Both passes are resumable, so re-running
+    # this skips pages already done instead of skipping a whole existing directory.
+    gemini_dir = books.resolve_work_dir(pdf_path)
+    lighton_dir = books.resolve_work_dir(pdf_path, variant="lighton")
 
     step("1/8", f"Gemini OCR pass -> {gemini_dir} (pages={pages})")
-    main_pipeline.run_pipeline(pdf_path, ocr="gemini", tts="gemini", pages=pages)
+    main_pipeline.run_pipeline(pdf_path, ocr="gemini", tts="gemini", pages=pages,
+                               work_dir=gemini_dir)
 
     step("2/8", f"LightOn OCR pass -> {lighton_dir} (pages={pages})")
-    if not lighton_dir.exists():
-        # main.py always writes to work/<book> with no engine suffix -- move
-        # the just-finished Gemini result aside so the LightOn run doesn't
-        # collide with it, then rename LightOn's result into place
-        tmp = Path(f"work/{book}-gemini-tmp")
-        shutil.move(str(gemini_dir), str(tmp))
-        main_pipeline.run_pipeline(pdf_path, ocr="lighton", tts="gemini", pages=pages)
-        shutil.move(str(gemini_dir), str(lighton_dir))
-        shutil.move(str(tmp), str(gemini_dir))
-    else:
-        print(f"{lighton_dir} already exists, skipping (delete it to redo from scratch)")
+    main_pipeline.run_pipeline(pdf_path, ocr="lighton", tts="gemini", pages=pages,
+                               work_dir=lighton_dir)
 
     step("3/8", "Detect disagreements (ensemble_review.py)")
     review_path = ensemble_review.run(gemini_dir, lighton_dir)

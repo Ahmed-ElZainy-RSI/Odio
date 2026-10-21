@@ -32,7 +32,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 010 | [pymupdf-import-rename](010-pymupdf-import-rename/) | all | ✅ done | — | free |
 | 011 | [dependency-lockfile](011-dependency-lockfile/) | all | P2 | — | free |
 | 012 | [text-layer-trust-check](012-text-layer-trust-check/) | CLI + service | P2 | — | ≤ 2 OCR calls/book |
-| 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | P3 | — | free |
+| 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | ✅ done | — | free |
 | 014 | [front-matter-handling](014-front-matter-handling/) | TTS | P3 | product decision | free |
 | 015 | [parallel-book-runner](015-parallel-book-runner/) | CLI pipeline | P3 | 008, 013 | free |
 | 016 | [service-diacritization](016-service-diacritization/) | service | ✅ done (opt-in) | 006 | free (CPU) |
