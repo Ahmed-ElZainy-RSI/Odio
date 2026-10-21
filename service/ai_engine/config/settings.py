@@ -30,6 +30,7 @@ from ai_engine.domain.budget import ProviderLimit, parse_limits
 from ai_engine.domain.enums import QualityTier
 
 OCR_ENGINES = frozenset({"auto", "textlayer", "gemini", "lighton"})
+DIACRITIZERS = frozenset({"none", "local"})
 """Selectable OCR engines. ``auto`` prefers the free text layer when the PDF has one."""
 
 
@@ -140,6 +141,10 @@ class Settings(BaseSettings):
     alignment_engine: str = "whisper"
     tts_engine: str = "gemini"
     ocr_engine: str = "auto"  # auto | textlayer | gemini | lighton
+    # Job A diacritisation (spec 016). Opt-in: "local" needs the arabic-diacritizer model
+    # (torch, CPU) in the image; the worker refuses to start if it is set and the model
+    # can't load, rather than failing every undiacritised page one by one.
+    diacritizer: str = "none"  # none | local
 
     # ── Model configuration (was hardcoded constants in the legacy pipeline) ─────
     ocr_gemini_model: str = "gemini-3.6-flash"
@@ -176,6 +181,13 @@ class Settings(BaseSettings):
         """Catch a typo'd OCR_ENGINE at boot, not on the first job."""
         if value not in OCR_ENGINES:
             raise ValueError(f"must be one of {sorted(OCR_ENGINES)}, got {value!r}")
+        return value
+
+    @field_validator("diacritizer")
+    @classmethod
+    def _known_diacritizer(cls, value: str) -> str:
+        if value not in DIACRITIZERS:
+            raise ValueError(f"must be one of {sorted(DIACRITIZERS)}, got {value!r}")
         return value
 
     @field_validator("backend_base_url", "token_url")
