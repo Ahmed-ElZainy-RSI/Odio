@@ -16,7 +16,7 @@ import os
 import sys
 from pathlib import Path
 
-import fitz
+import pymupdf
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline.extract import extract_page, diacritic_ratio
@@ -36,7 +36,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pages").mkdir(exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
-    doc = fitz.open(str(pdf_path))
+    doc = pymupdf.open(str(pdf_path))
     total = len(doc)
     start, end = parse_pages(pages)
     summary = []

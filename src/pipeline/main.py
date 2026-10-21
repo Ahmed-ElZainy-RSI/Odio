@@ -38,7 +38,7 @@ import argparse
 import sys
 from pathlib import Path
 
-import fitz
+import pymupdf
 from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -51,7 +51,7 @@ TEXT_LAYER_MIN_WORDS = 50  # a scanned page's stray OCR-able text stays under th
 
 
 def has_text_layer(pdf_path: Path, threshold: int = TEXT_LAYER_MIN_WORDS) -> bool:
-    doc = fitz.open(str(pdf_path))
+    doc = pymupdf.open(str(pdf_path))
     words = sum(len(page.get_text("words")) for page in doc)
     doc.close()
     return words > threshold

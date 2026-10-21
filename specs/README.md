@@ -29,7 +29,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 007 | [reraise-programming-errors](007-reraise-programming-errors/) | service + CLI | ✅ done | — | free |
 | 008 | [page-failure-isolation](008-page-failure-isolation/) | CLI pipeline | ✅ done | 007 | free |
 | 009 | [page-record-schema-validation](009-page-record-schema-validation/) | CLI pipeline | ✅ done | 008 | free |
-| 010 | [pymupdf-import-rename](010-pymupdf-import-rename/) | all | P3 | — | free |
+| 010 | [pymupdf-import-rename](010-pymupdf-import-rename/) | all | ✅ done | — | free |
 | 011 | [dependency-lockfile](011-dependency-lockfile/) | all | P2 | — | free |
 | 012 | [text-layer-trust-check](012-text-layer-trust-check/) | CLI + service | P2 | — | ≤ 2 OCR calls/book |
 | 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | P3 | — | free |

@@ -203,8 +203,8 @@ class TestSpeakHume:
 
 @pytest.fixture
 def three_page_pdf(tmp_path):
-    fitz = pytest.importorskip("fitz")
-    doc = fitz.open()
+    pymupdf = pytest.importorskip("pymupdf")
+    doc = pymupdf.open()
     for _ in range(3):
         doc.new_page()
     path = tmp_path / "book.pdf"

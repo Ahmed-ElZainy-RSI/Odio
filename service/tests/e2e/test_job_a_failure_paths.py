@@ -35,9 +35,9 @@ pytestmark = pytest.mark.skipif(
 
 def small_pdf_bytes(pages: int = 4) -> bytes:
     """A real but tiny PDF with a text layer, built in-memory."""
-    import fitz
+    import pymupdf
 
-    doc = fitz.open()
+    doc = pymupdf.open()
     for index in range(pages):
         page = doc.new_page()
         page.insert_text((72, 144), f"صفحة {index + 1} نص عربي", fontsize=18)

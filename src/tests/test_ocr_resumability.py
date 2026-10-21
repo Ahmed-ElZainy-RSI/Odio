@@ -20,7 +20,7 @@ import json
 import pytest
 from conftest import make_token, read_page, write_page
 
-fitz = pytest.importorskip("fitz")
+pymupdf = pytest.importorskip("pymupdf")
 pytest.importorskip("google.genai")
 
 from pipeline import run_ocr_gemini, run_ocr_lighton
@@ -28,7 +28,7 @@ from pipeline import run_ocr_gemini, run_ocr_lighton
 
 @pytest.fixture
 def tiny_pdf(tmp_path):
-    doc = fitz.open()
+    doc = pymupdf.open()
     for _ in range(3):
         doc.new_page()
     path = tmp_path / "test.pdf"

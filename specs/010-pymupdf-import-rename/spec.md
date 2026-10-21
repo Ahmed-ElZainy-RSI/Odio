@@ -1,6 +1,6 @@
 # Feature Specification: Move off the deprecated `fitz` import
 
-**Feature:** `010-pymupdf-import-rename` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `010-pymupdf-import-rename` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (branch `feature/010-pymupdf-import-rename`)
 **Priority:** P3 (maintenance)
 
 ## Problem
