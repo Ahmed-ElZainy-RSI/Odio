@@ -152,6 +152,7 @@ Arabic text, spaces, `?` and `' - Copy'` — unusable as an identity and unsafe 
 | `DEFAULT_QUALITY_TIER` | `fast` | |
 | `ENABLE_VERIFIED_TIER` | `false` | **Hard kill-switch.** A job requesting `verified` is *downgraded and logged*, not rejected. |
 | `OCR_ENGINE` | `auto` | `auto` \| `textlayer` \| `gemini` \| `lighton`. Validated at startup. See [OCR engine selection](#ocr-engine-selection). |
+| `DIACRITIZER` | `none` | `none` \| `local`. Job A diacritisation (spec 016). `local` runs the CPU `arabic-diacritizer` model on pages below `DIAC_THRESHOLD`; the worker **refuses to start** if the model can't load. Pages printed with tashkeel are kept; a page the model would damage (word count or letters changed) ships undiacritised. Metric: `ai_engine_diacritization_total{outcome=applied\|kept\|review\|rejected}`. |
 | `TTS_ENGINE` | `gemini` | `gemini` (paid) or `synthetic` (free, real WAV, for dev) |
 | `TTS_NARRATOR` | `female` | V1 uploads exactly one `Audio` artifact |
 | `ALIGNMENT_ENGINE` | `whisper` | `whisper` (forced) or `native` (Hume timestamps) |

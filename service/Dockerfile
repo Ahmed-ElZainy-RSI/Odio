@@ -28,6 +28,14 @@ RUN mkdir -p ai_engine && touch ai_engine/__init__.py \
 COPY service/ai_engine ./ai_engine
 RUN /opt/venv/bin/pip install --no-deps .
 
+# ── Optional: the local diacritiser (DIACRITIZER=local, spec 016) ────────────────
+# Off by default: it pulls in torch. Turn on with `--build-arg INSTALL_DIACRITIZER=1`;
+# a worker started with DIACRITIZER=local on an image without it refuses to start.
+ARG INSTALL_DIACRITIZER=0
+RUN if [ "$INSTALL_DIACRITIZER" = "1" ]; then \
+      /opt/venv/bin/pip install '.[diacritize]' ; \
+    fi
+
 # ── Optional: bake the whisper weights in ────────────────────────────────────────
 #
 # 464 MB for `small`. Off by default: most deployments would rather mount a shared model

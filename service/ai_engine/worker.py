@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import httpx
 
 from ai_engine.adapters.ai.aligner_whisper import WhisperAligner
+from ai_engine.adapters.ai.diacritizer_local import LocalDiacritizer
 from ai_engine.adapters.ai.ocr_providers import build_ocr_engine
 from ai_engine.adapters.ai.renderer_pymupdf import PyMuPdfRenderer
 from ai_engine.adapters.ai.tts import GeminiTts, SyntheticTts
@@ -114,6 +115,7 @@ def build_worker(
     ocr: object | None = None,
     budget: RateBudget | None = None,
     verifier: object | None = None,
+    diacritizer: object | None = None,
 ) -> WorkerContext:
     """Compose the worker.
 
@@ -220,6 +222,12 @@ def build_worker(
     # contract check are exercised for real.
     verifier = (verifier or PassThroughVerifier()) if settings.enable_verified_tier else None
 
+    # Job A diacritisation (spec 016), opt-in. Loading the weights here makes a missing
+    # model fail the worker at startup instead of failing every undiacritised page.
+    if diacritizer is None and settings.diacritizer == "local":
+        diacritizer = LocalDiacritizer()
+        diacritizer.load()
+
     page_executor = PageTaskExecutor(
         store=store,
         renderer=renderer,
@@ -229,6 +237,8 @@ def build_worker(
         page_timeout_seconds=float(settings.page_task_timeout_seconds),
         budget=budget,
         verifier=verifier,
+        diacritizer=diacritizer,
+        diac_threshold=settings.diac_threshold,
     )
     drainer = OutboxDrainer(
         store=store,

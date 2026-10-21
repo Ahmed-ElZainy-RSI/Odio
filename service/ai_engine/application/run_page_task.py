@@ -39,11 +39,12 @@ from ai_engine.domain.errors import (
     RateLimitedError,
 )
 from ai_engine.domain.job import Artifact, ArtifactDescriptor, Job
+from ai_engine.domain.preservation import check_letters_preserved, diacritic_ratio
 from ai_engine.domain.tokens import Token
 from ai_engine.domain.verification import VerifierContractViolation, contract_violations
 from ai_engine.observability.context import bind
 from ai_engine.observability.logging import get_logger
-from ai_engine.observability.metrics import PAGES_TOTAL, Metrics
+from ai_engine.observability.metrics import DIACRITIZATION_TOTAL, PAGES_TOTAL, Metrics
 from ai_engine.ports.backend import ArtifactUploader
 from ai_engine.ports.job_store import JobStore
 from ai_engine.ports.rate_budget import RateBudget
@@ -98,6 +99,8 @@ class PageTaskExecutor:
         ocr_for: Callable[[str], object] | None = None,
         budget: RateBudget | None = None,
         verifier: object | None = None,
+        diacritizer: object | None = None,
+        diac_threshold: float = 0.15,
     ) -> None:
         self._store = store
         self._renderer = renderer
@@ -113,6 +116,9 @@ class PageTaskExecutor:
         # decides, so a job accepted as `verified` before the flag was turned off is
         # served as fast instead of verified.
         self._verifier = verifier
+        # Job A diacritisation (spec 016); None when DIACRITIZER=none.
+        self._diacritizer = diacritizer
+        self._diac_threshold = diac_threshold
         self._uploader = uploader
         self._metrics = metrics
         # A wall-clock deadline turns a hang into a reported failure. Without one, a stuck
@@ -204,6 +210,8 @@ class PageTaskExecutor:
             page_image=image, pdf_path=spec.source_path, page_number=page
         )
         tokens = self._verify(spec, engine, image, tokens)
+        # after verification on purpose: correct letters first, then add marks (constitution I)
+        tokens = self._diacritize(tokens, image, page)
         text_artifact = build_text_artifact(tokens, page)
         image_artifact = ArtifactDescriptor(
             artifact_type=ArtifactType.IMAGE,
@@ -245,6 +253,31 @@ class PageTaskExecutor:
             calls=dict(result.calls_made),
         )
         return result.tokens
+
+    def _diacritize(self, tokens: Sequence[Token], image: bytes, page: int) -> Sequence[Token]:
+        """Add tashkeel to a page printed without it; keep a page printed with it."""
+        if self._diacritizer is None or not tokens:
+            return tokens
+        ratio = diacritic_ratio(" ".join(t.text for t in tokens))
+        if ratio >= self._diac_threshold:
+            # printed with tashkeel: re-diacritising would overwrite the typesetter's marks
+            self._metrics.inc(DIACRITIZATION_TOTAL, {"outcome": "kept"})
+            return tokens
+
+        shaped, review = self._diacritizer.diacritize(  # type: ignore[attr-defined]
+            tokens, page_image=image, page_number=page
+        )
+        # The port's invariant, checked rather than trusted (spec 006): same ids, same
+        # letters. A diacritizer that breaks it leaves the page undiacritised, not wrong.
+        same_ids = [t.id for t in shaped] == [t.id for t in tokens]
+        before, after = [t.text for t in tokens], [t.text for t in shaped]
+        if not same_ids or not check_letters_preserved(before, after).preserved:
+            log.warning("diacritize.contract_broken", page_number=page)
+            self._metrics.inc(DIACRITIZATION_TOTAL, {"outcome": "rejected"})
+            return tokens
+        self._metrics.inc(DIACRITIZATION_TOTAL, {"outcome": "applied" if review == 0 else "review"})
+        log.info("page.diacritised", diac_ratio=round(ratio, 3), review_fraction=review)
+        return shaped
 
     async def _upload_in_order(
         self, spec: PageTaskSpec, descriptors: dict[ArtifactType, ArtifactDescriptor]

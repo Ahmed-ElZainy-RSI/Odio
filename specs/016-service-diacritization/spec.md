@@ -1,6 +1,6 @@
 # Feature Specification: Diacritization in the AI Engine service (fast tier)
 
-**Feature:** `016-service-diacritization` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `016-service-diacritization` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (opt-in: `DIACRITIZER=local`)
 **Priority:** P1
 
 ## Problem

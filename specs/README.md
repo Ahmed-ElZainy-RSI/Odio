@@ -35,7 +35,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | P3 | — | free |
 | 014 | [front-matter-handling](014-front-matter-handling/) | TTS | P3 | product decision | free |
 | 015 | [parallel-book-runner](015-parallel-book-runner/) | CLI pipeline | P3 | 008, 013 | free |
-| 016 | [service-diacritization](016-service-diacritization/) | service | **P1** | 006 | free (CPU) |
+| 016 | [service-diacritization](016-service-diacritization/) | service | ✅ done (opt-in) | 006 | free (CPU) |
 | 017 | [vlm-third-answer-routing](017-vlm-third-answer-routing/) | tools | ✅ done | — | free |
 | 018 | [correction-evidence-record](018-correction-evidence-record/) | tools + service | ✅ done | — | free |
 | 019 | [correction-accuracy-harness](019-correction-accuracy-harness/) | tools | **P1** | reference transcripts | free (manual transcripts) |

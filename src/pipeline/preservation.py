@@ -27,7 +27,22 @@ from dataclasses import dataclass
 #: tanween / harakat / shadda / sukun (U+064B-U+0652), the remaining combining marks
 #: except madda and hamza (U+0656-U+065F), dagger alef (U+0670), Quranic small marks
 #: (U+06D6-U+06ED) and tatweel (U+0640), which carries no letter.
-_MARKS_RE = re.compile("[ؐ-ًؚ-ْٖ-ٰٟۖ-ۭـ]")
+_MARKS_RE = re.compile("[\u0610-\u061a\u064b-\u0652\u0656-\u065f\u0670\u06d6-\u06ed\u0640]")
+
+
+_HARAKAT_RE = re.compile("[\u064b-\u0652\u0670]")
+_LETTER_RE = re.compile("[\u0621-\u064a]")
+
+
+def diacritic_ratio(text: str) -> float:
+    """Diacritics per Arabic letter -- the tashkeel router's input.
+
+    Identical to src/pipeline/extract.py's diacritic_ratio, so the service and the CLI
+    route a page the same way: below the threshold (0.15) a page is diacritised, at or
+    above it the printed tashkeel is kept.
+    """
+    letters = len(_LETTER_RE.findall(text))
+    return len(_HARAKAT_RE.findall(text)) / letters if letters else 0.0
 
 
 def strip_marks(text: str) -> str:
