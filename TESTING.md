@@ -12,7 +12,8 @@ live in `src/tests/` (pytest) and run against fixture data, not live API
 calls or real quota:
 
 ```bash
-/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -m pytest src/tests/ -v
+# one-time, pinned environment (spec 011): python3.11 -m venv .venv && .venv/bin/pip install -r requirements-pipeline.lock
+.venv/bin/python3 -m pytest src/tests/ -v
 ```
 
 Plain `python3 -m pytest src/tests/` also works and covers everything except

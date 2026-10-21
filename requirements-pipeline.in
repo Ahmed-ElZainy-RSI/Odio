@@ -1,0 +1,20 @@
+# Direct dependencies of the CLI pipeline (src/pipeline) and the correction tools (tools/),
+# from an import inventory (spec 011). Compiled into requirements-pipeline.lock:
+#
+#   uv pip compile requirements-pipeline.in -o requirements-pipeline.lock \
+#       --python-version 3.11 --universal -c <constraints from a known-good env>
+#
+# Install: pip install -r requirements-pipeline.lock
+pymupdf>=1.24.3          # PDF text layer + rendering (imported as `pymupdf`, spec 010)
+pypdf                     # one-page PDF slices for LightOn
+pillow                    # page images for Gemini OCR
+google-genai              # Gemini OCR, TTS, VLM arbiter
+hume                      # Hume TTS (native word timestamps)
+faster-whisper            # forced alignment of Gemini audio
+arabic-diacritizer        # local CPU diacritiser (pulls in torch)
+requests                  # LightOn, OpenRouter
+python-dotenv
+jsonschema                # page-record validation (spec 009); optional at runtime
+
+# tests
+pytest

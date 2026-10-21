@@ -395,7 +395,8 @@ real quota exhaustion while building this (see Open items).
 ### Running the correction pipeline
 
 ```bash
-VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+# one-time, pinned environment (spec 011): python3.11 -m venv .venv && .venv/bin/pip install -r requirements-pipeline.lock
+VX2=.venv/bin/python3
 
 # the whole automatable chain, one command — both OCR engines through
 # correlated-error detection, then it stops for the one deliberately-manual step
