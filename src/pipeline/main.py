@@ -11,6 +11,7 @@ Usage:
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 5
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 13:20
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --force-ocr
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --trust-text-layer
 
 Every stage is independently resumable (each run_*.py module skips pages
 already done), so re-running this after a quota stall picks up where it left
@@ -33,8 +34,13 @@ unrelated sentence again). No word-count or diacritic-ratio check catches
 this -- the extracted words are real, correctly-spelled Arabic, just for the
 wrong page. OCR reads the rendered pixels instead, so it isn't fooled by
 this class of defect.
+
+Since spec 012 that check is automatic: a text layer is spot-checked against OCR on up to
+2 pages first (text_layer_trust.py) and the book goes down the OCR path if they disagree.
+--trust-text-layer skips the check; --force-ocr still forces OCR outright.
 """
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -44,8 +50,19 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 load_dotenv()
 
-from pipeline import (books, build_reader, run_extract, run_ocr_gemini, run_ocr_lighton,
-                       run_speak_gemini, run_speak_hume, run_tashkel)
+from pipeline import (
+    books,
+    build_reader,
+    failures,
+    run_extract,
+    run_ocr_gemini,
+    run_ocr_lighton,
+    run_speak_gemini,
+    run_speak_hume,
+    run_tashkel,
+    text_layer_trust,
+    usage,
+)
 
 TEXT_LAYER_MIN_WORDS = 50  # a scanned page's stray OCR-able text stays under this
 
@@ -57,20 +74,53 @@ def has_text_layer(pdf_path: Path, threshold: int = TEXT_LAYER_MIN_WORDS) -> boo
     return words > threshold
 
 
+def _ocr_sampler(ocr: str):
+    """The paid OCR used to spot-check a text layer: the same engine as --ocr."""
+    if ocr == "gemini":
+        from google import genai
+        return text_layer_trust.gemini_ocr_words(genai.Client(api_key=os.environ["GEMINI_API_KEY"]))
+    return text_layer_trust.lighton_ocr_words(os.environ["LIGHTON_API_KEY"])
+
+
+def text_layer_is_trusted(pdf_path: Path, work_dir: Path, ocr: str) -> tuple[bool, str]:
+    """Spot-check the text layer against OCR (spec 012). Returns (trusted, reason).
+
+    If the check itself can't run (no key, quota), keep today's behaviour -- use the text
+    layer -- and say so loudly; blocking every text-layer book on an OCR outage would be
+    worse than the rare ghost layer it guards against. A bug still raises (spec 007).
+    """
+    try:
+        with usage.recording(work_dir, "trust-check"):
+            result = text_layer_trust.assess(
+                pdf_path, ocr_words=_ocr_sampler(ocr), engine=ocr,
+                cache_dir=work_dir.parent / ".trust")
+    except failures.PROGRAMMING_ERRORS:
+        raise
+    except Exception as e:  # noqa: BLE001 -- any outage falls back loudly; bugs re-raised above
+        return True, (f"WARNING: text-layer check unavailable ({type(e).__name__}: "
+                      f"{str(e)[:80]}) -- using the text layer UNCHECKED")
+    return result.trusted, result.reason
+
+
 def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
                   voice: str | None = None, pages="0", force_ocr: bool = False,
-                  work_dir: Path | None = None) -> Path:
+                  work_dir: Path | None = None, trust_text_layer: bool = False) -> Path:
     """work_dir defaults to the directory this PDF's *content* maps to (books.py, spec
     013): a renamed or duplicated PDF resumes its existing work instead of starting over."""
     book = pdf_path.stem.strip()
     work_dir = work_dir or books.resolve_work_dir(pdf_path)
 
     print(f"=== {book} ===")
+    use_text_layer, reason = False, "--force-ocr" if force_ocr else "no text layer"
     if not force_ocr and has_text_layer(pdf_path):
-        print("embedded text layer detected -> extract.py (no OCR needed)\n")
+        if trust_text_layer:
+            use_text_layer, reason = True, "--trust-text-layer"
+        else:
+            use_text_layer, reason = text_layer_is_trusted(pdf_path, work_dir, ocr)
+    if use_text_layer:
+        print(f"embedded text layer -> extract.py (no OCR needed) -- {reason}\n")
         run_extract.run(pdf_path, work_dir, pages=pages)
     else:
-        reason = "--force-ocr" if force_ocr else "no text layer"
         print(f"OCR path ({ocr}) -- {reason}\n")
         if ocr == "gemini":
             run_ocr_gemini.run(pdf_path, work_dir, pages=pages)
@@ -115,6 +165,9 @@ def main():
                      help="use the OCR path even if the PDF has a text layer -- for PDFs where "
                           "the text layer exists but is wrong (e.g. stale text unrelated to the "
                           "page's actual visual content, which no automatic check catches)")
+    ap.add_argument("--trust-text-layer", action="store_true",
+                     help="skip the text-layer spot check (up to 2 OCR calls per text-layer "
+                          "book) and use the embedded text as-is")
     args = ap.parse_args()
 
     pdf_path = Path(args.pdf)
@@ -122,7 +175,7 @@ def main():
         sys.exit(f"no such file: {pdf_path}")
 
     run_pipeline(pdf_path, ocr=args.ocr, tts=args.tts, voice=args.voice, pages=args.pages,
-                 force_ocr=args.force_ocr)
+                 force_ocr=args.force_ocr, trust_text_layer=args.trust_text_layer)
 
 
 if __name__ == "__main__":

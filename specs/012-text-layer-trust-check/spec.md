@@ -1,6 +1,6 @@
 # Feature Specification: Detect a text layer that belongs to the wrong page
 
-**Feature:** `012-text-layer-trust-check` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `012-text-layer-trust-check` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (CLI, per book; service and per-page open)
 **Priority:** P2
 
 ## Problem
