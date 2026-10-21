@@ -77,6 +77,8 @@ COPY --from=models /models /models
 WORKDIR /app
 COPY src ./src
 COPY tools ./tools
+# the price table for cost metering (spec 025, GET /ops/cost)
+COPY config ./config
 
 # Non-root, and it owns exactly the two writable paths: the job database and scratch.
 RUN useradd --system --create-home --uid 10001 engine \

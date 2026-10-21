@@ -199,6 +199,34 @@ Read-only. The API never spends the budget; only workers make paid calls.
 
 ---
 
+## `GET /ops/cost`
+
+PROPOSAL, not in the V1 PDF (spec 025). Recorded paid-provider usage, priced with the
+configured table: every Gemini OCR/TTS and LightOn call a worker made, plus cache hits
+(`cached`, $0). Optional `?jobId=` limits it to one job.
+
+```json
+{
+  "jobId": "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+  "pricesAsOf": "2026-10-21",
+  "calls": 34,
+  "usd": 0.1182,
+  "unpricedCalls": 16,
+  "lines": [
+    {"provider": "gemini", "model": "gemini-3.6-flash", "operation": "ocr", "calls": 16,
+     "cached": 2, "unpriced": 0, "usd": 0.1182, "input_tokens": 41210, "output_tokens": 23125,
+     "chars": 0, "pages": 0},
+    {"provider": "lighton", "model": "lighton/parse-v3", "operation": "ocr", "calls": 16,
+     "cached": 0, "unpriced": 16, "usd": 0.0, "input_tokens": 0, "output_tokens": 0,
+     "chars": 0, "pages": 16}
+  ]
+}
+```
+
+`usd` is a **lower bound** whenever `unpricedCalls > 0`: a call whose provider/model is not
+in the price table is counted, never priced at zero. The same spend is exported as the
+counter `ai_engine_cost_usd_total{provider,model,tier}` (priced calls only).
+
 ## Error envelope
 
 Every non-2xx response uses one shape.

@@ -4,20 +4,24 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status
 
-from ai_engine.api.deps import get_budget, get_metrics, get_settings_dep, get_store
+from ai_engine.api.deps import get_budget, get_metrics, get_settings_dep, get_store, get_usage
 from ai_engine.api.schemas import (
     BudgetResponse,
     BudgetWindow,
+    CostLine,
+    CostResponse,
     DependencyCheck,
     HealthResponse,
     ReadyResponse,
 )
-from ai_engine.config.settings import Settings
+from ai_engine.config.settings import Settings, load_price_table
+from ai_engine.domain.usage import summarize
 from ai_engine.observability.metrics import Metrics
 from ai_engine.ports.job_store import JobStore
 from ai_engine.ports.rate_budget import RateBudget
+from ai_engine.ports.usage import UsageSink
 
 router = APIRouter(tags=["ops"])
 
@@ -105,4 +109,50 @@ async def budget(
             )
             for entry in usage
         ]
+    )
+
+
+@router.get(
+    "/ops/cost",
+    response_model=CostResponse,
+    response_model_by_alias=True,
+    summary="Recorded provider usage and its estimated cost",
+)
+async def cost(
+    settings: Annotated[Settings, Depends(get_settings_dep)],
+    sink: Annotated[UsageSink, Depends(get_usage)],
+    job_id: Annotated[str | None, Query(alias="jobId")] = None,
+) -> CostResponse:
+    """Calls, units and USD per provider/model/operation, for one job or everything.
+
+    Priced with the configured table (PRICES_FILE, or config/prices.toml). Calls it cannot
+    price are counted in `unpricedCalls` and the total is then a lower bound.
+    """
+    prices = load_price_table(settings)
+    records = await sink.records(job_id=job_id)
+    lines = summarize(records, prices, by=("provider", "model", "operation"))
+    total = summarize(records, prices, by=())
+    whole = total.get(())
+    return CostResponse(
+        job_id=job_id,
+        prices_as_of=prices.as_of,
+        calls=len(records),
+        usd=round(whole.usd, 6) if whole else 0.0,
+        unpriced_calls=whole.unpriced if whole else 0,
+        lines=[
+            CostLine(
+                provider=k[0],
+                model=k[1],
+                operation=k[2],
+                calls=v.calls,
+                cached=v.cached,
+                unpriced=v.unpriced,
+                usd=round(v.usd, 6),
+                input_tokens=v.input_tokens,
+                output_tokens=v.output_tokens,
+                chars=v.chars,
+                pages=v.pages,
+            )
+            for k, v in sorted(lines.items())
+        ],
     )

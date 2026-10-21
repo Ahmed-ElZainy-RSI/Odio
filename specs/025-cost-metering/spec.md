@@ -1,6 +1,6 @@
 # Feature Specification: Measured cost per page and per book
 
-**Feature:** `025-cost-metering` · **Created:** 2026-10-20 · **Status:** Partially implemented 2026-10-21 (CLI + pricing done; service sink open)
+**Feature:** `025-cost-metering` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (CLI + service); validation against a paid run pending
 **Priority:** P1 (ADR-009 reversal condition #3)
 
 ## Problem

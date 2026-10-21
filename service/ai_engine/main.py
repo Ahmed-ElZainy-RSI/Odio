@@ -77,7 +77,7 @@ def run_worker() -> None:  # pragma: no cover - exercised by tests at the loop l
             try:
                 await loop.run()
             finally:
-                for owned in (store, context.budget):
+                for owned in (store, context.budget, context.usage):
                     closer = getattr(owned, "close", None)
                     if closer is not None:
                         await closer()
@@ -142,7 +142,7 @@ def run_reconciler() -> None:  # pragma: no cover - exercised by tests at the lo
             try:
                 await loop.run()
             finally:
-                for owned in (store, context.budget):
+                for owned in (store, context.budget, context.usage):
                     closer = getattr(owned, "close", None)
                     if closer is not None:
                         await closer()

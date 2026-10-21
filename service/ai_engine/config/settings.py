@@ -28,6 +28,7 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 from ai_engine.domain.budget import ProviderLimit, parse_limits
 from ai_engine.domain.enums import QualityTier
+from ai_engine.domain.usage import PriceTable
 
 OCR_ENGINES = frozenset({"auto", "textlayer", "gemini", "lighton"})
 DIACRITIZERS = frozenset({"none", "local"})
@@ -104,6 +105,9 @@ class Settings(BaseSettings):
     # results on retried or re-run pages instead of paying for them again.
     provider_cache_dir: Path | None = None
     provider_cache_max_age_seconds: float | None = None
+    # Price table for cost metering (spec 025). Unset = <LEGACY_REPO_ROOT>/config/prices.toml
+    # when present; with neither, usage is still recorded and reported as unpriced.
+    prices_file: Path | None = None
     max_source_bytes: int = 209_715_200  # 200 MB
     max_source_pages: int = 500
 
@@ -305,6 +309,17 @@ def assert_no_dotenv_on_disk(start: Path | None = None) -> None:
             "import, so a .env on disk can silently override injected secrets. Remove it "
             "and inject configuration through the environment."
         )
+
+
+def load_price_table(settings: Settings) -> PriceTable:
+    """The configured price table, or an empty one (every call then reports unpriced)."""
+    candidates = [settings.prices_file]
+    if settings.legacy_repo_root is not None:
+        candidates.append(settings.legacy_repo_root / "config" / "prices.toml")
+    for path in candidates:
+        if path is not None and Path(path).is_file():
+            return PriceTable.from_toml(Path(path).read_text(encoding="utf-8"))
+    return PriceTable()
 
 
 @lru_cache(maxsize=1)

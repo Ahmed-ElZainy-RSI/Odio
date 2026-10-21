@@ -24,6 +24,7 @@ import contextlib
 from dataclasses import dataclass
 from pathlib import Path
 
+from ai_engine.application.usage_meter import UsageMeter
 from ai_engine.artifacts.timing_builder import build_timing_artifact
 from ai_engine.artifacts.tokenizer import tokenize
 from ai_engine.domain.callbacks import CallbackEnvelope
@@ -38,6 +39,7 @@ from ai_engine.domain.errors import (
 )
 from ai_engine.domain.job import Artifact, ArtifactDescriptor, Job
 from ai_engine.domain.tokens import PageProvenance
+from ai_engine.observability import usage
 from ai_engine.observability.context import bind
 from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import ALIGNMENT_ANCHOR_RATIO, PAGES_TOTAL, Metrics
@@ -73,7 +75,9 @@ class RunAudioJob:
         page_timeout_seconds: float | None = 900.0,
         flush_callbacks: object | None = None,
         budget: RateBudget | None = None,
+        meter: UsageMeter | None = None,
     ) -> None:
+        self._meter = meter
         self._store = store
         self._fetcher = fetcher
         self._tts = tts
@@ -179,9 +183,15 @@ class RunAudioJob:
         # and zero audio; parking is how that becomes "later" instead of "never".
         if self._budget is not None:
             await self._budget.acquire(getattr(self._tts, "provider", "local"))
-        audio, audio_format, duration_ms = await asyncio.to_thread(
-            self._tts.synthesize, text, voice=self._voice
-        )
+        used: list = []
+        try:
+            with usage.collecting(page=page, stage="audio") as used:
+                audio, audio_format, duration_ms = await asyncio.to_thread(
+                    self._tts.synthesize, text, voice=self._voice
+                )
+        finally:
+            if self._meter is not None:
+                await self._meter.save(job, used)
         timed, report = await asyncio.to_thread(
             self._aligner.align,
             audio=audio,

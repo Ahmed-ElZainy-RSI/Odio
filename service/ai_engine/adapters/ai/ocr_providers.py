@@ -36,6 +36,7 @@ from ai_engine.domain.errors import (
     SourceInvalidError,
 )
 from ai_engine.domain.tokens import PageProvenance, Token
+from ai_engine.observability import usage
 from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import (
     INFERENCE_CALLS,
@@ -182,6 +183,8 @@ class GeminiVisionOcr:
                 http_options=types.HttpOptions(timeout=int(self._timeout * 1000)),
             ),
         )
+        # recorded before parsing: an unparseable response was still billed (spec 025)
+        usage.record(self.provider, self.model_id, "ocr", images=1, **usage.gemini_units(response))
         parsed = getattr(response, "parsed", None)
         if parsed is None:
             import json
@@ -284,6 +287,7 @@ class LightOnOcr:
             self._count_failure(ErrorCode.AI_INFERENCE_ERROR)
             raise AiInferenceError(f"OCR provider returned HTTP {response.status_code}")
 
+        usage.record(self.provider, self.model_id, "ocr", pages=1)  # billed per page
         markdown = self._first_page_markdown(response)
         text = legacy.clean_markdown(markdown)
         records = legacy.text_to_tokens(text, page_number, extract.clean_word)

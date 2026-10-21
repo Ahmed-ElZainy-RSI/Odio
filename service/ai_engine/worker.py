@@ -23,14 +23,16 @@ from ai_engine.adapters.backend.token_provider import KeycloakTokenProvider
 from ai_engine.adapters.http.retry import RetryPolicy
 from ai_engine.adapters.persistence.cache_fs import FileProviderCache
 from ai_engine.adapters.persistence.rate_budget import build_rate_budget
+from ai_engine.adapters.persistence.usage_store import build_usage_sink
 from ai_engine.adapters.storage.source_fetcher import PresignedSourceFetcher, SourcePolicy
 from ai_engine.application.outbox import OutboxDrainer
 from ai_engine.application.reconcile import Reconciler
 from ai_engine.application.run_audio_job import AudioJobOutcome, RunAudioJob
 from ai_engine.application.run_extraction_job import JobOutcome, RunExtractionJob
 from ai_engine.application.run_page_task import PageTaskExecutor
+from ai_engine.application.usage_meter import UsageMeter
 from ai_engine.application.worker_loop import WorkerLoop
-from ai_engine.config.settings import Settings
+from ai_engine.config.settings import Settings, load_price_table
 from ai_engine.domain.enums import JobType
 from ai_engine.domain.job import Job
 from ai_engine.observability.logging import get_logger
@@ -53,6 +55,7 @@ class WorkerContext:
     drainer: OutboxDrainer
     reconciler: Reconciler
     budget: RateBudget
+    usage: object = None  # the UsageSink; closed by the process that owns the worker
 
     async def run_job(self, job: Job) -> JobOutcome | AudioJobOutcome:
         """Run one job of either type to a terminal state, then drain callbacks."""
@@ -119,6 +122,7 @@ def build_worker(
     verifier: object | None = None,
     diacritizer: object | None = None,
     cache: object | None = None,
+    usage_sink: object | None = None,
 ) -> WorkerContext:
     """Compose the worker.
 
@@ -174,6 +178,10 @@ def build_worker(
     # The provider budget is shared by both job types: Job A's OCR and Job B's TTS draw
     # on the same free-tier allowances.
     budget = budget or build_rate_budget(settings=settings, metrics=metrics)
+    # Every paid call's usage, priced for /ops/cost and ai_engine_cost_usd_total (spec 025).
+    # Same database as the job store, like the budget.
+    usage_sink = usage_sink or build_usage_sink(settings=settings)
+    meter = UsageMeter(sink=usage_sink, prices=load_price_table(settings), metrics=metrics)
 
     renderer = PyMuPdfRenderer()
 
@@ -257,6 +265,7 @@ def build_worker(
         verifier=verifier,
         diacritizer=diacritizer,
         diac_threshold=settings.diac_threshold,
+        meter=meter,
     )
     drainer = OutboxDrainer(
         store=store,
@@ -288,6 +297,7 @@ def build_worker(
         voice=settings.tts_gemini_voice,
         page_timeout_seconds=float(settings.page_task_timeout_seconds),
         budget=budget,
+        meter=meter,
     )
     reconciler = Reconciler(
         store=store,
@@ -303,4 +313,5 @@ def build_worker(
         audio=audio_job,
         drainer=drainer,
         reconciler=reconciler,
+        usage=usage_sink,
     )

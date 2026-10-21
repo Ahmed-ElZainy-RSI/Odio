@@ -27,6 +27,7 @@ import wave
 from ai_engine.adapters.ai.aligner_whisper import measure_wav_duration_ms
 from ai_engine.domain.errors import PROGRAMMING_ERRORS, AiInferenceError, ModelUnavailableError
 from ai_engine.domain.tokens import AudioFormat
+from ai_engine.observability import usage
 from ai_engine.observability.logging import get_logger
 
 log = get_logger(__name__)
@@ -174,6 +175,9 @@ class GeminiTts:
                     )
                 ),
             ),
+        )
+        usage.record(
+            self.provider, self.model_id, "tts", chars=len(text), **usage.gemini_units(response)
         )
         return self._audio_bytes(response)
 

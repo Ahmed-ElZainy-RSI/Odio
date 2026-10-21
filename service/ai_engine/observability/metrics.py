@@ -42,6 +42,7 @@ ALIGNMENT_ANCHOR_RATIO = "ai_engine_alignment_anchor_ratio"
 DIACRITIZATION_REVIEW_RATIO = "ai_engine_diacritization_review_ratio"
 DIACRITIZATION_TOTAL = "ai_engine_diacritization_total"
 PROVIDER_CACHE = "ai_engine_provider_cache_total"
+COST_USD = "ai_engine_cost_usd_total"
 MODEL_LOAD_SECONDS = "ai_engine_model_load_seconds"
 BUDGET_EXHAUSTED = "ai_engine_provider_budget_exhausted_total"
 BUDGET_REMAINING = "ai_engine_provider_budget_remaining"
@@ -157,6 +158,12 @@ class Metrics:
                     PAGE_DURATION,
                     "Page stage duration",
                     ["job_type", "stage"],
+                    registry=self._registry,
+                ),
+                COST_USD: Counter(
+                    COST_USD,
+                    "Estimated provider spend in USD (priced calls only; see /ops/cost)",
+                    ["provider", "model", "tier"],
                     registry=self._registry,
                 ),
                 PROVIDER_CACHE: Counter(

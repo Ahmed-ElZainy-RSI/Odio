@@ -175,4 +175,33 @@ class BudgetResponse(BaseModel):
     windows: list[BudgetWindow]
 
 
+class CostLine(BaseModel):
+    provider: str
+    model: str
+    operation: str
+    calls: int
+    cached: int
+    unpriced: int
+    usd: float
+    input_tokens: int
+    output_tokens: int
+    chars: int
+    pages: int
+
+
+class CostResponse(BaseModel):
+    """Recorded paid-call usage, priced with the configured table (spec 025).
+
+    `usd` is a lower bound whenever `unpriced_calls > 0`: those calls are counted, never
+    priced at zero.
+    """
+
+    job_id: str | None = Field(default=None, serialization_alias="jobId")
+    prices_as_of: str = Field(serialization_alias="pricesAsOf")
+    calls: int
+    usd: float
+    unpriced_calls: int = Field(serialization_alias="unpricedCalls")
+    lines: list[CostLine]
+
+
 SourceUrl = Annotated[str, Field(max_length=4096)]
