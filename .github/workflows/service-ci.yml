@@ -52,13 +52,23 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
+          cache-dependency-path: |
+            service/requirements-dev.lock
+            requirements-pipeline.lock
 
-      - name: Install
-        working-directory: service
+      - name: Locks are up to date with pyproject.toml / requirements-pipeline.in
+        # spec 011: re-compiling an up-to-date lock reproduces it byte for byte
         run: |
-          python -m pip install --upgrade pip
-          # `ai` brings the legacy pipeline's dependencies; `src/tests` needs them too.
-          pip install -e '.[ai,metrics,dev]'
+          python -m pip install --upgrade pip uv
+          service/devtools/update_locks.sh --check
+
+      - name: Install (from the locks, never from floors)
+        # Installing from pyproject floors is how python-multipart and jsonschema went
+        # undeclared: they were only ever present by accident.
+        run: |
+          pip install -r service/requirements-dev.lock -r requirements-pipeline.lock
+          pip install --no-deps -e service
+          pip check
 
       - name: Lint
         working-directory: service

@@ -1,1 +1,2 @@
-faster_whisper
+# The pipeline's pinned dependencies live in requirements-pipeline.lock (spec 011).
+-r requirements-pipeline.lock

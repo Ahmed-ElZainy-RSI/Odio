@@ -57,7 +57,7 @@
 <div class="callout info">
   <div class="t">Two things every step below assumes</div>
   <b>Two Python environments</b>: plain <code>python3</code> for tools that only touch local JSON, and the conda env for anything calling Gemini or doing audio work:
-  <pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3</pre>
+  <pre>.venv/bin/python3</pre>
   <b>Two API keys</b> in <code>.env</code>: <code>GEMINI_API_KEY</code> (OCR, VLM arbitration, TTS) and <code>OPENROUTER_API_KEY</code> (the correlated-error text detector).
 </div>
 
@@ -76,7 +76,7 @@
 
 <h2 id="quickstart" style="border-top:none"><span class="step">→</span>Quick start — one command</h2>
 <p><code>tools/run_full_pipeline.py</code> runs steps 1–9 below for you — both OCR engines, detection, arbitration, corrections, re-synthesis, and correlated-error detection — then stops cleanly at the one deliberately-manual review step. It's resumable exactly like every command it calls: a quota wall mid-run just means re-running the same line later.</p>
-<pre>VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+<pre>VX2=.venv/bin/python3
 
 <span class="c"># the whole book</span>
 $VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf"
@@ -99,7 +99,7 @@ $VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 13
 <pre><span class="c"># 0. set this once</span>
 BOOK="ثعلوب المكار"
 PDF="assets/PDF Samples/$BOOK.pdf"
-VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+VX2=.venv/bin/python3
 
 <span class="c"># 1. Gemini OCR pass (the reference engine) -- produces work/$BOOK</span>
 $VX2 src/pipeline/main.py "$PDF" --ocr gemini --tts gemini
@@ -176,7 +176,7 @@ open "work/$BOOK-lighton/reader.html"</pre>
 
 <h2 id="s1"><span class="step">1</span>Run both OCR engines</h2>
 <p><code>main.py</code> auto-detects whether the PDF has a real embedded text layer — if so it uses the free/exact text-extraction path and <b>ignores <code>--ocr</code> entirely</b>, which means there's nothing to compare (both engines would be moot). Check first if you're unsure:</p>
-<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+<pre>.venv/bin/python3 -c "
 import fitz
 doc = fitz.open('assets/PDF Samples/YOUR BOOK.pdf')
 words = sum(len(p.get_text('words')) for p in doc)

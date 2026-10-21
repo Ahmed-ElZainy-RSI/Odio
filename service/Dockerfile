@@ -20,10 +20,11 @@ WORKDIR /build
 # dependency list itself changes, which is the difference between a 4-second rebuild and a
 # 4-minute one.
 COPY service/pyproject.toml ./pyproject.toml
-RUN mkdir -p ai_engine && touch ai_engine/__init__.py \
-    && python -m venv /opt/venv \
+# Pinned runtime dependencies (spec 011): the same versions every time the image builds.
+COPY service/requirements.lock ./requirements.lock
+RUN python -m venv /opt/venv \
     && /opt/venv/bin/pip install --upgrade pip \
-    && /opt/venv/bin/pip install '.[ai,metrics]'
+    && /opt/venv/bin/pip install -r requirements.lock
 
 COPY service/ai_engine ./ai_engine
 RUN /opt/venv/bin/pip install --no-deps .

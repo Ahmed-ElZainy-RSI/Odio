@@ -66,7 +66,7 @@
 <div class="callout info">
   <div class="t">Two Python environments in play</div>
   This repo's dependencies (fitz/PyMuPDF, google-genai, faster-whisper) live in a conda env, not system Python. Tools that only touch local JSON files run fine with plain <code>python3</code>; anything calling Gemini or doing audio alignment needs:
-  <pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/&lt;script&gt;.py ...</pre>
+  <pre>.venv/bin/python3 tools/&lt;script&gt;.py ...</pre>
   Each tool below says which one it needs.
 </div>
 
@@ -90,7 +90,7 @@
   <span class="pill env">vx2lm env</span>
   <span class="pill key">GEMINI_API_KEY + OPENROUTER_API_KEY</span>
 </div>
-<pre>VX2=/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3
+<pre>VX2=.venv/bin/python3
 
 <span class="c"># the whole book</span>
 $VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf"
@@ -158,7 +158,7 @@ $VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 13
   <span class="pill key">GEMINI_API_KEY</span>
 </div>
 <pre><span class="c"># needs the conda env (google-genai)</span>
-/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/vlm_arbiter.py \
+.venv/bin/python3 tools/vlm_arbiter.py \
   "work/المومياوات ناشيونال جيوجرافيك-lighton/ensemble_review.json"</pre>
 <table>
   <tr><th>Requires</th><td><code>ensemble_review.json</code> must exist (step 1). Reads its recorded <code>gemini_dir</code> to find the page images itself.</td></tr>
@@ -188,7 +188,7 @@ $VX2 tools/run_full_pipeline.py "assets/PDF Samples/&lt;book&gt;.pdf" --pages 13
 <h3>How to review</h3>
 <p>Its own console output is the review: <code>N corrected, M deleted, across P pages</code>, plus a per-page breakdown of skipped <code>gemini-only</code> words. No separate file to open.</p>
 <h3>Then re-run downstream stages for touched pages</h3>
-<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+<pre>.venv/bin/python3 -c "
 import sys; sys.path.insert(0,'src')
 from pipeline import run_tashkel, run_speak_gemini, build_reader
 from pathlib import Path
@@ -289,7 +289,7 @@ open "work/المومياوات ناشيونال جيوجرافيك-lighton/cont
   <span class="pill env">vx2lm env</span>
   <span class="pill key">GEMINI_API_KEY</span>
 </div>
-<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 tools/build_review.py \
+<pre>.venv/bin/python3 tools/build_review.py \
   "work/المومياوات ناشيونال جيوجرافيك-lighton" --pages 15:19</pre>
 <table>
   <tr><th>Requires</th><td><code>ensemble_review.json</code>, and every page in the range must be <code>status: "spoken"</code> already.</td></tr>
@@ -305,7 +305,7 @@ open "work/المومياوات ناشيونال جيوجرافيك-lighton/cont
 
 <h2 id="build_reader" style="border-top:none">Reminder — the normal reader needs no separate step</h2>
 <p><code>src/pipeline/build_reader.py</code> (part of the main pipeline, not <code>tools/</code>) automatically picks up <code>ensemble_review.json</code> if it exists — highlighting flagged/verified words and borrowing Gemini's box+image per page when LightOn has none. Just rebuild it after any of the apply steps above:</p>
-<pre>/Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -c "
+<pre>.venv/bin/python3 -c "
 import sys; sys.path.insert(0,'src')
 from pipeline import build_reader
 from pathlib import Path

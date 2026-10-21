@@ -32,7 +32,10 @@ ai = ["pypdfium2", "pymupdf>=1.24.3", "pypdf", "pillow", "numpy", "requests",
 # Job A diacritisation with the local CPU model (DIACRITIZER=local, spec 016). Pulls in
 # torch, so it is its own extra rather than part of `ai`.
 diacritize = ["arabic-diacritizer>=1.0"]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "respx>=0.21", "ruff>=0.5",
+# python-multipart: the contract fake (tests/fakes/backend.py) parses the Keycloak token
+# form; it was only ever present by accident (found by the spec 011 fresh-venv run).
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "respx>=0.21", "ruff>=0.5", "python-multipart>=0.0.9",
+       "jsonschema>=4.0",  # tests/unit/test_evidence.py checks the evidence contract
        "hypothesis>=6.100", "prometheus-client>=0.20"]
 
 [project.scripts]

@@ -17,7 +17,7 @@ a run short partway through -- expected, not a bug, see the guide's
 picks up wherever it stopped, at zero wasted cost for whatever finished.
 
 Needs the vx2lm conda env (pymupdf, google-genai, faster-whisper):
-    /Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 \\
+    .venv/bin/python3 \\
         tools/run_full_pipeline.py "assets/PDF Samples/<book>.pdf"
 
     # scope the whole run to just pages 1-2 (both engines, and everything

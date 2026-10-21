@@ -1,6 +1,6 @@
 # Feature Specification: Reproducible environments
 
-**Feature:** `011-dependency-lockfile` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `011-dependency-lockfile` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21
 **Priority:** P2 (roadmap `T-0.1`)
 
 ## Problem

@@ -30,7 +30,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 008 | [page-failure-isolation](008-page-failure-isolation/) | CLI pipeline | ✅ done | 007 | free |
 | 009 | [page-record-schema-validation](009-page-record-schema-validation/) | CLI pipeline | ✅ done | 008 | free |
 | 010 | [pymupdf-import-rename](010-pymupdf-import-rename/) | all | ✅ done | — | free |
-| 011 | [dependency-lockfile](011-dependency-lockfile/) | all | P2 | — | free |
+| 011 | [dependency-lockfile](011-dependency-lockfile/) | all | ✅ done | — | free |
 | 012 | [text-layer-trust-check](012-text-layer-trust-check/) | CLI + service | ◐ CLI done | — | ≤ 2 OCR calls/book |
 | 013 | [content-based-book-id](013-content-based-book-id/) | CLI pipeline | ✅ done | — | free |
 | 014 | [front-matter-handling](014-front-matter-handling/) | TTS | P3 | product decision | free |

@@ -6,7 +6,7 @@ but the test files themselves need both directories importable too) and
 provides small builders for fake page records, so individual test files
 don't each reinvent "build a token" / "write a page json".
 
-Run with: /Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 -m pytest src/tests
+Run with: .venv/bin/python3 -m pytest src/tests
 (plain python3 lacks google-genai/pymupdf/faster-whisper -- tests that need
 them use pytest.importorskip so they degrade to "skipped", not "erred",
 under an environment missing those packages.)
