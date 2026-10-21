@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import httpx
 
 from ai_engine.adapters.ai.aligner_whisper import WhisperAligner
+from ai_engine.adapters.ai.cached import CachedOcrEngine, CachedTts
 from ai_engine.adapters.ai.diacritizer_local import LocalDiacritizer
 from ai_engine.adapters.ai.ocr_providers import build_ocr_engine
 from ai_engine.adapters.ai.renderer_pymupdf import PyMuPdfRenderer
@@ -20,6 +21,7 @@ from ai_engine.adapters.backend.files_client import BackendFilesClient
 from ai_engine.adapters.backend.jobs_client import BackendJobsClient
 from ai_engine.adapters.backend.token_provider import KeycloakTokenProvider
 from ai_engine.adapters.http.retry import RetryPolicy
+from ai_engine.adapters.persistence.cache_fs import FileProviderCache
 from ai_engine.adapters.persistence.rate_budget import build_rate_budget
 from ai_engine.adapters.storage.source_fetcher import PresignedSourceFetcher, SourcePolicy
 from ai_engine.application.outbox import OutboxDrainer
@@ -116,6 +118,7 @@ def build_worker(
     budget: RateBudget | None = None,
     verifier: object | None = None,
     diacritizer: object | None = None,
+    cache: object | None = None,
 ) -> WorkerContext:
     """Compose the worker.
 
@@ -176,6 +179,16 @@ def build_worker(
 
     _engine_cache: dict[str, object] = {}
 
+    # Paid-call cache (spec 021), opt-in via PROVIDER_CACHE_DIR. Only paid engines are
+    # wrapped: the text layer and the synthetic TTS cost nothing to recompute.
+    if cache is None and settings.provider_cache_dir is not None:
+        cache = FileProviderCache(
+            settings.provider_cache_dir, max_age_seconds=settings.provider_cache_max_age_seconds
+        )
+
+    def _paid(engine: object) -> bool:
+        return getattr(engine, "provider", "local") != "local"
+
     def ocr_for(pdf_path: str) -> object:
         """Resolve the OCR engine for one document, once.
 
@@ -195,6 +208,8 @@ def build_worker(
                 metrics=metrics,
                 pdf_path=pdf_path,
             )
+            if cache is not None and _paid(cached):
+                cached = CachedOcrEngine(cached, cache, metrics)
             _engine_cache[pdf_path] = cached
             log.info("ocr.engine_selected", engine=getattr(cached, "name", "?"))
         return cached
@@ -216,6 +231,9 @@ def build_worker(
                 api_key=settings.gemini_api_key.get_secret_value() or None,
             )
         )
+
+    if cache is not None and _paid(tts):
+        tts = CachedTts(tts, cache, metrics)
 
     # The verified tier is wired only while ENABLE_VERIFIED_TIER is on (spec 020). Until a
     # real verifier lands (spec 022) the pass-through stands in, so the routing and the

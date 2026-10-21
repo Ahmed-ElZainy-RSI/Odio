@@ -100,6 +100,10 @@ class Settings(BaseSettings):
     # ── Storage ──────────────────────────────────────────────────────────────────
     scratch_dir: Path = Path("/var/tmp/ai-engine")
     model_cache_dir: Path = Path("/var/cache/ai-engine/models")
+    # Paid-call cache (spec 021). Unset = no cache. Set it to reuse validated OCR and TTS
+    # results on retried or re-run pages instead of paying for them again.
+    provider_cache_dir: Path | None = None
+    provider_cache_max_age_seconds: float | None = None
     max_source_bytes: int = 209_715_200  # 200 MB
     max_source_pages: int = 500
 
