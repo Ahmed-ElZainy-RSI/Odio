@@ -7,6 +7,15 @@ The interesting behaviour is the 403 rule: for a presigned URL, ``403`` almost a
 *expired* rather than *forbidden*, so it triggers exactly one refresh via the Backend's
 `get-download-url` and one retry. Exactly one, guarded, so a systematically bad URL cannot
 become an infinite refresh loop.
+
+Redirects are refused (spec 029). The SSRF controls validate the URL we were given; a
+``302`` to the metadata address or a private range would bypass every one of them if it
+were followed. This used to be safe only because httpx does not follow redirects by
+default -- and a 3xx, being below 400, was then treated as success and its body saved as
+the source. Now every request says ``follow_redirects=False`` itself and any 3xx is a
+``SOURCE_INVALID`` failure. If storage turns out to redirect legitimately (an open
+question with the Backend), the change is to follow at most one hop and re-run
+``validate_source_url`` on the target -- never to flip the flag.
 """
 
 from __future__ import annotations
@@ -142,7 +151,8 @@ class PresignedSourceFetcher:
 
     async def _download(self, url: str, target: Path) -> FetchedSource:
         async def send() -> httpx.Response:
-            return await self._client.get(url)
+            # Explicit, not inherited from the client's configuration or httpx's default.
+            return await self._client.get(url, follow_redirects=False)
 
         try:
             response = await send_with_retry(
@@ -156,6 +166,15 @@ class PresignedSourceFetcher:
                 f"could not download the source after {exc.attempts} attempts ({exc.last_error})"
             ) from exc
 
+        if response.is_redirect or 300 <= response.status_code < 400:
+            # Log only the target's host: the full Location may carry credentials.
+            target_host = urlparse(response.headers.get("location", "")).hostname or "?"
+            log.warning(
+                "source.redirect_refused", status=response.status_code, target_host=target_host
+            )
+            raise SourceInvalidError(
+                f"source download redirected (HTTP {response.status_code}); redirects are refused"
+            )
         if response.status_code == 403:
             raise _PresignedExpired
         if response.status_code >= 400:
