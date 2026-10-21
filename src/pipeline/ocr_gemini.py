@@ -20,7 +20,7 @@ import io
 import json
 import time
 
-import fitz
+import pymupdf
 from PIL import Image
 from google import genai
 from google.genai import types
@@ -54,7 +54,7 @@ PROMPT = (
 
 
 def render_page(page, scale=RENDER_SCALE, max_edge=MAX_EDGE):
-    pix = page.get_pixmap(matrix=fitz.Matrix(scale, scale))
+    pix = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale))
     im = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
     im.thumbnail((max_edge, max_edge * 3), Image.LANCZOS)
     buf = io.BytesIO()

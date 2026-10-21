@@ -46,9 +46,9 @@ class TextLayerOcr:
         except LegacyPipelineUnavailable as exc:
             raise ModelUnavailableError(str(exc)) from exc
 
-        import fitz
+        import pymupdf
 
-        with fitz.open(pdf_path) as doc:
+        with pymupdf.open(pdf_path) as doc:
             if not 1 <= page_number <= len(doc):
                 raise SourceInvalidError(
                     f"page {page_number} is outside the document's 1..{len(doc)}"

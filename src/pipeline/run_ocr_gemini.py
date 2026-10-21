@@ -19,7 +19,7 @@ import os
 import sys
 from pathlib import Path
 
-import fitz
+import pymupdf
 from dotenv import load_dotenv
 load_dotenv()
 from google import genai
@@ -41,7 +41,7 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     (out_dir / "pages").mkdir(exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-    doc = fitz.open(str(pdf_path))
+    doc = pymupdf.open(str(pdf_path))
     start, end = parse_pages(pages)
     print(f"{book} — {len(doc)} pages, OCR via {MODEL}, doing {start}-{end or len(doc)}\n")
     print(f"{'pg':>3} {'lines':>6} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")

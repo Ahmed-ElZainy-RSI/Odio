@@ -39,10 +39,10 @@ class PyMuPdfRenderer:
         self._max_edge = max_edge
 
     def page_count(self, pdf_path: str) -> int:
-        import fitz  # imported lazily: adapters may load heavy deps, the domain may not
+        import pymupdf  # imported lazily: adapters may load heavy deps, the domain may not
 
         try:
-            with fitz.open(pdf_path) as doc:
+            with pymupdf.open(pdf_path) as doc:
                 return len(doc)
         except SourceInvalidError:
             raise
@@ -57,24 +57,24 @@ class PyMuPdfRenderer:
         Mirrors ``src/pipeline/main.py:53``. When true, extraction is exact and costs
         **zero** paid API calls -- 25 of the 36 sample books qualify.
         """
-        import fitz
+        import pymupdf
 
-        with fitz.open(pdf_path) as doc:
+        with pymupdf.open(pdf_path) as doc:
             words = sum(len(page.get_text("words")) for page in doc)
         return words >= min_words
 
     def render_page(self, pdf_path: str, page_number: int) -> bytes:
         """One page as JPEG bytes. 1-based page numbering throughout."""
-        import fitz
+        import pymupdf
         from PIL import Image
 
-        with fitz.open(pdf_path) as doc:
+        with pymupdf.open(pdf_path) as doc:
             if not 1 <= page_number <= len(doc):
                 raise SourceInvalidError(
                     f"page {page_number} is outside the document's 1..{len(doc)}"
                 )
             page = doc[page_number - 1]
-            pixmap = page.get_pixmap(matrix=fitz.Matrix(self._scale, self._scale))
+            pixmap = page.get_pixmap(matrix=pymupdf.Matrix(self._scale, self._scale))
             image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
 
         image.thumbnail((self._max_edge, self._max_edge * 3), Image.LANCZOS)

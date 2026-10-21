@@ -16,7 +16,7 @@ a run short partway through -- expected, not a bug, see the guide's
 "Known constraints" table -- just run this same command again later. It
 picks up wherever it stopped, at zero wasted cost for whatever finished.
 
-Needs the vx2lm conda env (fitz, google-genai, faster-whisper):
+Needs the vx2lm conda env (pymupdf, google-genai, faster-whisper):
     /Users/ahmedmostafa/miniconda3/envs/vx2lm/bin/python3 \\
         tools/run_full_pipeline.py "assets/PDF Samples/<book>.pdf"
 

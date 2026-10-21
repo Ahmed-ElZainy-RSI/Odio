@@ -221,9 +221,9 @@ def test_gemini_needs_a_rendered_image() -> None:
 
 
 def small_pdf(pages: int = 4) -> bytes:
-    import fitz
+    import pymupdf
 
-    doc = fitz.open()
+    doc = pymupdf.open()
     for index in range(pages):
         doc.new_page().insert_text((72, 144), f"page {index + 1}", fontsize=12)
     payload = doc.tobytes()
