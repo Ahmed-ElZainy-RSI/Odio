@@ -30,7 +30,7 @@ from google import genai
 from google.genai import types
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from pipeline import usage  # noqa: E402
+from pipeline import ratelimit, usage  # noqa: E402
 from pipeline.ocr_gemini import MODEL  # noqa: E402
 
 SCHEMA = types.Schema(
@@ -64,6 +64,7 @@ def arbitrate_page(client, jpeg: bytes, flagged: list[dict], retries=4) -> dict[
 
     last = None
     for attempt in range(retries):
+        ratelimit.acquire("gemini", MODEL)
         try:
             r = client.models.generate_content(
                 model=MODEL,

@@ -44,7 +44,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from pipeline import usage  # noqa: E402
+from pipeline import ratelimit, usage  # noqa: E402
 
 MODEL = "deepseek/deepseek-v4-pro-0813"
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
@@ -74,6 +74,7 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
 
     last = None
     for attempt in range(retries):
+        ratelimit.acquire("openrouter", MODEL)
         try:
             r = requests.post(
                 ENDPOINT,

@@ -7,7 +7,7 @@ speak.py:bind() still does the anchor/interpolate work on its output.
 """
 import base64
 
-from pipeline import usage
+from pipeline import ratelimit, usage
 
 from hume.tts import PostedUtterance, PostedUtteranceVoiceWithName
 
@@ -16,6 +16,7 @@ VOICE = "Layla, Arabic Philosopher"
 
 async def synthesize(client, text: str, voice: str = VOICE):
     """Returns (mp3_bytes, words, duration_ms). words is Hume's raw word list."""
+    ratelimit.acquire("hume", "octave-2")
     r = await client.tts.synthesize_json(
         utterances=[PostedUtterance(text=text,
             voice=PostedUtteranceVoiceWithName(name=voice, provider="HUME_AI"))],
