@@ -48,7 +48,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 026 | [tier-benchmark](026-tier-benchmark/) | decision | P1 (epic end) | 019, 022, 023, 025 | paid run, capped |
 | 027 | [postgres-job-store](027-postgres-job-store/) | service | P2 | — | free |
 | 028 | [lighton-golden-fixtures](028-lighton-golden-fixtures/) | service tests | P3 | — | ~6 calls once |
-| 029 | [source-fetch-redirect-policy](029-source-fetch-redirect-policy/) | service security | P2 | — | free |
+| 029 | [source-fetch-redirect-policy](029-source-fetch-redirect-policy/) | service security | ✅ done (refuse-all) | — | free |
 | 030 | [contract-replay-walidapro-tests](030-contract-replay-walidapro-tests/) | service | P2 | 005 | free |
 | 031 | [production-config-hardening](031-production-config-hardening/) | service | **P1 before deploy** | Q-01 | free |
 | 032 | [tts-chunking-dual-narrator](032-tts-chunking-dual-narrator/) | TTS | P3 | 005, product decision | 2× TTS if dual voice |

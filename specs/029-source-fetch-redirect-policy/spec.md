@@ -1,6 +1,6 @@
 # Feature Specification: Explicit redirect policy on source download
 
-**Feature:** `029-source-fetch-redirect-policy` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `029-source-fetch-redirect-policy` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21 (refuse-all; Backend question still open)
 **Priority:** P2 (security)
 
 ## Problem
