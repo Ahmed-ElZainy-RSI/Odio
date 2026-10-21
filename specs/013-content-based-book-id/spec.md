@@ -1,6 +1,6 @@
 # Feature Specification: Books identified by content, not filename
 
-**Feature:** `013-content-based-book-id` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `013-content-based-book-id` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-21
 **Priority:** P3
 
 ## Problem

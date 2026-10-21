@@ -44,7 +44,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 load_dotenv()
 
-from pipeline import (build_reader, run_extract, run_ocr_gemini, run_ocr_lighton,
+from pipeline import (books, build_reader, run_extract, run_ocr_gemini, run_ocr_lighton,
                        run_speak_gemini, run_speak_hume, run_tashkel)
 
 TEXT_LAYER_MIN_WORDS = 50  # a scanned page's stray OCR-able text stays under this
@@ -58,9 +58,12 @@ def has_text_layer(pdf_path: Path, threshold: int = TEXT_LAYER_MIN_WORDS) -> boo
 
 
 def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
-                  voice: str | None = None, pages="0", force_ocr: bool = False) -> Path:
+                  voice: str | None = None, pages="0", force_ocr: bool = False,
+                  work_dir: Path | None = None) -> Path:
+    """work_dir defaults to the directory this PDF's *content* maps to (books.py, spec
+    013): a renamed or duplicated PDF resumes its existing work instead of starting over."""
     book = pdf_path.stem.strip()
-    work_dir = Path(f"work/{book}")
+    work_dir = work_dir or books.resolve_work_dir(pdf_path)
 
     print(f"=== {book} ===")
     if not force_ocr and has_text_layer(pdf_path):
