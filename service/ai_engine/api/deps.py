@@ -14,6 +14,7 @@ from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import Metrics
 from ai_engine.ports.job_store import JobStore
 from ai_engine.ports.rate_budget import RateBudget
+from ai_engine.ports.usage import UsageSink
 
 log = get_logger(__name__)
 
@@ -36,6 +37,10 @@ def get_metrics(request: Request) -> Metrics:
 
 def get_budget(request: Request) -> RateBudget:
     return request.app.state.budget
+
+
+def get_usage(request: Request) -> UsageSink:
+    return request.app.state.usage
 
 
 def get_accept_job(

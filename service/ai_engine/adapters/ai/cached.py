@@ -19,6 +19,7 @@ from typing import Any
 
 from ai_engine.domain.cache_key import digest, fingerprint
 from ai_engine.domain.tokens import AudioFormat, PageProvenance, Token
+from ai_engine.observability import usage
 from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import PROVIDER_CACHE, Metrics
 from ai_engine.ports.cache import ProviderCache
@@ -67,6 +68,7 @@ class CachedOcrEngine(_Wrapper):
                 decoded = _decode_ocr(hit)
                 if decoded is not None:
                     self._count("ocr", "hit")
+                    usage.record(self.provider, self.model_id, "ocr", cached=True)
                     return decoded
         tokens, provenance = self._inner.extract_page(
             page_image=page_image, pdf_path=pdf_path, page_number=page_number
@@ -95,6 +97,7 @@ class CachedTts(_Wrapper):
             decoded = _decode_audio(hit)
             if decoded is not None:
                 self._count("tts", "hit")
+                usage.record(self.provider, self.model_id, "tts", cached=True)
                 return decoded
         payload, fmt, duration_ms = self._inner.synthesize(text, voice=voice)
         self._cache.put(key, _encode_audio(payload, fmt, duration_ms))

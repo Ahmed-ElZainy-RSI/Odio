@@ -64,7 +64,13 @@ POSTGRES_DELTA = """
    partial indexes, ON CONFLICT DO NOTHING -- transfers unchanged.
 """
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
+
+#: Upgrades that only ADD tables. `executescript(SCHEMA)` has already created anything
+#: missing (every CREATE is IF NOT EXISTS), so moving the recorded version forward is the
+#: whole migration. Anything that changes an existing table must not be listed here.
+#:   3 -> 4: provider_usage (spec 025)
+ADDITIVE_UPGRADES = {3: 4}
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -83,6 +89,28 @@ CREATE TABLE IF NOT EXISTS provider_budget (
     updated_at   TEXT NOT NULL,
     PRIMARY KEY (provider, window_start)
 );
+
+-- provider_usage: one row per paid provider call (spec 025), for cost reporting. Never
+-- read on the hot path; `/ops/cost` aggregates it.
+CREATE TABLE IF NOT EXISTS provider_usage (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id            TEXT,
+    page              INTEGER,
+    tier              TEXT,
+    provider          TEXT NOT NULL,
+    model             TEXT NOT NULL,
+    operation         TEXT NOT NULL,
+    at                TEXT NOT NULL,
+    input_tokens      INTEGER NOT NULL DEFAULT 0,
+    output_tokens     INTEGER NOT NULL DEFAULT 0,
+    chars             INTEGER NOT NULL DEFAULT 0,
+    audio_ms          INTEGER NOT NULL DEFAULT 0,
+    pages             INTEGER NOT NULL DEFAULT 0,
+    images            INTEGER NOT NULL DEFAULT 0,
+    reported_cost_usd REAL,
+    cached            INTEGER NOT NULL DEFAULT 0 CHECK (cached IN (0, 1))
+);
+CREATE INDEX IF NOT EXISTS provider_usage_job ON provider_usage (job_id);
 
 -- jobs: the idempotency store. `job_id` PRIMARY KEY *is* the idempotency mechanism.
 CREATE TABLE IF NOT EXISTS jobs (
@@ -211,6 +239,8 @@ def open_connection(path: str) -> sqlite3.Connection:
     row = connection.execute("SELECT version FROM schema_meta").fetchone()
     if row is None:
         connection.execute("INSERT INTO schema_meta (version) VALUES (?)", (SCHEMA_VERSION,))
+    elif ADDITIVE_UPGRADES.get(row["version"]) == SCHEMA_VERSION:
+        connection.execute("UPDATE schema_meta SET version = ?", (SCHEMA_VERSION,))
     elif row["version"] != SCHEMA_VERSION:
         raise RuntimeError(
             f"schema version mismatch: database has {row['version']}, "

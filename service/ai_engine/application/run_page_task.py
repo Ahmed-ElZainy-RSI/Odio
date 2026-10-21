@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from uuid import UUID
 
+from ai_engine.application.usage_meter import UsageMeter
 from ai_engine.artifacts.text_builder import build_text_artifact
 from ai_engine.domain.callbacks import CallbackEnvelope
 from ai_engine.domain.enums import (
@@ -42,6 +43,7 @@ from ai_engine.domain.job import Artifact, ArtifactDescriptor, Job
 from ai_engine.domain.preservation import check_letters_preserved, diacritic_ratio
 from ai_engine.domain.tokens import Token
 from ai_engine.domain.verification import VerifierContractViolation, contract_violations
+from ai_engine.observability import usage
 from ai_engine.observability.context import bind
 from ai_engine.observability.logging import get_logger
 from ai_engine.observability.metrics import DIACRITIZATION_TOTAL, PAGES_TOTAL, Metrics
@@ -101,6 +103,7 @@ class PageTaskExecutor:
         verifier: object | None = None,
         diacritizer: object | None = None,
         diac_threshold: float = 0.15,
+        meter: UsageMeter | None = None,
     ) -> None:
         self._store = store
         self._renderer = renderer
@@ -119,6 +122,7 @@ class PageTaskExecutor:
         # Job A diacritisation (spec 016); None when DIACRITIZER=none.
         self._diacritizer = diacritizer
         self._diac_threshold = diac_threshold
+        self._meter = meter
         self._uploader = uploader
         self._metrics = metrics
         # A wall-clock deadline turns a hang into a reported failure. Without one, a stuck
@@ -197,7 +201,15 @@ class PageTaskExecutor:
         if self._budget is not None:
             await self._budget.acquire(getattr(engine, "provider", "local"))
 
-        descriptors = await asyncio.to_thread(self._produce, spec)
+        # Paid calls inside _produce (OCR, verifier) append to this collector from the
+        # worker thread; saved even when the stage fails -- a failed call may be billed.
+        used: list = []
+        try:
+            with usage.collecting(page=spec.page_number, stage="extraction") as used:
+                descriptors = await asyncio.to_thread(self._produce, spec)
+        finally:
+            if self._meter is not None:
+                await self._meter.save(spec.job, used)
         file_ids = await self._upload_in_order(spec, descriptors)
         return await self._report_completed(spec.job.job_id, spec.page_number, file_ids)
 
