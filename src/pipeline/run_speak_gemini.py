@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from google import genai
 
-from pipeline import failures
+from pipeline import failures, usage
 from pipeline.records import write_record
 from pipeline.speak import bind
 from pipeline.tts_gemini import synthesize, VOICE, MODEL, SAMPLE_RATE
@@ -64,7 +64,7 @@ def do_page(client, path, audio_dir, voice):
           f"{'mono' if report['monotonic'] else 'NON-MONOTONIC'}")
 
 
-def run(work_dir: Path, voice: str = VOICE):
+def _run(work_dir: Path, voice: str = VOICE):
     """Synthesise every page in work_dir that isn't already spoken.
 
     No page-range option here on purpose: --pages/PAGES only controls which
@@ -84,7 +84,8 @@ def run(work_dir: Path, voice: str = VOICE):
     for p in all_pages:
         page = int(p.stem[1:])
         try:
-            do_page(client, p, audio_dir, voice)
+            with usage.page(page):
+                do_page(client, p, audio_dir, voice)
         except Exception as e:
             if failures.handle(work_dir, page, "tts", e, f"  {p.name}") == "quota":
                 summary["stopped_on_quota"] = True
@@ -95,6 +96,12 @@ def run(work_dir: Path, voice: str = VOICE):
         summary["done"] += 1
     print(f"\n{summary['failed']} failed" if summary["failed"] else "\ndone")
     return summary
+
+
+def run(work_dir: Path, voice: str = VOICE):
+    """Synthesise every unspoken page, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(work_dir, "tts-gemini"):
+        return _run(work_dir, voice)
 
 
 def main():

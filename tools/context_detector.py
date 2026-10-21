@@ -43,6 +43,9 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from pipeline import usage  # noqa: E402
+
 MODEL = "deepseek/deepseek-v4-pro-0813"
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 
@@ -80,6 +83,8 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0,
                     "response_format": {"type": "json_object"},
+                    # ask OpenRouter to return the exact billed cost (spec 025)
+                    "usage": {"include": True},
                 },
                 # deepseek-v4-pro-0813 is a reasoning model -- its think time
                 # scales with how many words need judging, not prompt size, so
@@ -88,7 +93,9 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
             )
             if r.status_code != 200:
                 raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
-            content = r.json()["choices"][0]["message"]["content"]
+            payload = r.json()
+            usage.record("openrouter", MODEL, "context-detector", **usage.openrouter_units(payload))
+            content = payload["choices"][0]["message"]["content"]
             m = JSON_BLOCK.search(content)
             parsed = json.loads(m.group(0) if m else content)
             return parsed.get("flagged", [])
@@ -98,7 +105,7 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
     raise last
 
 
-def run(review_path: Path, out_path: Path | None = None) -> Path:
+def _run(review_path: Path, out_path: Path | None = None) -> Path:
     review = json.loads(review_path.read_text(encoding="utf-8"))
     lighton_dir = review_path.parent
     out_path = out_path or (lighton_dir / "context_review.json")
@@ -122,7 +129,8 @@ def run(review_path: Path, out_path: Path | None = None) -> Path:
             continue
 
         try:
-            flagged = detect_page(api_key, keep_entries)
+            with usage.page(int(page_no)):
+                flagged = detect_page(api_key, keep_entries)
         except Exception as e:
             out_path.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
             print(f"page {page_no}  FAILED: {type(e).__name__}: {str(e)[:150]}")
@@ -162,6 +170,12 @@ def run(review_path: Path, out_path: Path | None = None) -> Path:
           f"any other string to use that instead. Nothing applies until "
           f"tools/apply_context_suggestions.py runs against your edits.")
     return out_path
+
+
+def run(review_path: Path, out_path: Path | None = None) -> Path:
+    """Detect correlated errors, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(review_path.parent, "context-detector"):
+        return _run(review_path, out_path)
 
 
 def main():

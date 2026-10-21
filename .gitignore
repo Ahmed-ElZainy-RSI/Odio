@@ -32,6 +32,8 @@ MANIFEST
 *.json
 # ...but JSON Schemas are source, not output (src/pipeline/records.py needs this one)
 !*.schema.json
+# per-book provider usage logs (spec 025) are run output
+usage.jsonl
 
 
 # PyInstaller

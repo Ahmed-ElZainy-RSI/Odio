@@ -25,7 +25,7 @@ load_dotenv()
 from google import genai
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pipeline import failures
+from pipeline import failures, usage
 from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_gemini import render_page, ocr_page, lines_to_tokens, MODEL
@@ -34,7 +34,7 @@ from pipeline.pages import parse_pages
 DIAC_THRESHOLD = 0.15
 
 
-def run(pdf_path: Path, out_dir: Path, pages="0"):
+def _run(pdf_path: Path, out_dir: Path, pages="0"):
     """OCR pdf_path into out_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
     book = pdf_path.stem
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -62,7 +62,8 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
         try:
             jpeg, size = render_page(page)
             (out_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
-            lines = ocr_page(client, jpeg)
+            with usage.page(i):
+                lines = ocr_page(client, jpeg)
         except Exception as e:
             if failures.handle(out_dir, i, "ocr", e, f"{i:>3}") == "quota":
                 summary["stopped_on_quota"] = True
@@ -91,6 +92,12 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     print(f"\n{summary['done']} extracted, {summary['failed']} failed"
           + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
     return summary
+
+
+def run(pdf_path: Path, out_dir: Path, pages="0"):
+    """OCR pdf_path into out_dir, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(out_dir, "ocr-gemini"):
+        return _run(pdf_path, out_dir, pages)
 
 
 def main():

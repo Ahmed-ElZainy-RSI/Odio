@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pipeline import failures
+from pipeline import failures, usage
 from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_lighton import (slice_page, parse_page, clean_markdown,
@@ -35,7 +35,7 @@ from pipeline.pages import parse_pages
 DIAC_THRESHOLD = 0.15
 
 
-def run(pdf_path: Path, out_dir: Path, pages="0"):
+def _run(pdf_path: Path, out_dir: Path, pages="0"):
     """OCR pdf_path into out_dir. pages: "0" = all, "5" = pages 1-5, "13:20" = pages 13-20."""
     book = pdf_path.stem
     key = os.environ["LIGHTON_API_KEY"]
@@ -57,7 +57,8 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
             print(f"{i:>3}  already done, skipping")
             continue
         try:
-            md = parse_page(slice_page(reader, i - 1), key, f"p{i:03d}.pdf")
+            with usage.page(i):
+                md = parse_page(slice_page(reader, i - 1), key, f"p{i:03d}.pdf")
         except Exception as e:
             # a page-level failure is recorded and skipped; only quota stops the run (spec 008)
             if failures.handle(out_dir, i, "ocr", e, f"{i:>3}") == "quota":
@@ -86,6 +87,12 @@ def run(pdf_path: Path, out_dir: Path, pages="0"):
     print(f"\n{summary['done']} extracted, {summary['failed']} failed"
           + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
     return summary
+
+
+def run(pdf_path: Path, out_dir: Path, pages="0"):
+    """OCR pdf_path into out_dir, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(out_dir, "ocr-lighton"):
+        return _run(pdf_path, out_dir, pages)
 
 
 def main():

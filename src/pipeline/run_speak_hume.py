@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from hume import AsyncHumeClient
 
-from pipeline import failures
+from pipeline import failures, usage
 from pipeline.records import write_record
 from pipeline.speak import bind
 from pipeline.tts_hume import synthesize, VOICE
@@ -62,7 +62,8 @@ async def _run_async(work_dir: Path, voice: str):
     for p in all_pages:
         page = int(p.stem[1:])
         try:
-            await do_page(client, p, audio_dir, voice)
+            with usage.page(page):
+                await do_page(client, p, audio_dir, voice)
         except Exception as e:
             # recorded and skipped; Hume's credit ceiling counts as quota and stops (spec 008)
             if failures.handle(work_dir, page, "tts", e, f"  {p.name}") == "quota":
@@ -76,7 +77,7 @@ async def _run_async(work_dir: Path, voice: str):
     return summary
 
 
-def run(work_dir: Path, voice: str = VOICE):
+def _run(work_dir: Path, voice: str = VOICE):
     """Synthesise every page in work_dir that isn't already spoken.
 
     No page-range option here on purpose: --pages/PAGES only controls which
@@ -85,6 +86,12 @@ def run(work_dir: Path, voice: str = VOICE):
     pages left unsynthesised instead of hiding that backlog behind a filter.
     """
     return asyncio.run(_run_async(work_dir, voice))
+
+
+def run(work_dir: Path, voice: str = VOICE):
+    """Synthesise every unspoken page, recording every paid call to usage.jsonl (spec 025)."""
+    with usage.recording(work_dir, "tts-hume"):
+        return _run(work_dir, voice)
 
 
 def main():

@@ -7,6 +7,8 @@ speak.py:bind() still does the anchor/interpolate work on its output.
 """
 import base64
 
+from pipeline import usage
+
 from hume.tts import PostedUtterance, PostedUtteranceVoiceWithName
 
 VOICE = "Layla, Arabic Philosopher"
@@ -19,6 +21,7 @@ async def synthesize(client, text: str, voice: str = VOICE):
             voice=PostedUtteranceVoiceWithName(name=voice, provider="HUME_AI"))],
         version="2", include_timestamp_types=["word"])
     g = r.generations[0]
+    usage.record("hume", "octave-2", "tts", chars=len(text), audio_ms=int(g.duration * 1000))
     words = [{"text": t.text, "b": t.time.begin, "e": t.time.end}
              for s in [x for grp in (g.snippets or []) for x in grp]
              for t in (s.timestamps or [])]

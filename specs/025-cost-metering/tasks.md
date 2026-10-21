@@ -1,7 +1,12 @@
 # Tasks: cost metering
 
-- [ ] T001 `config/prices.yaml` with sources and `as_of` (Gemini flash, flash-tts, pro; LightOn; Hume; OpenRouter DeepSeek)
-- [ ] T002 [P] Domain usage + cost tests
-- [ ] T003 Service sink + `/ops/cost` + metric
-- [ ] T004 [P] CLI JSONL sink in provider modules + `tools/cost_report.py`
-- [ ] T005 Validate against a hand count on one 16-page book
+- [x] T001 `config/prices.toml`, with source and as-of date. Gemini paid-tier rates are from https://ai.google.dev/gemini-api/docs/pricing ("Last updated 2026-10-19"): `gemini-3.6-flash` $0.75 in / $3.75 out per 1M tokens **until 2026-12-31, then $1.50 / $7.50** (both entries, with effective dates); `gemini-3.1-flash-tts-preview` $1.00 in / $20.00 audio out. OpenRouter needs no rate (it reports the exact cost per call). **LightOn and Hume are left unpriced**: their rates depend on the account plan, so the report counts them as "unpriced" (a lower bound), never $0
+- [x] T002 [P] Domain: `service/ai_engine/domain/usage.py`: `UsageRecord`, `PriceTable` (TOML via stdlib `tomllib`, effective dates, unknown fields rejected), `cost_of` (reported cost wins, cache hit = 0, unknown = `None`), `summarize`. Verbatim copy at `src/pipeline/usage_model.py` with a sync test. Tests: `service/tests/unit/test_usage.py` (14), including pricing the shipped table across the 2027 rate change
+- [ ] T003 Service sink: `UsageSink` port + job-store table + `GET /ops/cost` + `ai_engine_cost_usd_total` metric, recorded in the Gemini OCR/TTS and LightOn adapters (and the verifier's `calls_made`, 020). **Next step for this feature.** The domain model it needs is done
+- [x] T004 [P] CLI: `src/pipeline/usage.py` (recording scope per book + page scope, one JSON line per call to `work/<book>/usage.jsonl`, no-op outside a scope). Instrumented every paid call: Gemini OCR (`ocr_gemini.ocr_page`), Gemini TTS, LightOn parse, Hume TTS, VLM arbiter, context detector (OpenRouter, now asking for usage accounting so the exact billed cost comes back). Usage is recorded **when the response arrives, before parsing**, because an unparseable response was still billed; refused calls (429) are not recorded. Drivers wrap their `run()` in the scope. `tools/cost_report.py`: group by stage/operation/page/provider/model, text or `--json`, $/page, and an explicit lower-bound warning when anything is unpriced. Tests: `src/tests/test_cost_metering.py` (12)
+- [ ] T005 Validate against a hand count on one 16-page book. **Needs a real (paid) run**; the first run after this change produces the data
+
+Also: `.gitignore` now ignores `usage.jsonl` (run output; `work/` itself is not ignored).
+
+Verification (2026-10-21, vx2lm): `src/tests` 159 passed (was 147), system Python 138 + 13 skipped; service 702 passed including slow (was 691); `ruff` clean on new code (the `RUF100` noqa notes in `tools/` follow the existing convention).
+Branch: `feature/025-cost-metering`, merged into `dev`.
