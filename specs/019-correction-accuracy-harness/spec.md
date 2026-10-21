@@ -1,6 +1,6 @@
 # Feature Specification: Measure correction accuracy against a reference
 
-**Feature:** `019-correction-accuracy-harness` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `019-correction-accuracy-harness` · **Created:** 2026-10-20 · **Status:** Harness implemented 2026-10-21; reference transcripts still needed (manual)
 **Priority:** P1 (prerequisite for 026 and Q-07)
 
 ## Problem
