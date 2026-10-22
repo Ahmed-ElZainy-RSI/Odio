@@ -1,5 +1,8 @@
 # Our pipeline vs `walidapro/` — difference report
 
+> **Update 2026-10-22:** the merge described in §9 is done for the parts worth keeping, and
+> `walidapro/` is removed. See [§10](#10-where-each-part-went-2026-10-22).
+
 **Date:** 2026-10-20 · **Scope:** `src/pipeline/` + `tools/` + `service/` (ours) vs `walidapro/` (Waleed's drop-in)
 **Builds on:** `docs/backend-v1/01-current-architecture.md` §2 and ADR-009, which predate
 walidapro's API layer (commit `85ca665`). This report updates them.
@@ -164,3 +167,31 @@ these files from the docs is possible, but it means guessing at code that alread
 4. The ported code has tests.
 
 Step-by-step tasks: `specs/004-verified-tier-walidapro/tasks.md`.
+
+## 10. Where each part went (2026-10-22)
+
+The repo is one codebase again. `walidapro/` was removed; its last state is the local git tag
+`walidapro-final` (`git show walidapro-final:walidapro/ocr_verifier/decision.py`). Nothing was
+imported or wrapped: the parts worth keeping were rewritten in our architecture, with tests.
+
+| walidapro part | Now | Spec |
+|---|---|---|
+| `decision.py` `decide()`, `utils.normalize_ar` | `service/ai_engine/domain/verify_rules.py` (`decide`, `normalize`, `similarity`) | 022 |
+| `visual_reviewer.read_crop` gates (0.72 / one word / 0.12 gap / 0.82 support) | `verify_rules.gate_blind_read`; the call itself is `adapters/ai/verifier/providers.py` `GeminiBlindReader` | 022 |
+| `reviewer.py` (`find_suspicious`, `compare_candidate`, `validate_replacement`) | `GeminiReviewer`; filtering in `verify_rules.filter_suspects` | 022 |
+| `lighton_ocr.verify_crop_variants` early stop, `_select_best_visual_reading` | `LightOnCropReader`; `verify_rules.enough_votes`, `visual_consensus` | 022 |
+| `cropper.save_crops` variants | `adapters/ai/verifier/crops.py` | 022 |
+| Unique-span replacement | `verify_rules.resolve_token`: one stable token id or nothing | 022 |
+| `pipeline.process_page` | `adapters/ai/verifier/visual.py` `VisualVerifier` (a `PageVerifier`) | 022 |
+| `_check_preservation` (letters never change) | `domain/preservation.py`, `src/pipeline/preservation.py` | 006 |
+| `SuspiciousWord` audit fields | `domain/evidence.py`, `src/pipeline/evidence.py` | 018 |
+| Re-raise programming errors | `domain/errors.py` `PROGRAMMING_ERRORS` | 007 |
+| `tests/test_ai_contract.py` scenarios | `service/tests/behaviour/test_walidapro_scenarios.py` | 030 |
+
+Not carried over, deliberately: the second API (`api/`), the second orchestrator
+(`run_full_pipeline.py`), the module-level config singleton, the import-time `load_dotenv()`, and
+the PaddleOCR word locator (the verifier's locator is injectable; it uses OCR token boxes for now).
+
+Still to rewrite from the tag, if wanted: per-word visual diacritics (023), the final context
+review (024), TTS chunking and the second narrator (032).
+

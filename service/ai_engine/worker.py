@@ -16,6 +16,7 @@ from ai_engine.adapters.ai.diacritizer_local import LocalDiacritizer
 from ai_engine.adapters.ai.ocr_providers import build_ocr_engine
 from ai_engine.adapters.ai.renderer_pymupdf import PyMuPdfRenderer
 from ai_engine.adapters.ai.tts import GeminiTts, SyntheticTts
+from ai_engine.adapters.ai.verifier import build_visual_verifier
 from ai_engine.adapters.ai.verifier_passthrough import PassThroughVerifier
 from ai_engine.adapters.backend.files_client import BackendFilesClient
 from ai_engine.adapters.backend.jobs_client import BackendJobsClient
@@ -243,10 +244,17 @@ def build_worker(
     if cache is not None and _paid(tts):
         tts = CachedTts(tts, cache, metrics)
 
-    # The verified tier is wired only while ENABLE_VERIFIED_TIER is on (spec 020). Until a
-    # real verifier lands (spec 022) the pass-through stands in, so the routing and the
-    # contract check are exercised for real.
-    verifier = (verifier or PassThroughVerifier()) if settings.enable_verified_tier else None
+    # The verified tier is wired only while ENABLE_VERIFIED_TIER is on (spec 020); what runs
+    # it is VERIFIER (spec 022). Building the visual verifier checks its keys, so a worker
+    # missing them fails here rather than on every verified page.
+    if not settings.enable_verified_tier:
+        verifier = None
+    elif verifier is None:
+        verifier = (
+            build_visual_verifier(settings)
+            if settings.verifier == "visual"
+            else PassThroughVerifier()
+        )
 
     # Job A diacritisation (spec 016), opt-in. Loading the weights here makes a missing
     # model fail the worker at startup instead of failing every undiacritised page.

@@ -32,6 +32,7 @@ from ai_engine.domain.enums import QualityTier
 from ai_engine.domain.usage import PriceTable
 
 OCR_ENGINES = frozenset({"auto", "textlayer", "gemini", "lighton"})
+VERIFIERS = frozenset({"visual", "passthrough"})
 DIACRITIZERS = frozenset({"none", "local"})
 ENVIRONMENTS = frozenset({"dev", "staging", "production"})
 """Selectable OCR engines. ``auto`` prefers the free text layer when the PDF has one."""
@@ -161,6 +162,9 @@ class Settings(BaseSettings):
     # (torch, CPU) in the image; the worker refuses to start if it is set and the model
     # can't load, rather than failing every undiacritised page one by one.
     diacritizer: str = "none"  # none | local
+    # What runs the verified tier (spec 022) when ENABLE_VERIFIED_TIER is on. "visual" needs
+    # both GEMINI_API_KEY and LIGHTON_API_KEY; "passthrough" verifies nothing (spec 020).
+    verifier: str = "visual"  # visual | passthrough
 
     # ── Model configuration (was hardcoded constants in the legacy pipeline) ─────
     ocr_gemini_model: str = "gemini-3.6-flash"
@@ -170,6 +174,13 @@ class Settings(BaseSettings):
     align_whisper_device: str = "cpu"  # no GPU is required anywhere in V1
     align_whisper_compute_type: str = "int8"
     diac_threshold: float = 0.15
+    # The visual verifier (spec 022). Thresholds are the prototype's calibrated values.
+    verifier_gemini_model: str = "gemini-3.6-flash"
+    verifier_suspicion_threshold: float = 0.75
+    verifier_accept_threshold: float = 0.88
+    verifier_review_threshold: float = 0.70
+    # each suspect costs up to ~9 paid calls; this bounds one page's verification spend
+    verifier_max_suspects: int = 20
     gemini_api_key: SecretStr = SecretStr("")
     # The hosted host. The legacy default (http://localhost:8000/v1) plus the
     # client's /api/v3/parse suffix builds a nonsense URL and is set in no .env.
@@ -190,6 +201,13 @@ class Settings(BaseSettings):
     def provider_limits(self) -> dict[str, ProviderLimit]:
         """Configured budgets, keyed by provider. Empty means nothing is metered."""
         return parse_limits(self.provider_call_budgets)
+
+    @field_validator("verifier")
+    @classmethod
+    def _known_verifier(cls, value: str) -> str:
+        if value not in VERIFIERS:
+            raise ValueError(f"must be one of {sorted(VERIFIERS)}, got {value!r}")
+        return value
 
     @field_validator("ocr_engine")
     @classmethod
@@ -286,10 +304,15 @@ class Settings(BaseSettings):
             )
         if self.job_store == "memory":
             problems.append("JOB_STORE=memory: a restart loses every job in flight")
-        paid = self.ocr_engine != "textlayer" or self.tts_engine != "synthetic"
+        paid = (
+            self.ocr_engine != "textlayer"
+            or self.tts_engine != "synthetic"
+            or (self.enable_verified_tier and self.verifier == "visual")
+        )
         if paid and not self.provider_call_budgets:
             problems.append(
-                "PROVIDER_CALL_BUDGETS is empty while a paid OCR/TTS engine is configured: "
+                "PROVIDER_CALL_BUDGETS is empty while a paid OCR/TTS/verifier engine is "
+                "configured: "
                 "nothing meters spend"
             )
         for name, url in (

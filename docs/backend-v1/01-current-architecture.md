@@ -1,5 +1,10 @@
 # Current Architecture Analysis
 
+> **Update 2026-10-22: one codebase.** `walidapro/` has been removed (spec 033). Its good parts
+> were rewritten natively in `service/` and `src/pipeline/`; its last state is the local git tag
+> `walidapro-final`. Paths below that start with `walidapro/` refer to that tag. See
+> [the difference report §10](../pipeline-vs-walidapro-report.md#10-where-each-part-went-2026-10-22).
+
 What exists today, verified against the source. Read this before
 [04-gap-analysis.md](04-gap-analysis.md).
 

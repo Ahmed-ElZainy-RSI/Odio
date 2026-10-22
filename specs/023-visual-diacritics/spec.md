@@ -3,6 +3,9 @@
 **Feature:** `023-visual-diacritics` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
 **Priority:** P2. **Depends on:** 006, 020, 021, 022 (boxes)
 
+> **Source after consolidation (2026-10-22):** `walidapro/` was removed (spec 033). Its code is at the
+> local git tag `walidapro-final`. Read it for the rules; rewrite natively; never import it.
+
 ## Problem
 
 Our diacritizer predicts tashkeel from context. On books printed **with** tashkeel, the right

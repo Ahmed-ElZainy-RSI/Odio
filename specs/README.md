@@ -18,13 +18,13 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | [001-book-pipeline](001-book-pipeline/) | `src/pipeline`: PDF → tokens → tashkeel → TTS → timings → reader |
 | [002-ocr-correction](002-ocr-correction/) | `tools/`: two-engine diff, VLM arbiter, human-gated context review |
 | [003-ai-engine-service](003-ai-engine-service/) | `service/`: Backend V1 job contract (Job A, Job B) |
-| [004-verified-tier-walidapro](004-verified-tier-walidapro/) | **epic**: port walidapro's correctness engine (index of features 005–033) |
+| [004-verified-tier-walidapro](004-verified-tier-walidapro/) | **epic**: walidapro's correctness rules, rewritten natively (index of features 005–033). The prototype itself is retired: local tag `walidapro-final` |
 
 ## Features: one change each
 
 | # | Feature | Area | Priority | Depends on | Cost / risk |
 |---|---|---|---|---|---|
-| 005 | [walidapro-recovery](005-walidapro-recovery/) | walidapro | **P0** | — (needs Waleed) | blocks all ports |
+| 005 | [walidapro-recovery](005-walidapro-recovery/) | walidapro | superseded (033) | — | — |
 | 006 | [letter-preservation-guard](006-letter-preservation-guard/) | both tiers | ✅ done (CLI) | — | free |
 | 007 | [reraise-programming-errors](007-reraise-programming-errors/) | service + CLI | ✅ done | — | free |
 | 008 | [page-failure-isolation](008-page-failure-isolation/) | CLI pipeline | ✅ done | 007 | free |
@@ -41,7 +41,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 019 | [correction-accuracy-harness](019-correction-accuracy-harness/) | tools | ◐ harness done, transcripts needed | reference transcripts | free (manual transcripts) |
 | 020 | [page-verifier-port](020-page-verifier-port/) | service | ✅ done | 018 | free |
 | 021 | [provider-call-cache](021-provider-call-cache/) | service + CLI | ✅ done (fs store) | — | saves money |
-| 022 | [verified-ocr](022-verified-ocr/) | service | P1 (epic) | 005, 018, 020, 021 | 40–200 calls/page, opt-in |
+| 022 | [verified-ocr](022-verified-ocr/) | service | ✅ done (Docker target, e2e, cache open) | 018, 020 | ≤ ~9 calls/suspect, capped, opt-in |
 | 023 | [visual-diacritics](023-visual-diacritics/) | service | P2 (epic) | 006, 020, 021, 022 | 1 call/word, opt-in |
 | 024 | [final-context-review](024-final-context-review/) | service | P3 (epic) | 022 | ≤ 2 calls/page, opt-in |
 | 025 | [cost-metering](025-cost-metering/) | service + CLI | ✅ done (paid-run check pending) | — | free |
@@ -52,23 +52,22 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 030 | [contract-replay-walidapro-tests](030-contract-replay-walidapro-tests/) | service | ✅ done (Q-17/Q-18 open) | 005 | free |
 | 031 | [production-config-hardening](031-production-config-hardening/) | service | ✅ done | Q-01 | free |
 | 032 | [tts-chunking-dual-narrator](032-tts-chunking-dual-narrator/) | TTS | P3 | 005, product decision | 2× TTS if dual voice |
-| 033 | [retire-walidapro-duplicates](033-retire-walidapro-duplicates/) | cleanup | P3 (last) | 022–024, 030, 032 | — |
+| 033 | [retire-walidapro-duplicates](033-retire-walidapro-duplicates/) | cleanup | ✅ done: whole folder removed | 022, 030 | — |
 
 ## Suggested build order
 
 ```
 Now, no blockers:      006 · 017 · 025 · 007 · 010 · 011 · 029 · 019 (start transcripts)
 Then:                  008 → 009 · 016 (after 006) · 018 → 020 · 021 · 031 (after Q-01)
-After Waleed's code:   005 → 030 · 022 → 023 → 024 · 032
+Consolidation:        030 · 022 · 033 (done) → 023 → 024 · 032, read from tag walidapro-final
 Measure and decide:    026 (Q-07 → ADR-009)
-Finally:               033 · 027 / 012 / 013 / 014 / 015 / 028 as capacity allows
+Finally:               027 / 012 / 013 / 014 / 015 / 028 as capacity allows
 ```
 
 ## Decisions waiting on people
 
 | Feature | Question | Who |
 |---|---|---|
-| 005 | Send the complete walidapro working tree | Waleed |
 | 014 | Narrate title / ISBN pages? | Product |
 | 023 | Visual diacritics only on already-diacritized books? | Product + tech lead |
 | 024 | Should a text-only reviewer ever apply edits? (recommend no) | Tech lead |
@@ -85,8 +84,7 @@ Finally:               033 · 027 / 012 / 013 / 014 / 015 / 028 as capacity allo
 | `src/pipeline/` | core pipeline library + drivers | 001, 006, 008–010, 012–015 |
 | `src/tests/` | hermetic tests for 001/002 | — |
 | `tools/` | OCR correction chain | 002, 017–019, 025 |
-| `service/` | production AI engine | 003, 007, 016, 020–032 |
-| `walidapro/` | Waleed's verification pipeline (parallel implementation) | 004, 005, 030, 033 |
+| `service/` | production AI engine, the only one (walidapro retired, 033) | 003, 007, 016, 020–033 |
 | `docs/backend-v1/` | V1 analysis, ADRs, roadmap | 003, 026, 033 |
 | `demo/` | benchmark / pricing / POC HTML | — |
 | `tmp/` | abandoned vendor spikes | — |

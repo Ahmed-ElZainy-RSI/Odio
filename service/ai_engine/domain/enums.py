@@ -93,10 +93,12 @@ ARTIFACT_ORDER: dict[JobType, tuple[ArtifactType, ArtifactType]] = {
 
 
 class QualityTier(StrEnum):
-    """PROPOSAL, not in the V1 PDF. Selects which existing pipeline runs.
+    """PROPOSAL, not in the V1 PDF. Selects how much a page's OCR is checked.
 
-    `FAST`     -> src/pipeline (1-2 paid calls/page, the only path with word timings)
-    `VERIFIED` -> walidapro/   (65-200 paid calls/page, no timing capability)
+    `FAST`     -> OCR as-is (1-2 paid calls/page)
+    `VERIFIED` -> OCR, then the visual verifier (spec 022): every suspect word is re-read
+                  from the page image before its letters may change (up to ~9 paid calls
+                  per suspect, capped per page by VERIFIER_MAX_SUSPECTS)
 
     See docs/backend-v1/19-adrs.md ADR-009.
     """

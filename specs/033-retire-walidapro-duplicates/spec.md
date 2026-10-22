@@ -1,6 +1,6 @@
 # Feature Specification: Retire walidapro's duplicated layers
 
-**Feature:** `033-retire-walidapro-duplicates` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `033-retire-walidapro-duplicates` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-22 (whole folder removed, not just the duplicates) · **Epic:** 004
 **Priority:** P3 (last). **Depends on:** 022, 023, 024, 030, 032
 
 ## Problem

@@ -1,7 +1,7 @@
 # Feature Specification: Verified Tier (port walidapro's correctness engine)
 
-**Feature:** `004-verified-tier-walidapro` · **Created:** 2026-10-20 · **Status:** Draft
-**Input:** `walidapro/ocr_verifier/`, ADR-009, `docs/pipeline-vs-walidapro-report.md`
+**Feature:** `004-verified-tier-walidapro` · **Created:** 2026-10-20 · **Status:** In progress: 022 and 033 done 2026-10-22; 023, 024, 032 open
+**Input:** `walidapro/ocr_verifier/` (removed; local tag `walidapro-final`), ADR-009, `docs/pipeline-vs-walidapro-report.md`
 
 ## User Scenarios & Testing
 
