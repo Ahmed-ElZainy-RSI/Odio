@@ -7,7 +7,7 @@ import io
 import pytest
 
 from ai_engine.adapters.ai.verifier import VisualVerifier
-from ai_engine.domain.errors import AiInferenceError
+from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
 from ai_engine.domain.tokens import Token
 from ai_engine.domain.verification import contract_violations
 from ai_engine.ports.ai import PageVerifier
@@ -41,16 +41,21 @@ class FakeReviewer:
         self.suspects, self.context, self.validation = suspects, context, validation
         self.counter = Counter()
 
-    def find_suspects(self, page_text):
+    def find_suspects(self, page_text, *, page, threshold):
         self.counter.calls += 1
+        self.page, self.threshold = page, threshold
         if isinstance(self.suspects, Exception):
             raise self.suspects
         return self.suspects
 
-    def context_score(self, sentence, original, candidate):
+    def context_score(self, sentence, original, candidate, visual_reading):
+        self.context_args = (sentence, original, candidate, visual_reading)
+        if isinstance(self.context, Exception):
+            raise self.context
         return self.context
 
-    def validation_score(self, sentence, original, candidate):
+    def validation_score(self, old_sentence, new_sentence, original, candidate):
+        self.validation_args = (old_sentence, new_sentence, original, candidate)
         return self.validation
 
 
@@ -188,3 +193,36 @@ def test_an_empty_page_costs_nothing() -> None:
     reviewer = FakeReviewer([suspect()])
     result = verifier(reviewer).verify(page_image=page_image(), tokens=[], page_number=1)
     assert result.verdicts == [] and reviewer.counter.calls == 0
+
+
+def test_the_reviewer_gets_the_page_and_threshold_and_the_judges_get_the_evidence() -> None:
+    reviewer = FakeReviewer([suspect()])
+    run(verifier(reviewer, lighton=FakeLightOn(CAND, CAND), suspicion_threshold=0.8))
+    assert (reviewer.page, reviewer.threshold) == (1, 0.8)
+    assert reviewer.context_args == (SENTENCE, ORIG, CAND, CAND)
+    assert reviewer.validation_args == (SENTENCE, "ذهب الفصل مسرورا", ORIG, CAND)
+
+
+def test_a_word_repeated_in_its_sentence_goes_to_review_without_scoring() -> None:
+    """The page has the word once (so it resolves to one token), but the sentence the
+    reviewer quoted has it twice: there is no single "after" sentence to validate."""
+    reviewer = FakeReviewer([suspect(sentence="الفضل الفضل")])
+    result = run(verifier(reviewer))
+    assert [(v.status, v.evidence.rule) for v in result.verdicts] == [
+        ("REVIEW", "ambiguous-in-sentence")
+    ]
+    assert not hasattr(reviewer, "context_args")
+
+
+def test_one_words_scoring_failure_reviews_that_word_and_the_page_goes_on() -> None:
+    reviewer = FakeReviewer([suspect()], context=AiInferenceError("judge said nonsense"))
+    result = run(verifier(reviewer))
+    (v,) = result.verdicts
+    assert (v.status, v.evidence.rule) == ("REVIEW", "context-validation-failed")
+    assert result.tokens[1].text == ORIG
+
+
+def test_a_quota_error_while_scoring_still_fails_the_page_for_a_later_retry() -> None:
+    reviewer = FakeReviewer([suspect()], context=ModelUnavailableError("429"))
+    with pytest.raises(ModelUnavailableError):
+        verifier(reviewer).verify(page_image=page_image(), tokens=TOKENS, page_number=1)

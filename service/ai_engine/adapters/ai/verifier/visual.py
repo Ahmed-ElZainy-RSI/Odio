@@ -24,6 +24,7 @@ from dataclasses import replace
 from typing import Any, Protocol
 
 from ai_engine.domain import verify_rules as rules
+from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
 from ai_engine.domain.evidence import Evidence
 from ai_engine.domain.tokens import Token
 from ai_engine.domain.verification import Verdict, VerificationResult
@@ -35,9 +36,15 @@ log = get_logger(__name__)
 
 
 class Reviewer(Protocol):
-    def find_suspects(self, page_text: str) -> list[dict[str, Any]]: ...
-    def context_score(self, sentence: str, original: str, candidate: str) -> float: ...
-    def validation_score(self, sentence: str, original: str, candidate: str) -> float: ...
+    def find_suspects(
+        self, page_text: str, *, page: int, threshold: float
+    ) -> list[dict[str, Any]]: ...
+    def context_score(
+        self, sentence: str, original: str, candidate: str, visual_reading: str
+    ) -> float: ...
+    def validation_score(
+        self, old_sentence: str, new_sentence: str, original: str, candidate: str
+    ) -> float: ...
 
 
 class BlindReader(Protocol):
@@ -105,7 +112,11 @@ class VisualVerifier:
         verdicts: list[Verdict] = []
         if page_text:
             suspects = rules.filter_suspects(
-                self._reviewer.find_suspects(page_text), page_text, threshold=self._suspicion
+                self._reviewer.find_suspects(
+                    page_text, page=page_number, threshold=self._suspicion
+                ),
+                page_text,
+                threshold=self._suspicion,
             )
             suspects.sort(key=lambda s: s.score, reverse=True)
             texts = [t.text for t in tokens]
@@ -184,8 +195,39 @@ class VisualVerifier:
             original=original,
             candidate=candidate,
         )
-        context = self._reviewer.context_score(suspect.sentence, original, candidate)
-        validation = self._reviewer.validation_score(suspect.sentence, original, candidate)
+        reads = {"lighton": lighton_word, "blind": blind.reading, "variants": agreeing}
+        new_sentence = rules.replace_in_sentence(suspect.sentence, suspect.word, candidate)
+        if new_sentence is None:
+            # the validator compares the sentence before and after; with the word absent or
+            # repeated in its sentence there is no single "after" to show it
+            return self._evidence(
+                token,
+                candidate,
+                rules.REVIEW,
+                "ambiguous-in-sentence",
+                reads=reads,
+                bbox=tuple(box),
+            )
+        try:
+            context = self._reviewer.context_score(
+                suspect.sentence, original, candidate, lighton_word
+            )
+            validation = self._reviewer.validation_score(
+                suspect.sentence, new_sentence, original, candidate
+            )
+        except ModelUnavailableError:
+            raise  # quota or outage: retry the page later, don't judge it on missing evidence
+        except AiInferenceError as exc:
+            # one word's scoring failed: that word goes to a person, the page goes on
+            log.warning("verify.scoring_failed", token_id=token.id, error=str(exc))
+            return self._evidence(
+                token,
+                candidate,
+                rules.REVIEW,
+                "context-validation-failed",
+                reads=reads,
+                bbox=tuple(box),
+            )
         final, status = rules.decide(
             original=original,
             candidate=candidate,
@@ -202,7 +244,7 @@ class VisualVerifier:
             candidate,
             status,
             "decide()",
-            reads={"lighton": lighton_word, "blind": blind.reading, "variants": agreeing},
+            reads=reads,
             scores={
                 "suspicion": suspect.score,
                 "context": round(float(context), 4),

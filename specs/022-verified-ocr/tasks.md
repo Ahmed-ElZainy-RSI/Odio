@@ -28,3 +28,18 @@ Implementation:
 Verification (2026-10-22, vx2lm): service 847 passed including slow (was 785); `ruff` clean.
 Branch: `feature/consolidate-walidapro`.
 T020 (2026-10-22): service 855 passed including slow. Branch `feature/022-verifier-cache`.
+
+Arabic LLM handling brought to the prototype's level (2026-10-22, branch `feature/022-arabic-llm-handling`):
+- [x] T021 Prompts carried over word for word (`adapters/ai/verifier/prompts.py`; a check against tag `walidapro-final` confirms all 8 are identical). The reviewer asks for `{"total_words", "items"}`, with page number and threshold in the prompt
+- [x] T022 The context judge receives the LightOn visual reading; the validator receives the sentence before **and after** the replacement (`verify_rules.replace_in_sentence`, Arabic-word boundaries; a word absent or repeated in its sentence → REVIEW `ambiguous-in-sentence`)
+- [x] T023 Strict reading of the model's output: `unclear` missing → **True**, `"false"`/`"no"` → False (`to_bool`); a non-numeric or out-of-range score/confidence is clamped, 0.0 when unreadable (`to_score`)
+- [x] T024 Output-token ceilings per call: review 6000, scores 1000, blind read 120
+- [x] T025 Retries only for temporary failures (network, 408, 5xx, empty/unparseable reply), at most 3, backoff `min(1.5·2^(n-1) + jitter, 5 s)`; a permanent 4xx is not retried; 429/503 stay `ModelUnavailableError` (the job's retry policy handles quota)
+- [x] T026 One word's context/validation failure → that word REVIEW `context-validation-failed`, the page continues (quota still fails the page for a later retry)
+- [x] T027 Parity details: `__` stripped from LightOn text; crop upscale capped at ×4
+
+Deliberately stricter than the prototype: a review reply without an `items` list is a failed review (the prototype read it as zero suspects, contrary to its own rule).
+Watch on the first real run: `maxOutputTokens=120` on the blind read assumes the model does not spend that budget on thinking; if blind reads come back empty, raise it or disable thinking for that call.
+
+Verification: service 883 passed including slow; `ruff` clean.
+
