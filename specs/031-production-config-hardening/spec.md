@@ -1,6 +1,6 @@
 # Feature Specification: Safe production configuration
 
-**Feature:** `031-production-config-hardening` · **Created:** 2026-10-20 · **Status:** Draft
+**Feature:** `031-production-config-hardening` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-22 (Q-01 still decides the auth values)
 **Priority:** P1 before any deployment outside a dev machine
 
 ## Problem

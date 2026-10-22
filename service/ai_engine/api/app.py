@@ -97,6 +97,14 @@ def create_app(
                     "does not state how to validate {ai-engine-bearer-token}"
                 ),
             )
+        problems = resolved_settings.config_problems()
+        if problems:
+            # Loud every boot outside production; ENVIRONMENT=production refuses to start.
+            log.warning(
+                "config.unsafe_for_production",
+                environment=resolved_settings.environment,
+                problems=problems,
+            )
         if not resolved_settings.source_url_allowed_hosts:
             log.warning(
                 "source_url.allowlist_empty",

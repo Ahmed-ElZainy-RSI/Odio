@@ -71,6 +71,19 @@ async def ready(
     else:
         checks["inbound_auth"] = DependencyCheck(ok=True, detail="not enforced (blocked on Q-01)")
 
+    # Spec 031: in production these can't exist (the settings refuse to load), so here they
+    # are informational -- visible, but not a reason to pull a dev instance from rotation.
+    problems = settings.config_problems()
+    checks["config"] = DependencyCheck(
+        ok=True,
+        detail=(
+            f"{settings.environment}: {len(problems)} setting(s) unsafe for production: "
+            + "; ".join(problems)
+        )
+        if problems
+        else f"{settings.environment}: production-safe",
+    )
+
     all_ok = all(check.ok for check in checks.values())
     if not all_ok:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE

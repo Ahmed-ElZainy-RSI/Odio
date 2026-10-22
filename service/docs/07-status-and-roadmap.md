@@ -96,9 +96,9 @@ Stated plainly rather than discovered later.
 | Gap | Impact | Fix |
 |---|---|---|
 | The durable store is single-host | SQLite takes one writer. Fine for one API + N workers on one host; not fine for two hosts. | `T-4.1` (Postgres) |
-| `AUTH_ENFORCE=false` by default | The service trusts its caller unless configured otherwise. Validation is implemented and tested; the default is off only because `Q-01` is unanswered. | answer `Q-01`, set two env vars |
-| `PROVIDER_CALL_BUDGETS` empty by default | Nothing meters paid calls until it is set. Deliberate: a wrong low value silently parks real books. | set it per deployment |
-| `SOURCE_URL_ALLOWED_HOSTS` empty by default | Logs a warning and does not host-restrict. **Set it before exposing the service.** | configuration |
+| `AUTH_ENFORCE=false` by default | The service trusts its caller unless configured otherwise. Validation is implemented and tested; the default is off only because `Q-01` is unanswered. | answer `Q-01`, set two env vars Since spec 031, `ENVIRONMENT=production` refuses to start with this default. |
+| `PROVIDER_CALL_BUDGETS` empty by default | Nothing meters paid calls until it is set. Deliberate: a wrong low value silently parks real books. | set it per deployment Since spec 031, `ENVIRONMENT=production` refuses to start with this default. |
+| `SOURCE_URL_ALLOWED_HOSTS` empty by default | Logs a warning and does not host-restrict. **Set it before exposing the service.** | configuration Since spec 031, `ENVIRONMENT=production` refuses to start with this default. |
 | Parked work relies on the reconciler as its backstop | A provider allowance that never returns leaves pages parked until `JOB_DEADLINE_SECONDS`, then the job fails as a whole. That is the correct outcome, but it is a deadline, not a notification. | alert on `ai_engine_provider_budget_exhausted_total` |
 | Timing quality is a model limit, not a bug | 21.8% of tokens interpolated across the corpus; 51% on the Gemini+whisper path versus 94% on Hume native. The artifact ships `anchor_ratio` so it is visible per page. | product decision (`T-8.7`) |
 | The adapters `import fitz`, which PyMuPDF has deprecated | A future PyMuPDF release removes the alias. It warns on import today and works. | rename to `import pymupdf` in `renderer_pymupdf.py` and `ocr_textlayer.py` |
