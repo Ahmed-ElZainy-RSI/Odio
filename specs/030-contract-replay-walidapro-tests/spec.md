@@ -1,6 +1,6 @@
 # Feature Specification: Replay walidapro's contract tests against our service
 
-**Feature:** `030-contract-replay-walidapro-tests` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `030-contract-replay-walidapro-tests` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-22 (Q-17, Q-18 for the Backend) · **Epic:** 004
 **Priority:** P2. **Depends on:** 005 (for `conftest.py`)
 
 ## Problem
