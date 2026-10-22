@@ -23,7 +23,8 @@ Implementation:
 - [ ] T017 Dockerfile `worker-verified` target (Pillow is already in the `ai` extra; needs a Docker daemon to verify)
 - [ ] T018 e2e on a recorded page (needs real provider responses recorded once, with keys)
 - [ ] T019 Persist verdicts per page (moved from 020 FR-005). Today `page.verified` is logged and evidence is on each verdict
-- [ ] T020 Provider cache (021) for the verifier's calls: not wired yet; a retried page re-pays its verification
+- [x] T020 Provider cache (021) for the verifier's calls: `GeminiJson.ask` and `LightOnCropReader.read` key on provider, model, operation and digests of every input; only parsed replies are stored; a hit is not a paid call and is recorded as `cached`. Shares `PROVIDER_CACHE_DIR` with OCR/TTS
 
 Verification (2026-10-22, vx2lm): service 847 passed including slow (was 785); `ruff` clean.
 Branch: `feature/consolidate-walidapro`.
+T020 (2026-10-22): service 855 passed including slow. Branch `feature/022-verifier-cache`.

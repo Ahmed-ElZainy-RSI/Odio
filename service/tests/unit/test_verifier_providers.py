@@ -172,3 +172,81 @@ def test_lighton_returns_the_cleaned_markdown() -> None:
 def test_lighton_failures_are_typed(response: httpx.Response, error: type) -> None:
     with pytest.raises(error):
         lighton(response).read(PNG)
+
+
+# ── the paid-call cache (spec 021) ──────────────────────────────────────────
+
+
+class DictCache:
+    def __init__(self) -> None:
+        self.data: dict[str, bytes] = {}
+
+    def get(self, key: str) -> bytes | None:
+        return self.data.get(key)
+
+    def put(self, key: str, value: bytes) -> None:
+        self.data[key] = value
+
+
+def counting_client(*responses: httpx.Response) -> tuple[httpx.Client, list]:
+    seen: list[httpx.Request] = []
+    queue = list(responses)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return queue.pop(0)
+
+    return httpx.Client(transport=httpx.MockTransport(handler)), seen
+
+
+def test_a_repeated_gemini_call_is_served_from_the_cache_and_not_billed() -> None:
+    cache = DictCache()
+    client, seen = counting_client(gemini_reply({"score": 0.8}))
+    g = GeminiJson(client=client, api_key="k", model_id="m", cache=cache)
+    with usage.collecting(page=1, stage="verify") as records:
+        first = g.ask(system="s", user="u", image_png=PNG, operation="verify.context")
+        second = g.ask(system="s", user="u", image_png=PNG, operation="verify.context")
+    assert first == second == {"score": 0.8}
+    assert len(seen) == 1 and g.calls == 1
+    assert [r.cached for r in records] == [False, True]
+
+
+def test_any_input_change_misses() -> None:
+    cache = DictCache()
+    client, seen = counting_client(*[gemini_reply({"score": 0.5})] * 4)
+    g = GeminiJson(client=client, api_key="k", model_id="m", cache=cache)
+    g.ask(system="s", user="u", image_png=PNG, operation="verify.context")
+    g.ask(system="s", user="u2", image_png=PNG, operation="verify.context")
+    g.ask(system="s", user="u", image_png=PNG + b"x", operation="verify.context")
+    g.ask(system="s", user="u", image_png=PNG, operation="verify.validate")
+    assert len(seen) == 4
+
+
+def test_a_failed_or_unparseable_reply_is_never_cached() -> None:
+    cache = DictCache()
+    client, _ = counting_client(httpx.Response(500), gemini_reply("nonsense"))
+    g = GeminiJson(client=client, api_key="k", model_id="m", cache=cache)
+    for _ in range(2):
+        with pytest.raises(AiInferenceError):
+            g.ask(system="s", user="u", operation="verify.review")
+    assert cache.data == {}
+
+
+def test_an_unreadable_entry_is_a_miss() -> None:
+    cache = DictCache()
+    client, seen = counting_client(gemini_reply({"ok": 1}), gemini_reply({"ok": 2}))
+    g = GeminiJson(client=client, api_key="k", model_id="m", cache=cache)
+    g.ask(system="s", user="u", operation="x")
+    for key in cache.data:
+        cache.data[key] = b"\xff garbage"
+    assert g.ask(system="s", user="u", operation="x") == {"ok": 2}
+    assert len(seen) == 2
+
+
+def test_lighton_crop_reads_are_cached_including_an_empty_reading() -> None:
+    cache = DictCache()
+    empty = httpx.Response(200, json={"status": "completed", "result": {"pages": []}})
+    client, seen = counting_client(empty)
+    reader = LightOnCropReader(client=client, api_key="k", base_url="https://l.test", cache=cache)
+    assert reader.read(PNG) == "" == reader.read(PNG)
+    assert len(seen) == 1 and reader.calls == 1

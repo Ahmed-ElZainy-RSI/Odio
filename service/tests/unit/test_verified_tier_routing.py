@@ -208,3 +208,25 @@ async def test_the_visual_verifier_without_keys_fails_the_worker_at_startup(tmp_
             build_worker(
                 settings=settings, store=InMemoryJobStore(), metrics=Metrics(), http_client=client
             )
+
+
+async def test_the_visual_verifier_shares_the_provider_cache(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path).model_copy(
+        update={
+            "enable_verified_tier": True,
+            "gemini_api_key": SecretStr("g"),
+            "lighton_api_key": SecretStr("l"),
+        }
+    )
+    cache = object()
+    async with httpx.AsyncClient(base_url=BACKEND) as client:
+        worker = build_worker(
+            settings=settings,
+            store=InMemoryJobStore(),
+            metrics=Metrics(),
+            http_client=client,
+            cache=cache,
+        )
+    verifier = worker.extraction._pages._verifier
+    assert verifier._crop_reader._cache._cache is cache
+    assert verifier._blind._gemini._cache._cache is cache
