@@ -85,6 +85,6 @@ def upscale_for_reading(png: bytes, *, below: int = 700, target: int = 900) -> b
     longest = max(img.size)
     if longest >= below:
         return png
-    scale = target / longest
+    scale = min(4.0, target / longest)
     img = img.resize((int(img.width * scale), int(img.height * scale)), Image.Resampling.LANCZOS)
     return _png(img)

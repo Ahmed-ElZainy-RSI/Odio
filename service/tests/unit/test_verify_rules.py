@@ -16,6 +16,7 @@ from ai_engine.domain.verify_rules import (
     filter_suspects,
     gate_blind_read,
     normalize,
+    replace_in_sentence,
     resolve_token,
     same_letters,
     similarity,
@@ -221,3 +222,11 @@ def test_best_box_prefers_an_exact_match() -> None:
     item, score = best_box(ORIG, located)
     assert item is located[1] and score == 1.0
     assert best_box("", located) == (None, 0.0)
+
+
+def test_the_sentence_after_replacement_swaps_exactly_one_whole_word() -> None:
+    assert replace_in_sentence("ذهب الفضل، ثم عاد", "الفضل", "الفصل") == "ذهب الفصل، ثم عاد"
+    assert replace_in_sentence("الفضل والفضل", "الفضل", "الفصل") == "الفصل والفضل"
+    assert replace_in_sentence("الفضل ثم الفضل", "الفضل", "الفصل") is None  # twice
+    assert replace_in_sentence("الفضلاء", "الفضل", "الفصل") is None  # only inside a longer word
+    assert replace_in_sentence("", "الفضل", "الفصل") is None

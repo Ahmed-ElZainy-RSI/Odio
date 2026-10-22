@@ -7,12 +7,17 @@ import json
 import httpx
 import pytest
 
+from ai_engine.adapters.ai.verifier import prompts
 from ai_engine.adapters.ai.verifier.providers import (
+    BLIND_MAX_TOKENS,
+    REVIEW_MAX_TOKENS,
+    SCORE_MAX_TOKENS,
     GeminiBlindReader,
     GeminiJson,
     GeminiReviewer,
     LightOnCropReader,
     parse_json_object,
+    to_bool,
 )
 from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
 from ai_engine.observability import usage
@@ -93,36 +98,100 @@ def test_http_failures_are_typed(status: int, error: type) -> None:
         gemini(httpx.Response(status)).ask(system="s", user="u", operation="x")
 
 
-def test_the_reviewer_retries_unparseable_answers_then_gives_up() -> None:
-    ok = {
-        "suspects": [{"word": "الفضل", "sentence": "s", "score": 0.9, "candidate": "الفصل"}, "junk"]
-    }
-    reviewer = GeminiReviewer(gemini(gemini_reply("nonsense"), gemini_reply(ok)))
-    assert reviewer.find_suspects("نص") == [ok["suspects"][0]]
+def reviewer_of(*responses: httpx.Response, seen: list | None = None):
+    waits: list[float] = []
+    return GeminiReviewer(gemini(*responses, seen=seen), sleep=waits.append), waits
 
-    reviewer = GeminiReviewer(gemini(*[gemini_reply("nonsense")] * 3))
+
+SUSPECT = {"word": "الفضل", "sentence": "s", "score": 0.9, "candidate": "الفصل"}
+
+
+def test_the_reviewer_sends_the_prototype_prompts_with_page_threshold_and_a_token_ceiling() -> None:
+    seen: list[httpx.Request] = []
+    reviewer, _ = reviewer_of(
+        gemini_reply({"total_words": 1, "items": [SUSPECT, "junk"]}), seen=seen
+    )
+    assert reviewer.find_suspects("نص الصفحة", page=7, threshold=0.75) == [SUSPECT]
+    body = json.loads(seen[0].content)
+    assert body["systemInstruction"]["parts"][0]["text"] == prompts.REVIEW_SYSTEM
+    user = body["contents"][0]["parts"][-1]["text"]
+    assert "نص الصفحة" in user and "7" in user and "0.75" in user
+    assert body["generationConfig"]["maxOutputTokens"] == REVIEW_MAX_TOKENS
+
+
+def test_the_reviewer_retries_temporary_failures_with_a_short_capped_backoff() -> None:
+    ok = gemini_reply({"items": [SUSPECT]})
+    reviewer, waits = reviewer_of(gemini_reply("nonsense"), httpx.Response(500), ok)
+    assert reviewer.find_suspects("نص") == [SUSPECT]
+    assert len(waits) == 2 and all(0 < w <= 5.0 for w in waits)
+
+    reviewer, waits = reviewer_of(*[gemini_reply("nonsense")] * 3)
     with pytest.raises(AiInferenceError, match="3 attempts"):
         reviewer.find_suspects("نص")
+    assert len(waits) == 2, "no wait after the last attempt"
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404])
+def test_a_permanent_client_error_is_not_retried(status: int) -> None:
+    seen: list[httpx.Request] = []
+    reviewer, waits = reviewer_of(httpx.Response(status), seen=seen)
+    with pytest.raises(AiInferenceError):
+        reviewer.find_suspects("نص")
+    assert len(seen) == 1 and waits == []
 
 
 def test_the_reviewer_does_not_retry_a_quota_error() -> None:
+    reviewer, waits = reviewer_of(httpx.Response(429))
     with pytest.raises(ModelUnavailableError):
-        GeminiReviewer(gemini(httpx.Response(429))).find_suspects("نص")
+        reviewer.find_suspects("نص")
+    assert waits == []
 
 
-def test_a_reply_without_a_suspect_list_is_a_failure_not_zero_suspects() -> None:
-    reviewer = GeminiReviewer(gemini(*[gemini_reply({"result": "fine"})] * 3))
+def test_attempts_are_capped_at_three_whatever_is_configured() -> None:
+    seen: list[httpx.Request] = []
+    reviewer = GeminiReviewer(
+        gemini(*[httpx.Response(500)] * 10, seen=seen), attempts=10, sleep=lambda _: None
+    )
     with pytest.raises(AiInferenceError):
         reviewer.find_suspects("نص")
+    assert len(seen) == 3
 
 
-def test_scores_come_back_as_floats() -> None:
-    reviewer = GeminiReviewer(gemini(gemini_reply({"score": 0.8}), gemini_reply({"score": "0.6"})))
-    assert reviewer.context_score("s", "a", "b") == 0.8
-    assert reviewer.validation_score("s", "a", "b") == 0.6
+def test_a_reply_without_the_items_list_is_a_failure_not_zero_suspects() -> None:
+    reviewer, _ = reviewer_of(gemini_reply({"total_words": 0}))
+    with pytest.raises(AiInferenceError, match="items"):
+        reviewer.find_suspects("نص")
+    reviewer, _ = reviewer_of(gemini_reply({"total_words": 0, "items": []}))
+    assert reviewer.find_suspects("نص") == []
 
 
-def test_the_blind_reader_never_sees_the_ocr_text_and_fails_unclear() -> None:
+def test_the_context_judge_sees_the_visual_reading() -> None:
+    seen: list[httpx.Request] = []
+    reviewer, _ = reviewer_of(gemini_reply({"score": 0.8}), seen=seen)
+    assert reviewer.context_score("الجملة هنا", "الفضل", "الفصل", "قراءة_لايتون") == 0.8
+    body = json.loads(seen[0].content)
+    assert body["systemInstruction"]["parts"][0]["text"] == prompts.CONTEXT_SYSTEM
+    assert "قراءة_لايتون" in body["contents"][0]["parts"][-1]["text"]
+    assert body["generationConfig"]["maxOutputTokens"] == SCORE_MAX_TOKENS
+
+
+def test_the_validator_compares_the_sentence_before_and_after() -> None:
+    seen: list[httpx.Request] = []
+    reviewer, _ = reviewer_of(gemini_reply({"score": "0.6"}), seen=seen)
+    assert reviewer.validation_score("ذهب الفضل", "ذهب الفصل", "الفضل", "الفصل") == 0.6
+    body = json.loads(seen[0].content)
+    assert body["systemInstruction"]["parts"][0]["text"] == prompts.VALIDATE_SYSTEM
+    user = body["contents"][0]["parts"][-1]["text"]
+    assert "ذهب الفضل" in user and "ذهب الفصل" in user
+
+
+@pytest.mark.parametrize(("raw", "score"), [("high", 0.0), (None, 0.0), (7, 1.0), (-1, 0.0)])
+def test_a_non_numeric_or_out_of_range_score_is_clamped_not_a_failure(raw, score) -> None:
+    reviewer, _ = reviewer_of(gemini_reply({"score": raw}))
+    assert reviewer.context_score("s", "a", "b", "v") == score
+
+
+def blind_png() -> bytes:
     pytest.importorskip("PIL")
     import io
 
@@ -130,19 +199,56 @@ def test_the_blind_reader_never_sees_the_ocr_text_and_fails_unclear() -> None:
 
     buf = io.BytesIO()
     Image.new("RGB", (120, 40), "white").save(buf, format="PNG")
+    return buf.getvalue()
+
+
+def test_the_blind_reader_sends_only_the_crop_with_the_prototype_prompts() -> None:
     seen: list[httpx.Request] = []
     reader = GeminiBlindReader(
-        gemini(gemini_reply({"reading": "الفصل", "confidence": 0.9, "unclear": False}), seen=seen)
+        gemini(gemini_reply({"reading": " الفصل ", "confidence": 0.9, "unclear": False}), seen=seen)
     )
-    assert reader.read(buf.getvalue()) == ("الفصل", 0.9, False)
+    assert reader.read(blind_png()) == ("الفصل", 0.9, False)
     body = json.loads(seen[0].content)
+    assert body["systemInstruction"]["parts"][0]["text"] == prompts.BLIND_SYSTEM
+    assert body["contents"][0]["parts"][-1]["text"] == prompts.BLIND_USER
+    assert body["generationConfig"]["maxOutputTokens"] == BLIND_MAX_TOKENS
     assert "الفضل" not in json.dumps(body, ensure_ascii=False)
 
-    assert GeminiBlindReader(gemini(gemini_reply("garbage"))).read(buf.getvalue()) == (
-        "",
-        0.0,
-        True,
-    )
+
+@pytest.mark.parametrize(
+    ("reply", "expected"),
+    [
+        ({"reading": "الفصل", "confidence": 0.9}, ("الفصل", 0.9, True)),  # no `unclear`: unclear
+        ({"reading": "الفصل", "confidence": 0.9, "unclear": "false"}, ("الفصل", 0.9, False)),
+        ({"reading": "الفصل", "confidence": 0.9, "unclear": "yes"}, ("الفصل", 0.9, True)),
+        ({"reading": "الفصل", "confidence": "high", "unclear": False}, ("الفصل", 0.0, False)),
+        ({"reading": "الفصل", "confidence": 3, "unclear": False}, ("الفصل", 1.0, False)),
+        ("garbage", ("", 0.0, True)),
+    ],
+)
+def test_the_blind_readers_output_is_read_strictly(reply, expected) -> None:
+    assert GeminiBlindReader(gemini(gemini_reply(reply))).read(blind_png()) == expected
+
+
+def test_a_failed_blind_read_is_unclear_after_one_attempt() -> None:
+    seen: list[httpx.Request] = []
+    reader = GeminiBlindReader(gemini(httpx.Response(500), seen=seen))
+    assert reader.read(blind_png()) == ("", 0.0, True)
+    assert len(seen) == 1
+
+
+@pytest.mark.parametrize(
+    ("value", "default", "expected"),
+    [
+        (None, True, True),
+        (None, False, False),
+        ("TRUE", False, True),
+        ("no", True, False),
+        (1, False, True),
+    ],
+)
+def test_to_bool(value, default, expected) -> None:
+    assert to_bool(value, default=default) is expected
 
 
 def lighton(response: httpx.Response) -> LightOnCropReader:

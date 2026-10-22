@@ -336,6 +336,22 @@ def resolve_token(word: str, sentence: str, token_texts: Sequence[str]) -> int |
     return inside[0] if len(inside) == 1 else None
 
 
+def replace_in_sentence(sentence: str, word: str, candidate: str) -> str | None:
+    """``sentence`` with its one occurrence of ``word`` replaced, for the validator's
+    before/after comparison -- or None when the word is absent or appears more than once.
+
+    Matching is on Arabic-word boundaries, so a word never matches inside a longer one.
+    """
+    if not sentence or not word:
+        return None
+    letter = _ARABIC_WORD.pattern[:-1]  # the character class, without its `+`
+    hits = list(re.finditer(f"(?<!{letter}){re.escape(word)}(?!{letter})", sentence))
+    if len(hits) != 1:
+        return None
+    start, end = hits[0].span()
+    return sentence[:start] + candidate + sentence[end:]
+
+
 # ── locating a word on the page image ───────────────────────────────────────────
 
 
