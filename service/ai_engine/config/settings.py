@@ -22,6 +22,7 @@ from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated
+from urllib.parse import urlparse
 
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
@@ -32,6 +33,7 @@ from ai_engine.domain.usage import PriceTable
 
 OCR_ENGINES = frozenset({"auto", "textlayer", "gemini", "lighton"})
 DIACRITIZERS = frozenset({"none", "local"})
+ENVIRONMENTS = frozenset({"dev", "staging", "production"})
 """Selectable OCR engines. ``auto`` prefers the free text layer when the PDF has one."""
 
 
@@ -53,6 +55,12 @@ class Settings(BaseSettings):
         extra="ignore",
         # No env_file. Configuration comes from the process environment only.
     )
+
+    # ── Deployment environment (spec 031) ────────────────────────────────────────
+    # `production` refuses to start with any setting `config_problems()` reports; `dev`
+    # and `staging` start and report them on /ready. Dev stays the default so local runs
+    # and tests need no extra configuration.
+    environment: str = "dev"  # dev | staging | production
 
     # ── Role and server ──────────────────────────────────────────────────────────
     ai_engine_role: Role = Role.API
@@ -257,6 +265,52 @@ class Settings(BaseSettings):
         if value not in allowed:
             raise ValueError(f"job_store must be one of {sorted(allowed)}, got {value!r}")
         return value
+
+    @field_validator("environment")
+    @classmethod
+    def _known_environment(cls, value: str) -> str:
+        if value not in ENVIRONMENTS:
+            raise ValueError(f"environment must be one of {sorted(ENVIRONMENTS)}, got {value!r}")
+        return value
+
+    def config_problems(self) -> list[str]:
+        """Settings that are acceptable on a laptop and unsafe in production (spec 031)."""
+        problems = []
+        if not self.auth_enforce:
+            problems.append("AUTH_ENFORCE is off: any caller is trusted (answer Q-01, then enable)")
+        if not self.source_url_allowed_hosts:
+            problems.append("SOURCE_URL_ALLOWED_HOSTS is empty: any https host can be fetched")
+        if not self.source_url_resolve_and_check:
+            problems.append(
+                "SOURCE_URL_RESOLVE_AND_CHECK is off: private and metadata addresses are reachable"
+            )
+        if self.job_store == "memory":
+            problems.append("JOB_STORE=memory: a restart loses every job in flight")
+        paid = self.ocr_engine != "textlayer" or self.tts_engine != "synthetic"
+        if paid and not self.provider_call_budgets:
+            problems.append(
+                "PROVIDER_CALL_BUDGETS is empty while a paid OCR/TTS engine is configured: "
+                "nothing meters spend"
+            )
+        for name, url in (
+            ("BACKEND_BASE_URL", self.backend_base_url),
+            ("TOKEN_URL", self.token_url),
+        ):
+            host = (urlparse(url).hostname or "").lower()
+            if host in {"localhost", "127.0.0.1", "::1"}:
+                problems.append(f"{name} points at {host}: still the development default")
+        return problems
+
+    @model_validator(mode="after")
+    def _production_is_safe(self) -> Settings:
+        if self.environment == "production":
+            problems = self.config_problems()
+            if problems:
+                raise ValueError(
+                    "ENVIRONMENT=production refuses to start with unsafe settings:\n  - "
+                    + "\n  - ".join(problems)
+                )
+        return self
 
     @model_validator(mode="after")
     def _check_enforced_auth_is_configured(self) -> Settings:

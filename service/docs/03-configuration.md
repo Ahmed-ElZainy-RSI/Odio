@@ -150,6 +150,7 @@ Arabic text, spaces, `?` and `' - Copy'` — unusable as an identity and unsafe 
 | Key | Default | Notes |
 |---|---|---|
 | `DEFAULT_QUALITY_TIER` | `fast` | |
+| `ENVIRONMENT` | `dev` | `dev` \| `staging` \| `production` (spec 031). **`production` refuses to start** while any of these hold, listing all of them: `AUTH_ENFORCE` off, `SOURCE_URL_ALLOWED_HOSTS` empty, `SOURCE_URL_RESOLVE_AND_CHECK` off, `JOB_STORE=memory`, a paid OCR/TTS engine with no `PROVIDER_CALL_BUDGETS`, or `BACKEND_BASE_URL`/`TOKEN_URL` on localhost. `dev`/`staging` start, log them at boot, and show them on `/ready` (`checks.config`). |
 | `ENABLE_VERIFIED_TIER` | `false` | **Hard kill-switch.** A job requesting `verified` is *downgraded and logged*, not rejected. |
 | `OCR_ENGINE` | `auto` | `auto` \| `textlayer` \| `gemini` \| `lighton`. Validated at startup. See [OCR engine selection](#ocr-engine-selection). |
 | `DIACRITIZER` | `none` | `none` \| `local`. Job A diacritisation (spec 016). `local` runs the CPU `arabic-diacritizer` model on pages below `DIAC_THRESHOLD`; the worker **refuses to start** if the model can't load. Pages printed with tashkeel are kept; a page the model would damage (word count or letters changed) ships undiacritised. Metric: `ai_engine_diacritization_total{outcome=applied\|kept\|review\|rejected}`. |
