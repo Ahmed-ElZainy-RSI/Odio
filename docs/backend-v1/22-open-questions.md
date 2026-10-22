@@ -15,7 +15,7 @@ but not go live), or *can default* (we proceed on a stated assumption).
 |---|---|
 | **Blocks implementation** | `Q-01` |
 | **Blocks integration** | `Q-04`, `Q-05` |
-| Can default, but answer before go-live | `Q-02`, `Q-03`, `Q-06`, `Q-07`, `Q-08`, `Q-08b`, `Q-10`, `Q-14`, `Q-15` |
+| Can default, but answer before go-live | `Q-02`, `Q-03`, `Q-06`, `Q-07`, `Q-08`, `Q-08b`, `Q-10`, `Q-14`, `Q-15`, `Q-17`, `Q-18` |
 | Can default | `Q-09`, `Q-11`, `Q-12`, `Q-13`, `Q-16` |
 
 ---
@@ -171,6 +171,26 @@ but not go live), or *can default* (we proceed on a stated assumption).
 | **Why it matters** | Determines whether we can reword messages later without breaking you. |
 | **Proposed default** | `<ERROR_CODE>: <human explanation>`, ≤512 chars, never containing a URL, token or stack trace. Examples in [14-error-model.md](14-error-model.md) §3. |
 
+### `Q-17` — Same `jobId`, different body: `202` (the spec's wording) or `409` (what we return)?
+
+**REQUIREMENT-AMBIGUITY. Answer before go-live.** Reopened 2026-10-22 by spec 030: it was listed below as answered, but the V1 PDF says the opposite.
+
+| | |
+|---|---|
+| **What the spec says** | *"if it has [this GUID] then it should return success"*, and *"any fail means exponential backoff retrying from backend and after a while stalled/dead letter."* |
+| **What we do** | `409 CONFLICT` when the body differs (`sourceDownloadUrl` excluded, since it legitimately changes between retries). walidapro returns `202` regardless, which follows the spec's letter. |
+| **Why it matters** | `202` silently drops a second, different job reusing a GUID. `409` turns that Backend bug into a retry storm and then a dead letter. Both are defensible; only the Backend can say which failure they'd rather see. |
+| **Proposed default** | Keep `409`: a lost job is invisible, a dead letter is visible. Pinned by `service/tests/behaviour/test_walidapro_scenarios.py`. |
+
+### `Q-18` — `400` or `422` for a malformed job request?
+
+**DESIGN-CHOICE. Can default, answer before go-live.**
+
+| | |
+|---|---|
+| **Why it matters** | The spec defines no error codes for `POST /api/jobs`. We answer every body-validation failure (unknown `jobType`, missing `pageNumber`, non-GUID `jobId`, missing `folderId`/`pathPrefix`) with `422`; walidapro used `400`. If the Backend's retry logic treats one as retryable and not the other, the choice matters. |
+| **Proposed default** | `422`, never retried by a sane client. Ask the Backend to treat any `4xx` except `401`/`429` as permanent. |
+
 ---
 
 ## Scope, quality and operations
@@ -229,6 +249,6 @@ Recorded so nobody re-opens them, and so the reasoning is auditable.
 | Do we need a GPU? | **No.** Every local model is CPU-pinned by hardcoded choice | [18-deployment.md](18-deployment.md) §4 |
 | Do we own an artifact store? | No; the Backend owns storage | [ADR-006](19-adrs.md) |
 | Do any AI stages become endpoints? | **No.** V1 has exactly one API surface | [08-ai-integration.md](08-ai-integration.md) §3 |
-| Same `jobId`, different body? | `409 CONFLICT`, with `sourceDownloadUrl` excluded from the comparison hash because it legitimately changes between retries | [07-api-specification.md](07-api-specification.md) §1.1 |
+| ~~Same `jobId`, different body?~~ | **Reopened as `Q-17`** (2026-10-22): the V1 PDF says to return success | [Q-17](#q-17--same-jobid-different-body-202-the-specs-wording-or-409-what-we-return) |
 | Do pages run concurrently within a job? | Yes, bounded by page concurrency **and** a fleet-wide provider budget | [09-async-jobs.md](09-async-jobs.md) §6 |
 | Is the human-in-the-loop correction path in V1? | No — it is human-gated by design (`tools/context_detector.py:148-160` defaults every decision to `"reject"`) | [04-gap-analysis.md](04-gap-analysis.md) §2 |
