@@ -71,6 +71,8 @@
 |---|---|---|---|
 | `DEFAULT_QUALITY_TIER` | enum | `fast` | Applied when the job body omits `qualityTier` ([ADR-009](19-adrs.md)) |
 | `ENABLE_VERIFIED_TIER` | bool | `false` | A hard kill-switch. Even a job asking for `verified` is downgraded (and logged) when this is false — protects against a 40–100× cost surprise. |
+| `VERIFIER` | `visual` \| `passthrough` | `visual` | What runs the verified tier (spec 022). `visual` needs `GEMINI_API_KEY` and `LIGHTON_API_KEY`; the worker refuses to start without them. |
+| `VERIFIER_MAX_SUSPECTS` | int | `20` | Suspect words verified per page, strongest first. Each costs up to ~9 paid calls. |
 | `TTS_NARRATOR` | enum | `female` | The existing `walidapro` path synthesizes **both** narrators (`run_full_pipeline.py:1057-1130`); V1 needs exactly one artifact. `Q-08b`. |
 | `ALIGNMENT_ENGINE` | enum | `whisper` | `whisper` (forced) or `native` (Hume). Native is measurably better — 93.7% vs 51.0% anchored on real books (`README.md:473,491`) — but Hume quota was exhausted historically. |
 | `TTS_ENGINE` | enum | `gemini` | |
@@ -221,18 +223,13 @@ LIGHTON_API_KEY=__REPLACE_ME__
 HUME_API_KEY=
 HF_TOKEN=__REPLACE_ME__                   # first-run model download only
 
-# ─── Verified tier only (ENABLE_VERIFIED_TIER=true) ───────────────────────────
-REVIEWER_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
-REVIEWER_API_KEY=
-REVIEWER_MODEL=                           # NO DEFAULT — the reviewer classes raise if empty
-FINAL_REVIEWER_API_KEY=
-OCR_DPI=220
-SUSPICION_THRESHOLD=0.75
-ACCEPT_THRESHOLD=0.88
-REVIEW_THRESHOLD=0.70
-CROP_PADDING_X=30
-CROP_PADDING_Y=20
-PADDLE_DEVICE=cpu
+# ─── Verified tier only (ENABLE_VERIFIED_TIER=true; spec 022) ─────────────────
+VERIFIER=visual                           # visual | passthrough
+VERIFIER_GEMINI_MODEL=gemini-3.6-flash    # uses GEMINI_API_KEY; crop re-reads use LIGHTON_API_KEY
+VERIFIER_SUSPICION_THRESHOLD=0.75
+VERIFIER_ACCEPT_THRESHOLD=0.88
+VERIFIER_REVIEW_THRESHOLD=0.70
+VERIFIER_MAX_SUSPECTS=20                  # bounds per-page verification spend
 
 # ─── Provider rate budgets (cost + real free-tier walls) ──────────────────────
 PROVIDER_RATE_BUDGET_GEMINI=1000

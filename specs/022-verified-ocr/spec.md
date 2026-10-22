@@ -1,6 +1,6 @@
 # Feature Specification: Verified OCR (walidapro's engine on our token ids)
 
-**Feature:** `022-verified-ocr` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `022-verified-ocr` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-22 (T017-T020 open) · **Epic:** 004
 **Priority:** P1 within the epic. **Depends on:** 005, 018, 020, 021
 
 ## Problem

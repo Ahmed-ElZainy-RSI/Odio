@@ -274,6 +274,15 @@ the page records already carry `ocr_engine`, `tts`, `voice`, `align`, `box_level
 
 **Status:** Accepted. **This is the most contestable decision in the document set.**
 
+**Amended 2026-10-22.** The tiering stands: `fast` is the default and `ENABLE_VERIFIED_TIER` the
+kill-switch. What changed is how the verified tier exists. Pipeline W is **no longer wrapped**: its
+verification rules were rewritten natively as `service/ai_engine/domain/verify_rules.py` plus the
+`VisualVerifier` adapter (spec 022), with tests, and `walidapro/` was removed (spec 033, local tag
+`walidapro-final`). The verified tier now adds per-word verification to the fast path's output, so
+it keeps word timings and costs up to ~9 calls per suspect word, capped by `VERIFIER_MAX_SUSPECTS`.
+Visual diacritics (023) and the final context review (024) are not part of it yet. The
+"Nothing in `walidapro/` is deleted" line below is superseded.
+
 **Context.** Two independent pipelines exist ([01-current-architecture.md](01-current-architecture.md)
 §2). Pipeline W (`walidapro/`) has substantially better correctness machinery. Pipeline S
 (`src/pipeline/` + `tools/`) is the maintained core, carries all 56 tests, and has the fast path.

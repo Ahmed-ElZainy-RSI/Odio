@@ -1,6 +1,6 @@
 # Feature Specification: Recover walidapro's missing code and baseline its tests
 
-**Feature:** `005-walidapro-recovery` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `005-walidapro-recovery` · **Created:** 2026-10-20 · **Status:** Superseded 2026-10-22: the prototype was not recovered but retired; its rules were rewritten natively (022) and the folder removed (033) · **Epic:** 004
 **Priority:** P0. Blocks every port from walidapro (020–024, 030, 032, 033)
 
 ## Problem

@@ -1,1 +1,0 @@
-# Visual Arabic diacritics extraction module

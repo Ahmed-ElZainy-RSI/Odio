@@ -13,12 +13,14 @@ from uuid import uuid4
 
 import httpx
 import pytest
+from pydantic import SecretStr
 
+from ai_engine.adapters.ai.verifier import VisualVerifier
 from ai_engine.adapters.ai.verifier_passthrough import PassThroughVerifier
 from ai_engine.adapters.persistence.memory import InMemoryJobStore
 from ai_engine.application.run_page_task import PageTaskExecutor, PageTaskSpec
 from ai_engine.domain.enums import ArtifactType, JobType, QualityTier
-from ai_engine.domain.errors import ErrorCode
+from ai_engine.domain.errors import ErrorCode, ModelUnavailableError
 from ai_engine.domain.evidence import Evidence
 from ai_engine.domain.job import Job, canonical_payload_hash
 from ai_engine.domain.tokens import PageProvenance, Token
@@ -173,10 +175,36 @@ async def test_worker_wires_a_verifier_only_when_the_tier_is_enabled(
         assert wired is None, "a verifier must not be wired while the tier is disabled"
 
 
-async def test_worker_defaults_to_the_passthrough_when_enabled(tmp_path: Path) -> None:
-    settings = make_settings(tmp_path).model_copy(update={"enable_verified_tier": True})
+async def test_worker_wires_the_passthrough_when_asked(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path).model_copy(
+        update={"enable_verified_tier": True, "verifier": "passthrough"}
+    )
     async with httpx.AsyncClient(base_url=BACKEND) as client:
         worker = build_worker(
             settings=settings, store=InMemoryJobStore(), metrics=Metrics(), http_client=client
         )
     assert isinstance(worker.extraction._pages._verifier, PassThroughVerifier)
+
+
+async def test_worker_wires_the_visual_verifier_by_default(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path).model_copy(
+        update={
+            "enable_verified_tier": True,
+            "gemini_api_key": SecretStr("g"),
+            "lighton_api_key": SecretStr("l"),
+        }
+    )
+    async with httpx.AsyncClient(base_url=BACKEND) as client:
+        worker = build_worker(
+            settings=settings, store=InMemoryJobStore(), metrics=Metrics(), http_client=client
+        )
+    assert isinstance(worker.extraction._pages._verifier, VisualVerifier)
+
+
+async def test_the_visual_verifier_without_keys_fails_the_worker_at_startup(tmp_path: Path) -> None:
+    settings = make_settings(tmp_path).model_copy(update={"enable_verified_tier": True})
+    async with httpx.AsyncClient(base_url=BACKEND) as client:
+        with pytest.raises(ModelUnavailableError, match="GEMINI_API_KEY"):
+            build_worker(
+                settings=settings, store=InMemoryJobStore(), metrics=Metrics(), http_client=client
+            )

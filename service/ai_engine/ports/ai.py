@@ -1,8 +1,8 @@
 """AI capability ports.
 
 These are specifications, not implementations: signature, contract and declared errors.
-Adapters wrapping the existing `src/pipeline` and `walidapro` code implement them, and
-adapters are the only layer permitted to import that code.
+Adapters implement them; some wrap the existing `src/pipeline` code, and adapters are the
+only layer permitted to import it.
 """
 
 from __future__ import annotations
@@ -100,8 +100,7 @@ class TtsEngine(Protocol):
       - Returns raw bytes plus an :class:`AudioFormat` describing them exactly.
       - `duration_ms` MUST be measured from the returned audio, never estimated from
         character count.
-      - Exactly ONE buffer per call. The existing walidapro path synthesizes two narrators
-        per page, but the V1 callback carries a single Audio artifact.
+      - Exactly ONE buffer per call: the V1 callback carries a single Audio artifact.
     """
 
     name: str
