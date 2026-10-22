@@ -251,7 +251,7 @@ def build_worker(
         verifier = None
     elif verifier is None:
         verifier = (
-            build_visual_verifier(settings)
+            build_visual_verifier(settings, cache=cache, metrics=metrics)  # type: ignore[arg-type]
             if settings.verifier == "visual"
             else PassThroughVerifier()
         )

@@ -21,10 +21,16 @@ from typing import Any
 
 import httpx
 
+from ai_engine.domain.cache_key import digest, fingerprint
 from ai_engine.domain.errors import AiInferenceError, ModelUnavailableError
 from ai_engine.observability import usage
+from ai_engine.observability.logging import get_logger
+from ai_engine.observability.metrics import PROVIDER_CACHE, Metrics
+from ai_engine.ports.cache import ProviderCache
 
 from .crops import upscale_for_reading
+
+log = get_logger(__name__)
 
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com"
 _UNAVAILABLE = frozenset({429, 503})
@@ -52,22 +58,88 @@ def parse_json_object(text: str) -> dict[str, Any]:
     raise AiInferenceError("model reply is not a parseable JSON object")
 
 
+class _CallCache:
+    """The paid-call cache (spec 021) for one provider's verifier calls.
+
+    Only a reply that already parsed is stored, so a hit never needs re-validating beyond
+    decoding; an undecodable entry is a miss. A hit is not a paid call: ``calls`` is not
+    incremented, and usage is recorded as cached.
+    """
+
+    def __init__(self, cache: ProviderCache | None, metrics: Metrics | None) -> None:
+        self._cache = cache
+        self._metrics = metrics
+
+    def _count(self, outcome: str) -> None:
+        if self._metrics is not None:
+            self._metrics.inc(PROVIDER_CACHE, {"operation": "verify", "outcome": outcome})
+
+    def get(self, key: str) -> Any:
+        if self._cache is None:
+            return None
+        raw = self._cache.get(key)
+        if raw is None:
+            return None
+        try:
+            value = json.loads(raw.decode("utf-8"))["v"]
+        except (ValueError, KeyError, TypeError) as exc:
+            log.warning("cache.decode_failed", kind="verify", error=type(exc).__name__)
+            return None
+        self._count("hit")
+        return value
+
+    def put(self, key: str, value: Any) -> None:
+        if self._cache is None:
+            return
+        self._cache.put(key, json.dumps({"v": value}, ensure_ascii=False).encode("utf-8"))
+        self._count("miss")
+
+
 class GeminiJson:
     """One Gemini ``generateContent`` call that must come back as a JSON object."""
 
     provider = "gemini"
 
     def __init__(
-        self, *, client: httpx.Client, api_key: str, model_id: str, base_url: str = GEMINI_BASE_URL
+        self,
+        *,
+        client: httpx.Client,
+        api_key: str,
+        model_id: str,
+        base_url: str = GEMINI_BASE_URL,
+        cache: ProviderCache | None = None,
+        metrics: Metrics | None = None,
     ) -> None:
         self._client = client
         self._api_key = api_key
         self.model_id = model_id
         self._url = f"{base_url.rstrip('/')}/v1beta/models/{model_id}:generateContent"
+        self._cache = _CallCache(cache, metrics)
         self.calls = 0
 
     def ask(
         self, *, system: str, user: str, image_png: bytes | None = None, operation: str
+    ) -> dict[str, Any]:
+        key = fingerprint(
+            provider=self.provider,
+            model=self.model_id,
+            operation=operation,
+            params={
+                "system": digest(system),
+                "user": digest(user),
+                "image": digest(image_png) if image_png is not None else None,
+            },
+        )
+        hit = self._cache.get(key)
+        if isinstance(hit, dict):
+            usage.record(self.provider, self.model_id, operation, cached=True)
+            return hit
+        reply = self._call(system=system, user=user, image_png=image_png, operation=operation)
+        self._cache.put(key, reply)
+        return reply
+
+    def _call(
+        self, *, system: str, user: str, image_png: bytes | None, operation: str
     ) -> dict[str, Any]:
         parts: list[dict[str, Any]] = []
         if image_png is not None:
@@ -237,14 +309,32 @@ class LightOnCropReader:
         api_key: str,
         base_url: str,
         model_id: str = "lighton/parse-v3",
+        cache: ProviderCache | None = None,
+        metrics: Metrics | None = None,
     ) -> None:
         self._client = client
         self._api_key = api_key
         self._url = f"{base_url.rstrip('/')}/api/v3/parse"
         self.model_id = model_id
+        self._cache = _CallCache(cache, metrics)
         self.calls = 0
 
     def read(self, crop_png: bytes) -> str:
+        key = fingerprint(
+            provider=self.provider,
+            model=self.model_id,
+            operation="verify.crop_read",
+            params={"crop": digest(crop_png)},
+        )
+        hit = self._cache.get(key)
+        if isinstance(hit, str):
+            usage.record(self.provider, self.model_id, "verify.crop_read", cached=True)
+            return hit
+        text = self._call(crop_png)
+        self._cache.put(key, text)
+        return text
+
+    def _call(self, crop_png: bytes) -> str:
         try:
             response = self._client.post(
                 self._url,
