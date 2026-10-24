@@ -64,8 +64,17 @@ def token_box(page_image: bytes, token: Token) -> Sequence[float] | None:
     return token.box
 
 
-def _calls(obj: object) -> int:
-    return int(getattr(obj, "calls", 0) or 0)
+def _calls(counter: object) -> int:
+    """Paid calls so far; a provider may have several counting objects (two models)."""
+    if isinstance(counter, (list, tuple)):
+        return sum(_calls(c) for c in counter)
+    return int(getattr(counter, "calls", 0) or 0)
+
+
+class FinalReviewer(Protocol):
+    model_id: str
+
+    def review(self, token_texts: Sequence[str], *, page_number: int) -> Any: ...
 
 
 class VisualVerifier:
@@ -89,6 +98,7 @@ class VisualVerifier:
         max_suspects: int = 20,
         models: dict[str, str] | None = None,
         call_counters: dict[str, object] | None = None,
+        final_reviewer: FinalReviewer | None = None,
     ) -> None:
         self._reviewer = reviewer
         self._blind = blind_reader
@@ -102,6 +112,8 @@ class VisualVerifier:
         self._models = dict(models or {})
         # provider -> the object whose `.calls` counts that provider's paid calls
         self._counters = dict(call_counters or {})
+        # spec 024: suggestions only, never applied; None = FINAL_REVIEW=off
+        self._final = final_reviewer
 
     def verify(
         self, *, page_image: bytes, tokens: Sequence[Token], page_number: int
@@ -130,6 +142,8 @@ class VisualVerifier:
                 verdicts.append(Verdict(evidence))
                 if evidence.applied:
                     tokens[index] = replace(tokens[index], text=evidence.candidate)
+            if self._final is not None:
+                verdicts.extend(self._final_suggestions(tokens, seen, page_number))
         calls = {p: _calls(c) - before[p] for p, c in self._counters.items()}
         log.info(
             "verify.page",
@@ -140,6 +154,42 @@ class VisualVerifier:
             calls=calls,
         )
         return VerificationResult(tokens=tokens, verdicts=verdicts, calls_made=calls)
+
+    def _final_suggestions(
+        self, tokens: list[Token], judged: set[int], page_number: int
+    ) -> list[Verdict]:
+        """The final review reads the page *after* this page's corrections. Each one-for-one
+        change it proposes becomes a REVIEW verdict for a person -- text alone never
+        authorises a letter change -- unless the visual verifier already judged that token."""
+        assert self._final is not None
+        review = self._final.review([t.text for t in tokens], page_number=page_number)
+        out = []
+        for index, proposed in review.suggestions:
+            if index in judged or proposed == tokens[index].text:
+                continue
+            judged.add(index)
+            out.append(
+                Verdict(
+                    Evidence(
+                        token_id=tokens[index].id,
+                        original=tokens[index].text,
+                        candidate=proposed,
+                        applied=False,
+                        status=rules.REVIEW,
+                        detector="reviewer",
+                        decided_by="verifier",
+                        rule="final-review:suggest",
+                        reads={"llm": proposed},
+                        scores=(
+                            {"page_changed_ratio": round(review.stats.changed_ratio, 4)}
+                            if review.stats is not None
+                            else {}
+                        ),
+                        models={"final_review": self._final.model_id},
+                    )
+                )
+            )
+        return out
 
     # ── one suspect ──────────────────────────────────────────────────────────
 

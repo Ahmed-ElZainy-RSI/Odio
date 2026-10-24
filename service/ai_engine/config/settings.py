@@ -33,6 +33,8 @@ from ai_engine.domain.usage import PriceTable
 
 OCR_ENGINES = frozenset({"auto", "textlayer", "gemini", "lighton"})
 VERIFIERS = frozenset({"visual", "passthrough"})
+#: no "apply" mode: text-only evidence can't authorise a letter change (constitution III)
+FINAL_REVIEW_MODES = frozenset({"off", "suggest"})
 DIACRITIZERS = frozenset({"none", "local"})
 ENVIRONMENTS = frozenset({"dev", "staging", "production"})
 """Selectable OCR engines. ``auto`` prefers the free text layer when the PDF has one."""
@@ -165,6 +167,11 @@ class Settings(BaseSettings):
     # What runs the verified tier (spec 022) when ENABLE_VERIFIED_TIER is on. "visual" needs
     # both GEMINI_API_KEY and LIGHTON_API_KEY; "passthrough" verifies nothing (spec 020).
     verifier: str = "visual"  # visual | passthrough
+    # The final context review (spec 024): one text-only page reading after visual
+    # verification, whose proposals become REVIEW verdicts and are never applied. Applies to
+    # VERIFIER=visual only. At most 2 completions per page.
+    final_review: str = "off"  # off | suggest
+    final_review_model: str = "gemini-3.1-pro-preview"
 
     # ── Model configuration (was hardcoded constants in the legacy pipeline) ─────
     ocr_gemini_model: str = "gemini-3.6-flash"
@@ -201,6 +208,13 @@ class Settings(BaseSettings):
     def provider_limits(self) -> dict[str, ProviderLimit]:
         """Configured budgets, keyed by provider. Empty means nothing is metered."""
         return parse_limits(self.provider_call_budgets)
+
+    @field_validator("final_review")
+    @classmethod
+    def _known_final_review(cls, value: str) -> str:
+        if value not in FINAL_REVIEW_MODES:
+            raise ValueError(f"must be one of {sorted(FINAL_REVIEW_MODES)}, got {value!r}")
+        return value
 
     @field_validator("verifier")
     @classmethod

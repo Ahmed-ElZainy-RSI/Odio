@@ -186,12 +186,13 @@ imported or wrapped: the parts worth keeping were rewritten in our architecture,
 | `_check_preservation` (letters never change) | `domain/preservation.py`, `src/pipeline/preservation.py` | 006 |
 | `SuspiciousWord` audit fields | `domain/evidence.py`, `src/pipeline/evidence.py` | 018 |
 | Re-raise programming errors | `domain/errors.py` `PROGRAMMING_ERRORS` | 007 |
+| `final_context_reviewer.py` (5 safety checks, `clean_ocr_noise`, prompts) | `domain/final_review_rules.py` + `adapters/ai/verifier/final_review.py`; suggestions only, never applied | 024 |
 | `tests/test_ai_contract.py` scenarios | `service/tests/behaviour/test_walidapro_scenarios.py` | 030 |
 
 Not carried over, deliberately: the second API (`api/`), the second orchestrator
 (`run_full_pipeline.py`), the module-level config singleton, the import-time `load_dotenv()`, and
 the PaddleOCR word locator (the verifier's locator is injectable; it uses OCR token boxes for now).
 
-Still to rewrite from the tag, if wanted: per-word visual diacritics (023), the final context
-review (024), TTS chunking and the second narrator (032).
+Still to rewrite from the tag, if wanted: per-word visual diacritics (023), TTS chunking and the
+second narrator (032).
 

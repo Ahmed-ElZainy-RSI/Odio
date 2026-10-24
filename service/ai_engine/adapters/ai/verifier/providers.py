@@ -137,7 +137,8 @@ class _CallCache:
 
 
 class GeminiJson:
-    """One Gemini ``generateContent`` call that must come back as a JSON object."""
+    """One Gemini ``generateContent`` call: :meth:`ask` for a JSON object, :meth:`ask_text`
+    for plain text (the final review returns the corrected page itself)."""
 
     provider = "gemini"
 
@@ -167,7 +168,57 @@ class GeminiJson:
         operation: str,
         max_output_tokens: int | None = None,
     ) -> dict[str, Any]:
-        key = fingerprint(
+        key = self._key(system, user, image_png, operation, max_output_tokens, "json")
+        hit = self._cache.get(key)
+        if isinstance(hit, dict):
+            usage.record(self.provider, self.model_id, operation, cached=True)
+            return hit
+        text = self._call(
+            system=system,
+            user=user,
+            image_png=image_png,
+            operation=operation,
+            max_output_tokens=max_output_tokens,
+            json_mode=True,
+        )
+        try:
+            reply = parse_json_object(text)
+        except AiInferenceError as exc:
+            raise ProviderCallError(f"{operation}: {exc}", transient=True) from exc
+        self._cache.put(key, reply)  # only a reply that parsed
+        return reply
+
+    def ask_text(
+        self, *, system: str, user: str, operation: str, max_output_tokens: int | None = None
+    ) -> str:
+        key = self._key(system, user, None, operation, max_output_tokens, "text")
+        hit = self._cache.get(key)
+        if isinstance(hit, str) and hit.strip():
+            usage.record(self.provider, self.model_id, operation, cached=True)
+            return hit
+        text = self._call(
+            system=system,
+            user=user,
+            image_png=None,
+            operation=operation,
+            max_output_tokens=max_output_tokens,
+            json_mode=False,
+        )
+        if not text.strip():
+            raise ProviderCallError(f"gemini returned empty text for {operation}", transient=True)
+        self._cache.put(key, text)
+        return text
+
+    def _key(
+        self,
+        system: str,
+        user: str,
+        image_png: bytes | None,
+        operation: str,
+        max_output_tokens: int | None,
+        mode: str,
+    ) -> str:
+        return fingerprint(
             provider=self.provider,
             model=self.model_id,
             operation=operation,
@@ -176,21 +227,9 @@ class GeminiJson:
                 "user": digest(user),
                 "image": digest(image_png) if image_png is not None else None,
                 "max_output_tokens": max_output_tokens,
+                "mode": mode,
             },
         )
-        hit = self._cache.get(key)
-        if isinstance(hit, dict):
-            usage.record(self.provider, self.model_id, operation, cached=True)
-            return hit
-        reply = self._call(
-            system=system,
-            user=user,
-            image_png=image_png,
-            operation=operation,
-            max_output_tokens=max_output_tokens,
-        )
-        self._cache.put(key, reply)
-        return reply
 
     def _call(
         self,
@@ -200,7 +239,8 @@ class GeminiJson:
         image_png: bytes | None,
         operation: str,
         max_output_tokens: int | None,
-    ) -> dict[str, Any]:
+        json_mode: bool,
+    ) -> str:
         parts: list[dict[str, Any]] = []
         if image_png is not None:
             parts.append(
@@ -212,7 +252,9 @@ class GeminiJson:
                 }
             )
         parts.append({"text": user})
-        config: dict[str, Any] = {"temperature": 0.0, "responseMimeType": "application/json"}
+        config: dict[str, Any] = {"temperature": 0.0}
+        if json_mode:
+            config["responseMimeType"] = "application/json"
         if max_output_tokens is not None:
             config["maxOutputTokens"] = max_output_tokens
         body = {
@@ -261,10 +303,7 @@ class GeminiJson:
             raise ProviderCallError(
                 f"gemini returned no content for {operation}", transient=True
             ) from exc
-        try:
-            return parse_json_object("".join(texts))
-        except AiInferenceError as exc:
-            raise ProviderCallError(f"{operation}: {exc}", transient=True) from exc
+        return "".join(str(t or "") for t in texts)
 
 
 # ── the text reviewer ───────────────────────────────────────────────────────────

@@ -8,6 +8,7 @@ from ai_engine.domain.errors import ModelUnavailableError
 from ai_engine.observability.metrics import Metrics
 from ai_engine.ports.cache import ProviderCache
 
+from .final_review import GeminiFinalReviewer
 from .providers import GeminiBlindReader, GeminiJson, GeminiReviewer, LightOnCropReader
 from .visual import VisualVerifier
 
@@ -50,6 +51,18 @@ def build_visual_verifier(
         cache=cache,
         metrics=metrics,
     )
+    final_reviewer = None
+    counters: dict[str, object] = {"gemini": gemini, "lighton": lighton}
+    if settings.final_review == "suggest":
+        final_gemini = GeminiJson(
+            client=client,
+            api_key=gemini_key,
+            model_id=settings.final_review_model,
+            cache=cache,
+            metrics=metrics,
+        )
+        final_reviewer = GeminiFinalReviewer(final_gemini)
+        counters["gemini"] = (gemini, final_gemini)
     return VisualVerifier(
         reviewer=GeminiReviewer(gemini),
         blind_reader=GeminiBlindReader(gemini),
@@ -59,5 +72,6 @@ def build_visual_verifier(
         review_threshold=settings.verifier_review_threshold,
         max_suspects=settings.verifier_max_suspects,
         models={"gemini": gemini.model_id, "lighton": lighton.model_id},
-        call_counters={"gemini": gemini, "lighton": lighton},
+        call_counters=counters,
+        final_reviewer=final_reviewer,
     )
