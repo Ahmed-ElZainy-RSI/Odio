@@ -20,7 +20,7 @@ Implementation:
 - [x] T014 token resolution in the domain (T010)
 - [x] T015 `adapters/ai/verifier/visual.py` `VisualVerifier`: assembles the stages, writes evidence (018) per verdict, reports `calls_made`, records usage (025), caps suspects per page
 - [x] T016 Settings (`VERIFIER=visual|passthrough`, `VERIFIER_GEMINI_MODEL`, thresholds, `VERIFIER_MAX_SUSPECTS`) + `worker.py` wiring; missing keys fail the worker at startup; production config check counts the verifier as paid
-- [ ] T017 Dockerfile `worker-verified` target (Pillow is already in the `ai` extra; needs a Docker daemon to verify)
+- [x] T017 No separate image target needed: the one image already carries everything the verifier uses (Pillow 12.1.1 via the runtime lock; no PaddleOCR). Verified 2026-10-24 with Colima: crops run in the image; `ai-engine-worker` with `ENABLE_VERIFIED_TIER=true` refuses to start without both keys and starts with them (also with `FINAL_REVIEW=suggest`). The build itself had been broken since 025 (`.dockerignore` excluded `config/`), fixed alongside
 - [ ] T018 e2e on a recorded page (needs real provider responses recorded once, with keys)
 - [ ] T019 Persist verdicts per page (moved from 020 FR-005). Today `page.verified` is logged and evidence is on each verdict
 - [x] T020 Provider cache (021) for the verifier's calls: `GeminiJson.ask` and `LightOnCropReader.read` key on provider, model, operation and digests of every input; only parsed replies are stored; a hit is not a paid call and is recorded as `cached`. Shares `PROVIDER_CACHE_DIR` with OCR/TTS
