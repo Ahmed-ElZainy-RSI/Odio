@@ -1,6 +1,6 @@
 # Feature Specification: Opt-in final context review
 
-**Feature:** `024-final-context-review` · **Created:** 2026-10-20 · **Status:** Draft · **Epic:** 004
+**Feature:** `024-final-context-review` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-24 as `off | suggest` (export T005 open) · **Epic:** 004
 **Priority:** P3
 
 > **Source after consolidation (2026-10-22):** `walidapro/` was removed (spec 033). Its code is at the
@@ -19,7 +19,7 @@ audit with `gemini-3.1-pro`. Five numeric validators reject unsafe rewrites
 `REVIEW` verdicts with evidence and never applied automatically. They go to human review,
 like `tools/context_detector.py`.
 
-[NEEDS CLARIFICATION: should a mode `apply` exist at all? walidapro allows applying when
+[RESOLVED 2026-10-24 by building `off | suggest` only; `apply` would be a new mode. Original question: should a mode `apply` exist at all? walidapro allows applying when
 validators pass. Recommendation: no. Text-only evidence can't authorize letter changes
 (constitution III). Keep `off | suggest`.]
 

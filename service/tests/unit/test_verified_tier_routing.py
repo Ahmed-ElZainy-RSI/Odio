@@ -230,3 +230,25 @@ async def test_the_visual_verifier_shares_the_provider_cache(tmp_path: Path) -> 
     verifier = worker.extraction._pages._verifier
     assert verifier._crop_reader._cache._cache is cache
     assert verifier._blind._gemini._cache._cache is cache
+
+
+@pytest.mark.parametrize(("mode", "wired"), [("off", False), ("suggest", True)])
+async def test_the_final_review_is_wired_only_in_suggest_mode(
+    tmp_path: Path, mode: str, wired: bool
+) -> None:
+    settings = make_settings(tmp_path).model_copy(
+        update={
+            "enable_verified_tier": True,
+            "gemini_api_key": SecretStr("g"),
+            "lighton_api_key": SecretStr("l"),
+            "final_review": mode,
+        }
+    )
+    async with httpx.AsyncClient(base_url=BACKEND) as client:
+        worker = build_worker(
+            settings=settings, store=InMemoryJobStore(), metrics=Metrics(), http_client=client
+        )
+    final = worker.extraction._pages._verifier._final
+    assert (final is not None) is wired
+    if wired:
+        assert final.model_id == "gemini-3.1-pro-preview"

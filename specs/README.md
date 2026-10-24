@@ -43,7 +43,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 021 | [provider-call-cache](021-provider-call-cache/) | service + CLI | ✅ done (fs store) | — | saves money |
 | 022 | [verified-ocr](022-verified-ocr/) | service | ✅ done (Docker target, e2e, verdict storage open) | 018, 020 | ≤ ~9 calls/suspect, capped, opt-in |
 | 023 | [visual-diacritics](023-visual-diacritics/) | service | P2 (epic) | 006, 020, 021, 022 | 1 call/word, opt-in |
-| 024 | [final-context-review](024-final-context-review/) | service | P3 (epic) | 022 | ≤ 2 calls/page, opt-in |
+| 024 | [final-context-review](024-final-context-review/) | service | ✅ done as suggest-only (export open) | 022 | ≤ 2 calls/page, opt-in |
 | 025 | [cost-metering](025-cost-metering/) | service + CLI | ✅ done (paid-run check pending) | — | free |
 | 026 | [tier-benchmark](026-tier-benchmark/) | decision | P1 (epic end) | 019, 022, 023, 025 | paid run, capped |
 | 027 | [postgres-job-store](027-postgres-job-store/) | service | P2 | — | free |
@@ -70,7 +70,7 @@ Finally:               027 / 012 / 013 / 014 / 015 / 028 as capacity allows
 |---|---|---|
 | 014 | Narrate title / ISBN pages? | Product |
 | 023 | Visual diacritics only on already-diacritized books? | Product + tech lead |
-| 024 | Should a text-only reviewer ever apply edits? (recommend no) | Tech lead |
+| 024 | Built suggest-only. Confirm no `apply` mode is wanted; price `gemini-3.1-pro-preview` before enabling | Tech lead |
 | 026 | Q-07: is V1 accepted on protocol or on accuracy? | Product / Backend |
 | 029 | Does storage ever redirect presigned URLs? | Backend |
 | 031 | Q-01: token issuer and `azp` | Backend |

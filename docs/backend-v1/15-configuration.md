@@ -230,6 +230,8 @@ VERIFIER_SUSPICION_THRESHOLD=0.75
 VERIFIER_ACCEPT_THRESHOLD=0.88
 VERIFIER_REVIEW_THRESHOLD=0.70
 VERIFIER_MAX_SUSPECTS=20                  # bounds per-page verification spend
+FINAL_REVIEW=off                          # off | suggest (spec 024): proposals become REVIEW verdicts
+FINAL_REVIEW_MODEL=gemini-3.1-pro-preview # unpriced in config/prices.toml: add its rate first
 
 # ─── Provider rate budgets (cost + real free-tier walls) ──────────────────────
 PROVIDER_RATE_BUDGET_GEMINI=1000
