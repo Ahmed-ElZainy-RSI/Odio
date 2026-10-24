@@ -2,10 +2,11 @@
 #
 # The root holds 780 MB of `assets/` (sample PDFs, WAVs, MP3s) and 115 MB of `tmp/`. None
 # of it belongs in an image, and sending it to the daemon on every build is minutes of
-# nothing. So: deny everything, then re-admit the three directories the service actually
+# nothing. So: deny everything, then re-admit the four directories the service actually
 # needs.
 #
 #   service/  the service itself
+#   config/   the provider price table for cost metering (spec 025, GET /ops/cost)
 #   src/      the legacy AI pipeline it wraps -- `pipeline.extract`, `pipeline.speak`,
 #             `pipeline.align_whisper`. See ai_engine/adapters/ai/legacy.py; the image is
 #             non-functional without it.
@@ -15,6 +16,7 @@
 !service/
 !src/
 !tools/
+!config/
 
 # Nothing generated, cached, or secret, even from the admitted directories.
 **/__pycache__/
