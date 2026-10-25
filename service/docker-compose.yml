@@ -25,7 +25,8 @@ x-service: &engine
     JOB_STORE_PATH: /var/lib/ai-engine/jobs.db
     SCRATCH_DIR: /var/lib/ai-engine/scratch
     LEGACY_REPO_ROOT: /app
-    # Point these at the real Backend and Keycloak, or at the contract fake.
+    # Point these at the real Backend and Keycloak, or at the contract fake: add
+    # `-f service/docker-compose.fake.yml`, which defines `backend-fake`.
     BACKEND_BASE_URL: ${BACKEND_BASE_URL:-http://backend-fake:9100}
     TOKEN_URL: ${TOKEN_URL:-http://backend-fake:9100/realms/reading-first/protocol/openid-connect/token}
     AI_ENGINE_CLIENT_ID: ${AI_ENGINE_CLIENT_ID:-reading-first-ocr-engine}

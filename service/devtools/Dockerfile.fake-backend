@@ -1,0 +1,22 @@
+# The contract fake as a container, for docker-compose.fake.yml only. Never deployed.
+#
+# Not a stage of service/Dockerfile on purpose: the fake needs `python-multipart` (the
+# token endpoint parses a form), which is a dev dependency and stays out of the production
+# image. Versions come from the dev lock, so the fake runs the same FastAPI as the tests.
+#
+# Build context: service/.
+FROM python:3.11-slim-bookworm
+
+ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PYTHONUNBUFFERED=1
+COPY requirements-dev.lock /tmp/constraints.txt
+RUN pip install -c /tmp/constraints.txt fastapi uvicorn python-multipart
+
+WORKDIR /opt/fake
+COPY devtools/fake_backend_server.py ./devtools/
+COPY tests/__init__.py ./tests/
+COPY tests/fakes/__init__.py tests/fakes/backend.py ./tests/fakes/
+
+RUN useradd --system --uid 10002 fake
+USER fake
+EXPOSE 9100
+ENTRYPOINT ["python", "devtools/fake_backend_server.py", "--host=0.0.0.0", "--port=9100"]

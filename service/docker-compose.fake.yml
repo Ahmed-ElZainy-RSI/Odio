@@ -1,0 +1,68 @@
+# The whole stack against the contract fake, in containers: no network, no credentials, no
+# paid calls. An overlay on docker-compose.yml, which points at `backend-fake` by default
+# but does not define it:
+#
+#     docker compose -f service/docker-compose.yml -f service/docker-compose.fake.yml up --build -d
+#
+# Run it from the repository root. The fake is the same one the test suite uses
+# (`tests/fakes/backend.py`, served by `devtools/fake_backend_server.py`), in its own small
+# image (`devtools/Dockerfile.fake-backend`) so nothing of it reaches the production image.
+# It stands in for Keycloak, the Backend and presigned storage; it serves `$FAKE_PDF` as
+# fileId `book-1` at
+#     http://backend-fake:9100/_source/book-1
+# and its operator routes are on the host at http://127.0.0.1:9100 (`/_state`, `/_faults`).
+#
+# Submit a book (the source URL is the fake's, as the worker sees it):
+#
+#     curl -s -X POST http://127.0.0.1:9099/api/jobs -H 'content-type: application/json' \
+#       -d '{"jobId":"'$(uuidgen | tr A-Z a-z)'","jobType":"PAGES_IMG_AND_TEXT_EXTRACTION",
+#            "fileId":"book-1","folderId":"f","pathPrefix":"p",
+#            "sourceDownloadUrl":"http://backend-fake:9100/_source/book-1"}'
+#
+# Verified 2026-10-25: the 16-page sample completes (16 completed reports, 32 confirmed
+# uploads, metadata first), also with put/confirm/callback faults and an expired source.
+#
+# The three relaxations below are for this stack ONLY. In production the https requirement
+# and the resolve-then-reject check are the SSRF controls that matter.
+
+x-fake-env: &fake-env
+  SOURCE_URL_ALLOWED_HOSTS: backend-fake
+  SOURCE_URL_REQUIRE_HTTPS: "false"  # the fake speaks http
+  SOURCE_URL_RESOLVE_AND_CHECK: "false"  # `backend-fake` resolves to a private address
+  TTS_ENGINE: synthetic  # Job B without a TTS key
+
+services:
+  backend-fake:
+    build:
+      context: .
+      dockerfile: devtools/Dockerfile.fake-backend
+    image: ai-engine-fake-backend:dev
+    command:
+      - --pdf=/opt/fake/pdf/book.pdf
+      - --public-base-url=http://backend-fake:9100
+    volumes:
+      - ${FAKE_PDF:-../assets/PDF Samples/النجوم.pdf}:/opt/fake/pdf/book.pdf:ro
+    ports:
+      - "${FAKE_PORT:-9100}:9100"
+    restart: unless-stopped
+
+  api:
+    environment:
+      <<: *fake-env
+      AI_ENGINE_ROLE: api
+    depends_on:
+      - backend-fake
+
+  worker:
+    environment:
+      <<: *fake-env
+      AI_ENGINE_ROLE: worker
+    depends_on:
+      - backend-fake
+
+  reconciler:
+    environment:
+      <<: *fake-env
+      AI_ENGINE_ROLE: reconciler
+    depends_on:
+      - backend-fake
