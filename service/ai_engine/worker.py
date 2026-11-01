@@ -25,6 +25,7 @@ from ai_engine.adapters.http.retry import RetryPolicy
 from ai_engine.adapters.persistence.cache_fs import FileProviderCache
 from ai_engine.adapters.persistence.rate_budget import build_rate_budget
 from ai_engine.adapters.persistence.usage_store import build_usage_sink
+from ai_engine.adapters.persistence.verdict_store import build_verdict_store
 from ai_engine.adapters.storage.source_fetcher import PresignedSourceFetcher, SourcePolicy
 from ai_engine.application.outbox import OutboxDrainer
 from ai_engine.application.reconcile import Reconciler
@@ -32,6 +33,7 @@ from ai_engine.application.run_audio_job import AudioJobOutcome, RunAudioJob
 from ai_engine.application.run_extraction_job import JobOutcome, RunExtractionJob
 from ai_engine.application.run_page_task import PageTaskExecutor
 from ai_engine.application.usage_meter import UsageMeter
+from ai_engine.application.verdicts import VerdictRecorder
 from ai_engine.application.worker_loop import WorkerLoop
 from ai_engine.config.settings import Settings, load_price_table
 from ai_engine.domain.enums import JobType
@@ -57,6 +59,7 @@ class WorkerContext:
     reconciler: Reconciler
     budget: RateBudget
     usage: object = None  # the UsageSink; closed by the process that owns the worker
+    verdicts: object = None  # the VerdictStore; likewise
 
     async def run_job(self, job: Job) -> JobOutcome | AudioJobOutcome:
         """Run one job of either type to a terminal state, then drain callbacks."""
@@ -124,6 +127,7 @@ def build_worker(
     diacritizer: object | None = None,
     cache: object | None = None,
     usage_sink: object | None = None,
+    verdict_store: object | None = None,
 ) -> WorkerContext:
     """Compose the worker.
 
@@ -183,6 +187,8 @@ def build_worker(
     # Same database as the job store, like the budget.
     usage_sink = usage_sink or build_usage_sink(settings=settings)
     meter = UsageMeter(sink=usage_sink, prices=load_price_table(settings), metrics=metrics)
+    # The verified tier's verdicts, for /ops/verdicts (spec 022 T019).
+    verdict_store = verdict_store or build_verdict_store(settings=settings)
 
     renderer = PyMuPdfRenderer()
 
@@ -274,6 +280,7 @@ def build_worker(
         diacritizer=diacritizer,
         diac_threshold=settings.diac_threshold,
         meter=meter,
+        verdicts=VerdictRecorder(verdict_store),  # type: ignore[arg-type]
     )
     drainer = OutboxDrainer(
         store=store,
@@ -322,4 +329,5 @@ def build_worker(
         drainer=drainer,
         reconciler=reconciler,
         usage=usage_sink,
+        verdicts=verdict_store,
     )

@@ -4,7 +4,7 @@
 - [x] T002 [P] Tests: `tests/unit/test_final_review_rules.py` (the 5 checks, noise/reply cleaning, token mapping), `tests/unit/test_final_review.py` (0 tokens changed: SC-001; ≤ 2 completions: SC-002; unsafe not retried; outage skips the stage)
 - [x] T003 Reviewer rewritten natively: prompts word for word from the prototype (`prompts.FINAL_REVIEW_*`, checked identical to tag `walidapro-final`); checks in `domain/final_review_rules.py`; adapter `adapters/ai/verifier/final_review.py`
 - [x] T004 Mapped to token ids: one-for-one word changes become REVIEW verdicts (`detector="reviewer"`, `rule="final-review:suggest"`, `reads.llm`); splits, merges, insertions and deletions have no single token and are counted (`dropped`) and logged. Tokens the visual verifier already judged are skipped
-- [ ] T005 Export to the `build_context_review.py` review format: waits on 022 T019 (verdict storage); today verdicts are logged with their evidence
+- [x] T005 Export: `GET /ops/verdicts?jobId=…&format=review` returns the REVIEW verdicts (visual and final-review alike) in the CLI's `context_review.json` shape (`pages → [{id, ocr_word, proposed, suspicion, model, source}]`), `source` naming the detector and rule. The HTML page itself (`build_context_review.py`) also needs the CLI's `ensemble_review.json` beside it, so it is not driven from the service
 
 Differences from the prototype, on purpose:
 - output is suggestions, never rewritten text;

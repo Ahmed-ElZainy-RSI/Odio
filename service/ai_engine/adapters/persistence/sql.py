@@ -64,13 +64,14 @@ POSTGRES_DELTA = """
    partial indexes, ON CONFLICT DO NOTHING -- transfers unchanged.
 """
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 
 #: Upgrades that only ADD tables. `executescript(SCHEMA)` has already created anything
 #: missing (every CREATE is IF NOT EXISTS), so moving the recorded version forward is the
 #: whole migration. Anything that changes an existing table must not be listed here.
 #:   3 -> 4: provider_usage (spec 025)
-ADDITIVE_UPGRADES = {3: 4}
+#:   4 -> 5: page_verdicts (spec 022 T019); 3 -> 5 is both, still additive only
+ADDITIVE_UPGRADES = {3: 5, 4: 5}
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -111,6 +112,21 @@ CREATE TABLE IF NOT EXISTS provider_usage (
     cached            INTEGER NOT NULL DEFAULT 0 CHECK (cached IN (0, 1))
 );
 CREATE INDEX IF NOT EXISTS provider_usage_job ON provider_usage (job_id);
+
+-- page_verdicts: the verified tier's decisions, one row per flagged token (spec 022 T019).
+-- `evidence` is the full spec-018 record as JSON; status/applied are copied out only to
+-- filter on. A retried page replaces its rows. Never read on the hot path.
+CREATE TABLE IF NOT EXISTS page_verdicts (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id    TEXT NOT NULL,
+    page      INTEGER NOT NULL CHECK (page >= 1),
+    token_id  TEXT NOT NULL,
+    status    TEXT NOT NULL CHECK (status IN ('ACCEPT', 'REVIEW', 'REJECT')),
+    applied   INTEGER NOT NULL CHECK (applied IN (0, 1)),
+    evidence  TEXT NOT NULL,
+    UNIQUE (job_id, page, token_id)
+);
+CREATE INDEX IF NOT EXISTS page_verdicts_job ON page_verdicts (job_id, page);
 
 -- jobs: the idempotency store. `job_id` PRIMARY KEY *is* the idempotency mechanism.
 CREATE TABLE IF NOT EXISTS jobs (

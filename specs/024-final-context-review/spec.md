@@ -1,6 +1,6 @@
 # Feature Specification: Opt-in final context review
 
-**Feature:** `024-final-context-review` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-24 as `off | suggest` (export T005 open) · **Epic:** 004
+**Feature:** `024-final-context-review` · **Created:** 2026-10-20 · **Status:** Implemented 2026-10-24 as `off | suggest` · **Epic:** 004
 **Priority:** P3
 
 > **Source after consolidation (2026-10-22):** `walidapro/` was removed (spec 033). Its code is at the

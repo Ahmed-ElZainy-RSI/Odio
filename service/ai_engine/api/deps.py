@@ -15,6 +15,7 @@ from ai_engine.observability.metrics import Metrics
 from ai_engine.ports.job_store import JobStore
 from ai_engine.ports.rate_budget import RateBudget
 from ai_engine.ports.usage import UsageSink
+from ai_engine.ports.verdicts import VerdictStore
 
 log = get_logger(__name__)
 
@@ -41,6 +42,10 @@ def get_budget(request: Request) -> RateBudget:
 
 def get_usage(request: Request) -> UsageSink:
     return request.app.state.usage
+
+
+def get_verdicts(request: Request) -> VerdictStore:
+    return request.app.state.verdicts
 
 
 def get_accept_job(

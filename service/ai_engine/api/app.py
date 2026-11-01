@@ -12,6 +12,10 @@ from ai_engine.adapters.persistence.factory import open_job_store
 from ai_engine.adapters.persistence.memory import InMemoryJobStore
 from ai_engine.adapters.persistence.rate_budget import UnlimitedBudget, build_rate_budget
 from ai_engine.adapters.persistence.usage_store import InMemoryUsageSink, build_usage_sink
+from ai_engine.adapters.persistence.verdict_store import (
+    InMemoryVerdictStore,
+    build_verdict_store,
+)
 from ai_engine.api.errors import install_error_handlers
 from ai_engine.api.routers import jobs, ops
 from ai_engine.config.settings import Settings, get_settings
@@ -40,6 +44,7 @@ def create_app(
     metrics: Metrics | None = None,
     budget: RateBudget | None = None,
     usage: object | None = None,
+    verdicts: object | None = None,
 ) -> FastAPI:
     """Build the app.
 
@@ -79,6 +84,9 @@ def create_app(
             if usage is None:
                 # read-only here: workers write usage, /ops/cost reports it
                 app.state.usage = build_usage_sink(settings=resolved_settings)
+            if verdicts is None:
+                # read-only here too: workers write verdicts, /ops/verdicts reports them
+                app.state.verdicts = build_verdict_store(settings=resolved_settings)
         log.info(
             "service.starting",
             role=resolved_settings.ai_engine_role.value,
@@ -120,7 +128,11 @@ def create_app(
             )
         yield
         log.info("service.stopping")
-        for owned in (app.state.store, app.state.budget, app.state.usage) if owns_store else ():
+        for owned in (
+            (app.state.store, app.state.budget, app.state.usage, app.state.verdicts)
+            if owns_store
+            else ()
+        ):
             closer = getattr(owned, "close", None)
             if closer is not None:
                 await closer()
@@ -137,6 +149,7 @@ def create_app(
     app.state.metrics = resolved_metrics
     app.state.budget = resolved_budget
     app.state.usage = usage or InMemoryUsageSink()
+    app.state.verdicts = verdicts or InMemoryVerdictStore()
     # A verifier is built only when enforcement is on. `api/deps.py::authenticate`
     # refuses every request if enforcement is on without one, so this can never fail open.
     if resolved_settings.auth_enforce:
