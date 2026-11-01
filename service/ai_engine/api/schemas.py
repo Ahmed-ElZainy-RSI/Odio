@@ -8,7 +8,7 @@ the domain is refactored, and internal structures must not leak outward.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 from urllib.parse import urlparse
 from uuid import UUID
 
@@ -173,6 +173,16 @@ class BudgetWindow(BaseModel):
 
 class BudgetResponse(BaseModel):
     windows: list[BudgetWindow]
+
+
+class VerdictsResponse(BaseModel):
+    """The verified tier's verdicts for one job (spec 022 T019), each with its full
+    evidence record (spec 018). `counts` is per status."""
+
+    job_id: str = Field(serialization_alias="jobId")
+    page: int | None = None
+    counts: dict[str, int]
+    verdicts: list[dict[str, Any]]
 
 
 class CostLine(BaseModel):

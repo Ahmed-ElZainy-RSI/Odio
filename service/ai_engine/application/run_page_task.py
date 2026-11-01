@@ -22,6 +22,7 @@ from pathlib import Path
 from uuid import UUID
 
 from ai_engine.application.usage_meter import UsageMeter
+from ai_engine.application.verdicts import VerdictRecorder
 from ai_engine.artifacts.text_builder import build_text_artifact
 from ai_engine.domain.callbacks import CallbackEnvelope
 from ai_engine.domain.enums import (
@@ -104,6 +105,7 @@ class PageTaskExecutor:
         diacritizer: object | None = None,
         diac_threshold: float = 0.15,
         meter: UsageMeter | None = None,
+        verdicts: VerdictRecorder | None = None,
     ) -> None:
         self._store = store
         self._renderer = renderer
@@ -123,6 +125,8 @@ class PageTaskExecutor:
         self._diacritizer = diacritizer
         self._diac_threshold = diac_threshold
         self._meter = meter
+        # the verified tier's audit trail (spec 022 T019); None = not kept
+        self._verdicts = verdicts
         self._uploader = uploader
         self._metrics = metrics
         # A wall-clock deadline turns a hang into a reported failure. Without one, a stuck
@@ -204,16 +208,26 @@ class PageTaskExecutor:
         # Paid calls inside _produce (OCR, verifier) append to this collector from the
         # worker thread; saved even when the stage fails -- a failed call may be billed.
         used: list = []
+        verdicts: list = []  # filled by _verify in the worker thread
         try:
             with usage.collecting(page=spec.page_number, stage="extraction") as used:
-                descriptors = await asyncio.to_thread(self._produce, spec)
+                descriptors = await asyncio.to_thread(self._produce, spec, verdicts)
         finally:
             if self._meter is not None:
                 await self._meter.save(spec.job, used)
+        if self._verdicts is not None and verdicts:
+            # before the upload: the audit trail exists before the page is reported
+            await self._verdicts.save(
+                job_id=str(spec.job.job_id),
+                page=spec.page_number,
+                evidence=[v.evidence for v in verdicts],
+            )
         file_ids = await self._upload_in_order(spec, descriptors)
         return await self._report_completed(spec.job.job_id, spec.page_number, file_ids)
 
-    def _produce(self, spec: PageTaskSpec) -> dict[ArtifactType, ArtifactDescriptor]:
+    def _produce(
+        self, spec: PageTaskSpec, verdicts: list | None = None
+    ) -> dict[ArtifactType, ArtifactDescriptor]:
         """Render the page image and build the page text. Both artifacts, in memory."""
         page = spec.page_number
         image = self._renderer.render_page(spec.source_path, page)  # type: ignore[attr-defined]
@@ -221,7 +235,7 @@ class PageTaskExecutor:
         tokens, _provenance = engine.extract_page(  # type: ignore[attr-defined]
             page_image=image, pdf_path=spec.source_path, page_number=page
         )
-        tokens = self._verify(spec, engine, image, tokens)
+        tokens = self._verify(spec, engine, image, tokens, verdicts)
         # after verification on purpose: correct letters first, then add marks (constitution I)
         tokens = self._diacritize(tokens, image, page)
         text_artifact = build_text_artifact(tokens, page)
@@ -233,7 +247,12 @@ class PageTaskExecutor:
         return {ArtifactType.IMAGE: image_artifact, ArtifactType.TEXT: text_artifact}
 
     def _verify(
-        self, spec: PageTaskSpec, engine: object, image: bytes, tokens: Sequence[Token]
+        self,
+        spec: PageTaskSpec,
+        engine: object,
+        image: bytes,
+        tokens: Sequence[Token],
+        verdicts: list | None = None,
     ) -> Sequence[Token]:
         """Run the verified tier on an OCR'd page, and check it kept its contract."""
         if spec.job.quality_tier is not QualityTier.VERIFIED:
@@ -264,6 +283,8 @@ class PageTaskExecutor:
             needs_review=result.needs_review,
             calls=dict(result.calls_made),
         )
+        if verdicts is not None:
+            verdicts.extend(result.verdicts)
         return result.tokens
 
     def _diacritize(self, tokens: Sequence[Token], image: bytes, page: int) -> Sequence[Token]:

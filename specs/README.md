@@ -41,9 +41,9 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 019 | [correction-accuracy-harness](019-correction-accuracy-harness/) | tools | ◐ harness done, transcripts needed | reference transcripts | free (manual transcripts) |
 | 020 | [page-verifier-port](020-page-verifier-port/) | service | ✅ done | 018 | free |
 | 021 | [provider-call-cache](021-provider-call-cache/) | service + CLI | ✅ done (fs store) | — | saves money |
-| 022 | [verified-ocr](022-verified-ocr/) | service | ✅ done (e2e, verdict storage open) | 018, 020 | ≤ ~9 calls/suspect, capped, opt-in |
+| 022 | [verified-ocr](022-verified-ocr/) | service | ✅ done (e2e run with real keys open) | 018, 020 | ≤ ~9 calls/suspect, capped, opt-in |
 | 023 | [visual-diacritics](023-visual-diacritics/) | service | P2 (epic) | 006, 020, 021, 022 | 1 call/word, opt-in |
-| 024 | [final-context-review](024-final-context-review/) | service | ✅ done as suggest-only (export open) | 022 | ≤ 2 calls/page, opt-in |
+| 024 | [final-context-review](024-final-context-review/) | service | ✅ done as suggest-only | 022 | ≤ 2 calls/page, opt-in |
 | 025 | [cost-metering](025-cost-metering/) | service + CLI | ✅ done (paid-run check pending) | — | free |
 | 026 | [tier-benchmark](026-tier-benchmark/) | decision | P1 (epic end) | 019, 022, 023, 025 | paid run, capped |
 | 027 | [postgres-job-store](027-postgres-job-store/) | service | P2 | — | free |

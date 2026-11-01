@@ -2,11 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, Query, Response, status
 
-from ai_engine.api.deps import get_budget, get_metrics, get_settings_dep, get_store, get_usage
+from ai_engine.api.deps import (
+    get_budget,
+    get_metrics,
+    get_settings_dep,
+    get_store,
+    get_usage,
+    get_verdicts,
+)
 from ai_engine.api.schemas import (
     BudgetResponse,
     BudgetWindow,
@@ -15,13 +22,16 @@ from ai_engine.api.schemas import (
     DependencyCheck,
     HealthResponse,
     ReadyResponse,
+    VerdictsResponse,
 )
+from ai_engine.application.verdicts import review_export
 from ai_engine.config.settings import Settings, load_price_table
 from ai_engine.domain.usage import summarize
 from ai_engine.observability.metrics import Metrics
 from ai_engine.ports.job_store import JobStore
 from ai_engine.ports.rate_budget import RateBudget
 from ai_engine.ports.usage import UsageSink
+from ai_engine.ports.verdicts import VerdictStore
 
 router = APIRouter(tags=["ops"])
 
@@ -168,4 +178,40 @@ async def cost(
             )
             for k, v in sorted(lines.items())
         ],
+    )
+
+
+@router.get(
+    "/ops/verdicts",
+    response_model=None,
+    summary="The verified tier's verdicts for a job, with their evidence",
+)
+async def verdicts(
+    store: Annotated[VerdictStore, Depends(get_verdicts)],
+    job_id: Annotated[str, Query(alias="jobId")],
+    page: Annotated[int | None, Query(ge=1)] = None,
+    status_filter: Annotated[
+        Literal["ACCEPT", "REVIEW", "REJECT"] | None, Query(alias="status")
+    ] = None,
+    output: Annotated[Literal["evidence", "review"], Query(alias="format")] = "evidence",
+) -> VerdictsResponse | dict[str, Any]:
+    """Every verdict the verified tier recorded for `jobId` (optionally one `page`).
+
+    `format=evidence` (default): each verdict's full evidence record.
+    `format=review`: only the REVIEW verdicts, in the CLI's `context_review.json` shape, so a
+    person triages both pipelines' findings the same way.
+    """
+    rows = await store.for_job(job_id, page=page)
+    if status_filter is not None:
+        rows = [(p, e) for p, e in rows if e.status == status_filter]
+    if output == "review":
+        return review_export(job_id, rows)
+    counts: dict[str, int] = {}
+    for _p, e in rows:
+        counts[e.status] = counts.get(e.status, 0) + 1
+    return VerdictsResponse(
+        job_id=job_id,
+        page=page,
+        counts=counts,
+        verdicts=[{"page": p, **e.to_dict()} for p, e in rows],
     )
