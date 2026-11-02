@@ -12,11 +12,12 @@ _borrow_boxes below); a partially-boxed page falls back to text-only rather
 than half-working, matching the plain-per-page rule this reader already
 used for native boxes.
 
-Whether a given page ends up with a compare view (native OR borrowed boxes,
-plus an image) is therefore a PER-PAGE decision, carried in each page's
-"compare" flag -- not a single book-wide switch. The two-column DOM is
-rendered once if ANY page qualifies; load() hides the image column for
-pages that don't.
+Whether a given page shows its image is a PER-PAGE decision, carried in each
+page's "compare" flag (an image exists, native or borrowed); "boxed" adds word
+boxes on top when the page also has them. A LightOn page with its own rendered
+image but no geometry is therefore compare=True, boxed=False. The two-column
+DOM is rendered once if ANY page has an image; load() hides the image column
+for pages that don't.
 """
 import json
 import os
@@ -157,7 +158,7 @@ def build(work_dir: Path):
         pages.append({"page": r["page"], "audio": audio_rel,
             "img": img_path, "dur": r["duration_ms"],
             "diac": r["diac_ratio"], "box_level": r.get("box_level", "word"),
-            "has_image": has_image, "compare": has_boxes and has_image,
+            "has_image": has_image, "compare": has_image, "boxed": has_boxes and has_image,
             "voice": r.get("voice", ""), "tokens": tok})
 
     if not pages:
@@ -309,7 +310,7 @@ function load(i){{
       +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
     s.dataset.j=j; s.textContent=t.t;
     txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
-    if(p.compare){{
+    if(p.boxed){{
       const b=document.createElement("div");
       b.className="bx"; b.dataset.j=j;
       b.style.cssText=`left:${{t.b[0]}}%;top:${{t.b[1]}}%;width:${{t.b[2]}}%;height:${{t.b[3]}}%`;
@@ -336,7 +337,7 @@ function show(j){{
     : '<span style="color:#c0392b">no timing available</span>';
   const fx=t.f.length?`<span style="color:#1c4f8f">cleaned: ${{t.f.join(", ")}}</span>`
                      :'<span style="color:#a4abb4">no cleanup needed</span>';
-  const box=P[cur].compare?` &nbsp;·&nbsp; box [${{t.b.map(v=>v.toFixed(1)).join(", ")}}]`:"";
+  const box=P[cur].boxed?` &nbsp;·&nbsp; box [${{t.b.map(v=>v.toFixed(1)).join(", ")}}]`:"";
   const timing=t.m?`t [${{t.m[0]}}, ${{t.m[1]}}] ms · `:"";
   const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
   const ens="v" in t
@@ -363,7 +364,7 @@ function render(){{
   let i=-1;
   for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){{i=k;break;}}
   document.querySelectorAll(".w").forEach((e,k)=>e.classList.toggle("now",k===i));
-  if(p.compare) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+  if(p.boxed) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
   if(i>=0&&i!==last){{show(i);last=i;}}
   const d=p.dur;
   bar.style.width=Math.min(100,100*ms/d)+"%";

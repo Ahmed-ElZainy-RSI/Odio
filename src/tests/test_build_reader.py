@@ -40,10 +40,13 @@ def test_a_page_without_audio_is_still_skipped(tmp_path, capsys):
     assert "p002" in capsys.readouterr().out
 
 
-def test_a_page_with_an_image_keeps_it(tmp_path):
+def test_a_page_with_an_image_but_no_boxes_shows_the_image(tmp_path):
+    # a LightOn page: its own rendered image, no word geometry
     book = tmp_path / "book"
     spoken_page(book, 1, image=True)
 
     html = build_reader.build(book).read_text(encoding="utf-8")
 
-    assert '"has_image":true' in html
+    assert "const HAS_COMPARE_LAYOUT=true" in html
+    assert '"compare":true,"boxed":false' in html
+    assert "text view only" not in html
