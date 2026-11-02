@@ -53,6 +53,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 031 | [production-config-hardening](031-production-config-hardening/) | service | ✅ done | Q-01 | free |
 | 032 | [tts-chunking-dual-narrator](032-tts-chunking-dual-narrator/) | TTS | P3 | 005, product decision | 2× TTS if dual voice |
 | 033 | [retire-walidapro-duplicates](033-retire-walidapro-duplicates/) | cleanup | ✅ done: whole folder removed | 022, 030 | — |
+| 034 | [review-in-context](034-review-in-context/) | CLI review | ✅ done | 017, 018 | free (text on disk) |
 
 ## Suggested build order
 
@@ -89,4 +90,4 @@ Finally:               027 / 012 / 013 / 014 / 015 / 028 as capacity allows
 | `demo/` | benchmark / pricing / POC HTML | — |
 | `tmp/` | abandoned vendor spikes | — |
 
-New feature: `.specify/scripts/bash/create-new-feature.sh short-name` (numbers continue from 033).
+New feature: `.specify/scripts/bash/create-new-feature.sh short-name` (numbers continue from 034).

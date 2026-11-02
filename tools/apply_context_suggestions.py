@@ -26,6 +26,12 @@ its own (spec 017). They share context_decisions.json and are applied the
 same way, but recorded as "vlm-reviewed" in fixes[] so the source stays
 visible.
 
+The same decisions also overrule apply_corrections.py's automatic, image-verified fixes
+(spec 034). For those the default is the fix: an id that is absent or "accept" keeps it,
+"reject" puts the OCR word back (ocr_txt), any other string replaces it. Either way the
+evidence says a person decided (rule human-revert / human-custom). A word deleted by its
+verdict has no token left to restore and is reported, not recreated.
+
 Usage:
     python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.json"
 """
@@ -41,6 +47,65 @@ from pipeline.evidence import Evidence  # noqa: E402
 from pipeline.records import write_record  # noqa: E402
 
 PAGE_FROM_ID = re.compile(r"^p(\d+)w\d+$")
+
+
+def _overrule_fixes(lighton_dir: Path, decisions: dict[str, str],
+                    queued_ids: set[str]) -> tuple[int, int]:
+    """Apply a person's decision on an automatic fix. Returns (changed, stale)."""
+    ensemble_path = lighton_dir / "ensemble_review.json"
+    if not ensemble_path.exists():
+        return 0, 0
+    ensemble = json.loads(ensemble_path.read_text(encoding="utf-8"))
+    by_page: dict[int, list[tuple[dict, str]]] = {}
+    for rows in ensemble["pages"].values():
+        for r in rows:
+            decision = decisions.get(r["id"], "accept")
+            # queued verdicts were never applied: the suggestion loop above owns them
+            if r["action"] != "VERIFIED" or decision == "accept" or r["id"] in queued_ids:
+                continue
+            m = PAGE_FROM_ID.match(r["id"])
+            if m:
+                by_page.setdefault(int(m.group(1)), []).append((r, decision))
+
+    changed = stale = 0
+    for page_no, overrules in sorted(by_page.items()):
+        page_path = lighton_dir / f"p{page_no:03d}.json"
+        rec = json.loads(page_path.read_text(encoding="utf-8"))
+        by_id = {t["id"]: t for t in rec["tokens"]}
+        page_changed = 0
+        for r, decision in overrules:
+            tok = by_id.get(r["id"])
+            verdict = (r.get("verified_txt") or "").strip()
+            if tok is None:
+                print(f"page {page_no}: {r['id']} was deleted by its verdict, nothing to restore")
+                continue
+            if normalize_for_compare(tok["txt"]) != normalize_for_compare(verdict):
+                print(f"page {page_no}: {r['id']} changed since the fix "
+                      f"({verdict!r} -> now {tok['txt']!r}), skipping")
+                stale += 1
+                continue
+            new_txt = tok.get("ocr_txt", tok["txt"]) if decision == "reject" else decision
+            if new_txt == tok["txt"]:
+                continue
+            evidence = Evidence(
+                token_id=r["id"], original=tok["txt"], candidate=new_txt, applied=True,
+                status="ACCEPT", detector="ensemble", decided_by="human",
+                rule="human-revert" if decision == "reject" else "human-custom",
+                reads={"lighton": r.get("lighton_txt"), "gemini": r.get("gemini_txt"),
+                       "vlm": verdict},
+                models={"vlm": r["vlm_model"]} if r.get("vlm_model") else {},
+            )
+            tok.setdefault("ocr_txt", tok["txt"])
+            tok["txt"] = new_txt
+            tok["fixes"] = tok["fixes"] + ["human-review"]
+            tok["evidence"] = tok.get("evidence", []) + [evidence.to_dict()]
+            page_changed += 1
+        if page_changed:
+            rec["status"] = "extracted"
+            write_record(page_path, rec)
+            print(f"page {page_no}: {page_changed} automatic fix(es) overruled, status reset")
+            changed += page_changed
+    return changed, stale
 
 
 def run(review_path: Path) -> None:
@@ -105,6 +170,11 @@ def run(review_path: Path) -> None:
             rec["status"] = "extracted"
             write_record(page_path, rec)
             print(f"page {page_no}: {len(accepted)} accepted suggestion(s) applied, status reset")
+
+    queued_ids = {e["id"] for src in sources[1:] for entries in src["pages"].values() for e in entries}
+    overruled, stale_fixes = _overrule_fixes(lighton_dir, decisions, queued_ids)
+    applied += overruled
+    skipped_stale += stale_fixes
 
     print(f"\n{applied} tokens corrected, {skipped_stale} skipped (changed since detection)")
     if applied:

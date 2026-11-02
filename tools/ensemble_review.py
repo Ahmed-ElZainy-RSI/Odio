@@ -51,6 +51,48 @@ def normalize_for_compare(word: str) -> str:
     return w
 
 
+SENTENCE_END = ".!?؟…؛"
+PHRASE_SPAN = 6  # words shown on each side of a reviewed word (spec 034)
+
+
+def phrase_around(rows: list[dict], i: int, span: int = PHRASE_SPAN) -> dict[str, str]:
+    """The words before and after rows[i] as the detectors saw them (LightOn's text, in
+    alignment order), at most `span` each side and never past a sentence end. A Gemini-only
+    row has no LightOn word: its phrase is the text around where Gemini's word would go."""
+    def word(r: dict) -> str:
+        return r.get("lighton_txt") or ""
+
+    before: list[str] = []
+    for r in reversed(rows[:i]):
+        w = word(r)
+        if not w:
+            continue
+        if w[-1] in SENTENCE_END or len(before) == span:
+            break
+        before.insert(0, w)
+    after: list[str] = []
+    if not word(rows[i]) or word(rows[i])[-1] not in SENTENCE_END:
+        for r in rows[i + 1:]:
+            w = word(r)
+            if not w:
+                continue
+            after.append(w)
+            if w[-1] in SENTENCE_END or len(after) == span:
+                break
+    return {"before": " ".join(before), "after": " ".join(after)}
+
+
+def add_context(rows: list[dict]) -> int:
+    """Give every reviewable (non-KEEP) row its phrase, if it has none yet. Returns how many
+    rows gained one; nothing else in a row is touched (verdicts are paid work)."""
+    added = 0
+    for i, r in enumerate(rows):
+        if r["action"] != "KEEP" and "context" not in r:
+            r["context"] = phrase_around(rows, i)
+            added += 1
+    return added
+
+
 def load_tokens(page_path: Path) -> list[dict]:
     return json.loads(page_path.read_text(encoding="utf-8"))["tokens"]
 
@@ -168,6 +210,8 @@ def run(gemini_dir: Path, lighton_dir: Path, out_path: Path | None = None) -> Pa
     for n in to_process:
         results = align_page(load_tokens(gemini_pages[n]), load_tokens(lighton_pages[n]))
         report["pages"][str(n)] = results
+    # every page, old ones included: a report from before spec 034 gains its phrases here
+    with_context = sum(add_context(rows) for rows in report["pages"].values())
 
     total = sum(len(v) for v in report["pages"].values())
     flagged = sum(1 for v in report["pages"].values() for r in v if r["action"] == "FLAG")
@@ -176,6 +220,8 @@ def run(gemini_dir: Path, lighton_dir: Path, out_path: Path | None = None) -> Pa
     out_path.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(to_process)} page(s) newly compared, {len(report['pages'])} total, "
           f"{flagged}/{total} tokens flagged overall -> {out_path}")
+    if with_context and not to_process:
+        print(f"{with_context} reviewed word(s) given their phrase (spec 034)")
     return out_path
 
 

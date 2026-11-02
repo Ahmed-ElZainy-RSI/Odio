@@ -381,8 +381,8 @@ tools/
   apply_corrections.py          apply (word-level)  — writes VERIFIED corrections into pXXX.json; reversible, ocr_txt kept
   replace_page.py               apply (page-level)  — wholesale-swaps a page LightOn failed almost entirely (>=50% gemini-only)
   context_detector.py           detect (correlated) — catches LightOn+Gemini agreeing on the SAME wrong word (OpenRouter/DeepSeek, text-only)
-  build_context_review.py       review              — browsable HTML for context_detector.py's findings, sorted by suspicion
-  apply_context_suggestions.py  apply (reviewed)     — applies only human-accepted suggestions from context_decisions.json
+  build_context_review.py       review              — every proposed change in its sentence, decided in the page (--serve saves)
+  apply_context_suggestions.py  apply (reviewed)     — applies the decisions in context_decisions.json, incl. undoing an image fix
   build_review.py               review (deep audit)  — original-vs-corrected side by side for one page range, dual audio tracks
   run_full_pipeline.py          orchestrator         — runs the whole automatable chain in one command, stops before the one manual step
 ```
@@ -414,8 +414,9 @@ python3 tools/ensemble_review.py "work/<book>" "work/<book>-lighton"
 $VX2  tools/vlm_arbiter.py "work/<book>-lighton/ensemble_review.json"
 python3 tools/apply_corrections.py "work/<book>-lighton/ensemble_review.json"
 python3 tools/context_detector.py "work/<book>-lighton/ensemble_review.json"
-python3 tools/build_context_review.py "work/<book>-lighton/context_review.json"
-# -> review work/<book>-lighton/context_decisions.json by hand, then:
+python3 tools/build_context_review.py "work/<book>-lighton/context_review.json" --serve
+# -> decide each word in the page (shown in its sentence) and Save; that writes
+#    work/<book>-lighton/context_decisions.json (spec 034). Then:
 python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.json"
 ```
 
