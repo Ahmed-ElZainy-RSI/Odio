@@ -1,7 +1,9 @@
 """Layers 01-04 for a scanned book via LightOn. Resumable per page.
 
-No bounding boxes from this engine (box_level 'none') -- build_reader.py
-drops the page-image view entirely for books extracted this way.
+No bounding boxes from this engine (box_level 'none'). The page image is
+rendered locally (no paid call) and saved as pages/pXXX.jpg, so the reader can
+still show the page next to its text -- just without word boxes. A page done
+before images were saved gets its image on the next run, without being re-OCR'd.
 
 "Already done" means status 'extracted' *or* anything later ('diacritised',
 'spoken') -- checking only the literal string 'extracted' would re-OCR (and
@@ -20,6 +22,7 @@ import os
 import sys
 from pathlib import Path
 
+import pymupdf
 from pypdf import PdfReader
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,9 +33,23 @@ from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ocr_lighton import (slice_page, parse_page, clean_markdown,
                                    text_to_tokens, ENGINE)
+from pipeline.ocr_gemini import render_page
 from pipeline.pages import parse_pages
 
 DIAC_THRESHOLD = 0.15
+
+
+def _save_page_image(doc, i: int, out_dir: Path) -> None:
+    """pages/pXXX.jpg for page i, if missing. Optional: a failure is reported, never fatal."""
+    jpg = out_dir / "pages" / f"p{i:03d}.jpg"
+    if jpg.exists():
+        return
+    try:
+        jpeg, _ = render_page(doc[i - 1])
+        jpg.parent.mkdir(exist_ok=True)
+        jpg.write_bytes(jpeg)
+    except Exception as e:
+        print(f"{i:>3}  page image not saved: {e}")
 
 
 def _run(pdf_path: Path, out_dir: Path, pages="0"):
@@ -42,16 +59,18 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
     out_dir.mkdir(parents=True, exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
     reader = PdfReader(str(pdf_path))
+    doc = pymupdf.open(str(pdf_path))
     total = len(reader.pages)
     start, end = parse_pages(pages)
     print(f"{book} — {total} pages via {ENGINE}, doing {start}-{end or total}")
-    print("box_level=none: no geometry from this engine, so no page-image view\n")
+    print("box_level=none: no word boxes from this engine; page images are rendered locally\n")
     print(f"{'pg':>3} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")
     print("-" * 52)
 
     summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for i in range(start, (end or total) + 1):
         rec_path = out_dir / f"p{i:03d}.json"
+        _save_page_image(doc, i, out_dir)
         if rec_path.exists() and json.loads(rec_path.read_text(encoding="utf-8")).get("status") in (
                 "extracted", "diacritised", "spoken"):
             print(f"{i:>3}  already done, skipping")

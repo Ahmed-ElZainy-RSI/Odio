@@ -115,6 +115,23 @@ class TestLightonOcrResumability:
 
         assert "reached slice_page as expected" in capsys.readouterr().out
 
+    def test_a_done_page_gets_its_image_without_being_reocrd(self, tiny_pdf, tmp_path, monkeypatch):
+        """Images are rendered locally, so a book OCR'd before they were saved gets
+        them on a re-run -- without a paid call and without touching the record."""
+        out_dir = tmp_path / "out"
+        write_page(out_dir, 1, [make_token("p001w000", "original")], status="spoken", box_level="none")
+        before = read_page(out_dir, 1)
+        monkeypatch.setenv("LIGHTON_API_KEY", "dummy-key-never-used")
+
+        def _must_not_be_called(*a, **k):
+            raise AssertionError("slice_page was called for a done page")
+        monkeypatch.setattr(run_ocr_lighton, "slice_page", _must_not_be_called)
+
+        run_ocr_lighton.run(tiny_pdf, out_dir, pages="1")
+
+        assert (out_dir / "pages" / "p001.jpg").read_bytes()[:2] == b"\xff\xd8"  # a JPEG
+        assert read_page(out_dir, 1) == before
+
 
 class TestCrossToolScenario:
     """The exact real-world sequence that exposed this bug: a correction
