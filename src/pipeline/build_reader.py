@@ -89,11 +89,10 @@ def build(work_dir: Path):
     skipped = []
     for f in sorted(work_dir.glob("p*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
-        # A page is rendered only when all three artefacts genuinely exist:
-        # this JSON record, a synthesised audio file on disk, and a page image.
-        # Anything less is skipped and reported, never shown half-working.
-        # (The image is resolved further down -- it may be borrowed -- so the
-        # completeness decision is made just before the page is appended.)
+        # A page is rendered only when its JSON record and a synthesised audio
+        # file genuinely exist; anything less is skipped and reported, never
+        # shown half-working. A page image is optional: LightOn's OCR path saves
+        # none, and such a page gets the text-only view (compare=False).
         # run_extract.py's text-layer records predate box_level and never set it —
         # they always have word boxes, so an absent key defaults to "word", not "none"
         has_boxes = r.get("box_level", "word") not in (None, "none")
@@ -151,8 +150,6 @@ def build(work_dir: Path):
             why.append("no audio file")
         elif not r.get("duration_ms"):
             why.append("audio has no duration")
-        if not has_image:
-            why.append("no page image")
         if why:
             skipped.append((r["page"], r.get("status", "?"), " + ".join(why)))
             continue
@@ -165,7 +162,7 @@ def build(work_dir: Path):
 
     if not pages:
         total = len(list(work_dir.glob("p*.json")))
-        print(f"{work_dir.name}: 0 of {total} pages are complete (need JSON + audio file + page image) "
+        print(f"{work_dir.name}: 0 of {total} pages are complete (need JSON + audio file) "
               f"— nothing to build.")
         for pg, st, why in skipped:
             print(f"    p{pg:03d}  [{st}]  {why}")
