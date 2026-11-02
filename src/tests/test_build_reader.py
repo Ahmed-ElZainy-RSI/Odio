@@ -50,3 +50,18 @@ def test_a_page_with_an_image_but_no_boxes_shows_the_image(tmp_path):
     assert "const HAS_COMPARE_LAYOUT=true" in html
     assert '"compare":true,"boxed":false' in html
     assert "text view only" not in html
+
+
+def test_a_corrected_page_waiting_for_new_audio_is_skipped(tmp_path, capsys):
+    # apply_corrections.py resets status; the old wav would speak the old words
+    book = tmp_path / "book"
+    spoken_page(book, 1)
+    spoken_page(book, 2)
+    rec = book / "p002.json"
+    rec.write_text(rec.read_text(encoding="utf-8").replace('"spoken"', '"extracted"'),
+                   encoding="utf-8")
+
+    html = build_reader.build(book).read_text(encoding="utf-8")
+
+    assert '"page":1' in html and '"page":2' not in html
+    assert "not spoken since its last change" in capsys.readouterr().out

@@ -90,8 +90,8 @@ def build(work_dir: Path):
     skipped = []
     for f in sorted(work_dir.glob("p*.json")):
         r = json.loads(f.read_text(encoding="utf-8"))
-        # A page is rendered only when its JSON record and a synthesised audio
-        # file genuinely exist; anything less is skipped and reported, never
+        # A page is rendered only when its JSON record is spoken and its audio
+        # file genuinely exists; anything less is skipped and reported, never
         # shown half-working. A page image is optional: LightOn's OCR path saves
         # none, and such a page gets the text-only view (compare=False).
         # run_extract.py's text-layer records predate box_level and never set it —
@@ -147,7 +147,11 @@ def build(work_dir: Path):
                 t["b"] = src["box"]
         audio_rel = r.get("audio")
         why = []
-        if not audio_rel or not (work_dir / audio_rel).exists():
+        if r.get("status") != "spoken":
+            # a corrected page is reset to extracted/diacritised; its old audio file is
+            # still on disk, but it speaks the words from before the correction
+            why.append("not spoken since its last change")
+        elif not audio_rel or not (work_dir / audio_rel).exists():
             why.append("no audio file")
         elif not r.get("duration_ms"):
             why.append("audio has no duration")
@@ -163,7 +167,7 @@ def build(work_dir: Path):
 
     if not pages:
         total = len(list(work_dir.glob("p*.json")))
-        print(f"{work_dir.name}: 0 of {total} pages are complete (need JSON + audio file) "
+        print(f"{work_dir.name}: 0 of {total} pages are complete (need a spoken JSON + audio file) "
               f"— nothing to build.")
         for pg, st, why in skipped:
             print(f"    p{pg:03d}  [{st}]  {why}")
