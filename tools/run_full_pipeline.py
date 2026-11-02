@@ -26,6 +26,7 @@ Needs the vx2lm conda env (pymupdf, google-genai, faster-whisper):
 """
 import argparse
 import json
+import shlex
 import sys
 from pathlib import Path
 
@@ -105,7 +106,7 @@ Then edit {lighton_dir / 'context_decisions.json'}:
 
 Then run:
   python3 tools/apply_context_suggestions.py "{context_review_path}"
-  <vx2lm python> -c "import sys; sys.path.insert(0,'src'); from pipeline import run_tashkel, run_speak_gemini, build_reader; from pathlib import Path; d=Path('{lighton_dir}'); run_tashkel.run(d); run_speak_gemini.run(d, run_speak_gemini.VOICE); build_reader.build(d)"
+  {shlex.quote(sys.executable)} -c "import sys; sys.path.insert(0,'src'); from pipeline import run_tashkel, run_speak_gemini, build_reader; from pathlib import Path; d=Path('{lighton_dir}'); run_tashkel.run(d); run_speak_gemini.run(d, run_speak_gemini.VOICE); build_reader.build(d)"
 
 Result so far: {gemini_dir / 'reader.html'} and {lighton_dir / 'reader.html'}
 """)

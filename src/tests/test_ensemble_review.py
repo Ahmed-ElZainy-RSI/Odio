@@ -142,3 +142,14 @@ def test_run_raises_if_no_overlapping_pages(gemini_dir, lighton_dir):
     write_page(lighton_dir, 2, [make_token("p002w000", "b")])
     with pytest.raises(SystemExit):
         run(gemini_dir, lighton_dir)
+
+
+class TestRefusesLightonOnBothSides:
+    def test_lighton_pages_in_the_gemini_dir_stop_the_run(self, tmp_path):
+        gemini, lighton = tmp_path / "g", tmp_path / "l"
+        write_page(gemini, 1, [make_token("p001w000", "الغابة")], ocr_engine="lighton/parse-v3")
+        write_page(lighton, 1, [make_token("p001w000", "الغابة")], ocr_engine="lighton/parse-v3")
+
+        with pytest.raises(SystemExit, match=r"LightOn OCR on page\(s\) \[1\]"):
+            run(gemini, lighton)
+        assert not (lighton / "ensemble_review.json").exists()
