@@ -125,9 +125,21 @@ def align_page(gemini_tokens: list[dict], lighton_tokens: list[dict]) -> list[di
     return results
 
 
+def _lighton_pages_in(pages: dict[int, Path]) -> list[int]:
+    return sorted(n for n, p in pages.items()
+                  if str(json.loads(p.read_text(encoding="utf-8")).get("ocr_engine", ""))
+                  .startswith("lighton"))
+
+
 def run(gemini_dir: Path, lighton_dir: Path, out_path: Path | None = None) -> Path:
     gemini_pages = find_pages(gemini_dir)
     lighton_pages = find_pages(lighton_dir)
+    # comparing LightOn with itself finds only run-to-run noise and hides the engines'
+    # real disagreements -- e.g. after `main.py --ocr lighton` wrote into the Gemini dir
+    wrong = _lighton_pages_in(gemini_pages)
+    if wrong:
+        raise SystemExit(f"{gemini_dir} has LightOn OCR on page(s) {wrong}, not Gemini -- "
+                         f"move those pages aside and re-run the Gemini pass first")
     common = sorted(set(gemini_pages) & set(lighton_pages))
     if not common:
         raise SystemExit(f"no overlapping page numbers between {gemini_dir} and {lighton_dir}")

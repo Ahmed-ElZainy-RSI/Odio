@@ -106,9 +106,12 @@ def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
                   voice: str | None = None, pages="0", force_ocr: bool = False,
                   work_dir: Path | None = None, trust_text_layer: bool = False) -> Path:
     """work_dir defaults to the directory this PDF's *content* maps to (books.py, spec
-    013): a renamed or duplicated PDF resumes its existing work instead of starting over."""
+    013): a renamed or duplicated PDF resumes its existing work instead of starting over.
+    A LightOn run gets its own "-lighton" directory -- the plain one is the Gemini pass's,
+    and tools/run_full_pipeline.py would otherwise resume LightOn pages as Gemini ones."""
     book = pdf_path.stem.strip()
-    work_dir = work_dir or books.resolve_work_dir(pdf_path)
+    work_dir = work_dir or books.resolve_work_dir(
+        pdf_path, variant="lighton" if ocr == "lighton" else "")
 
     print(f"=== {book} ===")
     use_text_layer, reason = False, "--force-ocr" if force_ocr else "no text layer"
