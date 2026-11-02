@@ -97,12 +97,11 @@ def run(pdf_path: Path, pages: str = "0") -> Path:
 STOPPING HERE ON PURPOSE -- one manual step left.
 {'='*70}
 
-Open {review_html} and check the flagged words against the real page
-image, prioritizing "different word" entries over case-ending-only ones.
-
-Then edit {lighton_dir / 'context_decisions.json'}:
-  change "reject" to "accept" (use the model's proposal) or to your own
-  text, for whichever entries you agree with.
+Review every proposed change -- LLM suggestions and the fixes already
+applied from the page image -- each shown in its sentence, and decide in the page:
+  {shlex.quote(sys.executable)} tools/build_context_review.py "{context_review_path}" --serve
+Prioritize "different word" entries over case-ending-only ones. Save writes
+{lighton_dir / 'context_decisions.json'} (you can still edit it by hand).
 
 Then run:
   python3 tools/apply_context_suggestions.py "{context_review_path}"

@@ -149,15 +149,14 @@ build_reader.build(d)
 #    while (reasoning model, several minutes per page is normal)</span>
 python3 tools/context_detector.py "work/$BOOK-lighton/ensemble_review.json"
 
-<span class="c"># 9. build a browsable HTML review of what it found, then open it</span>
-python3 tools/build_context_review.py "work/$BOOK-lighton/context_review.json"
-open "work/$BOOK-lighton/context_review.html"
+<span class="c"># 9. open the review page: every proposed change in its sentence, with a</span>
+<span class="c">#    decision next to each (Ctrl+C stops the page's local server)</span>
+python3 tools/build_context_review.py "work/$BOOK-lighton/context_review.json" --serve
 
-<span class="c"># --- STOP: this is the one manual step. Edit ---</span>
-<span class="c"># work/$BOOK-lighton/context_decisions.json</span>
-<span class="c"># change "reject" to "accept" (or your own text) for whichever</span>
-<span class="c"># entries you agree with, using the review page to check each one</span>
-<span class="c"># against the real page image first.</span>
+<span class="c"># --- STOP: this is the one manual step. In the page, pick ---</span>
+<span class="c"># keep the OCR word / use the proposal / your own word for each entry,</span>
+<span class="c"># checking it against the real page image, then Save. That writes</span>
+<span class="c"># work/$BOOK-lighton/context_decisions.json.</span>
 
 <span class="c"># 10. apply only what you accepted, then re-run stage 7 again</span>
 python3 tools/apply_context_suggestions.py "work/$BOOK-lighton/context_review.json"
@@ -212,9 +211,9 @@ print(words, '-> text-layer path' if words > 50 else '-> genuinely scanned, OCR 
 <h2 id="s7"><span class="step">7</span>Review and apply accepted suggestions</h2>
 <p>This is the one step in the whole chain that's manual on purpose — nothing from step 6 is ever auto-applied, because a text-only guess has no image behind it to check itself against.</p>
 <ol>
-  <li>Build and open the review page: <code>python3 tools/build_context_review.py "work/&lt;book&gt;-lighton/context_review.json"</code> — sorted by suspicion, grouped by page with the real image alongside each flagged word, and a "different word" vs "case-ending only" tag on every entry.</li>
+  <li>Open the review page: <code>python3 tools/build_context_review.py "work/&lt;book&gt;-lighton/context_review.json" --serve</code> — sorted by suspicion, grouped by page with the real image alongside, a "different word" vs "case-ending only" tag on every entry, and each word shown in its sentence. It lists the LLM's suggestions <b>and</b> the fixes already applied from the page image (spec 034).</li>
   <li>Prioritize the <b>different word</b> entries — those are the real correlated-error candidates. Case-ending entries are often just the automated diacritizer's own errors (~6.6% DER), more debatable.</li>
-  <li>Edit <code>context_decisions.json</code>: <code>"reject"</code> → <code>"accept"</code> (take the model's proposal) or any other literal string (write your own correction — useful when, like the worked example in this project's own history, the model's proposal itself turns out to be wrong even though the error it found was real).</li>
+  <li>Decide each entry in the page and press <b>Save</b>: keep the OCR word (<code>"reject"</code>), take the proposal (<code>"accept"</code>), or type your own word (useful when, like the worked example in this project's own history, the model's proposal itself turns out to be wrong even though the error it found was real). For an image fix, "reject" undoes it. Save writes <code>context_decisions.json</code>; opened without <code>--serve</code>, Save downloads it instead.</li>
   <li>Run <code>apply_context_suggestions.py</code>, then redo step 5.</li>
 </ol>
 

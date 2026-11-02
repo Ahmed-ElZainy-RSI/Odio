@@ -133,7 +133,10 @@ def test_run_extends_without_clobbering_existing_verdicts(gemini_dir, lighton_di
     run(gemini_dir, lighton_dir)
 
     result = json.loads((lighton_dir / "ensemble_review.json").read_text(encoding="utf-8"))
-    assert result["pages"]["1"] == [existing_entry], "page 1's VERIFIED verdict must survive untouched"
+    # spec 034 adds the phrase to a reviewable row; every other field must survive untouched
+    kept = dict(result["pages"]["1"][0])
+    assert kept.pop("context") == {"before": "", "after": ""}
+    assert [kept] == [existing_entry], "page 1's VERIFIED verdict must survive untouched"
     assert "2" in result["pages"], "page 2 should be newly compared"
 
 

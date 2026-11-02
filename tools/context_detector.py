@@ -43,7 +43,9 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from ensemble_review import phrase_around  # noqa: E402
 from pipeline import ratelimit, usage  # noqa: E402
 
 MODEL = "deepseek/deepseek-v4-pro-0813"
@@ -106,6 +108,25 @@ def detect_page(api_key: str, keep_entries: list[dict], retries=4) -> list[dict]
     raise last
 
 
+def _phrases(rows: list[dict]) -> dict[str, dict[str, str]]:
+    return {r["id"]: phrase_around(rows, i) for i, r in enumerate(rows)}
+
+
+def _backfill_context(report: dict, review: dict) -> int:
+    """Phrases for entries written before spec 034. Text already on disk: no API call."""
+    added = 0
+    for page_no, entries in report["pages"].items():
+        missing = [e for e in entries if "context" not in e]
+        if not missing or page_no not in review["pages"]:
+            continue
+        phrases = _phrases(review["pages"][page_no])
+        for e in missing:
+            if e["id"] in phrases:
+                e["context"] = phrases[e["id"]]
+                added += 1
+    return added
+
+
 def _run(review_path: Path, out_path: Path | None = None) -> Path:
     review = json.loads(review_path.read_text(encoding="utf-8"))
     lighton_dir = review_path.parent
@@ -119,7 +140,10 @@ def _run(review_path: Path, out_path: Path | None = None) -> Path:
     else:
         report = {"lighton_dir": str(lighton_dir), "pages": {}}
 
-    api_key = os.environ["OPENROUTER_API_KEY"]
+    if _backfill_context(report, review):
+        out_path.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    api_key = None  # read when a page actually needs a call, so a backfill-only run needs no key
     suspicious_total = 0
     for page_no, results in review["pages"].items():
         if page_no in report["pages"]:
@@ -129,6 +153,7 @@ def _run(review_path: Path, out_path: Path | None = None) -> Path:
             report["pages"][page_no] = []
             continue
 
+        api_key = api_key or os.environ["OPENROUTER_API_KEY"]
         try:
             with usage.page(int(page_no)):
                 flagged = detect_page(api_key, keep_entries)
@@ -140,9 +165,12 @@ def _run(review_path: Path, out_path: Path | None = None) -> Path:
             return out_path
 
         by_id = {r["id"]: r["lighton_txt"] for r in keep_entries}
+        # the phrase comes from the whole page, disagreements included, not only the
+        # agreed words the model was sent (spec 034)
+        phrases = _phrases(results)
         entries = [{"id": f["id"], "ocr_word": by_id.get(f["id"], "?"),
                     "suspicion": f["suspicion"], "proposed": f["proposed"],
-                    "model": MODEL}
+                    "model": MODEL, "context": phrases[f["id"]]}
                    for f in flagged if f["id"] in by_id]
         report["pages"][page_no] = entries
         suspicious_total += len(entries)
