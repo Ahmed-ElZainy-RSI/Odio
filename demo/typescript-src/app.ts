@@ -598,14 +598,53 @@ function rowTooltip(row: PricingRow, value: number, pages: VolumeBasis): string 
   return `${row.model} · ${costKindLabel(row.cost)}: ${costRangeLabel(row.cost)} → ${formatUSD(value)} per ${pages.toLocaleString()} pages (${confidenceLabel(row.confidence)})`;
 }
 
-// Marks that ride along with a row's name in both charts: the engine was
-// actually run here, and/or the review changed its number.
+// Marks that ride along with a row's name in every view (bar, dot, table).
+// They are deliberately NEUTRAL — outline chips in ink tones — because colour
+// on this page is reserved for one thing: confidence in the figure. A blue
+// "run" chip read as "verified", a red "corrected" chip read as "disputed",
+// and a gold "cheapest" trophy read as a recommendation for the row that is
+// both least trustworthy and, for GLM-OCR, worst-scoring. One closed set of
+// markers, one key (see buildMarkerKey), no colour overlap.
+type RowMarker = "lowest" | "tested" | "corrected";
+
+function markerLabel(m: RowMarker): string {
+  switch (m) {
+    case "lowest": return "lowest price";
+    case "tested": return "tested";
+    case "corrected": return "corrected";
+    default: return assertNever(m);
+  }
+}
+
+function markerMeaning(m: RowMarker): string {
+  switch (m) {
+    case "lowest": return "Lowest total at this volume. Price only — not a recommendation; check its confidence colour.";
+    case "tested": return "This engine was actually run against the source document — see its OCR output below.";
+    case "corrected": return "The review corrected this figure from the original table.";
+    default: return assertNever(m);
+  }
+}
+
+// Inline legend text — the full sentence lives in the tooltip.
+function markerShort(m: RowMarker): string {
+  switch (m) {
+    case "lowest": return "price only, not a pick";
+    case "tested": return "run on this document";
+    case "corrected": return "fixed during review";
+    default: return assertNever(m);
+  }
+}
+
+function markerChip(m: RowMarker): string {
+  return `<span class="row-marker marker-${m}" title="${markerMeaning(m)}">${markerLabel(m)}</span>`;
+}
+
 function rowChips(row: PricingRow, isCheapest: boolean): string {
-  return (
-    (isCheapest ? '<span class="cheapest-chip">cheapest</span>' : "") +
-    (row.benchmarked ? '<span class="run-chip" title="This engine was actually run against the source document — see its OCR output below">run</span>' : "") +
-    (row.corrected ? '<span class="corrected-chip" title="The review corrected this figure from the original table">corrected</span>' : "")
-  );
+  const marks: RowMarker[] = [];
+  if (isCheapest) marks.push("lowest");
+  if (row.benchmarked) marks.push("tested");
+  if (row.corrected) marks.push("corrected");
+  return marks.map(markerChip).join("");
 }
 
 function buildBarChart(rows: PricingRow[], values: number[], cheapestValue: number, pages: VolumeBasis): HTMLElement {
@@ -691,7 +730,7 @@ function buildCostTable(rows: PricingRow[], values: number[], cheapestValue: num
       el(
         "tr",
         row.corrected ? "row-corrected" : undefined,
-        `<td>${row.model}${value === cheapestValue ? " 🏆" : ""}${row.benchmarked ? '<span class="run-chip">run</span>' : ""}</td>
+        `<td>${row.model}${rowChips(row, value === cheapestValue)}</td>
          <td>${row.provider}</td>
          <td>${costKindLabel(row.cost)}</td>
          <td class="num">${formatUSD(value)}</td>
@@ -718,6 +757,10 @@ function buildConfidenceLegend(): HTMLElement {
         (c) =>
           `<span class="conf-legend-item" title="${confidenceMeaning(c)}"><i style="background:${confidenceTone(c)}"></i>${confidenceLabel(c)}</span>`
       )
+      .join("") +
+    `<span class="conf-legend-break"></span><span class="conf-legend-label">Markers</span>` +
+    (["lowest", "tested", "corrected"] as const)
+      .map((m) => `<span class="conf-legend-item" title="${markerMeaning(m)}">${markerChip(m)}<span class="marker-key">${markerShort(m)}</span></span>`)
       .join("");
   return legend;
 }
@@ -924,6 +967,38 @@ function renderText(md: string): string {
 // Tabs
 // ============================================================================
 
+// Panel banners: three different messages, three different looks. Before,
+// all three shared one red box with an emoji (⚠ / 🏷 / 💰), so a neutral
+// "here is the listed price" note looked exactly as alarming as "this OCR
+// output is garbage". Only `quality` is a warning; red is kept for it alone.
+type BannerKind = "quality" | "price" | "invoice";
+
+function bannerIcon(kind: BannerKind): string {
+  switch (kind) {
+    case "quality": return "!";  // warning — the only red banner
+    case "price": return "$";    // neutral info: the listed rate + its confidence
+    case "invoice": return "≠";  // real invoice ≠ listed rate
+    default: return assertNever(kind);
+  }
+}
+
+function banner(kind: BannerKind, html: string): string {
+  return `<div class="flag-banner banner-${kind}"><span class="banner-icon" aria-hidden="true">${bannerIcon(kind)}</span><span>${html}</span></div>`;
+}
+
+// Tab markers mirror the banner glyphs, so a tab's mark and its panel's
+// banner are visibly the same signal. Every ModelFlag must have one.
+function flagTabMark(f: ModelFlag): string {
+  switch (f) {
+    case "low-quality":
+      return `<span class="tab-mark banner-quality" title="Low-quality output">${bannerIcon("quality")}</span>`;
+    case "anomaly":
+      return `<span class="tab-mark banner-invoice" title="Invoice for this run differs from the listed rate">${bannerIcon("invoice")}</span>`;
+    default:
+      return assertNever(f);
+  }
+}
+
 (function initTabs(): void {
   const tabsHost = must<HTMLElement>("tabs");
   const panelsHost = must<HTMLElement>("panels");
@@ -932,21 +1007,21 @@ function renderText(md: string): string {
     tabsHost,
     panelsHost,
     DATA.models,
-    (m) => m.name + (m.flags.includes("low-quality") ? `<span class="flag-dot" title="Flagged: low quality"></span>` : ""),
+    (m) => m.name + m.flags.map(flagTabMark).join(""),
     (m) => {
       const row = primaryPricingRow(m.id);
 
       let flagBanner = "";
       if (m.flags.includes("low-quality")) {
-        flagBanner = `<div class="flag-banner">⚠ <span><b>Flagged: low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.</span></div>`;
+        flagBanner = banner("quality", `<b>Low-quality output.</b> This run's text doesn't reliably track the source document — it reads as a garbled or failed OCR pass. Shown as-is rather than hidden, since an honest benchmark includes the misses.`);
       }
       // Every panel states what the engine's price is worth, not just what it
       // is — the same confidence the chart colours by.
       if (row) {
-        flagBanner += `<div class="flag-banner">🏷 <span><b>Listed at ${costRangeLabel(row.cost)}</b> (${costKindLabel(row.cost).toLowerCase()}, ${row.provider}) — ${confidenceBadge(row.confidence)} ${confidenceMeaning(row.confidence)}${row.corrected ? " This figure was corrected during review." : ""}</span></div>`;
+        flagBanner += banner("price", `<b>Listed at ${costRangeLabel(row.cost)}</b> (${costKindLabel(row.cost).toLowerCase()}, ${row.provider}) — ${confidenceBadge(row.confidence)} ${confidenceMeaning(row.confidence)}${row.corrected ? " This figure was corrected during review." : ""}`);
       }
       if (m.actualRunCost) {
-        flagBanner += `<div class="flag-banner">💰 <span><b>Cost anomaly on this run.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost)}) — the chart above uses the listed rate instead so all twelve priced rows compare on the same basis.</span></div>`;
+        flagBanner += banner("invoice", `<b>Invoice differs from the listed rate.</b> Running this exact 5-page document cost <b>${costRangeLabel(m.actualRunCost)}</b> (${costKindLabel(m.actualRunCost).toLowerCase()}) — the chart above uses the listed rate instead so all twelve priced rows compare on the same basis.`);
       }
       return el(
         "div",

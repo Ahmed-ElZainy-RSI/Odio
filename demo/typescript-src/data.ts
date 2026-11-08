@@ -20,7 +20,7 @@
 //
 // Every figure carries a `confidence` and the reviewer's `note` verbatim.
 // That is the point of this table: only two of the twelve rows are
-// vendor-confirmed, and the cheapest seven are all unverified or disputed.
+// vendor-confirmed, and the cheapest seven are all unverified, disputed or derived.
 //
 // After editing, rebuild with:
 //   python3 demo/build.py
@@ -38,7 +38,7 @@ const MODEL_META: ModelMeta[] = [
     name: "LightOn",
     engine: "lighting-2-ocr-1b (LightOnOCR-2-1B)",
     file: "lighton-output-Ibn_Battuta_in_Egypt.pdf.md",
-    note: "Pay-as-you-go minimum top-up is €5 (~3,000 pages), so the smallest real spend is well above a single-document job.",
+    note: "Pay-as-you-go minimum top-up is €5 (~2,500 pages at €0.0020/page), so the smallest real spend is well above a single-document job.",
     flags: [],
   },
   {
@@ -63,7 +63,7 @@ const MODEL_META: ModelMeta[] = [
     engine: "Business API tier",
     file: "Ibn_Battuta_in_Egypt-ocr-fastocr.md",
     // A real invoice for this exact 5-page run — not a rate card, and not in
-    // the CSV. Kept because it contradicts the quoted tier by ~1,000×.
+    // the CSV. Kept because it contradicts the quoted tier by ~25,000× ($49.99/page vs $0.002/page).
     actualRunCost: { kind: "flatFee", amount: 249.95, forPages: 5 },
     note: "Business/Enterprise tiers appear to enforce a base account minimum regardless of document size — see the run anomaly below.",
     flags: ["anomaly"],
@@ -82,7 +82,7 @@ const MODEL_META: ModelMeta[] = [
     name: "GLM-OCR",
     engine: "GLM-4V (Z.ai API)",
     file: "glm_ocr_Ibn_Battuta_in_Egypt-2026-07-21_05-35-48.md",
-    note: "Cheapest row in the table, but requires converting PDFs to image arrays client-side before submission — and the rate itself could not be confirmed.",
+    note: "Cheapest row in the table, but requires converting PDFs to image arrays client-side before submission — and while Z.ai publishes the $0.03/1M token rate, the per-page figure rests on an assumed token count.",
     flags: ["low-quality"],
   },
 
@@ -124,12 +124,12 @@ const PRICING_ROWS: PricingRow[] = [
   {
     model: "GLM-OCR",
     provider: "Z.ai / Alternative Premium Hosts",
-    cost: { kind: "perToken", usdPerMillionTokens: 0.2, tokensPerPage: 1_500 },
-    ceiling: "$0.20 USD / 1M tokens",
+    cost: { kind: "perToken", usdPerMillionTokens: 0.03, tokensPerPage: 1_500 },
+    ceiling: "$0.03 USD / 1M tokens (Z.ai published)",
     worstCase: "~1,500 tokens/page",
-    confidence: "unverified",
+    confidence: "derived",
     corrected: true,
-    note: "CORRECTED: was $3.00/$150 (10x arithmetic error). Z.ai per-token OCR rate could not be confirmed.",
+    note: "CORRECTED twice: was $3.00/$150 (10x arithmetic error), and the sheet's $0.20/1M was 6.7x Z.ai's published GLM-OCR rate of $0.03/1M (docs.z.ai, checked 2026-11-08). The per-page cost still rests on the ~1,500 tokens/page assumption.",
     benchmarked: "glmocr",
   },
   {
@@ -151,7 +151,7 @@ const PRICING_ROWS: PricingRow[] = [
     worstCase: "~1,120 tokens/page",
     confidence: "disputed",
     corrected: true,
-    note: "CORRECTED: was $2.80/$140 (5x arithmetic error). DeepSeek-OCR is free on SiliconFlow and ~$0.03/1M on DeepInfra; $0.50/1M is ~16x published. No public model named 'DeepSeek OCR 2' found.",
+    note: "CORRECTED: was $2.80/$140 (5x arithmetic error). DeepSeek-OCR is free on SiliconFlow and ~$0.03/1M on DeepInfra; $0.50/1M is ~16x published. DeepSeek-OCR-2 itself is real (deepseek-ai, Jan 2026); Novita lists it at ~$0.03/1M.",
     benchmarked: null,
   },
   {
@@ -201,13 +201,13 @@ const PRICING_ROWS: PricingRow[] = [
   {
     model: "LightOnOCR-2-1B",
     provider: "LightOn Platform (FX Rate Fluctuations)",
-    // EUR 0.0020/page at EUR/USD 1.1397 → $0.00227940/page → $2.2794 per 1,000.
-    cost: { kind: "metered", low: 2.2794, high: 2.2794 },
+    // EUR 0.0020/page at EUR/USD 1.1389 (ECB, 2026-07-27) → $0.0022778/page → $2.2778 per 1,000.
+    cost: { kind: "metered", low: 2.2778, high: 2.2778 },
     ceiling: "EUR 0.0020 (~$0.00228 USD) / page",
     worstCase: "N/A (Fixed rate)",
     confidence: "verified",
     corrected: true,
-    note: "CORRECTED FX: was ~$0.00250 (implied EUR/USD 1.25). Actual rate 1.1397 on 2026-07-27. Use 1.25 only as a deliberate FX stress ceiling, labelled as such.",
+    note: "CORRECTED FX: was ~$0.00250 (implied EUR/USD 1.25). ECB reference rate 1.1389 on 2026-07-27. Use 1.25 only as a deliberate FX stress ceiling, labelled as such. LightOn's own blog quotes 0.5 ct/page for this model and its pricing page reads 'Coming soon' - confirm EUR 0.0020 against your contract.",
     benchmarked: "lighton",
   },
   {
@@ -229,7 +229,7 @@ const PRICING_ROWS: PricingRow[] = [
     worstCase: "N/A (Fixed cap)",
     confidence: "derived",
     corrected: false,
-    note: "Replicate dedicated deployments bill per GPU-second, not per page. This is an effective rate at an unstated throughput assumption.",
+    note: "Replicate dedicated deployments bill per GPU-second, not per page. This is an effective rate at an unstated throughput assumption. Datalab's own hosted API lists Convert at $4/1K pages Balanced ($10 Accurate) - 2.5x below this (datalab.to/pricing, 2026-11-08).",
     benchmarked: "datalab",
   },
   {
@@ -240,7 +240,7 @@ const PRICING_ROWS: PricingRow[] = [
     worstCase: "N/A (Fixed cap)",
     confidence: "derived",
     corrected: false,
-    note: "Same GPU-second caveat. Datalab's own pricing page did not render for confirmation.",
+    note: "Same GPU-second caveat. Datalab's own hosted API lists structured extraction at $15/1K pages Balanced ($20 Accurate) plus fees on ~5% of requests - consistent with this figure (datalab.to/pricing, 2026-11-08).",
     benchmarked: null,
   },
   {
@@ -249,12 +249,12 @@ const PRICING_ROWS: PricingRow[] = [
     // The only non-linear row: a flat monthly fee with no stated page cap, so
     // the bill is identical at 1,000 and 50,000 pages and the effective
     // $/page falls 50× across that range.
-    cost: { kind: "subscription", monthlyAmount: 1333.0, pageCapPerMonth: null },
+    cost: { kind: "subscription", monthlyAmount: 1333.33, pageCapPerMonth: null },
     ceiling: "Flat SAR 5,000 Enterprise Sub",
     worstCase: "N/A (Month-over-month target)",
     confidence: "vendor-email",
     corrected: false,
-    note: "Confirmed by user via direct vendor correspondence. Flat monthly fee - does not scale with volume. SAR 5,000 at the 3.75 riyal peg = $1,333.33; table uses $1,333.00. Confirm whether Besser quoted USD directly.",
+    note: "Confirmed by user via direct vendor correspondence. Flat monthly fee - does not scale with volume. SAR 5,000 at the 3.75 riyal peg = $1,333.33. Confirm whether Besser quoted USD directly.",
     benchmarked: "baseerocr",
   },
 ];
