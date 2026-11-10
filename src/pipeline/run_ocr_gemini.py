@@ -28,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline import failures, usage
 from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
+from pipeline.ink_boxes import fit_page
 from pipeline.ocr_gemini import render_page, ocr_page, lines_to_tokens, MODEL
 from pipeline.pages import parse_pages
 
@@ -84,6 +85,11 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
             "path": "keep" if ratio >= DIAC_THRESHOLD else "diacritise",
             "status": "extracted", "tokens": tokens,
         }
+        try:
+            fit_page(rec, out_dir / "pages" / f"p{i:03d}.jpg")
+        except Exception as e:  # the page was paid for: keep it with estimated boxes
+            if failures.handle(out_dir, i, "box-fit", e, f"{i:>3}") != "page":
+                raise
         write_record(rec_path, rec)
         failures.clear(out_dir, i, "ocr")
         summary["done"] += 1
