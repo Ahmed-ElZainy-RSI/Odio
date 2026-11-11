@@ -54,6 +54,7 @@ docs/pipeline-vs-walidapro-report.md     the comparison behind the walidapro fea
 | 032 | [tts-chunking-dual-narrator](032-tts-chunking-dual-narrator/) | TTS | P3 | 005, product decision | 2× TTS if dual voice |
 | 033 | [retire-walidapro-duplicates](033-retire-walidapro-duplicates/) | cleanup | ✅ done: whole folder removed | 022, 030 | — |
 | 034 | [review-in-context](034-review-in-context/) | CLI review | ✅ done | 017, 018 | free (text on disk) |
+| 035 | [qiyami-books-ocr](035-qiyami-books-ocr/) | OCR deliverable (`tools/qiyami/`) | ✅ done | — | 5 Gemini-Flash calls/page |
 
 ## Suggested build order
 

@@ -1,0 +1,190 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>كتب قيمي: الصفحة والنص</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap">
+<style>
+  /* Layout: book tabs + page rail on top, then the scanned page and its OCR text side by side (stacked on phones). */
+  :root {
+    --bg: #f3f5f7; --panel: #ffffff; --ink: #18222d; --muted: #5b6774; --line: #dbe1e7;
+    --accent: #0f6e78; --accent-soft: #dcefef; --good: #2f7d4f; --warn: #a8650c; --low: #9aa6b2;
+    --ui: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+    --read: "Noto Naskh Arabic", "Traditional Arabic", "Times New Roman", serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #11171d; --panel: #18212a; --ink: #e5ebf0; --muted: #98a6b3; --line: #2a3642;
+    --accent: #5cc3cc; --accent-soft: #173b40; --good: #6cc48f; --warn: #e2a14a; --low: #5d6b78; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #11171d; --panel: #18212a; --ink: #e5ebf0; --muted: #98a6b3; --line: #2a3642;
+    --accent: #5cc3cc; --accent-soft: #173b40; --good: #6cc48f; --warn: #e2a14a; --low: #5d6b78; color-scheme: dark }
+  body { background: var(--bg); color: var(--ink); font-family: var(--ui); }
+  .wrap { direction: rtl; max-width: 1400px; margin: 0 auto; padding-block: 20px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; flex-direction: column; gap: 16px; }
+  h1 { margin: 0; font-size: 1.5rem; font-weight: 600; text-wrap: balance; }
+  .sub { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tab { font: inherit; font-size: 1rem; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 600; }
+  .tab small { opacity: .75; font-size: .8rem; margin-inline-start: 6px; }
+  .rail { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip { font: inherit; font-size: .8rem; min-width: 34px; padding: 4px 0 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; position: relative; font-variant-numeric: tabular-nums; }
+  .chip i { position: absolute; inset: auto 4px 2px; height: 3px; border-radius: 2px; background: var(--accent); }
+  .chip.lowp i { background: var(--low); }
+  .chip[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
+  .nav { display: flex; align-items: center; gap: 8px; }
+  .btn { font: inherit; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .pg { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 8ch; text-align: center; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { font-size: .82rem; padding: 4px 10px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .pill b { color: var(--ink); font-weight: 600; }
+  .pill.good b { color: var(--good); }
+  .pill.low b { color: var(--warn); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .grid.wide { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  @media (max-width: 860px) { .grid, .grid.wide { grid-template-columns: minmax(0, 1fr); } }
+  .pane { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-width: 0; display: flex; flex-direction: column; }
+  .pane-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: .85rem; color: var(--muted); }
+  .pane-h strong { color: var(--ink); font-weight: 600; font-size: .95rem; }
+  .scan { padding: 10px; display: flex; justify-content: center; }
+  .scan img { width: 100%; height: auto; border-radius: 4px; background: var(--line); display: block; cursor: zoom-in; }
+  .scan.zoom img { cursor: zoom-out; }
+  .scanbox { overflow: auto; max-height: 80vh; }
+  .scan.zoom img { width: 200%; max-width: none; }
+  .ocr { font-family: var(--read); font-size: var(--fs, 1.35rem); line-height: 2.1; padding: 16px 20px 24px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; max-height: 80vh; overflow: auto; }
+  .tools { display: flex; gap: 6px; }
+  .tools .btn { padding: 3px 10px; font-size: .85rem; }
+  .btn:focus-visible, .tab:focus-visible, .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hint { color: var(--muted); font-size: .8rem; }
+  .state { padding: 40px; text-align: center; color: var(--muted); }
+</style>
+
+<div class="wrap">
+
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="rail" id="rail" aria-label="الصفحات"></div>
+
+  <div class="bar">
+    <div class="nav">
+      <button class="btn" id="prev" type="button">→ السابقة</button>
+      <span class="pg" id="pg">—</span>
+      <button class="btn" id="next" type="button">التالية ←</button>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="grid" id="grid">
+    <section class="pane" aria-label="صفحة الـ PDF">
+      <div class="pane-h"><strong>الـ PDF</strong><span class="hint">دوس على الصورة عشان تكبرها</span></div>
+      <div class="scanbox"><div class="scan" id="scan"><div class="state">بيحمّل…</div></div></div>
+    </section>
+    <section class="pane" aria-label="نص الـ OCR">
+      <div class="pane-h"><strong>نص الـ OCR</strong>
+        <div class="tools">
+          <button class="btn" id="smaller" type="button" aria-label="صغّر الخط">أ−</button>
+          <button class="btn" id="bigger" type="button" aria-label="كبّر الخط">أ+</button>
+          <button class="btn" id="copy" type="button">انسخ النص</button>
+        </div>
+      </div>
+      <pre class="ocr" id="ocr" lang="ar" dir="rtl"></pre>
+    </section>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  let BOOKS = [], book = 0, page = 0, fs = 1.35;
+  const pct = (x) => Math.round(x * 100) + '%';
+
+  function fromHash() {
+    const m = /^#(.+)-(\d+)$/.exec(decodeURIComponent(location.hash));
+    if (!m) return;
+    const b = BOOKS.findIndex((x) => x.key === m[1]);
+    if (b < 0) return;
+    book = b;
+    const p = BOOKS[b].pages.findIndex((x) => x.n === +m[2]);
+    page = p < 0 ? 0 : p;
+  }
+  function setHash() {
+    const h = '#' + encodeURIComponent(BOOKS[book].key + '-' + BOOKS[book].pages[page].n);
+    if (location.hash !== h) history.replaceState(null, '', h);
+  }
+
+  function renderTabs() {
+    $('tabs').replaceChildren(...BOOKS.map((b, i) => {
+      const t = document.createElement('button');
+      t.className = 'tab'; t.type = 'button'; t.setAttribute('role', 'tab');
+      t.setAttribute('aria-selected', String(i === book));
+      t.textContent = b.title;
+      const s = document.createElement('small'); s.textContent = b.pages.length + ' صفحة'; t.appendChild(s);
+      t.onclick = () => { book = i; page = 0; render(); };
+      return t;
+    }));
+  }
+  function renderRail() {
+    const pages = BOOKS[book].pages;
+    $('rail').replaceChildren(...pages.map((p, i) => {
+      const c = document.createElement('button');
+      c.className = 'chip' + (p.diac < 0.3 ? ' lowp' : ''); c.type = 'button';
+      c.textContent = p.n; c.title = 'صفحة ' + p.n + ' · تشكيل ' + pct(p.diac);
+      if (i === page) c.setAttribute('aria-current', 'true');
+      c.appendChild(document.createElement('i'));
+      c.onclick = () => { page = i; render(); };
+      return c;
+    }));
+  }
+  function renderPage() {
+    const b = BOOKS[book], p = b.pages[page];
+    $('grid').className = 'grid' + (p.w > p.h ? ' wide' : '');
+    $('pg').textContent = 'صفحة ' + p.n + ' من ' + b.pages.length;
+    $('prev').disabled = page === 0; $('next').disabled = page === b.pages.length - 1;
+    const img = document.createElement('img');
+    img.src = p.img; img.alt = b.title + ' صفحة ' + p.n; img.width = p.w; img.height = p.h;
+    img.onclick = () => $('scan').classList.toggle('zoom');
+    img.onerror = () => { $('scan').replaceChildren(Object.assign(document.createElement('div'), { className: 'state', textContent: 'الصورة ما اتحملتش. جرّب تفتح الصفحة تاني.' })); };
+    $('scan').classList.remove('zoom');
+    $('scan').replaceChildren(img);
+    $('ocr').textContent = p.text;
+    $('ocr').scrollTop = 0;
+    const pills = [];
+    if (p.score) {
+      pills.push(['دقة الحروف', (p.score.letters * 100).toFixed(1) + '%', 'good']);
+      pills.push(['دقة التشكيل', (p.score.tashkeel * 100).toFixed(1) + '%', 'good']);
+    }
+    $('stats').replaceChildren(...pills.map(([k, v, cls]) => {
+      const s = document.createElement('span'); s.className = 'pill ' + cls;
+      s.append(k + ': '); const bb = document.createElement('b'); bb.dir = 'ltr'; bb.textContent = v; s.appendChild(bb); return s;
+    }));
+    // preload neighbours
+    [page - 1, page + 1].forEach((i) => { const q = b.pages[i]; if (q) { const im = new Image(); im.src = q.img; } });
+  }
+  function render() { renderTabs(); renderRail(); renderPage(); setHash(); }
+
+  $('prev').onclick = () => { if (page > 0) { page--; render(); } };
+  $('next').onclick = () => { if (page < BOOKS[book].pages.length - 1) { page++; render(); } };
+  $('bigger').onclick = () => { fs = Math.min(2.4, fs + 0.15); $('ocr').style.setProperty('--fs', fs + 'rem'); };
+  $('smaller').onclick = () => { fs = Math.max(0.9, fs - 0.15); $('ocr').style.setProperty('--fs', fs + 'rem'); };
+  $('copy').onclick = () => {
+    const t = $('ocr').textContent, btn = $('copy');
+    const done = (ok) => { btn.textContent = ok ? 'اتنسخ' : 'حدد النص وانسخه'; setTimeout(() => { btn.textContent = 'انسخ النص'; }, 1600); };
+    try {
+      navigator.clipboard.writeText(t).then(() => done(true), () => { selectText(); done(false); });
+    } catch (e) { selectText(); done(false); }
+  };
+  function selectText() { const r = document.createRange(); r.selectNodeContents($('ocr')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input,textarea')) return;
+    // RTL book: left arrow = next page
+    if (e.key === 'ArrowLeft') $('next').click();
+    if (e.key === 'ArrowRight') $('prev').click();
+  });
+  window.addEventListener('hashchange', () => { fromHash(); render(); });
+
+  BOOKS = /*BOOKS*/[];
+  fromHash(); render();
+})();
+</script>
+
+</body></html>
