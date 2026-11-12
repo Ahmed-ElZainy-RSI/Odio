@@ -1,0 +1,173 @@
+{
+ "id": "94fe3f30fbd30137",
+ "title": "الأنانية",
+ "source_pdf": "الأنانية.pdf",
+ "pages": 26,
+ "ocr_engine": "gemini-3.8-flash",
+ "setup": {
+  "prompt": "v2",
+  "media_resolution": "high",
+  "thinking": "low",
+  "zoom_strips": 3,
+  "strip_scale": 2.0
+ },
+ "date": "2026-11-11",
+ "page_summary": [
+  {
+   "page": 1,
+   "words": 6,
+   "diac_ratio": 0.645,
+   "score": null
+  },
+  {
+   "page": 2,
+   "words": 161,
+   "diac_ratio": 0.08,
+   "score": null
+  },
+  {
+   "page": 3,
+   "words": 104,
+   "diac_ratio": 0.208,
+   "score": null
+  },
+  {
+   "page": 4,
+   "words": 23,
+   "diac_ratio": 0.723,
+   "score": null
+  },
+  {
+   "page": 5,
+   "words": 24,
+   "diac_ratio": 0.663,
+   "score": null
+  },
+  {
+   "page": 6,
+   "words": 35,
+   "diac_ratio": 0.652,
+   "score": null
+  },
+  {
+   "page": 7,
+   "words": 33,
+   "diac_ratio": 0.669,
+   "score": null
+  },
+  {
+   "page": 8,
+   "words": 35,
+   "diac_ratio": 0.788,
+   "score": null
+  },
+  {
+   "page": 9,
+   "words": 19,
+   "diac_ratio": 0.789,
+   "score": null
+  },
+  {
+   "page": 10,
+   "words": 32,
+   "diac_ratio": 0.724,
+   "score": null
+  },
+  {
+   "page": 11,
+   "words": 25,
+   "diac_ratio": 0.658,
+   "score": null
+  },
+  {
+   "page": 12,
+   "words": 21,
+   "diac_ratio": 0.756,
+   "score": null
+  },
+  {
+   "page": 13,
+   "words": 41,
+   "diac_ratio": 0.77,
+   "score": null
+  },
+  {
+   "page": 14,
+   "words": 19,
+   "diac_ratio": 0.82,
+   "score": null
+  },
+  {
+   "page": 15,
+   "words": 36,
+   "diac_ratio": 0.792,
+   "score": null
+  },
+  {
+   "page": 16,
+   "words": 29,
+   "diac_ratio": 0.702,
+   "score": null
+  },
+  {
+   "page": 17,
+   "words": 27,
+   "diac_ratio": 0.798,
+   "score": null
+  },
+  {
+   "page": 18,
+   "words": 23,
+   "diac_ratio": 0.752,
+   "score": null
+  },
+  {
+   "page": 19,
+   "words": 15,
+   "diac_ratio": 0.652,
+   "score": null
+  },
+  {
+   "page": 20,
+   "words": 28,
+   "diac_ratio": 0.721,
+   "score": null
+  },
+  {
+   "page": 21,
+   "words": 33,
+   "diac_ratio": 0.691,
+   "score": null
+  },
+  {
+   "page": 22,
+   "words": 24,
+   "diac_ratio": 0.72,
+   "score": null
+  },
+  {
+   "page": 23,
+   "words": 33,
+   "diac_ratio": 0.75,
+   "score": null
+  },
+  {
+   "page": 24,
+   "words": 39,
+   "diac_ratio": 0.676,
+   "score": null
+  },
+  {
+   "page": 25,
+   "words": 40,
+   "diac_ratio": 0.739,
+   "score": null
+  },
+  {
+   "page": 26,
+   "words": 30,
+   "diac_ratio": 0.71,
+   "score": null
+  }
+ ]
+}

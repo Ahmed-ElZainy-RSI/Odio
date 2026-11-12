@@ -1,0 +1,183 @@
+{
+ "id": "73d4d2781deda988",
+ "title": "الأمانة",
+ "source_pdf": "الأمانة.pdf",
+ "pages": 26,
+ "ocr_engine": "gemini-3.8-flash",
+ "setup": {
+  "prompt": "v2",
+  "media_resolution": "high",
+  "thinking": "low",
+  "zoom_strips": 3,
+  "strip_scale": 2.0
+ },
+ "date": "2026-11-11",
+ "page_summary": [
+  {
+   "page": 1,
+   "words": 6,
+   "diac_ratio": 0.6,
+   "score": null
+  },
+  {
+   "page": 2,
+   "words": 178,
+   "diac_ratio": 0.058,
+   "score": null
+  },
+  {
+   "page": 3,
+   "words": 107,
+   "diac_ratio": 0.221,
+   "score": null
+  },
+  {
+   "page": 4,
+   "words": 36,
+   "diac_ratio": 0.783,
+   "score": {
+    "letters": 1.0,
+    "words": 1.0,
+    "tashkeel": 0.9609,
+    "reference": "score_ocr.GT"
+   }
+  },
+  {
+   "page": 5,
+   "words": 28,
+   "diac_ratio": 0.758,
+   "score": {
+    "letters": 1.0,
+    "words": 1.0,
+    "tashkeel": 0.9588,
+    "reference": "score_ocr.GT"
+   }
+  },
+  {
+   "page": 6,
+   "words": 25,
+   "diac_ratio": 0.685,
+   "score": null
+  },
+  {
+   "page": 7,
+   "words": 40,
+   "diac_ratio": 0.808,
+   "score": null
+  },
+  {
+   "page": 8,
+   "words": 41,
+   "diac_ratio": 0.829,
+   "score": null
+  },
+  {
+   "page": 9,
+   "words": 40,
+   "diac_ratio": 0.798,
+   "score": null
+  },
+  {
+   "page": 10,
+   "words": 27,
+   "diac_ratio": 0.744,
+   "score": null
+  },
+  {
+   "page": 11,
+   "words": 29,
+   "diac_ratio": 0.752,
+   "score": null
+  },
+  {
+   "page": 12,
+   "words": 32,
+   "diac_ratio": 0.792,
+   "score": null
+  },
+  {
+   "page": 13,
+   "words": 28,
+   "diac_ratio": 0.761,
+   "score": null
+  },
+  {
+   "page": 14,
+   "words": 25,
+   "diac_ratio": 0.772,
+   "score": null
+  },
+  {
+   "page": 15,
+   "words": 34,
+   "diac_ratio": 0.724,
+   "score": null
+  },
+  {
+   "page": 16,
+   "words": 31,
+   "diac_ratio": 0.699,
+   "score": null
+  },
+  {
+   "page": 17,
+   "words": 34,
+   "diac_ratio": 0.803,
+   "score": null
+  },
+  {
+   "page": 18,
+   "words": 46,
+   "diac_ratio": 0.84,
+   "score": null
+  },
+  {
+   "page": 19,
+   "words": 30,
+   "diac_ratio": 0.777,
+   "score": null
+  },
+  {
+   "page": 20,
+   "words": 27,
+   "diac_ratio": 0.742,
+   "score": null
+  },
+  {
+   "page": 21,
+   "words": 30,
+   "diac_ratio": 0.718,
+   "score": null
+  },
+  {
+   "page": 22,
+   "words": 31,
+   "diac_ratio": 0.789,
+   "score": null
+  },
+  {
+   "page": 23,
+   "words": 32,
+   "diac_ratio": 0.833,
+   "score": null
+  },
+  {
+   "page": 24,
+   "words": 30,
+   "diac_ratio": 0.745,
+   "score": null
+  },
+  {
+   "page": 25,
+   "words": 35,
+   "diac_ratio": 0.65,
+   "score": null
+  },
+  {
+   "page": 26,
+   "words": 35,
+   "diac_ratio": 0.756,
+   "score": null
+  }
+ ]
+}

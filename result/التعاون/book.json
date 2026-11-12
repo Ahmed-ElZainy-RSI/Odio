@@ -1,0 +1,167 @@
+{
+ "id": "b92c02e2ea2ce55d",
+ "title": "التعاون",
+ "source_pdf": "التعاون (1).pdf",
+ "pages": 25,
+ "ocr_engine": "gemini-3.8-flash",
+ "setup": {
+  "prompt": "v2",
+  "media_resolution": "high",
+  "thinking": "low",
+  "zoom_strips": 3,
+  "strip_scale": 2.0
+ },
+ "date": "2026-11-11",
+ "page_summary": [
+  {
+   "page": 1,
+   "words": 103,
+   "diac_ratio": 0.019,
+   "score": null
+  },
+  {
+   "page": 2,
+   "words": 108,
+   "diac_ratio": 0.223,
+   "score": null
+  },
+  {
+   "page": 3,
+   "words": 37,
+   "diac_ratio": 0.821,
+   "score": null
+  },
+  {
+   "page": 4,
+   "words": 41,
+   "diac_ratio": 0.712,
+   "score": null
+  },
+  {
+   "page": 5,
+   "words": 49,
+   "diac_ratio": 0.728,
+   "score": null
+  },
+  {
+   "page": 6,
+   "words": 31,
+   "diac_ratio": 0.688,
+   "score": null
+  },
+  {
+   "page": 7,
+   "words": 42,
+   "diac_ratio": 0.749,
+   "score": null
+  },
+  {
+   "page": 8,
+   "words": 20,
+   "diac_ratio": 0.609,
+   "score": null
+  },
+  {
+   "page": 9,
+   "words": 23,
+   "diac_ratio": 0.745,
+   "score": null
+  },
+  {
+   "page": 10,
+   "words": 30,
+   "diac_ratio": 0.72,
+   "score": null
+  },
+  {
+   "page": 11,
+   "words": 17,
+   "diac_ratio": 0.75,
+   "score": null
+  },
+  {
+   "page": 12,
+   "words": 36,
+   "diac_ratio": 0.676,
+   "score": null
+  },
+  {
+   "page": 13,
+   "words": 17,
+   "diac_ratio": 0.711,
+   "score": null
+  },
+  {
+   "page": 14,
+   "words": 31,
+   "diac_ratio": 0.752,
+   "score": null
+  },
+  {
+   "page": 15,
+   "words": 34,
+   "diac_ratio": 0.872,
+   "score": null
+  },
+  {
+   "page": 16,
+   "words": 26,
+   "diac_ratio": 0.776,
+   "score": null
+  },
+  {
+   "page": 17,
+   "words": 39,
+   "diac_ratio": 0.8,
+   "score": null
+  },
+  {
+   "page": 18,
+   "words": 20,
+   "diac_ratio": 0.75,
+   "score": null
+  },
+  {
+   "page": 19,
+   "words": 26,
+   "diac_ratio": 0.663,
+   "score": null
+  },
+  {
+   "page": 20,
+   "words": 19,
+   "diac_ratio": 0.732,
+   "score": null
+  },
+  {
+   "page": 21,
+   "words": 26,
+   "diac_ratio": 0.67,
+   "score": null
+  },
+  {
+   "page": 22,
+   "words": 35,
+   "diac_ratio": 0.679,
+   "score": null
+  },
+  {
+   "page": 23,
+   "words": 21,
+   "diac_ratio": 0.707,
+   "score": null
+  },
+  {
+   "page": 24,
+   "words": 38,
+   "diac_ratio": 0.708,
+   "score": null
+  },
+  {
+   "page": 25,
+   "words": 24,
+   "diac_ratio": 0.703,
+   "score": null
+  }
+ ]
+}

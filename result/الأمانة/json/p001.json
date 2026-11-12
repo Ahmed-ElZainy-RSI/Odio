@@ -1,0 +1,57 @@
+{
+ "book": "الأمانة",
+ "source_pdf": "الأمانة.pdf",
+ "pdf_sha256_16": "73d4d2781deda988",
+ "page": 1,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.8-flash",
+ "setup": {
+  "prompt": "v2",
+  "media_resolution": "high",
+  "thinking": "low",
+  "zoom_strips": 3,
+  "strip_scale": 2.0,
+  "samples": 5,
+  "vote": true,
+  "render_dpi": 200
+ },
+ "render_size": [
+  1700,
+  2200
+ ],
+ "image": "images/p001.png",
+ "diac_ratio": 0.6,
+ "text": "قيمي\nالأَمَانَةُ\nبِنَاءُ شَخْصِيَتِك و مُعْتَقَدَاتِك",
+ "lines": [
+  "قيمي",
+  "الأَمَانَةُ",
+  "بِنَاءُ شَخْصِيَتِك و مُعْتَقَدَاتِك"
+ ],
+ "tokens": [
+  {
+   "id": "p001w000",
+   "txt": "قيمي"
+  },
+  {
+   "id": "p001w001",
+   "txt": "الأَمَانَةُ"
+  },
+  {
+   "id": "p001w002",
+   "txt": "بِنَاءُ"
+  },
+  {
+   "id": "p001w003",
+   "txt": "شَخْصِيَتِك"
+  },
+  {
+   "id": "p001w004",
+   "txt": "و"
+  },
+  {
+   "id": "p001w005",
+   "txt": "مُعْتَقَدَاتِك"
+  }
+ ],
+ "score": null
+}

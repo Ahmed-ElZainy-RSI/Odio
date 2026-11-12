@@ -1,0 +1,2 @@
+# The root .gitignore ignores *.json as pipeline output; the OCR results in this folder are deliverables.
+!*.json
