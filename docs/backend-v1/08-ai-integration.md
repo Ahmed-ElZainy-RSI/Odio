@@ -185,7 +185,7 @@ The API exists to accept *jobs*, which are business units of work. See
 | Component | Model / provider | Calls per page | Retry (target) | Timeout (target) | Failure mode | Cost driver | Page-fatal? |
 |---|---|---|---|---|---|---|---|
 | Text-layer extraction | none (PyMuPDF) | 0 | n/a | n/a | malformed PDF | none | Yes → `SOURCE_INVALID` |
-| Gemini OCR | `gemini-3.6-flash` | 1 | 3, status-aware | 60 s | 429 quota wall — **real**: `README.md:491` records a 10 req/day free-tier cap | per page | Yes |
+| Gemini OCR | `gemini-3.8-flash` | 1 | 3, status-aware | 60 s | 429 quota wall — **real**: `README.md:491` records a 10 req/day free-tier cap | per page | Yes |
 | LightOn parse | `lighton/parse-v3` | 1 | 3 (currently **0**) | 60 s | 5xx, markdown-only output | per page | Yes |
 | Local diacritizer | `arabic-diacritizer` BiLSTM | 0 | n/a | n/a | token-count mismatch → page abandoned (`tashkel.py:50`) | CPU only | No — degrade to unshaped |
 | Visual diacritics (verified) | Gemini vision | **1 per Arabic word** | 2 per word | 120 s | one bad word ≠ one bad page | **per word** — median 35, p90 69, max 137 (measured over 186 pages) | No — degrade to `REVIEW` |
@@ -263,7 +263,7 @@ Until then the verified tier is reachable per job for evaluation, and off by def
 
 | Constant | Location |
 |---|---|
-| `MODEL = "gemini-3.6-flash"` | `src/pipeline/ocr_gemini.py:28` |
+| `MODEL = "gemini-3.8-flash"` | `src/pipeline/ocr_gemini.py:28` |
 | `MODEL = "gemini-3.1-flash-tts-preview"`, `VOICE = "Kore"` | `src/pipeline/tts_gemini.py:16-17` |
 | `VOICE = "Layla, Arabic Philosopher"` | `src/pipeline/tts_hume.py:12` |
 | `MODEL = "deepseek/deepseek-v4-pro-0813"` | `tools/context_detector.py:46` |

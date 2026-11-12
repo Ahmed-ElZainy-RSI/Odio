@@ -23,7 +23,7 @@ class TestApplyCorrections:
     def test_applied_fix_records_its_evidence(self, gemini_dir, lighton_dir):
         write_page(lighton_dir, 1, [make_token("p001w000", "الفضل")])
         write_review(lighton_dir, gemini_dir, {"1": [
-            verified("p001w000", "الفصل", "الفضل", "الفصل", vlm_model="gemini-3.6-flash")]})
+            verified("p001w000", "الفصل", "الفضل", "الفصل", vlm_model="gemini-3.8-flash")]})
 
         apply_corrections.run(lighton_dir / "ensemble_review.json")
 
@@ -33,7 +33,7 @@ class TestApplyCorrections:
         assert ev["applied"] is True and ev["status"] == "ACCEPT"
         assert (ev["detector"], ev["decided_by"], ev["rule"]) == ("ensemble", "rule", "match-gemini")
         assert ev["reads"] == {"lighton": "الفضل", "gemini": "الفصل", "vlm": "الفصل"}
-        assert ev["models"] == {"vlm": "gemini-3.6-flash"}
+        assert ev["models"] == {"vlm": "gemini-3.8-flash"}
 
     def test_older_reviews_without_a_model_still_record_evidence(self, gemini_dir, lighton_dir):
         write_page(lighton_dir, 1, [make_token("p001w000", "الفضل")])
@@ -108,7 +108,7 @@ class TestReplacePage:
         write_page(lighton_dir, 1, [make_token("p001w000", "x")], ocr_engine="lighton/parse-v3",
                    box_level="none")
         write_page(gemini_dir, 1, [make_token("p001w000", "كلمة"), make_token("p001w001", "أخرى")],
-                   ocr_engine="gemini-3.6-flash", box_level="line")
+                   ocr_engine="gemini-3.8-flash", box_level="line")
         write_review(lighton_dir, gemini_dir, {"1": [
             {"id": "gemini-only:p001w000", "action": "FLAG"},
             {"id": "gemini-only:p001w001", "action": "FLAG"},
@@ -120,7 +120,7 @@ class TestReplacePage:
         [ev] = read_page(lighton_dir, 1)["page_evidence"]
         assert ev["rule"] == "gemini-only >= 50%"
         assert ev["gemini_only_ratio"] == round(2 / 3, 3)
-        assert (ev["replaced_engine"], ev["replacement_engine"]) == ("lighton/parse-v3", "gemini-3.6-flash")
+        assert (ev["replaced_engine"], ev["replacement_engine"]) == ("lighton/parse-v3", "gemini-3.8-flash")
         assert ev["replaced_tokens"] == 1
 
 

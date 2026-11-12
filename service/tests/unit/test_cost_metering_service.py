@@ -41,7 +41,7 @@ def rec(**kw) -> UsageRecord:
         **(
             {
                 "provider": "gemini",
-                "model": "gemini-3.6-flash",
+                "model": "gemini-3.8-flash",
                 "operation": "ocr",
                 "at": "2026-10-21T10:00:00+00:00",
             }
@@ -153,7 +153,7 @@ async def test_meter_counts_priced_spend_by_tier() -> None:
         [rec(input_tokens=1_000_000), rec(provider="lighton", model="lighton/parse-v3", pages=1)],
     )
     spent = metrics._fallback.counter_value(
-        COST_USD, {"provider": "gemini", "model": "gemini-3.6-flash", "tier": "fast"}
+        COST_USD, {"provider": "gemini", "model": "gemini-3.8-flash", "tier": "fast"}
     )
     assert spent == pytest.approx(0.75)
     assert len(await sink.records()) == 2

@@ -25,7 +25,7 @@ load_dotenv()
 from google import genai
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pipeline import failures, usage
+from pipeline import failures, timing, usage
 from pipeline.records import write_record
 from pipeline.extract import clean_word, diacritic_ratio
 from pipeline.ink_boxes import fit_page
@@ -45,8 +45,9 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
     doc = pymupdf.open(str(pdf_path))
     start, end = parse_pages(pages)
     print(f"{book} — {len(doc)} pages, OCR via {MODEL}, doing {start}-{end or len(doc)}\n")
-    print(f"{'pg':>3} {'lines':>6} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  path")
-    print("-" * 60)
+    print(f"{'pg':>3} {'lines':>6} {'tokens':>7} {'chars':>6} {'diac':>6} {'fixed':>6}  "
+          f"{'path':<10} {'ocr':>7} {'page':>7}")
+    print("-" * 78)
 
     summary = {"done": 0, "failed": 0, "stopped_on_quota": False}
     for i, page in enumerate(doc, start=1):
@@ -60,17 +61,31 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
             print(f"{i:>3}  already done, skipping")
             continue
 
+        with timing.page(i):
+            ok = _do_page(client, page, i, book, pdf_path, pdf_hash, out_dir, summary)
+        if ok is None:  # quota
+            break
+    doc.close()
+    print(f"\n{summary['done']} extracted, {summary['failed']} failed"
+          + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
+    return summary
+
+
+def _do_page(client, page, i, book, pdf_path, pdf_hash, out_dir, summary):
+    """OCR one page. Returns True done, False failed, None stopped on quota."""
+    with timing.step("page", log=False) as page_t:
         try:
-            jpeg, size = render_page(page)
-            (out_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
-            with usage.page(i):
+            with timing.step("render"):
+                jpeg, size = render_page(page)
+                (out_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
+            with usage.page(i), timing.step("ocr") as ocr_t:
                 lines = ocr_page(client, jpeg)
         except Exception as e:
             if failures.handle(out_dir, i, "ocr", e, f"{i:>3}") == "quota":
                 summary["stopped_on_quota"] = True
-                break
+                return None
             summary["failed"] += 1
-            continue
+            return False
 
         tokens = lines_to_tokens(lines, i, clean_word)
         text = " ".join(t["txt"] for t in tokens)
@@ -86,23 +101,22 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
             "status": "extracted", "tokens": tokens,
         }
         try:
-            fit_page(rec, out_dir / "pages" / f"p{i:03d}.jpg")
+            with timing.step("box-fit"):
+                fit_page(rec, out_dir / "pages" / f"p{i:03d}.jpg")
         except Exception as e:  # the page was paid for: keep it with estimated boxes
             if failures.handle(out_dir, i, "box-fit", e, f"{i:>3}") != "page":
                 raise
-        write_record(rec_path, rec)
+        write_record(out_dir / f"p{i:03d}.json", rec)
         failures.clear(out_dir, i, "ocr")
         summary["done"] += 1
-        print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {ratio:>6.2f} {fixed:>6}  {rec['path']}")
-    doc.close()
-    print(f"\n{summary['done']} extracted, {summary['failed']} failed"
-          + (" -- stopped on quota" if summary["stopped_on_quota"] else ""))
-    return summary
+    print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {ratio:>6.2f} {fixed:>6}  "
+          f"{rec['path']:<10} {timing.fmt(ocr_t.seconds):>7} {timing.fmt(page_t.seconds):>7}")
+    return True
 
 
 def run(pdf_path: Path, out_dir: Path, pages="0"):
     """OCR pdf_path into out_dir, recording every paid call to usage.jsonl (spec 025)."""
-    with usage.recording(out_dir, "ocr-gemini"):
+    with usage.recording(out_dir, "ocr-gemini"), timing.stage("ocr-gemini"):
         return _run(pdf_path, out_dir, pages)
 
 

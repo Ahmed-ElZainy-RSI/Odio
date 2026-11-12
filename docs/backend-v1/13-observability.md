@@ -42,8 +42,8 @@ log files.
   "stage": "ocr",
   "duration_ms": 4213,
   "error_code": null,
-  "model": "gemini-3.6-flash",
-  "model_version": "gemini-3.6-flash",
+  "model": "gemini-3.8-flash",
+  "model_version": "gemini-3.8-flash",
   "attempt": 1
 }
 ```

@@ -213,7 +213,7 @@ configured table: every Gemini OCR/TTS and LightOn call a worker made, plus cach
   "usd": 0.1182,
   "unpricedCalls": 16,
   "lines": [
-    {"provider": "gemini", "model": "gemini-3.6-flash", "operation": "ocr", "calls": 16,
+    {"provider": "gemini", "model": "gemini-3.8-flash", "operation": "ocr", "calls": 16,
      "cached": 2, "unpriced": 0, "usd": 0.1182, "input_tokens": 41210, "output_tokens": 23125,
      "chars": 0, "pages": 0},
     {"provider": "lighton", "model": "lighton/parse-v3", "operation": "ocr", "calls": 16,

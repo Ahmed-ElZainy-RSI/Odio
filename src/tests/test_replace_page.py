@@ -44,7 +44,7 @@ class TestReplacePage:
         write_page(gemini_dir, 16, [
             make_token("p016w000", "لماذا", box=[1, 2, 3, 4]),
             make_token("p016w001", "اتصلت", box=[5, 6, 7, 8]),
-        ], box_level="line", ocr_engine="gemini-3.6-flash")
+        ], box_level="line", ocr_engine="gemini-3.8-flash")
         write_page(lighton_dir, 16, [
             make_token("p016w000", "جَ"),
         ], box_level="none", ocr_engine="lighton/parse-v3", status="spoken")
@@ -58,7 +58,7 @@ class TestReplacePage:
         assert rec["tokens"][0]["txt"] == "لماذا"
         assert rec["tokens"][0]["box"] == [1, 2, 3, 4]
         assert rec["box_level"] == "line"
-        assert rec["ocr_engine"] == "gemini-3.6-flash"
+        assert rec["ocr_engine"] == "gemini-3.8-flash"
         assert rec["ocr_engine_replaced_from"] == "lighton/parse-v3"
         assert rec["status"] == "extracted"
 

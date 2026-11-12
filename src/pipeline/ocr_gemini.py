@@ -27,7 +27,7 @@ from google.genai import types
 
 from pipeline import ratelimit, usage
 
-MODEL = "gemini-3.6-flash"
+MODEL = "gemini-3.8-flash"
 RENDER_SCALE = 2.0
 MAX_EDGE = 1100
 

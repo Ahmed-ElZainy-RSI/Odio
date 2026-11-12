@@ -115,7 +115,7 @@ New model-id keys replacing hardcoded constants:
 
 | New key | Replaces | Default |
 |---|---|---|
-| `OCR_GEMINI_MODEL` | `MODEL` at `src/pipeline/ocr_gemini.py:28` | `gemini-3.6-flash` |
+| `OCR_GEMINI_MODEL` | `MODEL` at `src/pipeline/ocr_gemini.py:28` | `gemini-3.8-flash` |
 | `TTS_GEMINI_MODEL` | `MODEL` at `src/pipeline/tts_gemini.py:16` | `gemini-3.1-flash-tts-preview` |
 | `TTS_GEMINI_VOICE` | `VOICE` at `src/pipeline/tts_gemini.py:17` | `Kore` |
 | `TTS_HUME_VOICE` | `VOICE` at `src/pipeline/tts_hume.py:12` | `Layla, Arabic Philosopher` |
@@ -206,7 +206,7 @@ TTS_NARRATOR=female                    # V1 uploads exactly one Audio artifact
 ALIGNMENT_ENGINE=whisper               # whisper (forced) | native (Hume word timestamps)
 
 # ─── Model configuration (was hardcoded constants) ────────────────────────────
-OCR_GEMINI_MODEL=gemini-3.6-flash
+OCR_GEMINI_MODEL=gemini-3.8-flash
 TTS_GEMINI_MODEL=gemini-3.1-flash-tts-preview
 TTS_GEMINI_VOICE=Kore
 TTS_HUME_VOICE=Layla, Arabic Philosopher
@@ -225,7 +225,7 @@ HF_TOKEN=__REPLACE_ME__                   # first-run model download only
 
 # ─── Verified tier only (ENABLE_VERIFIED_TIER=true; spec 022) ─────────────────
 VERIFIER=visual                           # visual | passthrough
-VERIFIER_GEMINI_MODEL=gemini-3.6-flash    # uses GEMINI_API_KEY; crop re-reads use LIGHTON_API_KEY
+VERIFIER_GEMINI_MODEL=gemini-3.8-flash    # uses GEMINI_API_KEY; crop re-reads use LIGHTON_API_KEY
 VERIFIER_SUSPICION_THRESHOLD=0.75
 VERIFIER_ACCEPT_THRESHOLD=0.88
 VERIFIER_REVIEW_THRESHOLD=0.70

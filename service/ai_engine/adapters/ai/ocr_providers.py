@@ -93,7 +93,7 @@ class GeminiVisionOcr:
     def __init__(
         self,
         *,
-        model_id: str = "gemini-3.6-flash",
+        model_id: str = "gemini-3.8-flash",
         api_key: str | None = None,
         client: Any | None = None,
         legacy_repo_root: Path | None = None,

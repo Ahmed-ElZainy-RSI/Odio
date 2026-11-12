@@ -313,6 +313,7 @@ src/pipeline/
   run_speak_gemini.py driver, TTS + alignment       — Gemini + faster-whisper, resumable
   build_reader.py    layer 08                      — emits work/<book>/reader.html; drops the image
                                                        view entirely when a book has no boxes at all
+  timing.py          observability                 — wall-clock time per page and step -> timings.jsonl
 ```
 
 Every module above is also a small, importable library (a `run(...)`/`build(...)`
@@ -332,6 +333,36 @@ python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --ocr lighton --tts h
 # --tts gemini --voice Kore is the default; override per run:
 python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --voice Puck
 ```
+
+#### How long it took
+
+Every `main.py` run times each step and writes one line per step to
+`work/<book>/timings.jsonl` (run id, stage, page, step, seconds, ok). You see it in three places:
+
+- the stage tables: the OCR table has `ocr` (the Gemini call) and `page` (whole page) columns,
+  each TTS line ends `tts 6.1s  align 2.3s`, and diacritised pages show their time. The
+  seconds right after the page number in a TTS line are the length of the audio, labelled `audio`;
+- a `--- timing ---` summary at the end: a page × step table, per-step totals (calls, total,
+  average, max) and the book's wall-clock total;
+- `reader.html`: tiles for the run's processing time and the average per page, a per-page
+  line under the page buttons, and a collapsible "Processing time per page" table.
+
+Times are wall clock, so a Gemini step includes rate-limit waits and retries. Pages a resumed
+run skips keep the times from the run that made them; books built before timing existed
+show no times until they are run again.
+
+#### Checking the OCR by hand
+
+Nothing in `main.py` checks the OCR's reading against the page, and on a `keep` page the
+child hears the OCR's diacritics as-is. To measure how often it is wrong, build a checking page:
+
+```bash
+python3 tools/build_ocr_check.py "work/<book>"     # after OCR; writes work/<book>/ocr_check.html
+```
+
+It shows each word beside a zoomed crop of it on a high-resolution render; mark words correct,
+wrong letters, wrong diacritics, extra or missing (keys 1–6, Enter = correct + next), then
+**Export marks (JSON)**. See [docs/tools-reference.html](docs/tools-reference.html#build_ocr_check).
 
 Every stage `main.py` calls is independently resumable — re-running it after
 a quota stall or a crash picks the book up where it left off rather than
@@ -605,7 +636,7 @@ boxes are (it predates the text-layer discovery that made real boxes free).
   Hume (mid-book on النجوم), SILMA (mid-book earlier), Gemini vision
   (page 18 of المومياوات), and Gemini TTS, now measured precisely across two
   more books built with the correction pipeline: `gemini-3.1-flash-tts` caps
-  at **10 requests/day**, `gemini-3.6-flash` (OCR + VLM arbitration) at **20
+  at **10 requests/day**, `gemini-3.8-flash` (OCR + VLM arbitration) at **20
   requests/day**, both free-tier, both per-project-per-model. Every driver
   resumes, so this is a billing/scheduling question, not an engineering one —
   confirmed repeatedly: a run cut off by a 429 always finished cleanly the

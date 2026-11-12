@@ -16,11 +16,11 @@ as_of = "2026-10-21"
 # ── Google Gemini, paid tier (Standard) ─────────────────────────────────────────
 # Source: https://ai.google.dev/gemini-api/docs/pricing ("Last updated 2026-10-19 UTC").
 # OCR (src/pipeline/ocr_gemini.py) and VLM arbitration (tools/vlm_arbiter.py) both use
-# gemini-3.6-flash; its price doubles on 2027-01-01.
+# gemini-3.8-flash; its price doubles on 2027-01-01.
 
 [[price]]
 provider = "gemini"
-model = "gemini-3.6-flash"
+model = "gemini-3.8-flash"
 input_per_1m_tokens = 0.75
 output_per_1m_tokens = 3.75
 valid_until = 2026-12-31
@@ -28,7 +28,7 @@ source = "https://ai.google.dev/gemini-api/docs/pricing (2026-10-19)"
 
 [[price]]
 provider = "gemini"
-model = "gemini-3.6-flash"
+model = "gemini-3.8-flash"
 input_per_1m_tokens = 1.50
 output_per_1m_tokens = 7.50
 valid_from = 2027-01-01

@@ -168,7 +168,7 @@ async def test_a_fast_page_saves_nothing(tmp_path: Path) -> None:
 def test_the_review_export_has_the_cli_shape_and_only_review_verdicts() -> None:
     rows = [
         (1, ev("p001w000", "ACCEPT")),
-        (1, ev("p001w003", scores={"suspicion": 0.81}, models={"gemini": "gemini-3.6-flash"})),
+        (1, ev("p001w003", scores={"suspicion": 0.81}, models={"gemini": "gemini-3.8-flash"})),
         (2, ev("p002w001", detector="reviewer", rule="final-review:suggest")),
         (2, ev("p002w002", "REJECT")),
     ]
@@ -179,7 +179,7 @@ def test_the_review_export_has_the_cli_shape_and_only_review_verdicts() -> None:
     assert (first["id"], first["suspicion"], first["model"]) == (
         "p001w003",
         0.81,
-        "gemini-3.6-flash",
+        "gemini-3.8-flash",
     )
     assert out["pages"]["2"][0]["source"] == "service-reviewer:final-review:suggest"
     assert out["pages"]["2"][0]["suspicion"] == 1.0, "unscored: a person looks first"

@@ -174,7 +174,7 @@ during an incident. Here a rollback is a config change plus a restart.
 
 | Key | Default |
 |---|---|
-| `OCR_GEMINI_MODEL` | `gemini-3.6-flash` |
+| `OCR_GEMINI_MODEL` | `gemini-3.8-flash` |
 | `TTS_GEMINI_MODEL` | `gemini-3.1-flash-tts-preview` |
 | `TTS_GEMINI_VOICE` | `Kore` |
 | `ALIGN_WHISPER_MODEL_SIZE` | `small` |

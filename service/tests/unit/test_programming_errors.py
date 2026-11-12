@@ -43,7 +43,7 @@ def test_ocr_lets_a_programming_error_through(bug: Exception) -> None:
     assert (
         metrics.counter_value(
             INFERENCE_FAILURES,
-            {"provider": "gemini", "model": "gemini-3.6-flash", "error_code": "AI_INFERENCE_ERROR"},
+            {"provider": "gemini", "model": "gemini-3.8-flash", "error_code": "AI_INFERENCE_ERROR"},
         )
         == 0
     ), "a bug must not be counted as a provider failure"

@@ -10,7 +10,7 @@ Rules that keep the numbers honest:
   - a cache hit costs 0 and is still counted, so savings are visible;
   - a price that is not in the table is *unknown*, never zero -- a report says how many
     calls it could not price instead of quietly under-reporting;
-  - prices carry effective dates, because they change (gemini-3.6-flash doubles on
+  - prices carry effective dates, because they change (gemini-3.8-flash doubles on
     2027-01-01).
 
 Stdlib only, like the rest of ``domain/``. A verbatim copy lives at

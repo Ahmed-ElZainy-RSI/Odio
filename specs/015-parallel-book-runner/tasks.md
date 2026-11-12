@@ -9,7 +9,7 @@
 Configuration (opt-in; nothing set = nothing limited, exactly as before):
 
 ```bash
-PIPELINE_RATE_LIMITS="gemini:gemini-3.1-flash-tts-preview=10/86400,gemini:gemini-3.6-flash=20/86400" \
+PIPELINE_RATE_LIMITS="gemini:gemini-3.1-flash-tts-preview=10/86400,gemini:gemini-3.8-flash=20/86400" \
   python3 src/pipeline/batch.py "assets/PDF Samples" --workers 4
 ```
 

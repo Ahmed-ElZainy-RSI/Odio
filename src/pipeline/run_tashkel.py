@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pipeline import failures
+from pipeline import failures, timing
 from pipeline.records import write_record
 from pipeline.tashkel import diacritize_tokens
 
@@ -49,7 +49,8 @@ def run(work_dir: Path):
             continue
 
         try:
-            tokens, report = diacritize_tokens(rec["tokens"])
+            with timing.stage("diacritise"), timing.page(page), timing.step("diacritise") as diac_t:
+                tokens, report = diacritize_tokens(rec["tokens"])
         except Exception as e:
             # local model, so no quota: a crash on one page is recorded and the
             # rest of the book still gets diacritised (spec 008)
@@ -78,7 +79,8 @@ def run(work_dir: Path):
         rec["tashkeel_engine"] = "arabic-diacritizer"
         rec.pop("diac_error", None)
         write_record(p, rec)
-        print(f"{page:>3}  diacritise   {report['diacritized']} tokens diacritised")
+        print(f"{page:>3}  diacritise   {report['diacritized']} tokens diacritised"
+              f"  ({timing.fmt(diac_t.seconds)})")
         done += 1
 
     print(f"\n{done} diacritised, {skipped} skipped, {mismatched} mismatched, "

@@ -40,8 +40,11 @@ Since spec 012 that check is automatic: a text layer is spot-checked against OCR
 --trust-text-layer skips the check; --force-ocr still forces OCR outright.
 """
 import argparse
+import contextlib
+import io
 import os
 import sys
+import time
 from pathlib import Path
 
 import pymupdf
@@ -61,6 +64,7 @@ from pipeline import (
     run_speak_hume,
     run_tashkel,
     text_layer_trust,
+    timing,
     usage,
 )
 
@@ -112,6 +116,27 @@ def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
     book = pdf_path.stem.strip()
     work_dir = work_dir or books.resolve_work_dir(
         pdf_path, variant="lighton" if ocr == "lighton" else "")
+    started = time.perf_counter()
+    with timing.run(work_dir) as run_id:
+        out = _run_stages(pdf_path, book, work_dir, ocr, tts, voice, pages, force_ocr,
+                          trust_text_layer)
+        total = time.perf_counter() - started
+        timing.record_book_total(total)
+    if out:
+        # the reader was built before the book total existed: rebuild it (well under a
+        # second, local only) so its timing panel shows this run's total too
+        with contextlib.redirect_stdout(io.StringIO()):
+            out = build_reader.build(work_dir) or out
+    print("\n" + timing.summary(work_dir, run_id, total))
+    return out
+
+
+def _stage(name: str):
+    """Time a whole stage (page=None row in timings.jsonl, shown in the totals table)."""
+    return timing.step(f"{name} (stage)")
+
+
+def _run_stages(pdf_path, book, work_dir, ocr, tts, voice, pages, force_ocr, trust_text_layer):
 
     print(f"=== {book} ===")
     use_text_layer, reason = False, "--force-ocr" if force_ocr else "no text layer"
@@ -119,28 +144,34 @@ def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
         if trust_text_layer:
             use_text_layer, reason = True, "--trust-text-layer"
         else:
-            use_text_layer, reason = text_layer_is_trusted(pdf_path, work_dir, ocr)
+            with timing.stage("text-layer"), timing.step("trust-check"):
+                use_text_layer, reason = text_layer_is_trusted(pdf_path, work_dir, ocr)
     if use_text_layer:
         print(f"embedded text layer -> extract.py (no OCR needed) -- {reason}\n")
-        run_extract.run(pdf_path, work_dir, pages=pages)
+        with timing.stage("extract"), _stage("extract"):
+            run_extract.run(pdf_path, work_dir, pages=pages)
     else:
         print(f"OCR path ({ocr}) -- {reason}\n")
-        if ocr == "gemini":
-            run_ocr_gemini.run(pdf_path, work_dir, pages=pages)
-        else:
-            run_ocr_lighton.run(pdf_path, work_dir, pages=pages)
+        with timing.stage(f"ocr-{ocr}"), _stage("ocr"):
+            if ocr == "gemini":
+                run_ocr_gemini.run(pdf_path, work_dir, pages=pages)
+            else:
+                run_ocr_lighton.run(pdf_path, work_dir, pages=pages)
 
     print("\n--- diacritising ---")
-    run_tashkel.run(work_dir)
+    with timing.stage("diacritise"), _stage("diacritise"):
+        run_tashkel.run(work_dir)
 
     print(f"\n--- synthesising ({tts}) ---")
-    if tts == "hume":
-        run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE)
-    else:
-        run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE)
+    with timing.stage(f"tts-{tts}"), _stage("tts"):
+        if tts == "hume":
+            run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE)
+        else:
+            run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE)
 
     print("\n--- building reader ---")
-    out = build_reader.build(work_dir)
+    with timing.stage("reader"), _stage("reader"):
+        out = build_reader.build(work_dir)
     if out:
         print(f"\ndone -> {out}")
     return out

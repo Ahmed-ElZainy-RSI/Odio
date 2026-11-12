@@ -65,3 +65,29 @@ def test_a_corrected_page_waiting_for_new_audio_is_skipped(tmp_path, capsys):
 
     assert '"page":1' in html and '"page":2' not in html
     assert "not spoken since its last change" in capsys.readouterr().out
+
+
+def test_the_reader_shows_processing_time_per_page_and_for_the_book(tmp_path):
+    from pipeline import timing
+    book = tmp_path / "book"
+    spoken_page(book, 1)
+    spoken_page(book, 2)
+    with timing.run(book, "r1"):
+        with timing.page(1):
+            timing._write("tts", 6.0, True)  # logged first, still shown after OCR
+            timing._write("ocr", 4.0, True)
+        timing.record_book_total(130)
+
+    html = build_reader.build(book).read_text(encoding="utf-8")
+
+    assert "Processing time per page (1/2 pages timed, book run 2m10s wall clock)" in html
+    assert '"tm":{"ocr":4.0,"tts":6.0}' in html
+    assert "processing time, last full run" in html
+
+
+def test_a_book_without_timings_has_no_timing_panel(tmp_path):
+    book = tmp_path / "book"
+    spoken_page(book, 1)
+    html = build_reader.build(book).read_text(encoding="utf-8")
+    assert "<details class=tmg>" not in html
+    assert "processing time, last full run" not in html

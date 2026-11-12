@@ -59,7 +59,7 @@ class TestEnsembleReviewContext:
         assert "context" not in rows[0]
 
     def test_an_old_report_gains_phrases_without_losing_verdicts(self, gemini_dir, lighton_dir):
-        write_page(gemini_dir, 1, [make_token("p001w000", "الجد")], ocr_engine="gemini-3.6-flash")
+        write_page(gemini_dir, 1, [make_token("p001w000", "الجد")], ocr_engine="gemini-3.8-flash")
         write_page(lighton_dir, 1, [make_token("p001w000", "الجُد")], ocr_engine="lighton/parse-v3")
         old = [row("p001w000", "قال", action="KEEP"),
                row("p001w001", "الجُد", "الجد", "VERIFIED", verified_txt="الجد", vlm_model="m")]

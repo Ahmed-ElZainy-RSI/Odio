@@ -49,7 +49,7 @@ implementation.** This matters because the V1 architecture must pick a default p
 | Entry point | `src/pipeline/main.py:93` (argparse) | `walidapro/run_full_pipeline.py:2470` (argparse) |
 | Page identity | `p{page:03d}`, 1-based | `page_{page:03d}`, 1-based |
 | Text-layer fast path | **Yes** — PyMuPDF `get_text("words")`, per-word boxes, **0 paid calls** (`src/pipeline/run_extract.py:29`). Used by 25 of 36 sample books (`README.md:444-448`). | No — unconditionally rasterizes and OCRs every page |
-| OCR engines | Gemini `gemini-3.6-flash` with forced `response_schema` (line boxes subdivided RTL by letter count, `src/pipeline/ocr_gemini.py:87`) or LightOn `parse-v3` (markdown only, `box_level:"none"`) | LightOn page OCR + adaptive crop-variant re-reads |
+| OCR engines | Gemini `gemini-3.8-flash` with forced `response_schema` (line boxes subdivided RTL by letter count, `src/pipeline/ocr_gemini.py:87`) or LightOn `parse-v3` (markdown only, `box_level:"none"`) | LightOn page OCR + adaptive crop-variant re-reads |
 | Error detection | `tools/ensemble_review.py` difflib alignment of two engines' token lists + `tools/vlm_arbiter.py` vision arbitration + `tools/context_detector.py` reasoning-model pass — **but three of these require a human** | In-process: `ContextReviewer.find_suspicious` → PaddleOCR bbox → 5 crop variants → 2–5 LightOn re-reads → blind-crop Gemini vision → 2 reviewer scores → `decision.decide` fusion |
 | Diacritization | Local CPU BiLSTM (`arabic-diacritizer`), free, routed on `diac_ratio < 0.15` (`src/pipeline/tashkel.py`) | **One vision-model call per Arabic word** (`walidapro/ocr_verifier/diacritization/word_diacritics.py:1246`) |
 | Final text audit | none | `FinalContextReviewer` — 1 Gemini `gemini-3.1-pro-preview` call/page with a hard safety envelope. **OFF by default** (`walidapro/run_full_pipeline.py:1245`) |
@@ -72,7 +72,7 @@ flowchart TD
 
     HTL -->|"yes"| EXT["extract.py:85 extract_page<br/>PyMuPDF get_text('words')<br/>per-WORD boxes, 0 paid calls"]
     HTL -->|"no"| OCR{"--ocr"}
-    OCR -->|"gemini"| OG["ocr_gemini.py:65<br/>gemini-3.6-flash + response_schema<br/>per-LINE box_2d 0-1000"]
+    OCR -->|"gemini"| OG["ocr_gemini.py:65<br/>gemini-3.8-flash + response_schema<br/>per-LINE box_2d 0-1000"]
     OCR -->|"lighton"| OL["ocr_lighton.py:65<br/>POST api.lighton.ai/api/v3/parse<br/>markdown only, no geometry"]
 
     EXT --> CLEAN["extract.py:39 clean_word<br/>4 deterministic rules:<br/>kashida, leading punct,<br/>leading mark, dropped hamza"]
@@ -192,7 +192,7 @@ actually timed; everything else is derived from call structure.
 | Component | Purpose | Model | Framework | Input | Output | Preprocessing | Postprocessing | Latency | CPU/GPU | Memory | Stateful? | Sync-capable? | Should be async? | Expose as API? | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Text-layer extraction<br/>`src/pipeline/extract.py:85` | Read embedded PDF text + word boxes | none | PyMuPDF | PDF page | tokens with per-word boxes | none | 4 cleaning rules | ~ms, no network | CPU | small | No | Yes | No | **No** | REUSE_AS_IS |
-| Gemini OCR<br/>`src/pipeline/ocr_gemini.py:65` | Page → per-line text + boxes | `gemini-3.6-flash` | google-genai | JPEG bytes | `{lines:[{text,box_2d}]}` forced schema | 2.0× render, thumbnail 1100 px, q82 | RTL line subdivision by letter count | est. 2–6 s/page | CPU + network | image in RAM | No | Yes | Yes | **No** | WRAP |
+| Gemini OCR<br/>`src/pipeline/ocr_gemini.py:65` | Page → per-line text + boxes | `gemini-3.8-flash` | google-genai | JPEG bytes | `{lines:[{text,box_2d}]}` forced schema | 2.0× render, thumbnail 1100 px, q82 | RTL line subdivision by letter count | est. 2–6 s/page | CPU + network | image in RAM | No | Yes | Yes | **No** | WRAP |
 | LightOn parse<br/>`src/pipeline/ocr_lighton.py:65` | Page → markdown text | `lighton/parse-v3` | requests | single-page PDF bytes | markdown | per-page PDF slice | strip HTML/LaTeX/headings/page-numbers | est. 2–8 s/page | network | small | No | Yes | Yes | **No** | WRAP |
 | PaddleOCR bbox<br/>`walidapro/.../bbox_detector.py:107` | Word localization only (not recognition of record) | PP-OCRv5 mobile det + arabic mobile rec | PaddleOCR 3.x | PIL → numpy | `WordBox(text,score,bbox)` | none | Arabic-normalized fuzzy match, +0.05 confidence bonus | est. 1–4 s/page | **CPU** (`config.py:32`) | model weights in-process | **Yes — weights** | Yes | Yes | **No** | REUSE_AS_IS (needs shared instance) |
 | Local diacritizer<br/>`src/pipeline/tashkel.py:35` | Add tashkeel | `arabic-diacritizer` BiLSTM+attention | torch | token list | diacritized token list | strip existing | positional re-bind, abandon page on count mismatch | est. <1 s/page | **CPU-only** (`tashkel.py:14-17`) | model weights in-process | **Yes — module global `_model`** | Yes | Yes | **No** | WRAP (kill the singleton) |

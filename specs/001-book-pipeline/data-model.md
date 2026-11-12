@@ -14,7 +14,7 @@ sketch and got `t_src`, `box`, `fixes` and untimed tokens wrong.
 |---|---|---|---|
 | `page` | int (1-based) | extract/OCR | page number |
 | `source` | `"pdf-text-layer"` \| `"ocr"` | extract/OCR | where text came from |
-| `ocr_engine` | string | OCR | `gemini-3.6-flash`, `lighton/parse-v3` (absent on text-layer path) |
+| `ocr_engine` | string | OCR | `gemini-3.8-flash`, `lighton/parse-v3` (absent on text-layer path) |
 | `box_level` | `"line"` \| `"none"` (\| `"word"`) | OCR | precision of `box`. **Absent on the text-layer path**, where boxes are measured per word; the reader then defaults to word |
 | `diac_ratio` | float | extract/OCR | diacritics per Arabic letter |
 | `path` | `"keep"` \| `"diacritise"` | router | `keep` if `diac_ratio ≥ 0.15` |

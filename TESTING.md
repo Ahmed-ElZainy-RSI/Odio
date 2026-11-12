@@ -167,7 +167,7 @@ Companion docs: `README.md` (what's built), `docs/ocr-correction-architecture-bu
 ### 5.1 A quota wall stops a multi-page run partway
 **Setup:** any TTS or Gemini-vision call hits a 429 mid-book.
 **Expected:** the driver prints which page failed, saves everything completed so far, and re-running the exact same command later resumes from that page — at zero cost for anything already done.
-**Observed:** hit repeatedly and for real: `gemini-3.1-flash-tts` (10 requests/day) during both books' TTS; `gemini-3.6-flash` (20 requests/day) during OCR and arbitration on the same day. Every resume worked correctly once the underlying per-page status checks were fixed (see §5.2).
+**Observed:** hit repeatedly and for real: `gemini-3.1-flash-tts` (10 requests/day) during both books' TTS; `gemini-3.8-flash` (20 requests/day) during OCR and arbitration on the same day. Every resume worked correctly once the underlying per-page status checks were fixed (see §5.2).
 
 ### 5.2 Re-running the base pipeline on an already-corrected book
 **Setup:** `main.py --ocr lighton` is run again against a book that already went through the full correction chain (some pages reset to `"extracted"` by `apply_corrections.py`, expecting `run_tashkel`/`run_speak_gemini` to pick them up).

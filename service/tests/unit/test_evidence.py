@@ -28,7 +28,7 @@ def accepted(**overrides) -> Evidence:
         "scores": {"context": 0.93, "visual": 0.95, "final": 0.94},
         "bbox": (412, 880, 498, 915),
         "crop_ref": {"word": "crops/p007w042.png"},
-        "models": {"blind": "gemini-3.6-flash"},
+        "models": {"blind": "gemini-3.8-flash"},
         "at": "2026-10-21T09:00:00+00:00",
     }
     values.update(overrides)

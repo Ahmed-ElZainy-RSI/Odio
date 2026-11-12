@@ -1,7 +1,7 @@
 """A paid-call limiter shared by every process on the machine (spec 015).
 
 Free tiers are per project per model (gemini-3.1-flash-tts: 10 requests/day,
-gemini-3.6-flash: 20/day). One process at a time stayed under them by accident of being
+gemini-3.8-flash: 20/day). One process at a time stayed under them by accident of being
 slow; four parallel workers (batch.py) would just hit the wall four times faster and burn
 the day's allowance on calls that fail.
 
@@ -13,7 +13,7 @@ epoch-aligned, so a daily limit resets at 00:00 UTC.
 
 Configuration, opt-in (nothing set = nothing limited, exactly as before):
 
-    PIPELINE_RATE_LIMITS="gemini:gemini-3.1-flash-tts-preview=10/86400,gemini:gemini-3.6-flash=20/86400"
+    PIPELINE_RATE_LIMITS="gemini:gemini-3.1-flash-tts-preview=10/86400,gemini:gemini-3.8-flash=20/86400"
     PIPELINE_RATE_DB=work/.ratelimit.sqlite     (default)
 
 A key is `provider` or `provider:model`; the most specific matching key applies. An

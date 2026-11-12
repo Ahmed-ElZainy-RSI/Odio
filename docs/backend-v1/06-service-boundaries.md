@@ -148,7 +148,7 @@ service never imports `src.pipeline` directly and the pipeline never learns abou
 | **Outputs** | `ExtractionResult` — JPEG bytes, `text/plain` bytes, token list, provenance |
 | **Dependencies** | `PageRenderer`, `OcrEngine`, `Diacritizer` ports |
 | **Wraps** | `src/pipeline/extract.py:85`, `ocr_gemini.py:65`, `ocr_lighton.py:65`, `tashkel.py:35`, and the render at `ocr_gemini.py:56` |
-| **AI dependencies** | Gemini `gemini-3.6-flash` or LightOn `parse-v3` (OCR path only); the local CPU BiLSTM diacritizer |
+| **AI dependencies** | Gemini `gemini-3.8-flash` or LightOn `parse-v3` (OCR path only); the local CPU BiLSTM diacritizer |
 | **Sync/Async** | Blocking; runs in a worker slot |
 | **Failure behavior** | Raises a typed `PipelineError` with a stage label. Never `SystemExit`, never a blanket swallow — both are existing anti-patterns (`tools/ensemble_review.py:133`, `walidapro/.../word_diacritics.py:1296`). |
 | **Scalability** | Stateless per call once the diacritizer model is warm; the model must be a shared injected instance, not the module global at `src/pipeline/tashkel.py:25-33` |

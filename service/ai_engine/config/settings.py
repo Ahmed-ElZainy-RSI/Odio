@@ -174,7 +174,7 @@ class Settings(BaseSettings):
     final_review_model: str = "gemini-3.1-pro-preview"
 
     # ── Model configuration (was hardcoded constants in the legacy pipeline) ─────
-    ocr_gemini_model: str = "gemini-3.6-flash"
+    ocr_gemini_model: str = "gemini-3.8-flash"
     tts_gemini_model: str = "gemini-3.1-flash-tts-preview"
     tts_gemini_voice: str = "Kore"
     align_whisper_model_size: str = "small"
@@ -182,7 +182,7 @@ class Settings(BaseSettings):
     align_whisper_compute_type: str = "int8"
     diac_threshold: float = 0.15
     # The visual verifier (spec 022). Thresholds are the prototype's calibrated values.
-    verifier_gemini_model: str = "gemini-3.6-flash"
+    verifier_gemini_model: str = "gemini-3.8-flash"
     verifier_suspicion_threshold: float = 0.75
     verifier_accept_threshold: float = 0.88
     verifier_review_threshold: float = 0.70

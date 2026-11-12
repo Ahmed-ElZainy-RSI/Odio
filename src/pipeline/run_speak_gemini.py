@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from google import genai
 
-from pipeline import failures, usage
+from pipeline import failures, timing, usage
 from pipeline.records import write_record
 from pipeline.speak import bind
 from pipeline.tts_gemini import synthesize, VOICE, MODEL, SAMPLE_RATE
@@ -41,14 +41,16 @@ def do_page(client, path, audio_dir, voice):
         return
 
     text = " ".join(t["txt"] for t in rec["tokens"])
-    pcm, duration_ms = synthesize(client, text, voice)
+    with timing.step("tts") as tts_t:
+        pcm, duration_ms = synthesize(client, text, voice)
 
     audio_dir.mkdir(parents=True, exist_ok=True)
     with wave.open(str(wav), "wb") as wf:
         wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(SAMPLE_RATE)
         wf.writeframes(pcm)
 
-    words = align_words(wav)
+    with timing.step("align") as align_t:
+        words = align_words(wav)
     tokens, report = bind(rec["tokens"], words, int(duration_ms))
 
     rec.update({"tokens": tokens, "tts": f"gemini:{MODEL}", "voice": voice,
@@ -58,10 +60,11 @@ def do_page(client, path, audio_dir, voice):
                 "audio": f"audio/p{rec['page']:03d}.wav",
                 "bind_report": report, "status": "spoken"})
     write_record(path, rec)
-    print(f"  p{rec['page']:03d}  {duration_ms/1000:>6.2f}s  "
+    print(f"  p{rec['page']:03d}  audio {duration_ms/1000:>6.2f}s  "
           f"whisper {report['hume_timestamps']:>3} words -> {report['anchored']:>3} anchored + "
           f"{report['interpolated']:>3} interp = {report['tokens']:>3}  "
-          f"{'mono' if report['monotonic'] else 'NON-MONOTONIC'}")
+          f"{'mono' if report['monotonic'] else 'NON-MONOTONIC'}  "
+          f"tts {timing.fmt(tts_t.seconds):>6}  align {timing.fmt(align_t.seconds):>6}")
 
 
 def _run(work_dir: Path, voice: str = VOICE):
@@ -84,7 +87,7 @@ def _run(work_dir: Path, voice: str = VOICE):
     for p in all_pages:
         page = int(p.stem[1:])
         try:
-            with usage.page(page):
+            with usage.page(page), timing.page(page):
                 do_page(client, p, audio_dir, voice)
         except Exception as e:
             if failures.handle(work_dir, page, "tts", e, f"  {p.name}") == "quota":
@@ -100,7 +103,7 @@ def _run(work_dir: Path, voice: str = VOICE):
 
 def run(work_dir: Path, voice: str = VOICE):
     """Synthesise every unspoken page, recording every paid call to usage.jsonl (spec 025)."""
-    with usage.recording(work_dir, "tts-gemini"):
+    with usage.recording(work_dir, "tts-gemini"), timing.stage("tts-gemini"):
         return _run(work_dir, voice)
 
 

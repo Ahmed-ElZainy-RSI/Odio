@@ -147,7 +147,7 @@ class TestCostReport:
         import cost_report
         self.write(
             tmp_path,
-            (1, {"provider": "gemini", "model": "gemini-3.6-flash", "operation": "ocr",
+            (1, {"provider": "gemini", "model": "gemini-3.8-flash", "operation": "ocr",
                  "input_tokens": 1_000_000, "output_tokens": 0}),
             (2, {"provider": "lighton", "model": "lighton/parse-v3", "operation": "ocr",
                  "pages": 1}),

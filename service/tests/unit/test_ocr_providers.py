@@ -111,7 +111,7 @@ def test_gemini_counts_its_paid_call() -> None:
     assert (
         metrics.counter_value(
             INFERENCE_CALLS,
-            {"provider": "gemini", "model": "gemini-3.6-flash", "stage": "ocr"},
+            {"provider": "gemini", "model": "gemini-3.8-flash", "stage": "ocr"},
         )
         == 1
     )
@@ -176,7 +176,7 @@ def test_a_provider_error_becomes_a_typed_domain_error() -> None:
             INFERENCE_FAILURES,
             {
                 "provider": "gemini",
-                "model": "gemini-3.6-flash",
+                "model": "gemini-3.8-flash",
                 "error_code": "AI_INFERENCE_ERROR",
             },
         )
@@ -347,7 +347,7 @@ async def test_lighton_rejects_an_out_of_range_page(tmp_path: Path) -> None:
 
 class FakeSettings:
     legacy_repo_root = REPO_ROOT
-    ocr_gemini_model = "gemini-3.6-flash"
+    ocr_gemini_model = "gemini-3.8-flash"
     lighton_base_url = "https://api.lighton.ai"
 
     class _Secret:

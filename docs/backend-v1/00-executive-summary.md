@@ -41,7 +41,7 @@ So the estimate is not "adapt the existing service"; it is "build the service, a
 | | **Pipeline S** — `src/pipeline/` + `tools/` | **Pipeline W** — `walidapro/` |
 |---|---|---|
 | Maintained core? | Yes — `tools/` imports `pipeline`, never the reverse; all 56 tests cover this side | Self-contained drop-in; references neither `src/` nor `tools/`; **zero tests** |
-| OCR | PyMuPDF text layer (free, per-word boxes), or Gemini `gemini-3.6-flash`, or LightOn `parse-v3` | LightOn + LLM suspicious-word review + PaddleOCR bbox + crop-variant re-reads + blind-crop vision arbitration + score fusion |
+| OCR | PyMuPDF text layer (free, per-word boxes), or Gemini `gemini-3.8-flash`, or LightOn `parse-v3` | LightOn + LLM suspicious-word review + PaddleOCR bbox + crop-variant re-reads + blind-crop vision arbitration + score fusion |
 | Diacritization | Local CPU BiLSTM, **free** | **One vision-model call per word** |
 | **Word timing** | **Yes** — faster-whisper forced alignment + `speak.bind` | **None. Zero.** |
 | Paid calls per page | 1–2 | ~40–200 |

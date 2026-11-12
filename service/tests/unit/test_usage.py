@@ -106,7 +106,7 @@ def test_unknown_price_field_is_rejected() -> None:
 def test_the_shipped_price_table_parses_and_prices_the_models_we_use() -> None:
     ocr = UsageRecord(
         provider="gemini",
-        model="gemini-3.6-flash",
+        model="gemini-3.8-flash",
         operation="ocr",
         at="2026-10-21T10:00:00+00:00",
         input_tokens=1_000_000,
