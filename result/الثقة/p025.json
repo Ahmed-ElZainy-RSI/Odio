@@ -1,0 +1,471 @@
+{
+ "book": "الثقة",
+ "source_pdf": "الثقة_merged.pdf",
+ "pdf_sha256_16": "695ba75b1db95238",
+ "page": 25,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.8-flash",
+ "box_level": "word",
+ "render_size": [
+  1654,
+  2339
+ ],
+ "diac_ratio": 0.805,
+ "path": "keep",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p025w000",
+   "raw": "تَابَعَ",
+   "txt": "تَابَعَ",
+   "fixes": [],
+   "box": [
+    87.969,
+    9.192,
+    4.837,
+    3.378
+   ]
+  },
+  {
+   "id": "p025w001",
+   "raw": "الوَلَدَانِ",
+   "txt": "الوَلَدَانِ",
+   "fixes": [],
+   "box": [
+    78.356,
+    8.893,
+    8.464,
+    3.976
+   ]
+  },
+  {
+   "id": "p025w002",
+   "raw": "تَدْرِيبَهُمَا",
+   "txt": "تَدْرِيبَهُمَا",
+   "fixes": [],
+   "box": [
+    66.808,
+    9.192,
+    10.52,
+    3.72
+   ]
+  },
+  {
+   "id": "p025w003",
+   "raw": "بِتَأَنٍ.",
+   "txt": "بِتَأَنٍ.",
+   "fixes": [],
+   "box": [
+    60.762,
+    9.192,
+    5.079,
+    3.891
+   ]
+  },
+  {
+   "id": "p025w004",
+   "raw": "وَبَعْدَ",
+   "txt": "وَبَعْدَ",
+   "fixes": [],
+   "box": [
+    53.023,
+    9.534,
+    5.744,
+    2.651
+   ]
+  },
+  {
+   "id": "p025w005",
+   "raw": "عِدَّةِ",
+   "txt": "عِدَّةٍ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    47.098,
+    9.106,
+    4.655,
+    3.42
+   ],
+   "evidence": [
+    {
+     "original": "عِدَّةِ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "tanween kasra as printed",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w006",
+   "raw": "أَيَّامٍ",
+   "txt": "أَيَّامِ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    41.959,
+    9.277,
+    4.172,
+    3.292
+   ],
+   "evidence": [
+    {
+     "original": "أَيَّامٍ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "single kasra, not tanween",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w007",
+   "raw": "أَصْبَحَا",
+   "txt": "أَصْبَحَا",
+   "fixes": [],
+   "box": [
+    32.588,
+    9.277,
+    8.343,
+    2.822
+   ]
+  },
+  {
+   "id": "p025w008",
+   "raw": "قَادِرَيْنِ",
+   "txt": "قَادِرَيْنِ",
+   "fixes": [],
+   "box": [
+    23.096,
+    8.978,
+    8.585,
+    3.891
+   ]
+  },
+  {
+   "id": "p025w009",
+   "raw": "عَلَىَ",
+   "txt": "عَلَىَ",
+   "fixes": [],
+   "box": [
+    16.626,
+    8.893,
+    5.26,
+    3.42
+   ]
+  },
+  {
+   "id": "p025w010",
+   "raw": "رُكُوبِ",
+   "txt": "رُكُوبِ",
+   "fixes": [],
+   "box": [
+    7.376,
+    8.636,
+    8.343,
+    4.147
+   ]
+  },
+  {
+   "id": "p025w011",
+   "raw": "الدَّرَّاجَةِ",
+   "txt": "الدَّرَّاجَةِ",
+   "fixes": [],
+   "box": [
+    83.071,
+    14.109,
+    9.553,
+    3.121
+   ]
+  },
+  {
+   "id": "p025w012",
+   "raw": "بِكُلِّ",
+   "txt": "بِكُلِّ",
+   "fixes": [],
+   "box": [
+    77.751,
+    13.425,
+    4.716,
+    4.361
+   ]
+  },
+  {
+   "id": "p025w013",
+   "raw": "ثِقَةٍ.",
+   "txt": "ثِقَةٍ.",
+   "fixes": [],
+   "box": [
+    73.277,
+    14.023,
+    3.809,
+    3.463
+   ]
+  },
+  {
+   "id": "p025w014",
+   "raw": "كَانَ",
+   "txt": "كَانَ",
+   "fixes": [],
+   "box": [
+    66.929,
+    13.98,
+    4.776,
+    3.164
+   ]
+  },
+  {
+   "id": "p025w015",
+   "raw": "الوَلَدَانِ",
+   "txt": "الوَلِدَانِ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    57.557,
+    14.493,
+    8.525,
+    3.335
+   ],
+   "evidence": [
+    {
+     "original": "الوَلَدَانِ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "second الولدان printed with kasra on the lam; sukun on the ya of سعيدين (typos kept)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w016",
+   "raw": "سَعِيدَيْنِ",
+   "txt": "سَعِيْدَيْنِ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    47.582,
+    14.493,
+    9.311,
+    3.335
+   ],
+   "evidence": [
+    {
+     "original": "سَعِيدَيْنِ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "second الولدان printed with kasra on the lam; sukun on the ya of سعيدين (typos kept)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w017",
+   "raw": "جِدًّا",
+   "txt": "جِدًّا",
+   "fixes": [],
+   "box": [
+    42.624,
+    13.895,
+    4.293,
+    3.848
+   ]
+  },
+  {
+   "id": "p025w018",
+   "raw": "وَشَكَرَا",
+   "txt": "وَشَكَرا",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    33.495,
+    13.98,
+    8.222,
+    3.206
+   ],
+   "evidence": [
+    {
+     "original": "وَشَكَرَا",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "no fatha on the ra",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w019",
+   "raw": "وَالِدَيْهِمَا",
+   "txt": "وَالدِيْهِمَا",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    22.612,
+    14.536,
+    10.036,
+    3.292
+   ],
+   "evidence": [
+    {
+     "original": "وَالِدَيْهِمَا",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "printed kasra on the dal, no kasra on the lam (typo kept)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w020",
+   "raw": "عَلَىَ",
+   "txt": "عَلَىَ",
+   "fixes": [],
+   "box": [
+    16.445,
+    13.852,
+    5.26,
+    3.42
+   ]
+  },
+  {
+   "id": "p025w021",
+   "raw": "الدَّرْسِ",
+   "txt": "الدَّرْسِ",
+   "fixes": [],
+   "box": [
+    7.376,
+    14.109,
+    8.283,
+    3.72
+   ]
+  },
+  {
+   "id": "p025w022",
+   "raw": "الرَّائِعِ",
+   "txt": "الرَّائِعِ",
+   "fixes": [],
+   "box": [
+    85.429,
+    19.41,
+    7.255,
+    3.121
+   ]
+  },
+  {
+   "id": "p025w023",
+   "raw": "الَّذِي",
+   "txt": "الَّذِي",
+   "fixes": [],
+   "box": [
+    78.779,
+    18.469,
+    5.623,
+    4.062
+   ]
+  },
+  {
+   "id": "p025w024",
+   "raw": "عَلَّمَهُمَا",
+   "txt": "عَلَّمَهُمْا",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    69.105,
+    18.469,
+    8.585,
+    3.634
+   ],
+   "evidence": [
+    {
+     "original": "عَلَّمَهُمَا",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "printed sukun on the mim (typo kept)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p025w025",
+   "raw": "إِيَّاهُ.",
+   "txt": "إِيَّاهُ.",
+   "fixes": [],
+   "box": [
+    64.268,
+    19.367,
+    3.93,
+    3.506
+   ]
+  },
+  {
+   "id": "p025w026",
+   "raw": "العِبْرَةُ:",
+   "txt": "العِبْرَةُ:",
+   "fixes": [],
+   "box": [
+    65.115,
+    28.559,
+    7.437,
+    3.335
+   ]
+  },
+  {
+   "id": "p025w027",
+   "raw": "الصَّبْرُ",
+   "txt": "الصَّبْرُ",
+   "fixes": [],
+   "box": [
+    55.32,
+    29.115,
+    7.981,
+    2.736
+   ]
+  },
+  {
+   "id": "p025w028",
+   "raw": "طَرِيقُنَا",
+   "txt": "طَرِيقُنَا",
+   "fixes": [],
+   "box": [
+    46.252,
+    28.303,
+    8.464,
+    4.275
+   ]
+  },
+  {
+   "id": "p025w029",
+   "raw": "لاكْتِسَابِ",
+   "txt": "لاكْتِسَابِ",
+   "fixes": [],
+   "box": [
+    34.825,
+    28.474,
+    10.701,
+    3.976
+   ]
+  },
+  {
+   "id": "p025w030",
+   "raw": "الثِّقَةِ.",
+   "txt": "الثِّقَةِ.",
+   "fixes": [],
+   "box": [
+    28.718,
+    28.132,
+    5.32,
+    3.762
+   ]
+  }
+ ],
+ "box_fit": {
+  "fitted": 31,
+  "total": 31
+ }
+}

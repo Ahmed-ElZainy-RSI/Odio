@@ -4,14 +4,22 @@
     python tools/qiyami/qiyami_run.py --pdf "books/التعاون (1).pdf" --book التعاون
     python tools/qiyami/qiyami_run.py --pdf ... --pages 4 5       # file page numbers (1-based)
     python tools/qiyami/qiyami_run.py --pdf ... --samples 1       # cheaper single-call setup
-    python tools/qiyami/qiyami_run.py --pdf ... --rebuild         # no API calls: rebuild result/ from saved runs
+    python tools/qiyami/qiyami_run.py --pdf ... --rebuild         # no API calls: rebuild from saved runs
 
-Output (one folder per book, nothing shared between books):
-    result/<book>/images/p001.png      page rendered from the PDF at --dpi (what Gemini saw)
-    result/<book>/json/p001.json       text, lines, words, settings, score when a reference exists
-    result/<book>/book.json            book metadata + per-page summary
-    result/<book>/<book>_كامل.txt      whole book as plain text
+Output of the OCR stage, one folder per book (work/qiyami/<book>/, next to the raw runs):
+    images/p001.png      page rendered from the PDF at --dpi (what Gemini saw)
+    json/p001.json       text, lines, words, settings, corrections, score when a reference exists
+    book.json            book metadata + per-page summary
+    <book>_كامل.txt      whole book as plain text
+Then result/<book>/ is (re)built from it by build_readers.py: the pipeline's book folder (page records with
+word boxes, pages/, check_pages/, ocr_check.html, reader.html, timings, usage), without audio.
 Raw model answers: work/qiyami/<book>/page_N/sample_*.raw (git-ignored).
+Wall-clock time of every page's render and OCR: work/qiyami/<book>/timings.jsonl (pipeline timing.py);
+every paid Gemini call's tokens: work/qiyami/<book>/usage.jsonl (pipeline usage.py, priced by tools/cost_report.py);
+tools/qiyami/build_readers.py shows it in the reader. --rebuild times nothing.
+Hand corrections checked against the page image: tools/qiyami/fixes/<book>.json
+    [{"page": 1, "old": "اَلثِّقَةُ", "new": "الثِّقَةُ", "why": "no fatha on the alef in print"}, ...]
+applied to the voted text on every run and --rebuild; each page JSON lists the ones it got.
 Needs $GEMINI_API_KEY unless --rebuild. Every call uploads the page to Google.
 """
 import argparse
@@ -23,12 +31,17 @@ import sys
 from datetime import date
 from pathlib import Path
 
+import time
+from contextlib import nullcontext
+
 import pymupdf
 
 import score_ocr as S
 import tune_flash as T
 
 REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "src"))
+from pipeline import timing, usage  # noqa: E402  (work/qiyami/<book>/timings.jsonl, usage.jsonl)
 MODEL = "gemini-3.8-flash"
 SETUP = {"prompt": "v2", "media_resolution": "high", "thinking": "low", "zoom_strips": 3,
          "strip_scale": 2.0}
@@ -38,7 +51,22 @@ LETTERS = re.compile(r"[ء-ي]")
 SCORED = {"الأمانة": ("page_4", "page_5")}
 
 
-def page_json(book, pdf, sha, n, text, img, dpi, samples, score):
+def apply_fixes(text, fixes, n):
+    """Replace every `old` with `new` on page n. A fix that no longer matches is an error, not a skip."""
+    done = []
+    for f in fixes:
+        if f["page"] != n:
+            continue
+        # whole word only: «أَكْرَم» must not touch «أَكْرَمُ»
+        pat = re.compile(rf"(?<![ء-يٱ{S.MARKS}ـ]){re.escape(f['old'])}(?![ء-يٱ{S.MARKS}ـ])")
+        text, count = pat.subn(lambda m: f["new"], text)
+        if not count:
+            sys.exit(f"p{n:03d}: fix not found in the OCR text: {f['old']!r}")
+        done.append({**f, "count": count})
+    return text.strip(), done
+
+
+def page_json(book, pdf, sha, n, text, img, dpi, samples, score, fixes=()):
     letters = len(LETTERS.findall(text))
     lines = [l.strip() for l in text.splitlines() if l.strip()]
     words = text.split()
@@ -52,6 +80,7 @@ def page_json(book, pdf, sha, n, text, img, dpi, samples, score):
         "text": text, "lines": lines,
         "tokens": [{"id": f"p{n:03d}w{i:03d}", "txt": w} for i, w in enumerate(words)],
         "score": score,
+        "corrections": list(fixes),
     }
 
 
@@ -63,9 +92,10 @@ def main():
     ap.add_argument("--pages", nargs="+", type=int)
     ap.add_argument("--dpi", type=int, default=200)
     ap.add_argument("--samples", type=int, default=5)
-    ap.add_argument("--out", default=str(REPO / "result"))
+    ap.add_argument("--out", default=str(REPO / "work" / "qiyami"), help="OCR stage output root")
+    ap.add_argument("--result", default=str(REPO / "result"), help="where the book folder is built")
     ap.add_argument("--runs", default=str(REPO / "work" / "qiyami"), help="where raw model answers are kept")
-    ap.add_argument("--rebuild", action="store_true", help="rebuild result/ from saved runs, no API calls")
+    ap.add_argument("--rebuild", action="store_true", help="rebuild from saved runs, no API calls")
     a = ap.parse_args()
     key = os.environ.get("GEMINI_API_KEY")
     if not a.rebuild and not key:
@@ -79,36 +109,49 @@ def main():
     root = Path(a.out) / book
     (root / "images").mkdir(parents=True, exist_ok=True)
     (root / "json").mkdir(exist_ok=True)
+    fix_file = Path(__file__).resolve().parent / "fixes" / f"{book}.json"
+    fixes = json.loads(fix_file.read_text(encoding="utf-8")) if fix_file.exists() else []
     T.RUNS = Path(a.runs)
     runs = T.RUNS / book
     args = argparse.Namespace(variant=book, model=MODEL, prompt="v2", res="high", thinking="low",
                               zoom=3, scale=2.0, samples=a.samples, temperature=0.0,
                               enhance=False, review=False)
 
-    for n in a.pages or range(1, len(doc) + 1):
-        name = f"page_{n}"
-        img_path = root / "images" / f"p{n:03d}.png"
-        if not img_path.exists() or not a.rebuild:
-            doc[n - 1].get_pixmap(dpi=a.dpi).save(img_path)
+    t0 = time.perf_counter()
+    scope = nullcontext() if a.rebuild else timing.run(runs)
+    paid = nullcontext() if a.rebuild else usage.recording(runs, "qiyami-ocr")
+    with scope, paid, timing.stage("qiyami-ocr"):
+        for n in a.pages or range(1, len(doc) + 1):
+            with timing.page(n), usage.page(n):
+                name = f"page_{n}"
+                img_path = root / "images" / f"p{n:03d}.png"
+                if not img_path.exists() or not a.rebuild:
+                    with timing.step("render"):
+                        doc[n - 1].get_pixmap(dpi=a.dpi).save(img_path)
+                if not a.rebuild:
+                    T.PAGES[name] = str(img_path.resolve())
+                    S.GT.setdefault(name, "ا")  # run_page needs a reference; placeholder score is discarded
+                    with timing.step("ocr"):
+                        T.run_page(name, args, key)
+                out_txt = runs / name / "Gemini-3.8-Flash.txt"
+                if not out_txt.exists():
+                    print(f"p{n:03d}: no saved run, skipped"); continue
+                text, done = apply_fixes(out_txt.read_text(encoding="utf-8").strip(), fixes, n)
+                samples = len(list((runs / name).glob("sample_*.raw")))
+                score = None
+                if name in SCORED.get(book, ()):
+                    c, w, t, ad, fa = S.score(text, S.GT[name])
+                    score = {"letters": round(c, 4), "words": round(w, 4), "tashkeel": round(t, 4),
+                             "reference": "score_ocr.GT"}
+                with Image.open(img_path) as img:
+                    data = page_json(book, pdf, sha, n, text, img, a.dpi, samples, score, done)
+                (root / "json" / f"p{n:03d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1),
+                                                             encoding="utf-8")
+                print(f"p{n:03d}: {len(data['tokens'])} words" + (f"  tashkeel {score['tashkeel']:.1%}" if score else "")
+                      + (f"  {len(done)} fixes" if done else ""))
         if not a.rebuild:
-            T.PAGES[name] = str(img_path.resolve())
-            S.GT.setdefault(name, "ا")  # run_page needs a reference; placeholder score is discarded
-            T.run_page(name, args, key)
-        out_txt = runs / name / "Gemini-3.8-Flash.txt"
-        if not out_txt.exists():
-            print(f"p{n:03d}: no saved run, skipped"); continue
-        text = out_txt.read_text(encoding="utf-8").strip()
-        samples = len(list((runs / name).glob("sample_*.raw")))
-        score = None
-        if name in SCORED.get(book, ()):
-            c, w, t, ad, fa = S.score(text, S.GT[name])
-            score = {"letters": round(c, 4), "words": round(w, 4), "tashkeel": round(t, 4),
-                     "reference": "score_ocr.GT"}
-        with Image.open(img_path) as img:
-            data = page_json(book, pdf, sha, n, text, img, a.dpi, samples, score)
-        (root / "json" / f"p{n:03d}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1),
-                                                     encoding="utf-8")
-        print(f"p{n:03d}: {len(data['tokens'])} words" + (f"  tashkeel {score['tashkeel']:.1%}" if score else ""))
+            timing.record_book_total(time.perf_counter() - t0)
+            print(timing.summary(runs, timing._RUN.get(), time.perf_counter() - t0))
 
     pages = sorted((root / "json").glob("p*.json"))
     summary = [json.loads(p.read_text(encoding="utf-8")) for p in pages]
@@ -116,11 +159,13 @@ def main():
         "id": sha, "title": book, "source_pdf": pdf.name, "pages": len(doc),
         "ocr_engine": MODEL, "setup": SETUP, "date": date.today().isoformat(),
         "page_summary": [{"page": d["page"], "words": len(d["tokens"]), "diac_ratio": d["diac_ratio"],
-                          "score": d["score"]} for d in summary],
+                          "score": d["score"], "corrections": len(d.get("corrections", []))} for d in summary],
     }, ensure_ascii=False, indent=1), encoding="utf-8")
     (root / f"{book}_كامل.txt").write_text(
         "\n\n".join(f"===== صفحة {d['page']} =====\n{d['text']}" for d in summary), encoding="utf-8")
     print(f"\nWrote {root.resolve()}")
+    import build_readers
+    build_readers.build_book(root, Path(a.result))
 
 
 if __name__ == "__main__":

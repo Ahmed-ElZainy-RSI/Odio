@@ -1,0 +1,414 @@
+<!doctype html><html lang=ar dir=rtl data-theme=light><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>دبدوب الطماع — قارئ متزامن</title>
+<link rel=preconnect href="https://fonts.googleapis.com"><link rel=preconnect href="https://fonts.gstatic.com" crossorigin>
+<link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&display=swap">
+<script>try{const t=localStorage.getItem("reader-theme"); if(t) document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+:root{--bg:#f6f7fb;--surface:#ffffff;--surface-2:#f1f3f8;--line:#e4e7ee;--ink:#121826;--ink-2:#4a5466;--mute:#8a93a4;
+--accent:#3157d5;--accent-2:#6d4dd6;--accent-soft:#e9eeff;--read:#3157d5;
+--hl:#ffe58a;--hl-line:#f2bf33;--fix:#e9f8ef;--fix-line:#9fd8b4;--flag:#fdecec;--flag-line:#eba79f;--ver:#fff3df;--ver-line:#e9c27c;
+--ok:#12804f;--warn:#a1610b;--bad:#c2352b;--shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.07);
+--glass:rgba(255,255,255,.78);color-scheme:light}
+:root[data-theme=dark]{--bg:#0c1016;--surface:#151a22;--surface-2:#1b222c;--line:#2a323e;--ink:#e8edf4;--ink-2:#b3bdca;--mute:#7f8a99;
+--accent:#7aa2ff;--accent-2:#a98bff;--accent-soft:#1d2a47;--read:#8fb0ff;
+--hl:rgba(255,214,90,.22);--hl-line:#f5c64a;--fix:#123323;--fix-line:#2f7a52;--flag:#3a1a19;--flag-line:#a9473f;--ver:#3a2b12;--ver-line:#a77b2c;
+--ok:#4fd197;--warn:#f0b452;--bad:#ff8a7f;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+--glass:rgba(21,26,34,.8);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font:15px/1.55 Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:var(--ink);
+background:var(--bg);padding-bottom:120px;transition:background .35s,color .35s}
+body::before{content:"";position:fixed;inset:-20% -10% auto;height:60vh;z-index:-1;pointer-events:none;
+background:radial-gradient(60% 60% at 70% 20%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 70%),
+radial-gradient(50% 50% at 20% 0%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 70%)}
+button{font:inherit;color:inherit}
+.ltr{direction:ltr}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);
+background:var(--glass);border-bottom:1px solid var(--line)}
+.top-in{max-width:1440px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;color:#fff;
+background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+.logo svg{width:22px;height:22px}
+h1{font-family:Amiri,'Geeza Pro',serif;font-size:26px;line-height:1.2;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:3px;direction:ltr;justify-content:flex-end}
+.chip{font-size:11.5px;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);padding:1px 9px;border-radius:999px;white-space:nowrap}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;flex:none;
+transition:transform .2s,border-color .2s,background .2s}
+.icon-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.icon-btn svg{width:19px;height:19px}
+.icon-btn .moon,:root[data-theme=dark] .icon-btn .sun{display:none}
+:root[data-theme=dark] .icon-btn .moon{display:block}
+
+.pg{max-width:1440px;margin:0 auto;padding:18px 16px 0}
+
+/* page strip */
+.pages{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 10px;direction:ltr;scrollbar-width:thin}
+.pages button{position:relative;flex:none;min-width:40px;height:36px;padding:0 10px;border-radius:10px;border:1px solid var(--line);
+background:var(--surface);cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2);overflow:hidden;
+transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s,color .25s,border-color .25s,box-shadow .25s}
+.pages button:hover{transform:translateY(-2px);border-color:var(--accent)}
+.pages button i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);opacity:.55;transition:width .4s}
+.pages button.seen i{width:100%}
+.pages button.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;
+box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);transform:translateY(-2px)}
+.pages button.on i{background:#fff}
+.ptm{display:flex;flex-wrap:wrap;gap:6px;align-items:center;direction:ltr;font-size:12px;color:var(--mute);margin:2px 0 12px}
+.ptm:empty{display:none}
+.ptm .k{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--ink-2)}
+.ptm .k b{color:var(--ink);font-variant-numeric:tabular-nums}
+.ptm .k.tot{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));color:var(--accent)}
+
+/* reading stage */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;
+transition:background .35s,border-color .35s}
+.compare{display:flex;align-items:stretch}
+.compare>div{flex:1;min-width:0}
+.txtcol{max-height:70vh;overflow:auto;position:relative;scroll-behavior:smooth}
+.compare .txtcol{border-left:1px solid var(--line)}
+.imgcol{max-height:70vh;overflow:auto;background:var(--surface-2);padding:14px}
+.compare.textonly .imgcol{display:none}
+.compare.textonly .txtcol{border-left:none}
+@media (max-width:820px){.compare{flex-direction:column} .compare .txtcol{border-left:none;border-bottom:1px solid var(--line);max-height:55vh} .imgcol{max-height:none}}
+.txt{position:relative;padding:34px 38px;font-size:28px;line-height:2.5;font-family:Amiri,'Scheherazade New','Noto Naskh Arabic','Geeza Pro',serif;min-height:240px}
+@media (max-width:600px){.txt{padding:22px 18px;font-size:24px}}
+.txt.in-next{animation:inNext .45s cubic-bezier(.2,.8,.2,1)}
+.txt.in-prev{animation:inPrev .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes inNext{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes inPrev{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+.marker{position:absolute;z-index:0;border-radius:10px;background:var(--hl);box-shadow:0 0 0 2px var(--hl-line),0 6px 18px color-mix(in srgb,var(--hl-line) 35%,transparent);
+opacity:0;pointer-events:none;transition:left .22s cubic-bezier(.2,.8,.2,1),top .22s cubic-bezier(.2,.8,.2,1),width .22s,height .22s,opacity .2s}
+.marker.on{opacity:1}
+.w{position:relative;z-index:1;padding:3px 5px;border-radius:8px;cursor:pointer;scroll-margin:120px 0;
+transition:color .3s,background .2s,transform .2s;display:inline-block;line-height:1.5}
+.w:hover{background:var(--accent-soft)}
+.w.read{color:var(--read)}
+.w.now{color:var(--ink);transform:scale(1.06)}
+.w.interp{text-decoration:underline dotted var(--mute);text-underline-offset:9px;text-decoration-thickness:2px}
+.w.fixed{background:var(--fix);box-shadow:inset 0 0 0 1px var(--fix-line)}
+.w.flagged{background:var(--flag);box-shadow:inset 0 0 0 1px var(--flag-line)}
+.w.verified{background:var(--ver);box-shadow:inset 0 0 0 1px var(--ver-line)}
+.w.now.fixed,.w.now.flagged,.w.now.verified{background:transparent}
+.w.untimed{opacity:.5;cursor:default}
+.w.pick{outline:2px solid var(--accent);outline-offset:1px}
+.imgw{position:relative;line-height:0;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.imgw img{width:100%;display:block;transition:opacity .35s}
+.imgw img.loading{opacity:0}
+.bx{position:absolute;border-radius:4px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.bx:hover{background:color-mix(in srgb,var(--accent) 18%,transparent);box-shadow:0 0 0 2px var(--accent)}
+.bmark{position:absolute;border-radius:5px;pointer-events:none;opacity:0;background:rgba(255,213,79,.32);
+box-shadow:0 0 0 2.5px #f2b51f,0 0 18px rgba(242,181,31,.55);
+transition:left .22s cubic-bezier(.2,.8,.2,1),top .22s cubic-bezier(.2,.8,.2,1),width .22s,height .22s,opacity .2s}
+.bmark.on{opacity:1;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 2.5px #f2b51f,0 0 28px rgba(242,181,31,.8)}}
+
+/* inspector */
+.insp{direction:ltr;border-top:1px solid var(--line);background:var(--surface-2);padding:14px 18px;min-height:76px;font-size:13px;color:var(--ink-2)}
+.insp .hint{color:var(--mute);display:flex;align-items:center;gap:8px}
+.insp .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.insp .word{font-family:Amiri,'Geeza Pro',serif;font-size:30px;line-height:1.3;color:var(--ink);direction:rtl}
+.insp .chips{display:flex;gap:6px;flex-wrap:wrap}
+.insp .c{font-size:11.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.insp .c.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.insp .c.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,var(--line))}
+.insp .c.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.insp .c.acc{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.insp .tech{margin-top:6px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--mute)}
+.insp .note{margin-top:6px;font-size:12.5px}
+.insp .note b{font-family:Amiri,'Geeza Pro',serif;font-size:17px;color:var(--ink)}
+.insp.flash{animation:flash .5s}
+@keyframes flash{from{background:var(--accent-soft)}}
+
+/* sections below */
+.sec{margin-top:26px}
+.sec h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:600;margin:0 2px 10px;direction:ltr;text-align:left}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;direction:ltr}
+.lgi{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.lgi i{flex:none;width:30px;height:20px;border-radius:6px;margin-top:2px}
+.lgi b{display:block;font-size:13px;font-weight:600}
+.lgi span{font-size:12px;color:var(--mute)}
+.lg-now{background:var(--hl);box-shadow:0 0 0 2px var(--hl-line)}
+.lg-read{background:linear-gradient(90deg,var(--read),var(--accent-2))}
+.lg-interp{border-bottom:2px dotted var(--mute);height:12px!important}
+.lg-fixed{background:var(--fix);box-shadow:inset 0 0 0 1px var(--fix-line)}
+.lg-flag{background:var(--flag);box-shadow:inset 0 0 0 1px var(--flag-line)}
+.lg-ver{background:var(--ver);box-shadow:inset 0 0 0 1px var(--ver-line)}
+.keys{display:flex;gap:14px;flex-wrap:wrap;direction:ltr;margin-top:10px;font-size:12.5px;color:var(--ink-2)}
+kbd{font:600 11px ui-monospace,Menlo,monospace;background:var(--surface);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;margin-right:4px;color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;direction:ltr}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;position:relative;overflow:hidden;
+transition:transform .25s,box-shadow .25s}
+.tile:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.tile::after{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));opacity:.7}
+.tile b{display:block;font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tile span{font-size:12px;color:var(--mute)}
+.tmg{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 16px;direction:ltr;font-size:12.5px}
+.tmg summary{cursor:pointer;font-weight:600;color:var(--ink-2);list-style:none;display:flex;align-items:center;gap:8px}
+.tmg summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);transition:transform .25s}
+.tmg[open] summary::before{transform:rotate(45deg)}
+.tmg table{border-collapse:collapse;margin-top:12px;width:100%;font-variant-numeric:tabular-nums;animation:fadeUp .35s}
+.tmg th,.tmg td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--line)}
+.tmg th{color:var(--mute);font-weight:600;font-size:11.5px}
+.tmg th:first-child,.tmg td:first-child{text-align:left}
+.tmg tbody tr:hover{background:var(--surface-2)}
+.tmg tfoot td{border-top:2px solid var(--line);border-bottom:0;font-weight:600}
+.tmg p{margin-top:8px;color:var(--mute);font-size:11.5px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}
+.reveal.shown{opacity:1;transform:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+
+/* player dock */
+.dock{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:30;width:min(920px,calc(100% - 24px));
+display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:22px;border:1px solid var(--line);
+background:var(--glass);backdrop-filter:saturate(1.5) blur(18px);-webkit-backdrop-filter:saturate(1.5) blur(18px);box-shadow:var(--shadow);
+animation:dockIn .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes dockIn{from{opacity:0;transform:translate(-50%,30px)}}
+.dock .nav{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;flex:none;transition:transform .2s,border-color .2s}
+.dock .nav:hover:not(:disabled){border-color:var(--accent);transform:scale(1.06)}
+.dock .nav:disabled{opacity:.35;cursor:default}
+.dock .nav svg{width:18px;height:18px}
+.play{width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;flex:none;display:grid;place-items:center;color:#fff;
+background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 45%,transparent);
+transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
+.play:hover:not(:disabled){transform:scale(1.08)}
+.play:active:not(:disabled){transform:scale(.94)}
+.play:disabled{opacity:.4;cursor:default}
+.play svg{width:22px;height:22px}
+.play .pause,body.playing .play .pl{display:none}
+body.playing .play .pause{display:block}
+body.playing .play{animation:glow 2.2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 8px 30px color-mix(in srgb,var(--accent) 70%,transparent)}}
+.mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.mid-top{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+.pl-label{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--ink)}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:12px}
+.eq i{width:3px;height:3px;border-radius:2px;background:var(--accent);transition:height .2s}
+body.playing .eq i{animation:eq 0.9s ease-in-out infinite}
+body.playing .eq i:nth-child(2){animation-delay:-.3s} body.playing .eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.tm{font-variant-numeric:tabular-nums;direction:ltr;color:var(--mute)}
+.scrub{position:relative;height:8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);cursor:pointer}
+.scrub i{position:absolute;top:0;bottom:0;right:0;width:0;border-radius:999px;background:linear-gradient(270deg,var(--accent),var(--accent-2));display:block}
+.scrub i::after{content:"";position:absolute;left:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff;
+box-shadow:0 0 0 3px var(--accent),0 2px 6px rgba(0,0,0,.2);transform:scale(0);transition:transform .2s}
+.scrub:hover i::after,body.playing .scrub i::after{transform:scale(1)}
+.opts{display:flex;gap:6px;flex:none;direction:ltr}
+.pillbtn{height:32px;padding:0 11px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-2);transition:all .2s}
+.pillbtn:hover{border-color:var(--accent)}
+.pillbtn.on{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+@media (max-width:640px){.opts .auto{display:none} .dock{gap:8px;padding:8px 10px} .play{width:46px;height:46px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important} .reveal{opacity:1;transform:none}}
+</style></head><body>
+
+<header class=top><div class=top-in>
+<div class=brand><div class=logo><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></div>
+<div style="min-width:0"><h1>دبدوب الطماع</h1><div class=meta><span class=chip>12 pages</span><span class=chip>379 words</span><span class=chip>4.3 min of audio</span><span class=chip>voice Kore</span></div></div></div>
+<button class=icon-btn id=theme title="Switch light / dark" aria-label="Switch light or dark mode">
+<svg class=sun viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+<svg class=moon viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button></div></header>
+
+<main class=pg>
+<nav class=pages id=pgsel aria-label="Pages"></nav>
+<div class=ptm id=ptm></div>
+
+<section class=card>
+<div class=compare id=compare><div class=txtcol id=txtcol><div class=txt id=txt></div></div><div class=imgcol><div class=imgw id=imgw><img id=img alt=""><div id=boxes></div><div class=bmark id=bmark></div></div></div></div>
+<div class=insp id=insp><div class=hint>Hover or tap a word to see how it was read and timed. Tap a word to jump the audio there.</div></div>
+</section>
+
+<section class="sec reveal"><h2>How to read this page</h2>
+<div class=legend><div class=lgi><i class=lg-now></i><div><b>Word being spoken</b><span>the gliding highlight follows the voice</span></div></div><div class=lgi><i class=lg-read></i><div><b>Already read</b><span>words turn blue once they have been spoken</span></div></div><div class=lgi><i class=lg-interp></i><div><b>Estimated timing</b><span>dotted underline: timing guessed between two measured words</span></div></div><div class=lgi><i class=lg-fixed></i><div><b>Cleaned by a rule</b><span>a mechanical fix (e.g. stray kashida) was applied</span></div></div></div>
+<div class=keys><span><kbd>Space</kbd>play / pause</span><span><kbd>←</kbd>next page</span><span><kbd>→</kbd>previous page</span><span>tap a word to jump to it</span></div>
+</section>
+
+<section class="sec reveal"><h2>About this book</h2>
+<div class=tiles><div class=tile><b data-count=358>358</b><span>words anchored to real timestamps (94% of timed)</span></div><div class=tile><b data-count=21>21</b><span>words with timing interpolated between anchors</span></div><div class=tile><b data-count=2>2</b><span>words cleaned by an extraction rule</span></div><div class=tile><b>4.3 min</b><span>real synthesised audio</span></div><div class=tile><b>2m56s</b><span>processing time, last full run (wall clock)</span></div><div class=tile><b>27.7s</b><span>processing per page, average of 12</span></div></div>
+<details class=tmg><summary>Processing time per page (12/12 pages timed, book run 2m56s wall clock)</summary><table><thead><tr><th>pg</th><th>render</th><th>OCR</th><th>box fit</th><th>tashkeel</th><th>TTS</th><th>align</th><th>page total</th></tr></thead><tbody><tr><td>1</td><td>0.2s</td><td>18.8s</td><td>0.0s</td><td>2.8s</td><td>15.2s</td><td>6.9s</td><td><b>44.0s</b></td></tr><tr><td>2</td><td>0.3s</td><td>20.9s</td><td>0.0s</td><td>–</td><td>9.0s</td><td>3.7s</td><td><b>34.0s</b></td></tr><tr><td>3</td><td>0.2s</td><td>10.4s</td><td>0.0s</td><td>–</td><td>9.9s</td><td>4.5s</td><td><b>25.0s</b></td></tr><tr><td>4</td><td>0.3s</td><td>15.1s</td><td>0.0s</td><td>–</td><td>8.3s</td><td>3.3s</td><td><b>27.1s</b></td></tr><tr><td>5</td><td>0.3s</td><td>22.9s</td><td>0.0s</td><td>–</td><td>8.2s</td><td>3.4s</td><td><b>34.7s</b></td></tr><tr><td>6</td><td>0.3s</td><td>12.4s</td><td>0.0s</td><td>–</td><td>15.1s</td><td>8.3s</td><td><b>36.2s</b></td></tr><tr><td>7</td><td>0.3s</td><td>10.0s</td><td>0.0s</td><td>–</td><td>11.0s</td><td>5.5s</td><td><b>26.9s</b></td></tr><tr><td>8</td><td>0.3s</td><td>6.7s</td><td>0.0s</td><td>–</td><td>9.4s</td><td>4.2s</td><td><b>20.6s</b></td></tr><tr><td>9</td><td>0.3s</td><td>10.3s</td><td>0.0s</td><td>–</td><td>6.5s</td><td>2.8s</td><td><b>19.9s</b></td></tr><tr><td>10</td><td>0.3s</td><td>8.6s</td><td>0.0s</td><td>–</td><td>9.6s</td><td>3.3s</td><td><b>21.8s</b></td></tr><tr><td>11</td><td>0.3s</td><td>8.2s</td><td>0.0s</td><td>–</td><td>7.2s</td><td>2.9s</td><td><b>18.5s</b></td></tr><tr><td>12</td><td>0.3s</td><td>9.2s</td><td>0.0s</td><td>–</td><td>10.1s</td><td>4.5s</td><td><b>24.1s</b></td></tr></tbody><tfoot><tr><td>total</td><td>3.6s</td><td>2m33s</td><td>0.2s</td><td>2.8s</td><td>1m59s</td><td>53.3s</td><td><b>5m33s</b></td></tr></tfoot></table><p>Wall clock, including rate-limit waits and retries. Each page shows the latest run that processed it; pages made before timing existed have no times.</p></details>
+</section>
+</main>
+
+<div class=dock dir=rtl>
+<button class=nav id=prev title="Previous page" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+<button class=play id=play title="Play / pause (Space)" aria-label="Play or pause">
+<svg class=pl viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+<svg class=pause viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
+<button class=nav id=next title="Next page" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+<div class=mid><div class=mid-top><span class=pl-label><span class=eq><i></i><i></i><i></i></span><span id=plabel></span></span><span class=tm id=tm>0.00 / 0.00</span></div>
+<div class=scrub id=scrub><i id=bar></i></div></div>
+<div class=opts><button class=pillbtn id=speed title="Reading speed">1×</button><button class="pillbtn auto on" id=auto title="Go on to the next page when a page ends">Auto ▸</button></div>
+</div>
+<audio id=au preload=metadata></audio>
+<script>
+const P=[{"page":1,"audio":"audio/p001.wav","img":"pages/p001.jpg","dur":37000,"diac":0.107,"box_level":"line","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p001w000","r":"حكايات","t":"حِكَايَاتِ","m":[0,1120],"s":"anchor","f":[],"b":[77.727,8.325,14.273,4.647]},{"i":"p001w001","r":"الغابة","t":"الْغَابَةِ","m":[1120,2300],"s":"anchor","f":[],"b":[61.273,8.228,14.727,4.743]},{"i":"p001w002","r":"دَبْدُوبُ","t":"دُبْدُوبُ","m":[2300,3140],"s":"anchor","f":[],"b":[51.273,8.228,28.636,18.103]},{"i":"p001w003","r":"الطَّمَّاعُ","t":"الطَّمَاعِ","m":[3140,4059],"s":"interpolated","f":[],"b":[20.0,11.617,28.182,14.037]},{"i":"p001w004","r":"تأليف:","t":"تَأْلِيفٌ:","m":[4059,5700],"s":"anchor","f":[],"b":[88.182,40.755,6.273,3.388]},{"i":"p001w005","r":"فاطمة","t":"فَاطِمَةُ","m":[5700,6920],"s":"anchor","f":[],"b":[79.818,41.336,7.455,2.614]},{"i":"p001w006","r":"نعمان","t":"نُعْمَانُ","m":[6920,7660],"s":"anchor","f":[],"b":[72.455,41.336,7.0,3.001]},{"i":"p001w007","r":"رسوم:","t":"رُسُومٌ:","m":[7660,9460],"s":"anchor","f":[],"b":[87.727,47.435,6.727,2.227]},{"i":"p001w008","r":"سلمى","t":"سلْمَى","m":[9460,10860],"s":"interpolated","f":[],"b":[79.273,46.66,7.455,3.001]},{"i":"p001w009","r":"حافظ","t":"حَافِظُ","m":[10860,11480],"s":"anchor","f":[],"b":[72.545,46.563,6.364,2.42]},{"i":"p001w010","r":"دار","t":"دَارِ","m":[11480,13000],"s":"interpolated","f":[],"b":[14.773,85.7,2.127,2.4]},{"i":"p001w011","r":"المستقبل","t":"الْمُسْتَقْبلِ","m":[13000,13840],"s":"anchor","f":[],"b":[9.1,85.7,5.673,2.4]},{"i":"p001w012","r":"رقم","t":"رَقْمُ","m":[13840,15360],"s":"anchor","f":[],"b":[89.455,87.609,2.818,2.323]},{"i":"p001w013","r":"الأيداع","t":"الأَيْدَاع","m":[15360,21170],"s":"interpolated","f":[],"b":[82.909,87.125,6.091,3.001]},{"i":"p001w014","r":"2021/9750","t":"2021/9750","m":[21170,22000],"s":"interpolated","f":[],"b":[71.364,86.06,10.909,3.969]},{"i":"p001w015","r":"الترقيم","t":"الترقيم","m":[22000,23760],"s":"anchor","f":[],"b":[84.545,91.288,9.818,2.711]},{"i":"p001w016","r":"الدولي","t":"الدولي","m":[23760,24460],"s":"anchor","f":[],"b":[76.818,91.191,7.091,2.033]},{"i":"p001w017","r":"6-104-808-977-978","t":"6-104-808-977-978","m":[24460,37000],"s":"interpolated","f":[],"b":[62.727,91.191,14.091,2.033]}],"tm":{"render":0.23,"ocr":18.77,"box-fit":0.03,"diacritise":2.83,"tts":15.18,"align":6.93}},{"page":2,"audio":"audio/p002.wav","img":"pages/p002.jpg","dur":16960,"diac":0.863,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p002w000","r":"اسْتَيْقَظَ","t":"اسْتَيْقَظَ","m":[0,1060],"s":"anchor","f":[],"b":[80.909,8.809,10.0,6.776]},{"i":"p002w001","r":"دَبْدُوبُ","t":"دَبْدُوبُ","m":[1060,1540],"s":"anchor","f":[],"b":[71.909,8.906,8.364,3.872]},{"i":"p002w002","r":"فِي","t":"فِي","m":[1540,1780],"s":"anchor","f":[],"b":[66.636,9.003,4.455,4.356]},{"i":"p002w003","r":"الصَّبَاحِ","t":"الصَّبَاحِ","m":[1780,2280],"s":"anchor","f":[],"b":[56.182,9.1,9.545,4.84]},{"i":"p002w004","r":"الْبَاكِرِ","t":"الْبَاكِرِ","m":[2280,2900],"s":"interpolated","f":[],"b":[47.909,9.197,7.364,4.356]},{"i":"p002w005","r":"كَعَادَتِهِ..","t":"كَعَادَتِهِ..","m":[2900,3680],"s":"anchor","f":[],"b":[38.636,9.003,8.455,3.969]},{"i":"p002w006","r":"فَتَحَ","t":"فَتَحَ","m":[3680,4660],"s":"anchor","f":[],"b":[30.182,8.519,5.364,4.743]},{"i":"p002w007","r":"نَافِذَةَ","t":"نَافِذَةَ","m":[4660,5280],"s":"anchor","f":[],"b":[22.727,8.616,6.727,4.356]},{"i":"p002w008","r":"مَنْزِلِهِ،","t":"مَنْزِلِهِ،","m":[5280,5840],"s":"anchor","f":[],"b":[14.818,8.616,7.182,4.937]},{"i":"p002w009","r":"وَقَفَ","t":"وَقَفَ","m":[5840,6800],"s":"anchor","f":[],"b":[6.455,8.616,6.455,4.163]},{"i":"p002w010","r":"يَتَأَمَّلُ","t":"يَتَأَمَّلُ","m":[6800,7480],"s":"anchor","f":[],"b":[83.182,11.81,8.0,6.292]},{"i":"p002w011","r":"جَمَالَ","t":"جَمَالَ","m":[7480,8020],"s":"anchor","f":[],"b":[75.0,14.327,7.091,3.775]},{"i":"p002w012","r":"الْغَابَةِ","t":"الْغَابَةِ","m":[8020,8560],"s":"anchor","f":[],"b":[66.364,13.843,7.455,4.453]},{"i":"p002w013","r":"مِنْ","t":"مِنْ","m":[8560,8740],"s":"anchor","f":[],"b":[60.727,14.327,4.636,3.969]},{"i":"p002w014","r":"حَوْلِهِ،","t":"حَوْلِهِ،","m":[8740,9260],"s":"anchor","f":[],"b":[52.727,11.81,6.909,6.776]},{"i":"p002w015","r":"وَأَخَذَ","t":"وَأَخَذَ","m":[9260,10220],"s":"anchor","f":[],"b":[44.364,13.65,6.182,4.453]},{"i":"p002w016","r":"يُحَدِّثُ","t":"يُحَدِّثُ","m":[10220,10780],"s":"anchor","f":[],"b":[35.545,13.746,7.636,4.356]},{"i":"p002w017","r":"نَفْسَهُ:","t":"نَفْسَهُ:","m":[10780,11960],"s":"anchor","f":[],"b":[27.273,13.746,7.182,3.582]},{"i":"p002w018","r":"الْهَوَاءُ","t":"الْهَوَاءُ","m":[11960,12680],"s":"anchor","f":[],"b":[17.0,13.843,8.0,4.356]},{"i":"p002w019","r":"مُنْعِشْ؛","t":"مُنْعِشْ؛","m":[12680,13300],"s":"anchor","f":[],"b":[7.636,13.94,8.273,4.356]},{"i":"p002w020","r":"سَأَبْحَثُ","t":"سَأَبْحَثُ","m":[13300,14360],"s":"anchor","f":[],"b":[80.909,18.974,9.455,4.453]},{"i":"p002w021","r":"عَنْ","t":"عَنْ","m":[14360,14560],"s":"anchor","f":[],"b":[74.818,19.652,4.818,3.775]},{"i":"p002w022","r":"خَلَايَا","t":"خَلَايَا","m":[14560,15100],"s":"anchor","f":[],"b":[67.0,19.458,6.818,3.969]},{"i":"p002w023","r":"عَسَلِ","t":"عَسَلِ","m":[15100,15500],"s":"anchor","f":[],"b":[58.818,19.942,6.818,3.872]},{"i":"p002w024","r":"النَّحْلِ","t":"النَّحْلِ","m":[15500,15940],"s":"anchor","f":[],"b":[50.545,18.974,7.273,4.84]},{"i":"p002w025","r":"لِلْإِفْطَارِ..","t":"لِلْإِفْطَارِ..","m":[15940,16620],"s":"anchor","f":[],"b":[40.0,18.877,9.545,5.227]}],"tm":{"render":0.35,"ocr":20.94,"box-fit":0.02,"tts":9.0,"align":3.66}},{"page":3,"audio":"audio/p003.wav","img":"pages/p003.jpg","dur":23640,"diac":0.88,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p003w000","r":"سَارَ","t":"سَارَ","m":[0,760],"s":"interpolated","f":[],"b":[88.364,9.39,5.545,3.388]},{"i":"p003w001","r":"دَبْدُوبٌ","t":"دَبْدُوبٌ","m":[760,1240],"s":"anchor","f":[],"b":[79.364,8.809,8.182,3.969]},{"i":"p003w002","r":"في","t":"في","m":[1240,1520],"s":"anchor","f":[],"b":[74.273,9.003,4.273,4.356]},{"i":"p003w003","r":"الطَّرِيقِ","t":"الطَّرِيقِ","m":[1520,2060],"s":"anchor","f":[],"b":[64.636,8.228,8.818,5.421]},{"i":"p003w004","r":"خَارِجَ","t":"خَارِجَ","m":[2060,2560],"s":"anchor","f":[],"b":[57.0,9.003,6.727,4.55]},{"i":"p003w005","r":"الْغَابَةِ","t":"الْغَابَةِ","m":[2560,3140],"s":"anchor","f":[],"b":[49.0,8.519,7.091,4.453]},{"i":"p003w006","r":"يَبْحَثُ","t":"يَبْحَثُ","m":[3140,3720],"s":"anchor","f":[],"b":[41.091,8.422,7.091,4.356]},{"i":"p003w007","r":"عَنْ","t":"عَنْ","m":[3720,3940],"s":"anchor","f":[],"b":[35.364,9.1,4.545,3.679]},{"i":"p003w008","r":"خَلَايَا","t":"خَلَايَا","m":[3940,4520],"s":"anchor","f":[],"b":[28.0,8.906,6.545,3.872]},{"i":"p003w009","r":"عَسَلِ","t":"عَسَلِ","m":[4520,4960],"s":"anchor","f":[],"b":[20.273,9.293,6.545,3.969]},{"i":"p003w010","r":"النَّحْلِ..","t":"النَّحْلِ..","m":[4960,5520],"s":"anchor","f":[],"b":[12.364,8.422,6.909,4.84]},{"i":"p003w011","r":"لَكِنَّهُ","t":"لَكِنَّهُ","m":[5520,6500],"s":"anchor","f":[],"b":[88.182,13.65,5.727,4.647]},{"i":"p003w012","r":"لَمْ","t":"لَمْ","m":[6500,6700],"s":"anchor","f":[],"b":[84.364,14.134,3.091,4.453]},{"i":"p003w013","r":"يَجِدْ..","t":"يَجِدْ..","m":[6700,7160],"s":"anchor","f":[],"b":[78.545,14.327,5.0,4.163]},{"i":"p003w014","r":"فَقَالَ","t":"فَقَالَ","m":[7160,8060],"s":"anchor","f":[],"b":[69.545,13.843,5.727,4.163]},{"i":"p003w015","r":"لِنَفْسِهِ:","t":"لِنَفْسِهِ:","m":[8060,8760],"s":"anchor","f":[],"b":[60.909,13.746,7.818,4.55]},{"i":"p003w016","r":"سَأُفْطِرُ","t":"سَأُفْطِرُ","m":[8760,9760],"s":"anchor","f":[],"b":[50.273,13.262,8.727,5.034]},{"i":"p003w017","r":"الْيَوْمَ","t":"الْيَوْمَ","m":[9760,10140],"s":"anchor","f":[],"b":[43.182,13.843,6.182,4.743]},{"i":"p003w018","r":"فَاكِهَةً","t":"فَاكِهَةً","m":[10140,10820],"s":"anchor","f":[],"b":[34.818,13.553,7.545,4.743]},{"i":"p003w019","r":"بَدَلًا","t":"بَدَلًا","m":[10820,11400],"s":"anchor","f":[],"b":[29.0,13.94,5.091,4.163]},{"i":"p003w020","r":"مِنَ","t":"مِنَ","m":[11400,11600],"s":"anchor","f":[],"b":[23.909,14.618,4.364,3.679]},{"i":"p003w021","r":"الْعَسَلِ،","t":"الْعَسَلِ،","m":[11600,12240],"s":"anchor","f":[],"b":[15.273,13.843,7.636,4.647]},{"i":"p003w022","r":"ثُمَّ","t":"ثُمَّ","m":[12240,13020],"s":"anchor","f":[],"b":[10.0,13.553,3.273,5.034]},{"i":"p003w023","r":"تَوَجَّهَ","t":"تَوَجَّهَ","m":[13020,13580],"s":"anchor","f":[],"b":[87.091,19.458,6.818,3.969]},{"i":"p003w024","r":"إِلَى","t":"إِلَى","m":[13580,13820],"s":"anchor","f":[],"b":[81.545,19.458,4.636,4.453]},{"i":"p003w025","r":"مِنْطَقَةٍ","t":"مِنْطَقَةٍ","m":[13820,14460],"s":"anchor","f":[],"b":[72.636,19.264,8.182,4.55]},{"i":"p003w026","r":"بِهَا","t":"بِهَا","m":[14460,14960],"s":"anchor","f":[],"b":[67.455,19.942,4.364,4.066]},{"i":"p003w027","r":"مَوْزٌ","t":"مَوْزٌ","m":[14960,15360],"s":"anchor","f":[],"b":[60.818,19.264,5.727,4.163]},{"i":"p003w028","r":"كَثِيرٌ؛","t":"كَثِيرٌ؛","m":[15360,16040],"s":"anchor","f":[],"b":[54.091,19.555,5.909,3.969]},{"i":"p003w029","r":"فَأَكَلَ","t":"فَأَكَلَ","m":[16040,16880],"s":"anchor","f":[],"b":[46.091,18.974,6.0,4.259]},{"i":"p003w030","r":"مِنْهَا،","t":"مِنْهَا،","m":[16880,17340],"s":"anchor","f":[],"b":[39.364,19.264,5.909,4.259]},{"i":"p003w031","r":"وَشَبِعَ،","t":"وَشَبِعَ،","m":[17340,18200],"s":"anchor","f":[],"b":[29.818,19.652,7.455,4.356]},{"i":"p003w032","r":"ثُمَّ","t":"ثُمَّ","m":[18200,18920],"s":"anchor","f":[],"b":[24.636,18.78,3.273,5.131]},{"i":"p003w033","r":"جَمَعَ","t":"جَمَعَ","m":[18920,19340],"s":"anchor","f":[],"b":[17.545,20.039,6.273,3.775]},{"i":"p003w034","r":"كَمِّيَّةً","t":"كَمِّيَّةً","m":[19340,19900],"s":"anchor","f":[],"b":[9.909,18.78,6.909,4.647]},{"i":"p003w035","r":"كَبِيرَةً،","t":"كَبِيرَةً،","m":[19900,20580],"s":"anchor","f":[],"b":[87.545,24.589,6.364,4.743]},{"i":"p003w036","r":"وَأَخَذَهَا،","t":"وَأَخَذَهَا،","m":[20580,21760],"s":"anchor","f":[],"b":[77.091,24.298,8.545,4.453]},{"i":"p003w037","r":"وَرَجَعَ","t":"وَرَجَعَ","m":[21760,22380],"s":"anchor","f":[],"b":[67.636,25.363,7.364,3.775]},{"i":"p003w038","r":"إِلَى","t":"إِلَى","m":[22380,22580],"s":"anchor","f":[],"b":[62.091,24.685,4.636,4.55]},{"i":"p003w039","r":"الْمَنْزِلِ.","t":"الْمَنْزِلِ.","m":[22580,23180],"s":"anchor","f":[],"b":[53.0,24.395,8.182,4.937]}],"tm":{"render":0.23,"ocr":10.43,"box-fit":0.02,"tts":9.87,"align":4.45}},{"page":4,"audio":"audio/p004.wav","img":"pages/p004.jpg","dur":15640,"diac":0.866,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p004w000","r":"أَتَتْ","t":"أَتَتْ","m":[0,660],"s":"anchor","f":[],"b":[85.455,8.325,4.727,3.775]},{"i":"p004w001","r":"بَعْدَ","t":"بَعْدَ","m":[660,880],"s":"anchor","f":[],"b":[80.455,9.293,4.273,3.485]},{"i":"p004w002","r":"ذَلِكَ","t":"ذَلِكَ","m":[880,1440],"s":"anchor","f":[],"b":[74.818,8.616,4.818,4.356]},{"i":"p004w003","r":"مَجْمُوعَةٌ","t":"مَجْمُوعَةٌ","m":[1440,2200],"s":"anchor","f":[],"b":[63.636,8.132,10.455,4.647]},{"i":"p004w004","r":"مِنَ","t":"مِنَ","m":[2200,2480],"s":"anchor","f":[],"b":[58.727,9.39,4.273,3.582]},{"i":"p004w005","r":"الْقُرُودِ","t":"الْقُرُودِ","m":[2480,3120],"s":"anchor","f":[],"b":[50.364,8.422,7.455,4.937]},{"i":"p004w006","r":"فَأَكَلَتْ،","t":"فَأَكَلَتْ،","m":[3120,3960],"s":"anchor","f":[],"b":[42.273,8.325,7.273,3.679]},{"i":"p004w007","r":"وَسَرْعَانَ","t":"وَسَرْعَانَ","m":[3960,5040],"s":"anchor","f":[],"b":[30.455,9.39,9.909,3.388]},{"i":"p004w008","r":"مَا","t":"مَا","m":[5040,5260],"s":"anchor","f":[],"b":[26.727,9.39,2.909,2.614]},{"i":"p004w009","r":"لَمْ","t":"لَمْ","m":[5260,5440],"s":"anchor","f":[],"b":[22.909,8.906,2.909,4.356]},{"i":"p004w010","r":"يَتَبَقَّ","t":"يَتَبَقَّ","m":[5440,6040],"s":"anchor","f":[],"b":[16.182,8.712,6.0,4.356]},{"i":"p004w011","r":"إِلَّا","t":"إِلَّا","m":[6040,6520],"s":"anchor","f":[],"b":[12.455,8.325,2.818,5.034]},{"i":"p004w012","r":"قَلِيلٌ","t":"قَلِيلٌ","m":[6520,7060],"s":"anchor","f":[],"b":[6.455,8.616,5.364,4.356]},{"i":"p004w013","r":"مِنَ","t":"مِنَ","m":[7060,7300],"s":"anchor","f":[],"b":[85.909,14.618,4.455,3.582]},{"i":"p004w014","r":"المَوْزِ،","t":"المَوْزِ،","m":[7300,7880],"s":"anchor","f":[],"b":[78.273,14.618,6.636,4.163]},{"i":"p004w015","r":"أَمَّا","t":"أَمَّا","m":[7880,8720],"s":"anchor","f":[],"b":[73.455,13.65,4.727,3.775]},{"i":"p004w016","r":"دَبْدُوبٌ","t":"دَبْدُوبٌ","m":[8720,9280],"s":"anchor","f":[],"b":[64.182,14.134,8.273,3.969]},{"i":"p004w017","r":"فَقَدْ","t":"فَقَدْ","m":[9280,9880],"s":"anchor","f":[],"b":[58.909,13.843,4.455,3.485]},{"i":"p004w018","r":"وَضَعَ","t":"وَضَعَ","m":[9880,10280],"s":"anchor","f":[],"b":[51.0,14.714,7.0,3.872]},{"i":"p004w019","r":"الْمَوْزَ","t":"الْمَوْزَ","m":[10280,10720],"s":"anchor","f":[],"b":[42.818,13.843,7.273,4.259]},{"i":"p004w020","r":"الْكَثِيرَ","t":"الْكَثِيرَ","m":[10720,11280],"s":"anchor","f":[],"b":[34.455,13.843,7.455,4.453]},{"i":"p004w021","r":"الَّذِي","t":"الَّذِي","m":[11280,11500],"s":"anchor","f":[],"b":[27.455,13.553,6.091,5.034]},{"i":"p004w022","r":"جَمَعَهُ","t":"جَمَعَهُ","m":[11500,12200],"s":"anchor","f":[],"b":[19.273,14.134,7.273,3.969]},{"i":"p004w023","r":"فِي","t":"فِي","m":[12200,12400],"s":"anchor","f":[],"b":[14.182,14.327,4.273,4.259]},{"i":"p004w024","r":"مَنْزِلِهِ","t":"مَنْزِلِهِ","m":[12400,12960],"s":"anchor","f":[],"b":[6.364,13.94,7.091,4.84]},{"i":"p004w025","r":"فِي","t":"فِي","m":[12960,13220],"s":"anchor","f":[],"b":[79.636,19.264,11.364,6.583]},{"i":"p004w026","r":"صُنْدُوقٍ،","t":"صُنْدُوقٍ،","m":[13220,13820],"s":"anchor","f":[],"b":[75.636,20.329,4.182,4.163]},{"i":"p004w027","r":"وَأَغْلَقَ","t":"وَأَغْلَقَ","m":[13820,14780],"s":"anchor","f":[],"b":[65.727,18.974,7.909,4.647]},{"i":"p004w028","r":"عَلَيْهِ،","t":"عَلَيْهِ،","m":[14780,15640],"s":"interpolated","f":[],"b":[58.636,19.458,6.091,4.066]}],"tm":{"render":0.31,"ocr":15.13,"box-fit":0.02,"tts":8.29,"align":3.31}},{"page":5,"audio":"audio/p005.wav","img":"pages/p005.jpg","dur":14600,"diac":0.903,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p005w000","r":"ثُمَّ","t":"ثُمَّ","m":[0,600],"s":"anchor","f":[],"b":[90.545,8.228,3.273,5.131]},{"i":"p005w001","r":"خَرَجَ","t":"خَرَجَ","m":[600,1000],"s":"anchor","f":[],"b":[83.727,9.003,6.0,4.259]},{"i":"p005w002","r":"مَرَّةً","t":"مَرَّةً","m":[1000,1520],"s":"anchor","f":[],"b":[78.364,8.712,4.636,4.066]},{"i":"p005w003","r":"ثَانِيَةً","t":"ثَانِيَةً","m":[1520,2280],"s":"anchor","f":[],"b":[71.273,8.228,6.455,4.743]},{"i":"p005w004","r":"إِلَى","t":"إِلَى","m":[2280,2660],"s":"anchor","f":[],"b":[65.727,8.809,4.636,4.55]},{"i":"p005w005","r":"الْغَابَةِ؛","t":"الْغَابَةِ؛","m":[2660,3600],"s":"anchor","f":[],"b":[57.636,8.519,7.273,4.453]},{"i":"p005w006","r":"لِيَجْمَعَ","t":"لِيَجْمَعَ","m":[3600,4220],"s":"anchor","f":[],"b":[47.636,9.197,8.091,4.066]},{"i":"p005w007","r":"كَمَّيَاتٍ","t":"كَمَّيَاتٍ","m":[4220,4940],"s":"anchor","f":[],"b":[38.818,8.906,8.091,4.356]},{"i":"p005w008","r":"أَكْثَرَ","t":"أَكْثَرَ","m":[4940,5540],"s":"anchor","f":[],"b":[32.273,8.325,5.636,4.453]},{"i":"p005w009","r":"مِنْ","t":"مِنْ","m":[5540,5760],"s":"anchor","f":[],"b":[27.091,9.1,4.364,3.872]},{"i":"p005w010","r":"فَاكِهَةٍ","t":"فَاكِهَةٍ","m":[5760,6440],"s":"anchor","f":[],"b":[18.636,8.519,7.545,4.743]},{"i":"p005w011","r":"أُخْرَى.","t":"أُخْرَى.","m":[6440,7740],"s":"anchor","f":[],"b":[11.182,7.938,6.636,4.84]},{"i":"p005w012","r":"ذَهَبَ","t":"ذَهَبَ","m":[7740,8220],"s":"anchor","f":[],"b":[87.818,13.843,6.091,4.259]},{"i":"p005w013","r":"دَبْدُوبٌ،","t":"دَبْدُوبٌ،","m":[8220,8860],"s":"anchor","f":[],"b":[79.091,14.134,8.0,3.969]},{"i":"p005w014","r":"وَجَمَعَ","t":"وَجَمَعَ","m":[8860,9660],"s":"anchor","f":[],"b":[70.0,14.811,7.273,3.775]},{"i":"p005w015","r":"كَمَّيَّاتٍ","t":"كَمَّيَّاتٍ","m":[9660,10400],"s":"anchor","f":[],"b":[61.636,14.23,7.818,4.259]},{"i":"p005w016","r":"مِنْ","t":"مِنْ","m":[10400,10620],"s":"anchor","f":[],"b":[56.727,14.327,4.273,3.969]},{"i":"p005w017","r":"ثِمَارِ","t":"ثِمَارِ","m":[10620,11120],"s":"anchor","f":[],"b":[50.364,14.424,5.727,4.356]},{"i":"p005w018","r":"الْبِطِّيخِ،","t":"الْبِطِّيخِ،","m":[11120,11840],"s":"anchor","f":[],"b":[41.273,13.553,8.273,5.615]},{"i":"p005w019","r":"وَوَضَعَهَا","t":"وَوَضَعَهَا","m":[11840,12920],"s":"anchor","f":[],"b":[29.273,14.618,10.273,3.582]},{"i":"p005w020","r":"أَيْضًا","t":"أَيْضًا","m":[12920,13380],"s":"anchor","f":[],"b":[22.364,13.65,6.0,4.453]},{"i":"p005w021","r":"فِي","t":"فِي","m":[13380,13560],"s":"anchor","f":[],"b":[18.0,14.327,3.636,4.259]},{"i":"p005w022","r":"مَنْزِلِهِ.","t":"مَنْزِلِهِ.","m":[13560,14180],"s":"anchor","f":[],"b":[11.0,13.94,6.455,4.84]}],"tm":{"render":0.29,"ocr":22.91,"box-fit":0.01,"tts":8.15,"align":3.35}},{"page":6,"audio":"audio/p006.wav","img":"pages/p006.jpg","dur":38280,"diac":0.83,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p006w000","r":"وَفِي","t":"وَفِي","m":[0,580],"s":"anchor","f":[],"b":[84.364,9.1,5.909,4.259]},{"i":"p006w001","r":"الْمَسَاءِ","t":"الْمَسَاءِ","m":[580,1140],"s":"anchor","f":[],"b":[74.455,8.519,9.0,4.453]},{"i":"p006w002","r":"ذَهَبَتِ","t":"ذَهَبَتِ","m":[1140,2080],"s":"anchor","f":[],"b":[66.091,8.616,7.455,4.356]},{"i":"p006w003","r":"الْحَيَوَانَاتُ","t":"الْحَيَوَانَاتُ","m":[2080,2940],"s":"anchor","f":[],"b":[53.273,8.519,11.727,4.259]},{"i":"p006w004","r":"إِلَى","t":"إِلَى","m":[2940,3200],"s":"anchor","f":[],"b":[47.455,8.809,4.818,4.55]},{"i":"p006w005","r":"الْأَسَدِ","t":"الْأَسَدِ","m":[3200,3680],"s":"anchor","f":[],"b":[39.545,8.325,7.0,4.647]},{"i":"p006w006","r":"تَشْتَكِي","t":"تَشْتَكِي","m":[3680,4380],"s":"anchor","f":[],"b":[29.636,8.809,8.909,4.55]},{"i":"p006w007","r":"مَا","t":"مَا","m":[4380,4540],"s":"anchor","f":[],"b":[25.455,9.39,3.455,2.711]},{"i":"p006w008","r":"وَجَدَتْهُ","t":"وَجَدَتْهُ","m":[4540,5160],"s":"anchor","f":[],"b":[82.091,14.134,8.182,3.969]},{"i":"p006w009","r":"مِنْ","t":"مِنْ","m":[5160,5340],"s":"anchor","f":[],"b":[76.727,14.327,4.545,3.872]},{"i":"p006w010","r":"نَقْصِ","t":"نَقْصِ","m":[5340,5760],"s":"anchor","f":[],"b":[68.636,13.843,7.182,4.84]},{"i":"p006w011","r":"ثِمَارِ","t":"ثِمَارِ","m":[5760,6260],"s":"anchor","f":[],"b":[61.636,14.424,6.091,4.356]},{"i":"p006w012","r":"الْمَوْزِ","t":"الْمَوْزِ","m":[6260,6740],"s":"anchor","f":[],"b":[53.273,13.843,7.364,4.937]},{"i":"p006w013","r":"وَالْبِطِّيخِ،","t":"وَالْبِطِّيخِ،","m":[6740,7640],"s":"anchor","f":[],"b":[42.455,13.553,10.0,6.583]},{"i":"p006w014","r":"وَكَانَ","t":"وَكَانَ","m":[7640,8540],"s":"anchor","f":[],"b":[34.636,14.327,5.909,3.775]},{"i":"p006w015","r":"دَبْدُوبٌ","t":"دَبْدُوبٌ","m":[8540,9040],"s":"anchor","f":[],"b":[25.364,14.134,8.455,3.969]},{"i":"p006w016","r":"حَاضِرًا","t":"حَاضِرًا","m":[9040,9740],"s":"anchor","f":[],"b":[81.909,19.942,8.364,3.582]},{"i":"p006w017","r":"بَيْنَهُمْ","t":"بَيْنَهُمْ","m":[9740,10280],"s":"anchor","f":[],"b":[74.0,19.555,7.091,4.356]},{"i":"p006w018","r":"كَعَادَتِهِ:","t":"كَعَادَتِهِ:","m":[10280,11120],"s":"interpolated","f":[],"b":[64.727,19.555,8.455,3.969]},{"i":"p006w019","r":"أَخَذَ","t":"أَخَذَ","m":[11120,12280],"s":"anchor","f":[],"b":[57.727,18.974,4.909,3.679]},{"i":"p006w020","r":"كَبِيرُ","t":"كَبِيرُ","m":[12280,12700],"s":"anchor","f":[],"b":[50.818,19.555,6.0,4.453]},{"i":"p006w021","r":"الْقُرُودِ","t":"الْقُرُودِ","m":[12700,13220],"s":"anchor","f":[],"b":[42.0,17.231,7.818,6.68]},{"i":"p006w022","r":"يَشْرَحُ","t":"يَشْرَحُ","m":[13220,13800],"s":"anchor","f":[],"b":[33.636,19.361,7.364,4.55]},{"i":"p006w023","r":"لِلْأَسَدِ","t":"لِلْأَسَدِ","m":[13800,14400],"s":"anchor","f":[],"b":[25.455,18.974,7.364,4.55]},{"i":"p006w024","r":"قَائِلًا:","t":"قَائِلًا:","m":[14400,14920],"s":"anchor","f":[],"b":[84.364,24.492,5.909,4.356]},{"i":"p006w025","r":"كُلَّ","t":"كُلَّ","m":[14920,16079],"s":"anchor","f":[],"b":[79.182,24.395,3.364,4.163]},{"i":"p006w026","r":"يَوْمٍ","t":"يَوْمٍ","m":[16079,16540],"s":"anchor","f":[],"b":[73.909,25.266,4.455,4.259]},{"i":"p006w027","r":"نَذْهَبُ","t":"نَذْهَبُ","m":[16540,17120],"s":"anchor","f":[],"b":[66.0,24.201,7.091,4.453]},{"i":"p006w028","r":"إِلَى","t":"إِلَى","m":[17120,17400],"s":"anchor","f":[],"b":[60.455,24.782,4.455,4.453]},{"i":"p006w029","r":"أَشْجَارِ","t":"أَشْجَارِ","m":[17400,17900],"s":"anchor","f":[],"b":[51.545,24.298,8.091,5.034]},{"i":"p006w030","r":"الْمَوْزِ","t":"الْمَوْزِ","m":[17900,18320],"s":"anchor","f":[],"b":[43.636,24.492,7.0,4.84]},{"i":"p006w031","r":"هَذِهِ","t":"هَذِهِ","m":[18320,18660],"s":"anchor","f":[],"b":[37.818,24.976,4.727,3.872]},{"i":"p006w032","r":"نَأْكُلُ","t":"نَأْكُلُ","m":[18660,19660],"s":"anchor","f":[],"b":[31.364,23.911,5.636,4.647]},{"i":"p006w033","r":"مِنْهَا،","t":"مِنْهَا،","m":[19660,20140],"s":"anchor","f":[],"b":[84.545,29.816,5.727,4.356]},{"i":"p006w034","r":"وَالْيَوْمَ","t":"وَالْيَوْمَ","m":[20140,21240],"s":"anchor","f":[],"b":[75.273,29.719,7.182,4.743]},{"i":"p006w035","r":"وَجَدْنَا","t":"وَجَدْنَا","m":[21240,21800],"s":"anchor","f":[],"b":[67.455,30.203,6.909,3.775]},{"i":"p006w036","r":"الْأَشْجَارَ","t":"الْأَشْجَارَ","m":[21800,22340],"s":"anchor","f":[],"b":[56.545,29.526,9.818,4.453]},{"i":"p006w037","r":"فَارِغَةً،","t":"فَارِغَةً،","m":[22340,23060],"s":"anchor","f":[],"b":[48.636,29.429,7.091,5.227]},{"i":"p006w038","r":"وَبَعْضُنَا","t":"وَبَعْضُنَا","m":[23060,24280],"s":"anchor","f":[],"b":[37.727,30.106,9.0,3.872]},{"i":"p006w039","r":"لَمْ","t":"لَمْ","m":[24280,24440],"s":"anchor","f":[],"b":[87.273,35.334,3.0,4.453]},{"i":"p006w040","r":"يَجِدْ","t":"يَجِدْ","m":[24440,24840],"s":"anchor","f":[],"b":[81.818,35.528,4.818,4.163]},{"i":"p006w041","r":"مَا","t":"مَا","m":[24840,25020],"s":"anchor","f":[],"b":[78.0,35.818,3.0,2.711]},{"i":"p006w042","r":"يَأْكُلُهُ،","t":"يَأْكُلُهُ،","m":[25020,25640],"s":"anchor","f":[],"b":[70.818,34.56,6.364,4.743]},{"i":"p006w043","r":"فَقَالَ","t":"فَقَالَ","m":[26440,26940],"s":"anchor","f":[],"b":[63.455,35.044,5.545,4.066]},{"i":"p006w044","r":"الْأَسَدُ:","t":"الْأَسَدُ:","m":[26940,27440],"s":"anchor","f":[],"b":[56.0,34.85,6.545,3.872]},{"i":"p006w045","r":"تَقْصِدُ","t":"تَقْصِدُ","m":[27440,28700],"s":"anchor","f":[],"b":[47.091,35.044,6.909,4.356]},{"i":"p006w046","r":"أَنَّ","t":"أَنَّ","m":[28700,28920],"s":"anchor","f":[],"b":[43.182,34.85,3.0,4.453]},{"i":"p006w047","r":"هُنَاكَ","t":"هُنَاكَ","m":[28920,29400],"s":"anchor","f":[],"b":[83.909,40.561,6.091,3.291]},{"i":"p006w048","r":"مَنْ","t":"مَنْ","m":[29400,29560],"s":"anchor","f":[],"b":[79.091,40.852,4.182,3.679]},{"i":"p006w049","r":"أَخَذَ","t":"أَخَذَ","m":[29560,29980],"s":"anchor","f":[],"b":[73.727,40.077,4.455,3.775]},{"i":"p006w050","r":"كَمِيَّةً","t":"كَمِيَّةً","m":[29980,30520],"s":"anchor","f":[],"b":[66.364,39.981,6.545,4.647]},{"i":"p006w051","r":"كَبِيرَةً","t":"كَبِيرَةً","m":[30520,31200],"s":"anchor","f":[],"b":[59.545,40.465,6.182,4.743]},{"i":"p006w052","r":"مِنَ","t":"مِنَ","m":[31200,31480],"s":"anchor","f":[],"b":[54.818,41.142,4.182,3.582]},{"i":"p006w053","r":"الثَّمَارِ،","t":"الثَّمَارِ،","m":[31480,32100],"s":"anchor","f":[],"b":[46.636,39.884,7.273,5.421]},{"i":"p006w054","r":"وَأَكَلَهَا","t":"وَأَكَلَهَا","m":[32100,33240],"s":"anchor","f":[],"b":[78.364,45.402,11.909,4.55]},{"i":"p006w055","r":"أَجَابَ","t":"أَجَابَ","m":[33240,34520],"s":"anchor","f":[],"b":[70.727,45.402,6.545,4.453]},{"i":"p006w056","r":"كَبِيرُ","t":"كَبِيرُ","m":[34520,34960],"s":"anchor","f":[],"b":[64.273,46.079,5.636,4.356]},{"i":"p006w057","r":"الْقُرُودِ:","t":"الْقُرُودِ:","m":[34960,35560],"s":"anchor","f":[],"b":[55.909,45.499,7.455,4.937]},{"i":"p006w058","r":"نَعَمْ،","t":"نَعَمْ،","m":[35560,36660],"s":"anchor","f":[],"b":[49.455,45.983,4.455,4.84]},{"i":"p006w059","r":"يَا","t":"يَا","m":[36660,36840],"s":"anchor","f":[],"b":[87.818,51.694,2.455,3.485]},{"i":"p006w060","r":"مَوْلَايَ","t":"مَوْلَايَ","m":[36840,37340],"s":"interpolated","f":[],"b":[79.545,51.21,7.364,4.356]},{"i":"p006w061","r":"الْأَسَدَ..","t":"الْأَسَدَ..","m":[37340,37820],"s":"anchor","f":[],"b":[72.0,50.726,6.545,3.872]}],"tm":{"render":0.34,"ocr":12.41,"box-fit":0.02,"tts":15.13,"align":8.34}},{"page":7,"audio":"audio/p007.wav","img":"pages/p007.jpg","dur":24520,"diac":0.788,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p007w000","r":"جَلَسَ","t":"جَلَسَ","m":[0,740],"s":"anchor","f":[],"b":[87.0,8.809,6.909,3.969]},{"i":"p007w001","r":"الأَسَدُ","t":"الأَسَدُ","m":[740,1240],"s":"anchor","f":[],"b":[79.455,8.325,6.545,3.969]},{"i":"p007w002","r":"يُفَكِّرُ","t":"يُفَكِّرُ","m":[1240,1880],"s":"anchor","f":[],"b":[71.545,8.519,6.909,4.259]},{"i":"p007w003","r":"ثُمَّ","t":"ثُمَّ","m":[1880,2520],"s":"anchor","f":[],"b":[67.455,8.228,3.182,5.034]},{"i":"p007w004","r":"قَامَ","t":"قَامَ","m":[2520,2940],"s":"anchor","f":[],"b":[61.545,8.616,5.091,4.743]},{"i":"p007w005","r":"فَخَطَبَ","t":"فَخَطَبَ","m":[2940,3560],"s":"anchor","f":[],"b":[52.455,6.68,8.091,6.099]},{"i":"p007w006","r":"فِي","t":"فِي","m":[3560,3740],"s":"anchor","f":[],"b":[47.545,9.003,4.091,4.356]},{"i":"p007w007","r":"الْحَيَوَانَاتِ","t":"الْحَيَوَانَاتِ","m":[3740,4520],"s":"anchor","f":[],"b":[35.273,8.519,11.364,4.453]},{"i":"p007w008","r":"قَائِلًا:","t":"قَائِلًا:","m":[4520,5660],"s":"anchor","f":[],"b":[28.545,8.616,5.909,4.356]},{"i":"p007w009","r":"سَأَجْعَلُ","t":"سَأَجْعَلُ","m":[5660,6360],"s":"anchor","f":[],"b":[17.0,6.68,9.727,8.228]},{"i":"p007w010","r":"بَعْضَ","t":"بَعْضَ","m":[6360,6760],"s":"anchor","f":[],"b":[86.909,14.618,7.0,3.485]},{"i":"p007w011","r":"الذِّئَابِ","t":"الذِّئَابِ","m":[6760,7220],"s":"interpolated","f":[],"b":[78.091,13.359,7.727,5.324]},{"i":"p007w012","r":"تَقُومُ","t":"تَقُومُ","m":[7220,7740],"s":"anchor","f":[],"b":[71.545,13.746,5.727,4.84]},{"i":"p007w013","r":"لَيْلًا","t":"لَيْلًا","m":[7740,8260],"s":"anchor","f":[],"b":[65.909,13.94,4.818,4.163]},{"i":"p007w014","r":"بِالْمُرُورِ","t":"بِالْمُرُورِ","m":[8260,8740],"s":"anchor","f":[],"b":[55.545,13.843,9.727,4.937]},{"i":"p007w015","r":"عَلَى","t":"عَلَى","m":[8740,9040],"s":"anchor","f":[],"b":[48.909,14.134,5.545,4.356]},{"i":"p007w016","r":"أَطْرَافِ","t":"أَطْرَافِ","m":[9040,9560],"s":"anchor","f":[],"b":[40.364,13.65,7.727,4.55]},{"i":"p007w017","r":"الْغَابَةِ،","t":"الْغَابَةِ،","m":[9560,10500],"s":"anchor","f":[],"b":[31.091,13.843,8.273,6.389]},{"i":"p007w018","r":"وَكَذَلِكَ","t":"وَكَذَلِكَ","m":[10500,11180],"s":"anchor","f":[],"b":[22.818,13.843,8.273,6.389]},{"i":"p007w019","r":"فِي","t":"فِي","m":[11180,11360],"s":"anchor","f":[],"b":[17.091,12.004,4.909,6.583]},{"i":"p007w020","r":"الصَّبَاحِ","t":"الصَّبَاحِ","m":[11360,11860],"s":"anchor","f":[],"b":[84.545,19.652,9.182,5.808]},{"i":"p007w021","r":"سَتَقُومُ","t":"سَتَقُومُ","m":[11860,12640],"s":"anchor","f":[],"b":[75.818,18.974,8.0,4.937]},{"i":"p007w022","r":"بَعْضُ","t":"بَعْضُ","m":[12640,13020],"s":"anchor","f":[],"b":[68.0,19.458,7.0,3.872]},{"i":"p007w023","r":"النُّسُورِ","t":"النُّسُورِ","m":[13020,13500],"s":"anchor","f":[],"b":[58.273,18.78,8.727,6.68]},{"i":"p007w024","r":"بِالْمُرُورِ؛","t":"بِالْمُرُورِ؛","m":[13500,14380],"s":"anchor","f":[],"b":[47.727,19.167,9.727,4.937]},{"i":"p007w025","r":"لِنَرَى","t":"لِنَرَى","m":[14380,15020],"s":"anchor","f":[],"b":[40.091,19.555,5.636,3.969]},{"i":"p007w026","r":"مَنِ","t":"مَنِ","m":[15020,15200],"s":"anchor","f":[],"b":[90.0,25.75,3.909,3.679]},{"i":"p007w027","r":"الَّذِي","t":"الَّذِي","m":[15200,15500],"s":"anchor","f":[],"b":[83.636,22.749,5.455,6.389]},{"i":"p007w028","r":"يَقُومُ","t":"يَقُومُ","m":[15500,16079],"s":"anchor","f":[],"b":[77.455,24.298,5.273,4.84]},{"i":"p007w029","r":"بِتَجْمِيعِ","t":"بِتَجْمِيعِ","m":[16079,16760],"s":"anchor","f":[],"b":[68.091,25.073,8.545,4.743]},{"i":"p007w030","r":"هَذِهِ","t":"هَذِهِ","m":[16760,17100],"s":"anchor","f":[],"b":[62.636,24.976,4.364,3.872]},{"i":"p007w031","r":"الثِّمَارِ،","t":"الثِّمَارِ،","m":[17100,17780],"s":"anchor","f":[],"b":[54.909,22.749,6.818,6.68]},{"i":"p007w032","r":"وَانْتَهَى","t":"وَانْتَهَى","m":[17780,18880],"s":"anchor","f":[],"b":[44.818,24.589,8.091,4.453]},{"i":"p007w033","r":"الِاجْتِمَاعُ،","t":"الِاجْتِمَاعُ،","m":[18880,19500],"s":"anchor","f":[],"b":[74.909,30.01,18.818,4.453]},{"i":"p007w034","r":"وَكَانَ","t":"وَكَانَ","m":[19500,20320],"s":"anchor","f":[],"b":[69.182,32.333,5.0,3.485]},{"i":"p007w035","r":"دَبْدُوبُ","t":"دَبْدُوبُ","m":[20320,20780],"s":"anchor","f":[],"b":[59.091,30.01,8.727,5.324]},{"i":"p007w036","r":"حَاضِرًا..","t":"حَاضِرًا..","m":[20780,21840],"s":"anchor","f":[],"b":[50.727,30.494,7.545,3.679]},{"i":"p007w037","r":"لَكِنَّهُ","t":"لَكِنَّهُ","m":[21840,22560],"s":"anchor","f":[],"b":[85.455,34.85,8.455,4.937]},{"i":"p007w038","r":"لَمْ","t":"لَمْ","m":[22560,22800],"s":"anchor","f":[],"b":[77.091,35.334,7.545,4.647]},{"i":"p007w039","r":"يَعْتَرِفْ","t":"يَعْتَرِفْ","m":[22800,23360],"s":"anchor","f":[],"b":[65.273,33.591,11.0,7.744]},{"i":"p007w040","r":"بِمَا","t":"بِمَا","m":[23360,23700],"s":"anchor","f":[],"b":[61.0,35.818,3.545,4.066]},{"i":"p007w041","r":"فَعَلَهُ،","t":"فَعَلَهُ،","m":[23700,24240],"s":"anchor","f":[],"b":[54.818,35.044,5.273,3.485]}],"tm":{"render":0.31,"ocr":10.03,"box-fit":0.02,"tts":10.97,"align":5.55}},{"page":8,"audio":"audio/p008.wav","img":"pages/p008.jpg","dur":20760,"diac":0.849,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p008w000","r":"وَذَهَبَ","t":"وَذَهَبَ","m":[0,900],"s":"anchor","f":[],"b":[82.909,8.519,7.545,4.259]},{"i":"p008w001","r":"(دَبْدُوبٌ)","t":"دَبْدُوبٌ)","m":[900,1440],"s":"interpolated","f":["leading-punct"],"b":[72.909,8.809,6.818,3.969]},{"i":"p008w002","r":"إِلَى","t":"إِلَى","m":[1440,1860],"s":"anchor","f":[],"b":[66.455,8.809,4.455,4.55]},{"i":"p008w003","r":"مَنْزِلِهِ","t":"مَنْزِلِهِ","m":[1860,2520],"s":"anchor","f":[],"b":[59.0,8.616,6.909,4.937]},{"i":"p008w004","r":"وَهُوَ","t":"وَهُوَ","m":[2520,3220],"s":"anchor","f":[],"b":[53.091,8.809,5.273,3.969]},{"i":"p008w005","r":"حَزِينٌ","t":"حَزِينٌ","m":[3220,3820],"s":"anchor","f":[],"b":[45.455,9.003,6.909,4.55]},{"i":"p008w006","r":"لِمَا","t":"لِمَا","m":[3820,4280],"s":"anchor","f":[],"b":[40.818,9.293,3.909,3.679]},{"i":"p008w007","r":"فَعَلَهُ","t":"فَعَلَهُ","m":[4280,4800],"s":"anchor","f":[],"b":[34.364,8.519,5.636,3.582]},{"i":"p008w008","r":"بِالثِّمَارِ،","t":"بِالثِّمَارِ،","m":[4800,5480],"s":"anchor","f":[],"b":[25.273,8.132,8.455,5.421]},{"i":"p008w009","r":"وَقَالَ","t":"وَقَالَ","m":[5480,6560],"s":"anchor","f":[],"b":[17.545,8.519,5.818,4.259]},{"i":"p008w010","r":"(دَبْدُوبٌ)","t":"دَبْدُوبٌ)","m":[6560,7080],"s":"interpolated","f":["leading-punct"],"b":[7.636,8.809,6.818,3.969]},{"i":"p008w011","r":"فِي","t":"فِي","m":[7080,7360],"s":"anchor","f":[],"b":[85.909,14.327,4.545,4.356]},{"i":"p008w012","r":"نَفْسِهِ:","t":"نَفْسِهِ:","m":[7360,7900],"s":"anchor","f":[],"b":[78.0,13.746,7.182,4.55]},{"i":"p008w013","r":"فَمَا","t":"فَمَا","m":[7900,8760],"s":"anchor","f":[],"b":[71.636,13.843,4.545,3.485]},{"i":"p008w014","r":"فَعَلْتُهُ","t":"فَعَلْتُهُ","m":[8760,9320],"s":"anchor","f":[],"b":[63.636,13.843,7.0,3.485]},{"i":"p008w015","r":"جَرِيمَةٌ","t":"جَرِيمَةٌ","m":[9320,9900],"s":"anchor","f":[],"b":[54.364,11.81,8.545,6.97]},{"i":"p008w016","r":"فِي","t":"فِي","m":[9900,10160],"s":"anchor","f":[],"b":[49.182,14.327,4.455,4.356]},{"i":"p008w017","r":"حَقِّهِمْ؛","t":"حَقِّهِمْ؛","m":[10160,10720],"s":"anchor","f":[],"b":[41.182,13.65,7.273,5.131]},{"i":"p008w018","r":"لَقَدْ","t":"لَقَدْ","m":[10720,11600],"s":"anchor","f":[],"b":[34.909,14.134,4.364,3.195]},{"i":"p008w019","r":"أَكَلْتُ،","t":"أَكَلْتُ،","m":[11600,12280],"s":"anchor","f":[],"b":[27.545,13.65,6.364,3.775]},{"i":"p008w020","r":"وَشَبِعْتُ،","t":"وَشَبِعْتُ،","m":[12280,13200],"s":"anchor","f":[],"b":[16.0,14.134,9.545,4.55]},{"i":"p008w021","r":"فَلِمَاذَا","t":"فَلِمَاذَا","m":[13200,14280],"s":"anchor","f":[],"b":[6.545,13.843,7.455,4.453]},{"i":"p008w022","r":"أَجْمَعُ","t":"أَجْمَعُ","m":[14280,14620],"s":"anchor","f":[],"b":[83.545,18.974,6.727,4.937]},{"i":"p008w023","r":"الثِّمَارَ","t":"الثِّمَارَ","m":[14620,15120],"s":"anchor","f":[],"b":[75.455,18.78,7.273,4.647]},{"i":"p008w024","r":"وَأَحْتَفِظُ","t":"وَأَحْتَفِظُ","m":[15120,15840],"s":"interpolated","f":[],"b":[65.818,18.877,8.909,4.743]},{"i":"p008w025","r":"بِهَا؟!","t":"بِهَا؟!","m":[15840,16180],"s":"anchor","f":[],"b":[61.091,19.942,4.091,4.066]},{"i":"p008w026","r":"لَا","t":"لَا","m":[16180,17100],"s":"anchor","f":[],"b":[55.455,19.458,2.091,3.485]},{"i":"p008w027","r":"بُدَّ","t":"بُدَّ","m":[17100,17280],"s":"anchor","f":[],"b":[51.818,19.264,3.0,4.163]},{"i":"p008w028","r":"مِنْ","t":"مِنْ","m":[17280,17600],"s":"anchor","f":[],"b":[46.727,19.652,4.273,3.872]},{"i":"p008w029","r":"أَنْ","t":"أَنْ","m":[17600,17760],"s":"anchor","f":[],"b":[42.818,18.974,3.0,4.453]},{"i":"p008w030","r":"أَتْرُكَهَا؛","t":"أَتْرُكَهَا؛","m":[17760,18400],"s":"anchor","f":[],"b":[34.636,18.974,7.273,4.55]},{"i":"p008w031","r":"لِيَتَغَذَّى","t":"لِيَتَغَذَّى","m":[18400,19360],"s":"interpolated","f":[],"b":[24.091,18.587,8.545,4.937]},{"i":"p008w032","r":"بِهَا","t":"بِهَا","m":[19360,19700],"s":"anchor","f":[],"b":[19.091,19.942,4.182,4.066]},{"i":"p008w033","r":"الْآخَرُونَ،","t":"الْآخَرُونَ،","m":[19700,20360],"s":"anchor","f":[],"b":[7.636,18.974,10.455,4.453]}],"tm":{"render":0.29,"ocr":6.67,"box-fit":0.01,"tts":9.41,"align":4.2}},{"page":9,"audio":"audio/p009.wav","img":"pages/p009.jpg","dur":11560,"diac":0.91,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p009w000","r":"لَنْ","t":"لَنْ","m":[0,500],"s":"anchor","f":[],"b":[90.091,8.809,3.909,3.969]},{"i":"p009w001","r":"أُسَامِحَ","t":"أُسَامِحَ","m":[500,1080],"s":"anchor","f":[],"b":[80.636,7.938,8.545,5.324]},{"i":"p009w002","r":"نَفْسِي","t":"نَفْسِي","m":[1080,1580],"s":"anchor","f":[],"b":[72.273,8.422,7.727,4.937]},{"i":"p009w003","r":"أَبَدًا،","t":"أَبَدًا،","m":[1580,2500],"s":"anchor","f":[],"b":[66.909,8.325,4.545,4.453]},{"i":"p009w004","r":"وَدَخَلَ","t":"وَدَخَلَ","m":[2500,3140],"s":"anchor","f":[],"b":[57.455,9.003,7.273,3.775]},{"i":"p009w005","r":"مَنْزِلَهُ،","t":"مَنْزِلَهُ،","m":[3140,3720],"s":"anchor","f":[],"b":[49.545,8.616,7.091,4.937]},{"i":"p009w006","r":"وَتَوَجَّهَ","t":"وَتَوَجَّهَ","m":[3720,4780],"s":"anchor","f":[],"b":[39.455,8.906,8.182,3.872]},{"i":"p009w007","r":"إِلَى","t":"إِلَى","m":[4780,5020],"s":"anchor","f":[],"b":[33.818,8.809,4.727,4.55]},{"i":"p009w008","r":"الصُّنْدُوقِ","t":"الصُّنْدُوقِ","m":[5020,5640],"s":"anchor","f":[],"b":[21.455,8.616,11.545,5.034]},{"i":"p009w009","r":"الَّذِي","t":"الَّذِي","m":[5640,5840],"s":"anchor","f":[],"b":[14.364,8.228,6.091,5.034]},{"i":"p009w010","r":"بِهِ","t":"بِهِ","m":[5840,6220],"s":"anchor","f":[],"b":[9.909,9.681,3.636,3.775]},{"i":"p009w011","r":"الْمَوْزُ،","t":"الْمَوْزُ،","m":[6220,7160],"s":"anchor","f":[],"b":[86.545,13.843,7.273,4.259]},{"i":"p009w012","r":"فَوَجَدَهُ","t":"فَوَجَدَهُ","m":[7160,7820],"s":"anchor","f":[],"b":[76.636,13.843,7.909,4.259]},{"i":"p009w013","r":"قَدْ","t":"قَدْ","m":[7820,8160],"s":"anchor","f":[],"b":[72.636,13.843,3.273,3.485]},{"i":"p009w014","r":"فَسَدَ","t":"فَسَدَ","m":[8160,8580],"s":"anchor","f":[],"b":[66.182,13.843,5.545,3.485]},{"i":"p009w015","r":"هُوَ","t":"هُوَ","m":[8580,8840],"s":"anchor","f":[],"b":[60.909,14.134,4.091,3.969]},{"i":"p009w016","r":"وَالْبِطِّيخُ","t":"وَالْبِطِّيخُ","m":[8840,9680],"s":"anchor","f":[],"b":[50.182,13.553,9.909,5.131]},{"i":"p009w017","r":"مِنْ","t":"مِنْ","m":[9680,10140],"s":"anchor","f":[],"b":[45.0,14.327,4.455,3.969]},{"i":"p009w018","r":"شِدَّةِ","t":"شِدَّةِ","m":[10140,10620],"s":"anchor","f":[],"b":[38.364,14.037,5.818,4.259]},{"i":"p009w019","r":"الْحَرِّ!!","t":"الْحَرِّ!!","m":[10620,11160],"s":"anchor","f":[],"b":[31.364,13.843,6.091,4.259]}],"tm":{"render":0.29,"ocr":10.3,"box-fit":0.01,"tts":6.53,"align":2.79}},{"page":10,"audio":"audio/p010.wav","img":"pages/p010.jpg","dur":17560,"diac":0.833,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p010w000","r":"فَأَخَذَ","t":"فَأَخَذَ","m":[0,940],"s":"anchor","f":[],"b":[85.0,8.422,5.364,3.582]},{"i":"p010w001","r":"دَبْدُوبٌ","t":"دَبْدُوبٌ","m":[940,1520],"s":"anchor","f":[],"b":[76.455,8.906,7.545,3.872]},{"i":"p010w002","r":"يَبْكِي،","t":"يَبْكِي،","m":[1520,2280],"s":"anchor","f":[],"b":[69.727,9.197,5.818,6.389]},{"i":"p010w003","r":"وَيَقُولُ:","t":"وَيَقُولُ:","m":[2280,3160],"s":"anchor","f":[],"b":[60.545,8.422,7.273,4.356]},{"i":"p010w004","r":"لَقَدْ","t":"لَقَدْ","m":[3160,4340],"s":"anchor","f":[],"b":[55.0,8.906,3.545,3.098]},{"i":"p010w005","r":"مَنَعْتُ","t":"مَنَعْتُ","m":[4340,4780],"s":"anchor","f":[],"b":[47.545,8.906,6.545,3.098]},{"i":"p010w006","r":"غَيْرِي","t":"غَيْرِي","m":[4780,5280],"s":"interpolated","f":[],"b":[40.273,8.712,6.091,4.743]},{"i":"p010w007","r":"مِنَ","t":"مِنَ","m":[5280,5520],"s":"anchor","f":[],"b":[35.636,9.39,3.727,3.582]},{"i":"p010w008","r":"الطَّعَامِ","t":"الطَّعَامِ","m":[5520,6180],"s":"anchor","f":[],"b":[27.273,8.228,7.273,5.034]},{"i":"p010w009","r":"بِسَبَبِ","t":"بِسَبَبِ","m":[6180,6800],"s":"anchor","f":[],"b":[19.545,9.487,6.909,3.872]},{"i":"p010w010","r":"طَمَعِي،","t":"طَمَعِي،","m":[6800,7280],"s":"interpolated","f":[],"b":[11.364,8.809,7.273,4.55]},{"i":"p010w011","r":"فَفَسَدَتِ","t":"فَفَسَدَتِ","m":[7280,8540],"s":"anchor","f":[],"b":[81.455,13.843,8.909,4.356]},{"i":"p010w012","r":"الْفَاكِهَةُ!","t":"الْفَاكِهَةُ!","m":[8540,9840],"s":"anchor","f":[],"b":[71.727,13.359,8.818,4.84]},{"i":"p010w013","r":"وَخَرَجَ","t":"وَخَرَجَ","m":[9840,10840],"s":"anchor","f":[],"b":[62.818,14.327,7.0,4.259]},{"i":"p010w014","r":"مُسْرِعًا","t":"مُسْرِعًا","m":[10840,11460],"s":"anchor","f":[],"b":[54.182,14.521,8.0,4.259]},{"i":"p010w015","r":"مِنْ","t":"مِنْ","m":[11460,11620],"s":"anchor","f":[],"b":[49.091,14.327,4.273,3.872]},{"i":"p010w016","r":"مَنْزِلِهِ","t":"مَنْزِلِهِ","m":[11620,12200],"s":"anchor","f":[],"b":[41.545,13.94,6.818,4.84]},{"i":"p010w017","r":"بَعْدَ","t":"بَعْدَ","m":[12200,12900],"s":"anchor","f":[],"b":[36.636,14.618,4.273,3.388]},{"i":"p010w018","r":"أَنْ","t":"أَنْ","m":[12900,13160],"s":"anchor","f":[],"b":[32.727,13.746,3.0,4.259]},{"i":"p010w019","r":"أَخَذَ","t":"أَخَذَ","m":[13160,13580],"s":"anchor","f":[],"b":[27.364,13.65,4.455,3.775]},{"i":"p010w020","r":"الْفَاكِهَةَ","t":"الْفَاكِهَةَ","m":[13580,14320],"s":"anchor","f":[],"b":[17.545,13.843,8.818,4.356]},{"i":"p010w021","r":"الْفَاسِدَةَ،","t":"الْفَاسِدَةَ،","m":[14320,14980],"s":"anchor","f":[],"b":[7.545,13.843,9.091,4.356]},{"i":"p010w022","r":"وَأَلْقَى","t":"وَأَلْقَى","m":[14980,16120],"s":"anchor","f":[],"b":[83.455,18.974,6.909,4.743]},{"i":"p010w023","r":"بِهَا","t":"بِهَا","m":[16120,16460],"s":"anchor","f":[],"b":[78.818,19.942,4.091,4.066]},{"i":"p010w024","r":"بَعِيدًا.","t":"بَعِيدًا.","m":[16460,17080],"s":"anchor","f":[],"b":[72.0,19.555,5.909,3.969]}],"tm":{"render":0.33,"ocr":8.57,"box-fit":0.01,"tts":9.58,"align":3.34}},{"page":11,"audio":"audio/p011.wav","img":"pages/p011.jpg","dur":11840,"diac":0.826,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p011w000","r":"وَبَيْنَمَا","t":"وَبَيْنَمَا","m":[0,900],"s":"anchor","f":[],"b":[86.545,9.003,7.364,3.775]},{"i":"p011w001","r":"هُوَ","t":"هُوَ","m":[900,1100],"s":"anchor","f":[],"b":[81.636,8.809,3.909,3.969]},{"i":"p011w002","r":"يُلْقِي","t":"يُلْقِي","m":[1100,1600],"s":"anchor","f":[],"b":[75.0,8.519,6.0,4.84]},{"i":"p011w003","r":"بِالْفَاكِهَةِ","t":"بِالْفَاكِهَةِ","m":[1600,2480],"s":"anchor","f":[],"b":[64.364,8.519,10.091,4.84]},{"i":"p011w004","r":"إِذْ","t":"إِذْ","m":[2480,3340],"s":"anchor","f":[],"b":[61.545,8.325,2.182,5.034]},{"i":"p011w005","r":"بِمَجْمُوعَةِ","t":"بِمَجْمُوعَةِ","m":[3340,4080],"s":"anchor","f":[],"b":[49.455,8.906,11.364,4.55]},{"i":"p011w006","r":"الذِّئَابِ","t":"الذِّئَابِ","m":[4080,4600],"s":"anchor","f":[],"b":[41.0,8.132,7.636,5.227]},{"i":"p011w007","r":"الَّتِي","t":"الَّتِي","m":[4600,4840],"s":"anchor","f":[],"b":[34.636,8.325,5.455,5.034]},{"i":"p011w008","r":"تَحْرُسُ","t":"تَحْرُسُ","m":[4840,5500],"s":"anchor","f":[],"b":[26.091,9.1,8.091,3.679]},{"i":"p011w009","r":"الْغَابَةَ","t":"الْغَابَةَ","m":[5500,6060],"s":"anchor","f":[],"b":[18.273,8.519,7.0,4.259]},{"i":"p011w010","r":"أَمَامَهُ؛","t":"أَمَامَهُ؛","m":[6060,6740],"s":"anchor","f":[],"b":[11.091,8.422,6.545,3.679]},{"i":"p011w011","r":"فَقَبَضَتْ","t":"فَقَبَضَتْ","m":[6740,8000],"s":"anchor","f":[],"b":[84.727,13.843,9.182,4.163]},{"i":"p011w012","r":"عَلَيْهِ،","t":"عَلَيْهِ،","m":[8000,8400],"s":"anchor","f":[],"b":[77.818,14.134,5.909,4.066]},{"i":"p011w013","r":"وَقَدَّمَتْهُ","t":"وَقَدَّمَتْهُ","m":[8400,9700],"s":"anchor","f":[],"b":[67.455,13.843,8.636,4.259]},{"i":"p011w014","r":"إِلَى","t":"إِلَى","m":[9700,9980],"s":"anchor","f":[],"b":[62.273,14.134,4.455,4.453]},{"i":"p011w015","r":"الأَسَدِ","t":"الأَسَدِ","m":[9980,10520],"s":"interpolated","f":[],"b":[55.091,13.65,6.545,4.55]},{"i":"p011w016","r":"مَلِكِ","t":"مَلِكِ","m":[10520,10940],"s":"anchor","f":[],"b":[49.182,14.134,5.091,4.163]},{"i":"p011w017","r":"الْغَابَةِ.","t":"الْغَابَةِ.","m":[10940,11580],"s":"anchor","f":[],"b":[41.818,13.843,6.545,4.356]}],"tm":{"render":0.27,"ocr":8.16,"box-fit":0.01,"tts":7.18,"align":2.92}},{"page":12,"audio":"audio/p012.wav","img":"pages/p012.jpg","dur":24240,"diac":0.836,"box_level":"word","has_image":true,"compare":true,"boxed":true,"voice":"Kore","tokens":[{"i":"p012w000","r":"وَكَانَ","t":"وَكَانَ","m":[0,660],"s":"anchor","f":[],"b":[84.545,9.003,5.818,3.775]},{"i":"p012w001","r":"عِقَابَهُ","t":"عِقَابَهُ","m":[660,1500],"s":"anchor","f":[],"b":[76.636,8.809,6.727,4.163]},{"i":"p012w002","r":"أَنْ","t":"أَنْ","m":[1500,1820],"s":"anchor","f":[],"b":[72.818,8.325,3.0,4.453]},{"i":"p012w003","r":"يَقُومَ","t":"يَقُومَ","m":[1820,2280],"s":"anchor","f":[],"b":[66.727,8.422,5.182,4.84]},{"i":"p012w004","r":"بِزِرَاعَةِ","t":"بِزِرَاعَةِ","m":[2280,3060],"s":"anchor","f":[],"b":[57.909,8.906,7.909,4.55]},{"i":"p012w005","r":"مِسَاحَةٍ","t":"مِسَاحَةٍ","m":[3060,3780],"s":"anchor","f":[],"b":[48.727,8.906,8.455,4.356]},{"i":"p012w006","r":"وَاسِعَةٍ","t":"وَاسِعَةٍ","m":[3780,4380],"s":"anchor","f":[],"b":[40.545,8.906,7.364,4.356]},{"i":"p012w007","r":"مِنَ","t":"مِنَ","m":[4380,4720],"s":"anchor","f":[],"b":[35.909,9.39,3.818,3.582]},{"i":"p012w008","r":"الْأَرْضِ","t":"الْأَرْضِ","m":[4720,5200],"s":"anchor","f":[],"b":[27.091,8.422,7.818,4.937]},{"i":"p012w009","r":"بِالْمَوْزِ،","t":"بِالْمَوْزِ،","m":[5200,5860],"s":"anchor","f":[],"b":[18.455,8.519,7.727,4.937]},{"i":"p012w010","r":"وَالْأُخْرَى","t":"وَالْأُخْرَى","m":[5860,6900],"s":"anchor","f":[],"b":[7.455,7.938,8.909,4.84]},{"i":"p012w011","r":"بِالْبِطِّيخِ","t":"بِالْبِطِّيخِ","m":[6900,7720],"s":"anchor","f":[],"b":[80.727,13.553,9.636,5.615]},{"i":"p012w012","r":"بَدَلًا","t":"بَدَلًا","m":[7720,8460],"s":"anchor","f":[],"b":[75.0,13.94,5.0,4.163]},{"i":"p012w013","r":"مِنَ","t":"مِنَ","m":[8460,8700],"s":"anchor","f":[],"b":[70.091,14.618,4.273,3.582]},{"i":"p012w014","r":"الثِّمَارِ","t":"الثِّمَارِ","m":[8700,9260],"s":"anchor","f":[],"b":[61.727,11.423,7.273,7.357]},{"i":"p012w015","r":"الَّتِي","t":"الَّتِي","m":[9260,9580],"s":"anchor","f":[],"b":[55.273,13.553,5.455,5.034]},{"i":"p012w016","r":"أَفْسَدَهَا؛","t":"أَفْسَدَهَا؛","m":[9580,10320],"s":"anchor","f":[],"b":[45.818,13.553,8.545,3.872]},{"i":"p012w017","r":"فَتَقَبَّلَ","t":"فَتَقَبَّلَ","m":[10320,11560],"s":"anchor","f":[],"b":[36.909,13.843,6.818,4.163]},{"i":"p012w018","r":"دَبْدُوبُ","t":"دَبْدُوبُ","m":[11560,12100],"s":"anchor","f":[],"b":[28.0,14.134,8.091,3.969]},{"i":"p012w019","r":"الْحُكْمَ","t":"الْحُكْمَ","m":[12100,12760],"s":"interpolated","f":[],"b":[20.091,13.843,6.909,4.743]},{"i":"p012w020","r":"وَهُوَ","t":"وَهُوَ","m":[12760,13100],"s":"anchor","f":[],"b":[14.0,14.134,5.273,3.969]},{"i":"p012w021","r":"يَدْعُو","t":"يَدْعُو","m":[13100,13860],"s":"anchor","f":[],"b":[6.455,14.327,6.727,3.775]},{"i":"p012w022","r":"اللهَ","t":"اللهَ","m":[13860,13860],"s":"anchor","f":[],"b":[86.545,19.361,3.636,3.485]},{"i":"p012w023","r":"فِي","t":"فِي","m":[13860,14120],"s":"anchor","f":[],"b":[81.182,17.038,4.636,6.873]},{"i":"p012w024","r":"سِرِّهِ،","t":"سِرِّهِ،","m":[14120,14740],"s":"anchor","f":[],"b":[75.545,19.845,5.182,4.066]},{"i":"p012w025","r":"أَنْ","t":"أَنْ","m":[14740,15140],"s":"anchor","f":[],"b":[70.455,18.974,3.0,4.356]},{"i":"p012w026","r":"يُسَاعِدَهُ","t":"يُسَاعِدَهُ","m":[15140,15900],"s":"anchor","f":[],"b":[60.0,19.652,9.636,3.872]},{"i":"p012w027","r":"عَلَى","t":"عَلَى","m":[15900,16160],"s":"anchor","f":[],"b":[53.273,19.458,5.727,4.259]},{"i":"p012w028","r":"هَذَا","t":"هَذَا","m":[16160,16500],"s":"anchor","f":[],"b":[48.0,19.167,4.273,3.582]},{"i":"p012w029","r":"الْعَمَلِ","t":"الْعَمَلِ","m":[16500,16940],"s":"anchor","f":[],"b":[39.818,19.167,7.0,4.647]},{"i":"p012w030","r":"الشَّاقِّ؛","t":"الشَّاقِّ؛","m":[16940,17580],"s":"anchor","f":[],"b":[31.091,19.071,7.818,4.55]},{"i":"p012w031","r":"لِكَيْ","t":"لِكَيْ","m":[17580,18300],"s":"anchor","f":[],"b":[23.727,19.555,5.364,4.356]},{"i":"p012w032","r":"يُكَفِّرَ","t":"يُكَفِّرَ","m":[18300,18800],"s":"anchor","f":[],"b":[16.909,18.877,6.091,4.55]},{"i":"p012w033","r":"بِهِ","t":"بِهِ","m":[18800,19080],"s":"anchor","f":[],"b":[12.545,20.232,3.545,3.775]},{"i":"p012w034","r":"عَمَّا","t":"عَمَّا","m":[19080,19620],"s":"interpolated","f":[],"b":[6.545,19.845,5.0,2.807]},{"i":"p012w035","r":"فَعَلَهُ","t":"فَعَلَهُ","m":[19620,20260],"s":"anchor","f":[],"b":[70.727,24.395,5.818,3.485]},{"i":"p012w036","r":"فِي","t":"فِي","m":[20260,20480],"s":"anchor","f":[],"b":[65.727,24.879,4.273,4.356]},{"i":"p012w037","r":"حَقٌّ","t":"حَقٌّ","m":[20480,20820],"s":"anchor","f":[],"b":[60.0,24.685,5.0,4.259]},{"i":"p012w038","r":"أَصْدِقَائِهِ","t":"أَصْدِقَائِهِ","m":[20820,21760],"s":"anchor","f":[],"b":[48.818,24.298,10.182,4.55]},{"i":"p012w039","r":"نَتِيجَةَ","t":"نَتِيجَةَ","m":[21760,22680],"s":"anchor","f":[],"b":[40.727,24.395,7.273,6.389]},{"i":"p012w040","r":"طَمَعِهِ","t":"طَمَعِهِ","m":[22680,23300],"s":"anchor","f":[],"b":[32.636,24.685,7.273,4.163]},{"i":"p012w041","r":"الزَّائِدِ.","t":"الزَّائِدِ.","m":[23300,23840],"s":"anchor","f":[],"b":[25.636,24.395,6.091,4.453]}],"tm":{"render":0.32,"ocr":9.15,"box-fit":0.02,"tts":10.11,"align":4.5}}];
+const TL={"render": "render", "ocr": "OCR", "box-fit": "box fit", "diacritise": "tashkeel", "tts": "TTS", "align": "align"};
+const fmtS=s=>{if(s<60)return s.toFixed(1)+"s"; const r=Math.round(s);
+  return Math.floor(r/60)+"m"+String(r%60).padStart(2,"0")+"s";};
+const HAS_COMPARE_LAYOUT=true;
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let cur=0, last=-1, raf=0, auto=store.get("reader-auto")!=="0";
+const SPEEDS=[0.75,1,1.25,1.5]; let speed=+(store.get("reader-speed")||1); if(!SPEEDS.includes(speed)) speed=1;
+const $=s=>document.querySelector(s);
+const au=$("#au"),txt=$("#txt"),txtcol=$("#txtcol"),compare=$("#compare"),img=$("#img"),boxes=$("#boxes"),bmark=$("#bmark"),
+      insp=$("#insp"),bar=$("#bar"),tm=$("#tm"),playB=$("#play");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const seen=new Set();
+
+function showTiming(p){
+  const el=$("#ptm"), t=p.tm||{}, ks=Object.keys(t);
+  el.innerHTML=ks.length?`<span>page ${p.page} took</span>`+ks.map(k=>`<span class=k>${TL[k]||k} <b>${fmtS(t[k])}</b></span>`).join("")
+    +`<span class="k tot">total <b>${fmtS(ks.reduce((a,k)=>a+t[k],0))}</b></span>`:"";
+}
+function renderPages(){
+  $("#pgsel").innerHTML=P.map((p,i)=>`<button data-p="${i}" class="${i===cur?"on":""} ${seen.has(i)?"seen":""}" title="page ${p.page}">${p.page}<i></i></button>`).join("");
+  const on=$("#pgsel .on"); if(on) on.scrollIntoView({block:"nearest",inline:"center",behavior:RM?"auto":"smooth"});
+}
+$("#pgsel").onclick=e=>{const b=e.target.closest("button"); if(b) load(+b.dataset.p);};
+
+function load(i, keepPlaying){
+  if(i<0||i>=P.length) return;
+  const dir=i>=cur?"in-next":"in-prev";
+  cur=i; last=-1; const p=P[i];
+  showTiming(p);
+  // A page without audio must not set au.src -- an empty/missing src fires a
+  // network error and leaves the previous page's audio loaded and playable.
+  au.pause();
+  if(p.audio){ au.src=p.audio; au.playbackRate=speed; } else { au.removeAttribute("src"); au.load(); }
+  playB.disabled=!p.audio;
+  $("#scrub").style.opacity=p.audio?"":"0.35";
+  txt.innerHTML='<div class=marker id=marker></div>';
+  if(HAS_COMPARE_LAYOUT){
+    compare.classList.toggle("textonly",!p.compare);
+    if(p.compare){ img.classList.add("loading"); img.onload=()=>img.classList.remove("loading"); img.src=p.img; boxes.innerHTML=""; }
+    if(bmark) bmark.classList.remove("on");
+  }
+  p.tokens.forEach((t,j)=>{
+    const s=document.createElement("span");
+    s.className="w"+(t.s==="interpolated"?" interp":"")+(t.f.length?" fixed":"")
+      +("g" in t&&!("v" in t)?" flagged":"")+("v" in t?" verified":"")+(t.m?"":" untimed");
+    s.dataset.j=j; s.textContent=t.t;
+    txt.appendChild(s); txt.appendChild(document.createTextNode(" "));
+    if(p.boxed){
+      const b=document.createElement("div");
+      b.className="bx"; b.dataset.j=j;
+      b.style.cssText=`left:${t.b[0]}%;top:${t.b[1]}%;width:${t.b[2]}%;height:${t.b[3]}%`;
+      boxes.appendChild(b);
+    }
+  });
+  txt.classList.remove("in-next","in-prev"); void txt.offsetWidth; txt.classList.add(dir);
+  if(txtcol) txtcol.scrollTop=0;
+  renderPages();
+  $("#prev").disabled=!i; $("#next").disabled=i===P.length-1;
+  $("#plabel").textContent=`Page ${p.page} · ${i+1} of ${P.length}`;
+  insp.innerHTML='<div class=hint>Hover or tap a word to see how it was read and timed. Tap a word to jump the audio there.</div>';
+  wire(); render();
+  if(keepPlaying&&p.audio) au.play().catch(()=>{});
+}
+function wire(){
+  document.querySelectorAll(".w,.bx").forEach(el=>{
+    const j=+el.dataset.j;
+    el.onmouseenter=()=>{show(j); pick(j,true);};
+    el.onmouseleave=()=>pick(j,false);
+    el.onclick=()=>{show(j); const m=P[cur].tokens[j].m;
+      if(m&&P[cur].audio){au.currentTime=m[0]/1000; render();}};
+  });
+}
+function pick(j,on){ const w=txt.querySelectorAll(".w")[j]; if(w) w.classList.toggle("pick",on); }
+function show(j){
+  const t=P[cur].tokens[j];
+  const src=t.s==="anchor"
+    ? '<span class="c ok">real timestamp</span>'
+    : t.s==="interpolated"
+    ? '<span class="c warn">timing estimated between neighbours</span>'
+    : '<span class="c bad">no timing available</span>';
+  const when=t.m?`<span class=c>${(t.m[0]/1000).toFixed(2)}s → ${(t.m[1]/1000).toFixed(2)}s</span>`:"";
+  const fx=t.f.length?`<span class="c acc">cleaned: ${esc(t.f.join(", "))}</span>`:'<span class=c>no cleanup needed</span>';
+  const gTxt=t.g!=null?esc(t.g):"(no reading — LightOn has a word Gemini doesn't)";
+  const ens="v" in t
+    ? `<div class=note>Engines disagreed: LightOn <b>${esc(t.t)}</b> vs Gemini <b>${gTxt}</b> → the vision model read <b>${esc(t.v)}</b></div>`
+    : "g" in t
+    ? `<div class=note style="color:var(--bad)">Engines disagree (unresolved): LightOn <b>${esc(t.t)}</b>, Gemini <b>${gTxt}</b></div>`
+    : "";
+  const evd=t.e
+    ? `<div class=note style="color:var(--ok)">corrected from <b>${esc(t.e.o)}</b> · ${esc(t.e.x)} detector, `
+      +`decided by ${esc(t.e.d)} (${esc(t.e.r)}) · ${esc(t.e.at)}</div>`
+    : "";
+  const box=P[cur].boxed?` · box [${t.b.map(v=>v.toFixed(1)).join(", ")}]`:"";
+  insp.innerHTML=`<div class=row1><span class=word>${esc(t.t)}</span><span class=chips>${src}${when}${fx}</span></div>`
+    +ens+evd+`<div class=tech>${t.i} · raw OCR “${esc(t.r)}”${box}</div>`;
+}
+function placeMarker(i){
+  const mk=$("#marker"); if(!mk) return;
+  const ws=txt.querySelectorAll(".w");
+  if(i<0||!ws[i]){ mk.classList.remove("on"); if(bmark) bmark.classList.remove("on"); return; }
+  const w=ws[i], r=w.getBoundingClientRect(), c=txt.getBoundingClientRect();
+  mk.style.left=(r.left-c.left-4)+"px"; mk.style.top=(r.top-c.top-2)+"px";
+  mk.style.width=(r.width+8)+"px"; mk.style.height=(r.height+4)+"px"; mk.classList.add("on");
+  const p=P[cur];
+  if(bmark&&p.boxed&&p.tokens[i].b){ const b=p.tokens[i].b;
+    Object.assign(bmark.style,{left:b[0]+"%",top:b[1]+"%",width:b[2]+"%",height:b[3]+"%"}); bmark.classList.add("on"); }
+  // keep the spoken word in view inside its column (or the page)
+  const hr=txtcol?txtcol.getBoundingClientRect():{top:70,bottom:innerHeight-110};
+  if(r.top<hr.top+20||r.bottom>hr.bottom-20) w.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"});
+}
+function render(){
+  const p=P[cur];
+  if(!p.dur){
+    document.querySelectorAll(".w.now,.bx.now,.w.read").forEach(e=>e.classList.remove("now","read"));
+    placeMarker(-1); bar.style.width="0%"; tm.textContent="— / —"; last=-1;
+    return;
+  }
+  const ms=au.currentTime*1000, ts=p.tokens;
+  let i=-1;
+  for(let k=0;k<ts.length;k++) if(ts[k].m&&ms>=ts[k].m[0]&&ms<=ts[k].m[1]){i=k;break;}
+  if(i!==last){
+    const ws=txt.querySelectorAll(".w");
+    ws.forEach((e,k)=>{e.classList.toggle("now",k===i); e.classList.toggle("read",!!(ts[k].m&&ts[k].m[1]<ms)&&k!==i);});
+    if(p.boxed) document.querySelectorAll(".bx").forEach((e,k)=>e.classList.toggle("now",k===i));
+    placeMarker(i);
+    if(i>=0) show(i);
+    last=i;
+  }
+  const d=p.dur;
+  bar.style.width=Math.min(100,100*ms/d)+"%";
+  tm.textContent=(ms/1000).toFixed(2)+" / "+(d/1000).toFixed(2);
+}
+function loop(){ render(); if(!au.paused) raf=requestAnimationFrame(loop); }
+au.onplay=()=>{document.body.classList.add("playing"); cancelAnimationFrame(raf); loop();};
+au.onpause=()=>{document.body.classList.remove("playing"); render();};
+au.ontimeupdate=()=>{ if(au.paused) render(); };
+au.onended=()=>{
+  document.body.classList.remove("playing"); seen.add(cur); renderPages();
+  if(auto&&cur<P.length-1) setTimeout(()=>load(cur+1,true),450);
+};
+playB.onclick=()=>{if(!P[cur].audio)return; if(au.paused) au.play().catch(()=>{}); else au.pause();};
+$("#prev").onclick=()=>load(cur-1,!au.paused); $("#next").onclick=()=>load(cur+1,!au.paused);
+$("#scrub").onclick=e=>{if(!P[cur].dur)return; const r=e.currentTarget.getBoundingClientRect();
+  au.currentTime=P[cur].dur/1000*Math.min(1,Math.max(0,(r.right-e.clientX)/r.width)); last=-1; render();};
+const speedB=$("#speed"), autoB=$("#auto");
+const showSpeed=()=>{speedB.textContent=speed+"×"; au.playbackRate=speed;};
+speedB.onclick=()=>{speed=SPEEDS[(SPEEDS.indexOf(speed)+1)%SPEEDS.length]; store.set("reader-speed",speed); showSpeed();};
+autoB.classList.toggle("on",auto);
+autoB.onclick=()=>{auto=!auto; store.set("reader-auto",auto?"1":"0"); autoB.classList.toggle("on",auto);};
+$("#theme").onclick=()=>{const d=document.documentElement, t=d.dataset.theme==="dark"?"light":"dark"; d.dataset.theme=t; store.set("reader-theme",t);};
+document.addEventListener("keydown",e=>{
+  if(e.target.closest("input,textarea,select")) return;
+  if(e.code==="Space"){e.preventDefault(); playB.click();}
+  else if(e.key==="ArrowLeft"){e.preventDefault(); load(cur+1,!au.paused);}   // RTL: left = next page
+  else if(e.key==="ArrowRight"){e.preventDefault(); load(cur-1,!au.paused);}
+});
+addEventListener("resize",()=>placeMarker(last));
+// count-up stats and fade-in sections when they scroll into view
+function countUp(el){ const n=+el.dataset.count; if(RM||!n){return;} const t0=performance.now(), D=900;
+  const f=now=>{const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3); el.textContent=Math.round(n*e); if(k<1) requestAnimationFrame(f);};
+  el.textContent="0"; requestAnimationFrame(f); }
+const io="IntersectionObserver" in window ? new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) return;
+  en.target.classList.add("shown"); en.target.querySelectorAll("[data-count]").forEach(countUp); io.unobserve(en.target); }),{threshold:.15}) : null;
+document.querySelectorAll(".reveal").forEach(el=>io?io.observe(el):el.classList.add("shown"));
+showSpeed();
+load(0);
+</script></body></html>

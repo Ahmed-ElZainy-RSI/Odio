@@ -1,0 +1,66 @@
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 1, "step": "render", "seconds": 0.233, "ok": true, "at": "2026-11-12T12:43:34"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 1, "step": "ocr", "seconds": 18.766, "ok": true, "at": "2026-11-12T12:43:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 1, "step": "box-fit", "seconds": 0.029, "ok": true, "at": "2026-11-12T12:43:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 2, "step": "render", "seconds": 0.351, "ok": true, "at": "2026-11-12T12:43:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 2, "step": "ocr", "seconds": 20.943, "ok": true, "at": "2026-11-12T12:44:14"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 2, "step": "box-fit", "seconds": 0.017, "ok": true, "at": "2026-11-12T12:44:14"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 3, "step": "render", "seconds": 0.23, "ok": true, "at": "2026-11-12T12:44:14"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 3, "step": "ocr", "seconds": 10.431, "ok": true, "at": "2026-11-12T12:44:25"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 3, "step": "box-fit", "seconds": 0.018, "ok": true, "at": "2026-11-12T12:44:25"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 4, "step": "render", "seconds": 0.308, "ok": true, "at": "2026-11-12T12:44:25"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 4, "step": "ocr", "seconds": 15.134, "ok": true, "at": "2026-11-12T12:44:40"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 4, "step": "box-fit", "seconds": 0.017, "ok": true, "at": "2026-11-12T12:44:40"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 5, "step": "render", "seconds": 0.294, "ok": true, "at": "2026-11-12T12:44:40"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 5, "step": "ocr", "seconds": 22.913, "ok": true, "at": "2026-11-12T12:45:03"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 5, "step": "box-fit", "seconds": 0.013, "ok": true, "at": "2026-11-12T12:45:03"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 6, "step": "render", "seconds": 0.342, "ok": true, "at": "2026-11-12T12:45:04"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 6, "step": "ocr", "seconds": 12.413, "ok": true, "at": "2026-11-12T12:45:16"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 6, "step": "box-fit", "seconds": 0.021, "ok": true, "at": "2026-11-12T12:45:16"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 7, "step": "render", "seconds": 0.311, "ok": true, "at": "2026-11-12T12:45:16"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 7, "step": "ocr", "seconds": 10.03, "ok": true, "at": "2026-11-12T12:45:26"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 7, "step": "box-fit", "seconds": 0.016, "ok": true, "at": "2026-11-12T12:45:26"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 8, "step": "render", "seconds": 0.29, "ok": true, "at": "2026-11-12T12:45:27"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 8, "step": "ocr", "seconds": 6.669, "ok": true, "at": "2026-11-12T12:45:33"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 8, "step": "box-fit", "seconds": 0.014, "ok": true, "at": "2026-11-12T12:45:33"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 9, "step": "render", "seconds": 0.289, "ok": true, "at": "2026-11-12T12:45:34"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 9, "step": "ocr", "seconds": 10.296, "ok": true, "at": "2026-11-12T12:45:44"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 9, "step": "box-fit", "seconds": 0.015, "ok": true, "at": "2026-11-12T12:45:44"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 10, "step": "render", "seconds": 0.328, "ok": true, "at": "2026-11-12T12:45:44"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 10, "step": "ocr", "seconds": 8.572, "ok": true, "at": "2026-11-12T12:45:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 10, "step": "box-fit", "seconds": 0.012, "ok": true, "at": "2026-11-12T12:45:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 11, "step": "render", "seconds": 0.27, "ok": true, "at": "2026-11-12T12:45:53"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 11, "step": "ocr", "seconds": 8.159, "ok": true, "at": "2026-11-12T12:46:01"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 11, "step": "box-fit", "seconds": 0.014, "ok": true, "at": "2026-11-12T12:46:01"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 12, "step": "render", "seconds": 0.316, "ok": true, "at": "2026-11-12T12:46:02"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 12, "step": "ocr", "seconds": 9.148, "ok": true, "at": "2026-11-12T12:46:11"}
+{"run": "20261112T124334", "stage": "ocr-gemini", "page": 12, "step": "box-fit", "seconds": 0.019, "ok": true, "at": "2026-11-12T12:46:11"}
+{"run": "20261112T125358", "stage": "ocr-gemini", "page": null, "step": "ocr (stage)", "seconds": 0.058, "ok": true, "at": "2026-11-12T12:53:59"}
+{"run": "20261112T125358", "stage": "diacritise", "page": 1, "step": "diacritise", "seconds": 2.827, "ok": true, "at": "2026-11-12T12:54:01"}
+{"run": "20261112T125358", "stage": "diacritise", "page": null, "step": "diacritise (stage)", "seconds": 2.881, "ok": true, "at": "2026-11-12T12:54:01"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 1, "step": "tts", "seconds": 15.183, "ok": true, "at": "2026-11-12T12:54:17"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 1, "step": "align", "seconds": 6.931, "ok": true, "at": "2026-11-12T12:54:24"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 2, "step": "tts", "seconds": 8.999, "ok": true, "at": "2026-11-12T12:54:33"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 2, "step": "align", "seconds": 3.656, "ok": true, "at": "2026-11-12T12:54:36"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 3, "step": "tts", "seconds": 9.872, "ok": true, "at": "2026-11-12T12:54:46"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 3, "step": "align", "seconds": 4.45, "ok": true, "at": "2026-11-12T12:54:51"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 4, "step": "tts", "seconds": 8.287, "ok": true, "at": "2026-11-12T12:54:59"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 4, "step": "align", "seconds": 3.306, "ok": true, "at": "2026-11-12T12:55:02"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 5, "step": "tts", "seconds": 8.148, "ok": true, "at": "2026-11-12T12:55:10"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 5, "step": "align", "seconds": 3.347, "ok": true, "at": "2026-11-12T12:55:14"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 6, "step": "tts", "seconds": 15.129, "ok": true, "at": "2026-11-12T12:55:29"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 6, "step": "align", "seconds": 8.337, "ok": true, "at": "2026-11-12T12:55:37"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 7, "step": "tts", "seconds": 10.972, "ok": true, "at": "2026-11-12T12:55:48"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 7, "step": "align", "seconds": 5.551, "ok": true, "at": "2026-11-12T12:55:54"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 8, "step": "tts", "seconds": 9.407, "ok": true, "at": "2026-11-12T12:56:03"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 8, "step": "align", "seconds": 4.201, "ok": true, "at": "2026-11-12T12:56:07"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 9, "step": "tts", "seconds": 6.526, "ok": true, "at": "2026-11-12T12:56:14"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 9, "step": "align", "seconds": 2.785, "ok": true, "at": "2026-11-12T12:56:17"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 10, "step": "tts", "seconds": 9.579, "ok": true, "at": "2026-11-12T12:56:26"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 10, "step": "align", "seconds": 3.344, "ok": true, "at": "2026-11-12T12:56:30"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 11, "step": "tts", "seconds": 7.182, "ok": true, "at": "2026-11-12T12:56:37"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 11, "step": "align", "seconds": 2.922, "ok": true, "at": "2026-11-12T12:56:40"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 12, "step": "tts", "seconds": 10.111, "ok": true, "at": "2026-11-12T12:56:50"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": 12, "step": "align", "seconds": 4.502, "ok": true, "at": "2026-11-12T12:56:54"}
+{"run": "20261112T125358", "stage": "tts-gemini", "page": null, "step": "tts (stage)", "seconds": 172.84, "ok": true, "at": "2026-11-12T12:56:54"}
+{"run": "20261112T125358", "stage": "reader", "page": null, "step": "reader (stage)", "seconds": 0.006, "ok": true, "at": "2026-11-12T12:56:54"}
+{"run": "20261112T125358", "stage": null, "page": null, "step": "book (total)", "seconds": 175.786, "ok": true, "at": "2026-11-12T12:56:54"}

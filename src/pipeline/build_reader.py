@@ -71,8 +71,12 @@ def _borrow_boxes(lighton_tokens: list[dict], gemini_dir: Path, page_no: int) ->
     return boxes
 
 
-def build(work_dir: Path):
-    """Build work_dir/reader.html from every 'spoken' page record. Returns the output Path, or None if nothing is spoken yet."""
+def build(work_dir: Path, preview: bool = False):
+    """Build work_dir/reader.html from every 'spoken' page record. Returns the output Path, or None if nothing is spoken yet.
+
+    preview=True is the OCR-approval view, before any audio exists: every page record is shown
+    (spoken or not) with no audio, so the text can be checked against the page image first.
+    A record may carry "image" (a path relative to work_dir) instead of pages/pXXX.jpg."""
     book = work_dir.name
 
     # tools/ensemble_review.py writes this separately and never touches
@@ -112,8 +116,9 @@ def build(work_dir: Path):
         # run_extract.py's text-layer records predate box_level and never set it —
         # they always have word boxes, so an absent key defaults to "word", not "none"
         has_boxes = r.get("box_level", "word") not in (None, "none")
-        own_image = work_dir / "pages" / f"p{r['page']:03d}.jpg"
-        img_path, has_image, borrowed = f"pages/p{r['page']:03d}.jpg", own_image.exists(), {}
+        img_rel = r.get("image") or f"pages/p{r['page']:03d}.jpg"
+        own_image = work_dir / img_rel
+        img_path, has_image, borrowed = img_rel, own_image.exists(), {}
         gemini_jpg = gemini_dir / "pages" / f"p{r['page']:03d}.jpg" if gemini_dir is not None else None
 
         if not has_boxes and gemini_dir is not None:
@@ -162,7 +167,9 @@ def build(work_dir: Path):
                 t["b"] = src["box"]
         audio_rel = r.get("audio")
         why = []
-        if r.get("status") != "spoken":
+        if preview:
+            audio_rel = None  # OCR approval comes before TTS: show the text, no audio
+        elif r.get("status") != "spoken":
             # a corrected page is reset to extracted/diacritised; its old audio file is
             # still on disk, but it speaks the words from before the correction
             why.append("not spoken since its last change")
@@ -175,7 +182,7 @@ def build(work_dir: Path):
             continue
 
         pages.append({"page": r["page"], "audio": audio_rel,
-            "img": img_path, "dur": r["duration_ms"],
+            "img": img_path, "dur": 0 if preview else r["duration_ms"],
             "diac": r["diac_ratio"], "box_level": r.get("box_level", "word"),
             "has_image": has_image, "compare": has_image, "boxed": has_boxes and has_image,
             "voice": r.get("voice", ""), "tokens": tok})
@@ -228,7 +235,8 @@ def build(work_dir: Path):
     dur = sum(p["dur"] for p in pages) / 1000
 
     # ---- pieces assembled outside the big f-string, to keep it readable ----
-    meta_bits = [f"{len(pages)} pages", f"{n_tok} words", f"{dur/60:.1f} min of audio"]
+    meta_bits = [f"{len(pages)} pages", f"{n_tok} words",
+                 "OCR preview — no audio yet" if preview else f"{dur/60:.1f} min of audio"]
     if voice:
         meta_bits.append(f"voice {voice}")
     if has_compare and n_compare < len(pages):
@@ -254,17 +262,19 @@ def build(work_dir: Path):
         attr = f" data-count={count}" if count is not None else ""
         return f"<div class=tile><b{attr}>{value}</b><span>{label}</span></div>"
 
-    tiles = [
+    tiles = [] if preview else [
         tile(str(n_anc), "words anchored to real timestamps"
              + (f" ({100*n_anc/n_timed:.0f}% of timed)" if n_timed else ""), n_anc),
         tile(str(n_interp), "words with timing interpolated between anchors", n_interp),
-        tile(str(n_fix), "words cleaned by an extraction rule", n_fix),
     ]
+    tiles.append(tile(str(n_fix), "words corrected (hover a word to see why)" if preview
+                      else "words cleaned by an extraction rule", n_fix))
     if n_flag:
         tiles.append(tile(str(n_flag), f"unresolved disagreements ({100*n_flag/n_tok:.0f}%)", n_flag))
     if n_verified:
         tiles.append(tile(str(n_verified), f"VLM-verified disagreements ({100*n_verified/n_tok:.0f}%)", n_verified))
-    tiles.append(tile(f"{dur/60:.1f} min", "real synthesised audio"))
+    if not preview:
+        tiles.append(tile(f"{dur/60:.1f} min", "real synthesised audio"))
     if t_book:
         tiles.append(tile(timing.fmt(t_book), "processing time, last full run (wall clock)"))
     if t_timed:

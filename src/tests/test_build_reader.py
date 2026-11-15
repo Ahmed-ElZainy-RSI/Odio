@@ -91,3 +91,21 @@ def test_a_book_without_timings_has_no_timing_panel(tmp_path):
     html = build_reader.build(book).read_text(encoding="utf-8")
     assert "<details class=tmg>" not in html
     assert "processing time, last full run" not in html
+
+
+def test_preview_shows_pages_before_any_audio(tmp_path):
+    # OCR approval comes before TTS: preview=True renders unspoken pages, with no audio,
+    # and an "image" path relative to the book folder (the «قيمي» books keep images elsewhere)
+    book = tmp_path / "book"
+    (tmp_path / "images").mkdir()
+    (tmp_path / "images" / "p001.png").write_bytes(b"png")
+    write_page(book, 1, [make_token("p001w000", "أرنوب")], status="extracted",
+               box_level="none", image="../images/p001.png")
+    write_page(book, 2, [make_token("p002w000", "قِطّ")], status="extracted", box_level="none")
+
+    assert build_reader.build(book) is None  # the normal reader still needs audio
+
+    html = build_reader.build(book, preview=True).read_text(encoding="utf-8")
+    assert "OCR preview — no audio yet" in html
+    assert '"img":"../images/p001.png"' in html and '"compare":true' in html
+    assert '"page":2' in html and '"audio":null' in html

@@ -1,0 +1,64 @@
+{
+ "book": "البرمائيات الجزء الأول",
+ "source_pdf": "البرمئيات الجزء الأول.pdf",
+ "pdf_sha256_16": "d67b40096929fe9d",
+ "page": 2,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.8-flash",
+ "box_level": "none",
+ "render_size": [
+  1654,
+  2339
+ ],
+ "diac_ratio": 0.0,
+ "path": "keep",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p002w000",
+   "raw": "دائرة",
+   "txt": "دائرة",
+   "fixes": []
+  },
+  {
+   "id": "p002w001",
+   "raw": "معارف",
+   "txt": "معارف",
+   "fixes": []
+  },
+  {
+   "id": "p002w002",
+   "raw": "عالم",
+   "txt": "عالم",
+   "fixes": []
+  },
+  {
+   "id": "p002w003",
+   "raw": "الحيوان",
+   "txt": "الحيوان",
+   "fixes": []
+  },
+  {
+   "id": "p002w004",
+   "raw": "البرمائيات",
+   "txt": "البرمائيات",
+   "fixes": []
+  },
+  {
+   "id": "p002w005",
+   "raw": "مصطفى",
+   "txt": "مصطفى",
+   "fixes": []
+  },
+  {
+   "id": "p002w006",
+   "raw": "غنيم",
+   "txt": "غنيم",
+   "fixes": []
+  }
+ ],
+ "box_fit": {
+  "fitted": 0,
+  "total": 7
+ }
+}

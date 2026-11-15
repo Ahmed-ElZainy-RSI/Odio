@@ -1,0 +1,21 @@
+{
+ "book": "البرمائيات الجزء الأول",
+ "source_pdf": "البرمئيات الجزء الأول.pdf",
+ "pdf_sha256_16": "d67b40096929fe9d",
+ "page": 4,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.8-flash",
+ "box_level": "none",
+ "render_size": [
+  1654,
+  2339
+ ],
+ "diac_ratio": 0,
+ "path": "keep",
+ "status": "extracted",
+ "tokens": [],
+ "box_fit": {
+  "fitted": 0,
+  "total": 0
+ }
+}

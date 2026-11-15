@@ -1,0 +1,598 @@
+{
+ "book": "الثقة",
+ "source_pdf": "الثقة_merged.pdf",
+ "pdf_sha256_16": "695ba75b1db95238",
+ "page": 14,
+ "source": "ocr",
+ "ocr_engine": "gemini-3.8-flash",
+ "box_level": "word",
+ "render_size": [
+  1654,
+  2339
+ ],
+ "diac_ratio": 0.848,
+ "path": "keep",
+ "status": "extracted",
+ "tokens": [
+  {
+   "id": "p014w000",
+   "raw": "سَأَلَتِ",
+   "txt": "سَأَلَتِ",
+   "fixes": [],
+   "box": [
+    84.885,
+    8.508,
+    7.799,
+    3.634
+   ]
+  },
+  {
+   "id": "p014w001",
+   "raw": "الآنِسَةُ",
+   "txt": "الآنِسَةُ",
+   "fixes": [],
+   "box": [
+    72.612,
+    8.465,
+    12.092,
+    3.677
+   ]
+  },
+  {
+   "id": "p014w002",
+   "raw": "«سَامِيَّة»:",
+   "txt": "«سَامِيَّة»:",
+   "fixes": [],
+   "box": [
+    68.44,
+    9.32,
+    4.293,
+    2.822
+   ]
+  },
+  {
+   "id": "p014w003",
+   "raw": "«رَضْوَى،",
+   "txt": "«رَضْوىَ،",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    56.167,
+    9.149,
+    7.255,
+    2.993
+   ],
+   "evidence": [
+    {
+     "original": "«رَضْوَى،",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "this one has no fatha on the waw",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w004",
+   "raw": "أَلَنْ",
+   "txt": "أَلَنْ",
+   "fixes": [],
+   "box": [
+    48.307,
+    8.508,
+    7.86,
+    3.591
+   ]
+  },
+  {
+   "id": "p014w005",
+   "raw": "تُشَارِكِي؟»",
+   "txt": "تُشَارِكِي؟»",
+   "fixes": [],
+   "box": [
+    38.15,
+    8.722,
+    10.157,
+    4.104
+   ]
+  },
+  {
+   "id": "p014w006",
+   "raw": "رَدَّتْ",
+   "txt": "رَدَّتْ",
+   "fixes": [],
+   "box": [
+    86.336,
+    14.023,
+    6.348,
+    3.078
+   ]
+  },
+  {
+   "id": "p014w007",
+   "raw": "«رَضْوَى»",
+   "txt": "«رَضْوَىَ»",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    73.519,
+    14.109,
+    9.855,
+    2.993
+   ],
+   "evidence": [
+    {
+     "original": "«رَضْوَى»",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "fatha on the alef maqsura (every occurrence)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w008",
+   "raw": "بِتَرَدُّدٍ:",
+   "txt": "بِتَرَدُّدِ:",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    63.906,
+    13.852,
+    6.771,
+    3.848
+   ],
+   "evidence": [
+    {
+     "original": "بِتَرَدُّدٍ:",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "single kasra, not tanween",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w009",
+   "raw": "«أَنَا",
+   "txt": "«أَنَا",
+   "fixes": [],
+   "box": [
+    56.832,
+    14.151,
+    2.842,
+    2.309
+   ]
+  },
+  {
+   "id": "p014w010",
+   "raw": "أَكُونُ",
+   "txt": "أكُونُ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    49.577,
+    13.553,
+    6.288,
+    3.506
+   ],
+   "evidence": [
+    {
+     "original": "أَكُونُ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "no fatha on the hamza",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w011",
+   "raw": "مُتَوَتِّرَةً",
+   "txt": "مُتَوَتِّرَةَ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    40.024,
+    13.638,
+    8.585,
+    3.463
+   ],
+   "evidence": [
+    {
+     "original": "مُتَوَتِّرَةً",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "single fatha, not tanween",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w012",
+   "raw": "جِدًّا",
+   "txt": "جِدًّا",
+   "fixes": [],
+   "box": [
+    34.946,
+    13.809,
+    4.293,
+    3.848
+   ]
+  },
+  {
+   "id": "p014w013",
+   "raw": "عَلَى",
+   "txt": "عَلَىَ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    87.122,
+    18.769,
+    5.26,
+    3.42
+   ],
+   "evidence": [
+    {
+     "original": "عَلَى",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "fatha on the alef maqsura",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w014",
+   "raw": "المَسْرَح»",
+   "txt": "المَسْرَحِ»",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    75.756,
+    19.453,
+    9.613,
+    2.993
+   ],
+   "evidence": [
+    {
+     "original": "المَسْرَح»",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "kasra on the ha",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w015",
+   "raw": "تَفَهَّمَتِ",
+   "txt": "تَفَهَّمَتِ",
+   "fixes": [],
+   "box": [
+    63.906,
+    18.982,
+    8.222,
+    3.164
+   ]
+  },
+  {
+   "id": "p014w016",
+   "raw": "الآنِسَةُ",
+   "txt": "الآنِسَةُ",
+   "fixes": [],
+   "box": [
+    54.353,
+    18.427,
+    7.739,
+    3.72
+   ]
+  },
+  {
+   "id": "p014w017",
+   "raw": "«سَامِيَة»",
+   "txt": "«سَامِيَة»",
+   "fixes": [],
+   "box": [
+    43.41,
+    19.496,
+    7.437,
+    2.651
+   ]
+  },
+  {
+   "id": "p014w018",
+   "raw": "أَنَّ",
+   "txt": "أَنَّ",
+   "fixes": [],
+   "box": [
+    36.759,
+    18.982,
+    2.963,
+    3.078
+   ]
+  },
+  {
+   "id": "p014w019",
+   "raw": "«رَضْوَى»",
+   "txt": "«رَضْوَىَ»",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    80.774,
+    24.113,
+    9.855,
+    2.993
+   ],
+   "evidence": [
+    {
+     "original": "«رَضْوَى»",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "fatha on the alef maqsura (every occurrence)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w020",
+   "raw": "تَنْقُصُهَا",
+   "txt": "تَنْقُصُهَا",
+   "fixes": [],
+   "box": [
+    68.319,
+    23.557,
+    9.19,
+    3.463
+   ]
+  },
+  {
+   "id": "p014w021",
+   "raw": "الثِّقَةُ",
+   "txt": "الثِّقَةُ",
+   "fixes": [],
+   "box": [
+    61.608,
+    23.386,
+    5.26,
+    3.078
+   ]
+  },
+  {
+   "id": "p014w022",
+   "raw": "بِالنَّفْسِ.",
+   "txt": "بِالنَّفْسِ.",
+   "fixes": [],
+   "box": [
+    52.177,
+    23.771,
+    8.222,
+    3.976
+   ]
+  },
+  {
+   "id": "p014w023",
+   "raw": "قَالَتْ",
+   "txt": "قَالَتْ",
+   "fixes": [],
+   "box": [
+    44.015,
+    23.771,
+    5.804,
+    2.693
+   ]
+  },
+  {
+   "id": "p014w024",
+   "raw": "لَهَا:",
+   "txt": "لَهَا:",
+   "fixes": [],
+   "box": [
+    89.117,
+    28.73,
+    3.507,
+    3.249
+   ]
+  },
+  {
+   "id": "p014w025",
+   "raw": "«هَيَّا",
+   "txt": "«هَيَّا",
+   "fixes": [],
+   "box": [
+    81.741,
+    29.243,
+    3.628,
+    2.779
+   ]
+  },
+  {
+   "id": "p014w026",
+   "raw": "«رَضْوَى»",
+   "txt": "«رَضْوَىَ»",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    72.068,
+    29.072,
+    7.316,
+    2.993
+   ],
+   "evidence": [
+    {
+     "original": "«رَضْوَى»",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "fatha on the alef maqsura (every occurrence)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w027",
+   "raw": "فَلَدَيْكِ",
+   "txt": "فَلَدَيكِ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    60.218,
+    28.73,
+    11.911,
+    3.378
+   ],
+   "evidence": [
+    {
+     "original": "فَلَدَيْكِ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "no sukun on the ya",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w028",
+   "raw": "صَوْتٌ",
+   "txt": "صَوْتٌ",
+   "fixes": [],
+   "box": [
+    51.753,
+    28.901,
+    8.162,
+    3.121
+   ]
+  },
+  {
+   "id": "p014w029",
+   "raw": "عَذْبٌ",
+   "txt": "عَذْبٌ",
+   "fixes": [],
+   "box": [
+    44.8,
+    28.602,
+    6.288,
+    3.335
+   ]
+  },
+  {
+   "id": "p014w030",
+   "raw": "وَأَعْرِفُ",
+   "txt": "وَأَعْرِفُ",
+   "fixes": [],
+   "box": [
+    82.588,
+    33.433,
+    10.036,
+    4.318
+   ]
+  },
+  {
+   "id": "p014w031",
+   "raw": "أَنَّكِ",
+   "txt": "أَنَّكِ",
+   "fixes": [],
+   "box": [
+    76.481,
+    33.433,
+    4.293,
+    3.677
+   ]
+  },
+  {
+   "id": "p014w032",
+   "raw": "تَسْتَطِيعِينَ",
+   "txt": "تَسَتطِيعِينَ",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    62.515,
+    34.032,
+    12.334,
+    3.078
+   ],
+   "evidence": [
+    {
+     "original": "تَسْتَطِيعِينَ",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "printed fatha on the sin, ta bare (typo kept)",
+     "at": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "p014w033",
+   "raw": "القِيامَ",
+   "txt": "القِيامَ",
+   "fixes": [],
+   "box": [
+    54.595,
+    34.416,
+    6.046,
+    2.993
+   ]
+  },
+  {
+   "id": "p014w034",
+   "raw": "بِذَلِكَ».",
+   "txt": "بِذَلِكَ».",
+   "fixes": [],
+   "box": [
+    47.098,
+    33.732,
+    5.865,
+    3.891
+   ]
+  },
+  {
+   "id": "p014w035",
+   "raw": "وَافَقَتْ",
+   "txt": "وَافَقَتْ",
+   "fixes": [],
+   "box": [
+    80.109,
+    38.863,
+    12.515,
+    3.206
+   ]
+  },
+  {
+   "id": "p014w036",
+   "raw": "«رَضْوَى».",
+   "txt": "«رَضْوَىَ».",
+   "fixes": [
+    "hand-checked tashkeel"
+   ],
+   "box": [
+    72.31,
+    39.077,
+    7.92,
+    2.95
+   ],
+   "evidence": [
+    {
+     "original": "«رَضْوَى».",
+     "detector": "text-layer check",
+     "decided_by": "hand, on the page image",
+     "rule": "fatha on the alef maqsura (every occurrence)",
+     "at": "2026-11-15"
+    }
+   ]
+  }
+ ],
+ "box_fit": {
+  "fitted": 37,
+  "total": 37
+ }
+}
