@@ -241,3 +241,7 @@ assets/pages_png/
 # (12 GB at N=1,000 by the architecture's own numbers — never commit these)
 work/*/audio/
 work/*/pages/
+
+# «قيمي» books: source PDFs and OCR output are data, shared on OneDrive (OCR Results), not in git
+/books/
+/result/
