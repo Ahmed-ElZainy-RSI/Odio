@@ -135,7 +135,11 @@ def build_book(runs: Path, result: Path = REPO / "result") -> Path:
     """runs = work/qiyami/<book> (OCR stage output). Writes result/<book>/ and returns it."""
     book = runs.name
     meta = json.loads((runs / "book.json").read_text(encoding="utf-8"))
-    pdf_path = next((p for p in (REPO / "books").glob("*.pdf") if p.name == meta["source_pdf"]), None)
+    # books/ may hold the PDFs in sub-folders (books/دار الريادة/...): search them too, shallowest first
+    pdf_path = next((p for p in sorted((REPO / "books").rglob("*.pdf"), key=lambda p: len(p.parts))
+                     if p.name == meta["source_pdf"]), None)
+    if pdf_path is None:
+        print(f"{book}: source PDF {meta['source_pdf']!r} not found under books/: no word boxes, no ocr_check")
     doc = pymupdf.open(pdf_path) if pdf_path else None
     out = result / book
     (out / "pages").mkdir(parents=True, exist_ok=True)
@@ -180,9 +184,31 @@ def build_book(runs: Path, result: Path = REPO / "result") -> Path:
             (out / name).write_text((runs / name).read_text(encoding="utf-8"), encoding="utf-8")
     print(f"{book}: {boxed}/{total} words boxed")
     if pdf_path:
-        build_ocr_check.build(out, pdf_path)
-    build_reader.build(out, preview=True)
+        embed_images(build_ocr_check.build(out, pdf_path), "check_pages", 2000)
+    embed_images(build_reader.build(out, preview=True), "pages", 1400)
     return out
+
+
+def embed_images(html: Path | None, folder: str, edge: int, quality: int = 80) -> None:
+    """Put each page image inside the HTML (data: URI), so the page shows them wherever it is opened:
+    a VS Code preview, a copy of the file alone, an attachment. Downscaled to `edge` px on the long side
+    (2000 keeps a fatha readable in the hand check's word crops). The image files stay next to it."""
+    if html is None:
+        return
+    import base64
+    import io
+    s = html.read_text(encoding="utf-8")
+
+    def data_uri(m):
+        with Image.open(html.parent / m.group(1)) as im:
+            im = im.convert("RGB")
+            im.thumbnail((edge, edge), Image.Resampling.LANCZOS)
+            buf = io.BytesIO()
+            im.save(buf, "JPEG", quality=quality, optimize=True)
+        return f'"img":"data:image/jpeg;base64,{base64.b64encode(buf.getvalue()).decode()}"'
+    s, n = re.subn(rf'"img":"({folder}/p\d{{3}}\.jpg)"', data_uri, s)
+    html.write_text(s, encoding="utf-8")
+    print(f"    {html.name}: {n} page images embedded, {html.stat().st_size / 1e6:.1f} MB")
 
 
 def main():

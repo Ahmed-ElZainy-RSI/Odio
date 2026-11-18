@@ -44,7 +44,7 @@ def words(text: str) -> list[str]:
     """Arabic words with their marks; punctuation, digits and latin dropped."""
     out = []
     for t in text.split():
-        t = re.sub(f"[^ء-يٱ{MARKS}ـ]", "", t)
+        t = re.sub(f"[^ء-يٱ{MARKS}ـ]", "", t).replace("اهلل", "الله")  # the layer spells the الله ligature اهلل
         t = re.sub(f"^{M}+", "", t)
         if re.search(LETTER, t):
             out.append(canon(t))

@@ -51,6 +51,21 @@ LETTERS = re.compile(r"[ء-ي]")
 SCORED = {"الأمانة": ("page_4", "page_5")}
 
 
+def clean_markup(text):
+    """Drop formatting the model adds that is not printed: <br> inside table cells, **bold**.
+    Table cells stay separated by «|» (a table's structure is content); nothing else is touched."""
+    text = re.sub(r"\s*<br\s*/?>\s*", " ", text, flags=re.I)
+    text = text.replace("**", "")
+    # a Markdown table's header rule («| :--- | :--- |») is not printed
+    text = re.sub(r"(?m)^[ \t]*\|?(?:[ \t]*:?-{3,}:?[ \t]*\|)+[ \t]*:?-*:?[ \t]*$\n?", "", text)
+    # On a blank or picture-only page the model sometimes answers with a note instead of nothing
+    # («This page contains no text…»). A page with no Arabic letter whose words are such a note is empty.
+    if not LETTERS.search(text) and re.search(
+            r"\b(no (printed )?text|blank page|transcribe|only an illustration|page number)\b", text, re.I):
+        return ""
+    return text
+
+
 def apply_fixes(text, fixes, n):
     """Replace every `old` with `new` on page n. A fix that no longer matches is an error, not a skip."""
     done = []
@@ -96,6 +111,10 @@ def main():
     ap.add_argument("--result", default=str(REPO / "result"), help="where the book folder is built")
     ap.add_argument("--runs", default=str(REPO / "work" / "qiyami"), help="where raw model answers are kept")
     ap.add_argument("--rebuild", action="store_true", help="rebuild from saved runs, no API calls")
+    ap.add_argument("--resume", action="store_true",
+                    help="call the API only for pages with no saved run (after a crash or a network drop)")
+    ap.add_argument("--no-build", action="store_true",
+                    help="do not (re)build result/<book>/ at the end (parallel workers: run_all.py builds once)")
     a = ap.parse_args()
     key = os.environ.get("GEMINI_API_KEY")
     if not a.rebuild and not key:
@@ -128,7 +147,7 @@ def main():
                 if not img_path.exists() or not a.rebuild:
                     with timing.step("render"):
                         doc[n - 1].get_pixmap(dpi=a.dpi).save(img_path)
-                if not a.rebuild:
+                if not a.rebuild and not (a.resume and (runs / name / "Gemini-3.8-Flash.txt").exists()):
                     T.PAGES[name] = str(img_path.resolve())
                     S.GT.setdefault(name, "ا")  # run_page needs a reference; placeholder score is discarded
                     with timing.step("ocr"):
@@ -136,7 +155,7 @@ def main():
                 out_txt = runs / name / "Gemini-3.8-Flash.txt"
                 if not out_txt.exists():
                     print(f"p{n:03d}: no saved run, skipped"); continue
-                text, done = apply_fixes(out_txt.read_text(encoding="utf-8").strip(), fixes, n)
+                text, done = apply_fixes(clean_markup(out_txt.read_text(encoding="utf-8").strip()), fixes, n)
                 samples = len(list((runs / name).glob("sample_*.raw")))
                 score = None
                 if name in SCORED.get(book, ()):
@@ -164,6 +183,8 @@ def main():
     (root / f"{book}_كامل.txt").write_text(
         "\n\n".join(f"===== صفحة {d['page']} =====\n{d['text']}" for d in summary), encoding="utf-8")
     print(f"\nWrote {root.resolve()}")
+    if a.no_build:
+        return
     import build_readers
     build_readers.build_book(root, Path(a.result))
 
