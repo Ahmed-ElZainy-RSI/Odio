@@ -12,6 +12,7 @@ Pages default to the 7 scored pages. Needs $GEMINI_API_KEY. Every call uploads t
 """
 import argparse
 import base64
+import contextvars
 import io
 import json
 import os
@@ -113,7 +114,20 @@ def strips(img: Image.Image, n: int, scale: float = 2.0, overlap: float = 0.08):
     return out
 
 
-def call(model, parts, res, thinking, temperature, key, retries=4):
+def record_usage(model, data, parts):
+    """One usage.jsonl line per call (src/pipeline/usage.py), when qiyami_run.py has a recording scope open.
+    Thinking tokens bill as output."""
+    try:
+        from pipeline import usage
+    except ImportError:  # run from the test_ocr folder, without the pipeline on the path
+        return
+    m = data.get("usageMetadata", {})
+    usage.record("gemini", model, "ocr", input_tokens=m.get("promptTokenCount", 0),
+                 output_tokens=m.get("candidatesTokenCount", 0) + m.get("thoughtsTokenCount", 0),
+                 images=sum("inline_data" in x for x in parts))
+
+
+def call(model, parts, res, thinking, temperature, key, retries=7):
     cfg = {"temperature": temperature}
     if res:
         cfg["mediaResolution"] = res
@@ -126,13 +140,27 @@ def call(model, parts, res, thinking, temperature, key, retries=4):
         try:
             with urllib.request.urlopen(req, timeout=300) as r:
                 data = json.loads(r.read())
-            cand = data["candidates"][0]["content"]["parts"]
+            record_usage(model, data, parts)  # billed even if the answer turns out empty
+            c0 = data["candidates"][0]
+            cand = c0.get("content", {}).get("parts")
+            if cand is None:
+                # no text at all: fine for a picture-only page (STOP), anything else is a refusal/cut-off
+                if c0.get("finishReason") == "STOP":
+                    return "", data.get("usageMetadata", {})
+                if attempt < retries - 1:
+                    time.sleep(4 * 2 ** attempt); continue
+                raise RuntimeError(f"empty answer, finishReason={c0.get('finishReason')}")
             return "".join(p.get("text", "") for p in cand if not p.get("thought")), data.get("usageMetadata", {})
         except urllib.error.HTTPError as e:
             msg = e.read(1000).decode(errors="replace")
-            if e.code in (429, 500, 503) and attempt < retries - 1:
+            if e.code in (429, 500, 502, 503, 504) and attempt < retries - 1:
                 time.sleep(4 * 2 ** attempt); continue
             raise RuntimeError(redact(f"HTTP {e.code}: {msg[:400]}")) from None
+        except (urllib.error.URLError, ConnectionError, TimeoutError, OSError) as e:
+            # dropped connection / DNS failure / timeout: the network, not the request
+            if attempt < retries - 1:
+                time.sleep(4 * 2 ** attempt); continue
+            raise RuntimeError(redact(f"network error: {e}")) from None
 
 
 def vote(texts: list[str]) -> str:
@@ -190,7 +218,9 @@ def run_page(page, args, key):
     texts, toks = [], 0
     image_parts = parts[:-1]
     with ThreadPoolExecutor(args.samples) as ex:
-        futs = [ex.submit(call, args.model, parts, RES[args.res], args.thinking,
+        # each worker runs in a copy of this thread's context, so usage.record() sees the
+        # recording scope qiyami_run.py opened (contextvars do not cross into pool threads)
+        futs = [ex.submit(contextvars.copy_context().run, call, args.model, parts, RES[args.res], args.thinking,
                           args.temperature if args.samples == 1 else max(args.temperature, 0.4), key)
                 for _ in range(args.samples)]
         for f in futs:
