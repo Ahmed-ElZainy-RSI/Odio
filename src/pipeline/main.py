@@ -11,6 +11,7 @@ Usage:
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 5
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --pages 13:20
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --force-ocr
+    python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --ocr-check
     python3 src/pipeline/main.py "assets/PDF Samples/book.pdf" --trust-text-layer
 
 Every stage is independently resumable (each run_*.py module skips pages
@@ -38,6 +39,10 @@ this class of defect.
 Since spec 012 that check is automatic: a text layer is spot-checked against OCR on up to
 2 pages first (text_layer_trust.py) and the book goes down the OCR path if they disagree.
 --trust-text-layer skips the check; --force-ocr still forces OCR outright.
+
+--ocr-check runs Gemini OCR only (always OCR, like --force-ocr), builds the hand-checking
+page (tools/build_ocr_check.py -> work/<book>/ocr_check.html), opens it, and stops: no
+diacritising, audio or reader. Re-running main.py without it later resumes from there.
 """
 import argparse
 import contextlib
@@ -106,7 +111,51 @@ def text_layer_is_trusted(pdf_path: Path, work_dir: Path, ocr: str) -> tuple[boo
     return result.trusted, result.reason
 
 
-def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str = "gemini",
+def run_ocr_check(pdf_path: Path, pages="0", work_dir: Path | None = None,
+                  open_page: bool = True) -> Path:
+    """OCR (Gemini) -> ocr_check.html, timed like a full run; stops before diacritising."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+    import build_ocr_check  # tools/, read-only for the pipeline
+
+    book = pdf_path.stem.strip()
+    work_dir = work_dir or books.resolve_work_dir(pdf_path)
+    print(f"=== {book} ===\nOCR check: Gemini OCR -> ocr_check.html (no audio, no reader)\n")
+    started = time.perf_counter()
+    with timing.run(work_dir) as run_id:
+        with timing.stage("ocr-gemini"), _stage("ocr"):
+            summary = run_ocr_gemini.run(pdf_path, work_dir, pages=pages)
+        print("\n--- building OCR check page ---")
+        out = None
+        if any(work_dir.glob("p*.json")):
+            with timing.stage("ocr-check"), _stage("ocr-check"):
+                out = build_ocr_check.build(work_dir, pdf_path)
+        total = time.perf_counter() - started
+        timing.record_book_total(total)
+    print("\n" + timing.summary(work_dir, run_id, total))
+    if out is None:
+        print("\nno OCR pages on disk -- nothing to check")
+        return None
+    if summary.get("stopped_on_quota"):
+        print("\nOCR stopped on quota: the page covers only the pages done so far; "
+              "re-run the same command later to finish")
+    print(f"\ndone -> {out}")
+    if open_page:
+        _open(out)
+    return out
+
+
+def _open(path: Path):
+    """Open a file in the default browser; harmless no-op where that isn't possible."""
+    import subprocess
+    opener = {"darwin": ["open"], "win32": ["cmd", "/c", "start", ""]}.get(sys.platform, ["xdg-open"])
+    try:
+        subprocess.run([*opener, str(path)], check=False,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except OSError:
+        pass
+
+
+def run_pipeline(pdf_path: Path, ocr: str = "gemini", tts: str | None = "gemini",
                   voice: str | None = None, pages="0", force_ocr: bool = False,
                   work_dir: Path | None = None, trust_text_layer: bool = False) -> Path:
     """work_dir defaults to the directory this PDF's *content* maps to (books.py, spec
@@ -162,12 +211,15 @@ def _run_stages(pdf_path, book, work_dir, ocr, tts, voice, pages, force_ocr, tru
     with timing.stage("diacritise"), _stage("diacritise"):
         run_tashkel.run(work_dir)
 
-    print(f"\n--- synthesising ({tts}) ---")
-    with timing.stage(f"tts-{tts}"), _stage("tts"):
-        if tts == "hume":
-            run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE)
-        else:
-            run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE)
+    if tts is None:
+        print("\n--- synthesising: skipped (--no-tts) ---")
+    else:
+        print(f"\n--- synthesising ({tts}) ---")
+        with timing.stage(f"tts-{tts}"), _stage("tts"):
+            if tts == "hume":
+                run_speak_hume.run(work_dir, voice or run_speak_hume.VOICE)
+            else:
+                run_speak_gemini.run(work_dir, voice or run_speak_gemini.VOICE)
 
     print("\n--- building reader ---")
     with timing.stage("reader"), _stage("reader"):
@@ -189,6 +241,9 @@ def main():
                           "alignment (no native timestamps on the free API tier) but has "
                           "quota available; hume gives native timestamps but its credit "
                           "balance is currently exhausted")
+    ap.add_argument("--no-tts", action="store_true",
+                     help="stop before speech: OCR + diacritics + reader only (e.g. while the OCR "
+                          "still waits for review)")
     ap.add_argument("--voice", default=None, help="override the default voice for the chosen TTS engine")
     ap.add_argument("--pages", default="0",
                      help="limit which pages get fetched during extraction/OCR (0 = all): "
@@ -202,13 +257,24 @@ def main():
     ap.add_argument("--trust-text-layer", action="store_true",
                      help="skip the text-layer spot check (up to 2 OCR calls per text-layer "
                           "book) and use the embedded text as-is")
+    ap.add_argument("--ocr-check", action="store_true",
+                     help="OCR only (Gemini, always OCR), then build and open work/<book>/ocr_check.html "
+                          "to check the reading by hand; stops before diacritising and audio")
+    ap.add_argument("--no-open", action="store_true",
+                     help="with --ocr-check: build the page but don't open it in the browser")
     args = ap.parse_args()
 
     pdf_path = Path(args.pdf)
     if not pdf_path.exists():
         sys.exit(f"no such file: {pdf_path}")
 
-    run_pipeline(pdf_path, ocr=args.ocr, tts=args.tts, voice=args.voice, pages=args.pages,
+    if args.ocr_check:
+        if args.ocr != "gemini":
+            sys.exit("--ocr-check needs --ocr gemini: the check page uses Gemini's word boxes "
+                     "(LightOn returns none)")
+        run_ocr_check(pdf_path, pages=args.pages, open_page=not args.no_open)
+        return
+    run_pipeline(pdf_path, ocr=args.ocr, tts=None if args.no_tts else args.tts, voice=args.voice, pages=args.pages,
                  force_ocr=args.force_ocr, trust_text_layer=args.trust_text_layer)
 
 

@@ -357,8 +357,16 @@ Nothing in `main.py` checks the OCR's reading against the page, and on a `keep` 
 child hears the OCR's diacritics as-is. To measure how often it is wrong, build a checking page:
 
 ```bash
-python3 tools/build_ocr_check.py "work/<book>"     # after OCR; writes work/<book>/ocr_check.html
+# one command: Gemini OCR -> ocr_check.html -> opens it (no diacritising, audio or reader)
+python3 src/pipeline/main.py "assets/PDF Samples/<book>.pdf" --ocr-check
+python3 src/pipeline/main.py "assets/PDF Samples/<book>.pdf" --ocr-check --pages 5 --no-open
+
+# or just the page, for a book already OCR'd
+python3 tools/build_ocr_check.py "work/<book>"
 ```
+
+Running `main.py` on the same PDF without `--ocr-check` later resumes from there: OCR is
+skipped and it goes on to diacritising, audio and the reader.
 
 It shows each word beside a zoomed crop of it on a high-resolution render; mark words correct,
 wrong letters, wrong diacritics, extra or missing (keys 1–6, Enter = correct + next), then
@@ -462,6 +470,7 @@ python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.j
 | `docs/ocr-correction-architecture-built.html` | Why it's shaped this way — the LightOn/Gemini asymmetry, detection, arbitration, known blind spots |
 | `docs/tools-reference.html` | Every tool: exact command, env, inputs/outputs, how to review its result |
 | `docs/full-pipeline-guide.html` | One copy-pasteable script, start to finish, plus the known quota constraints |
+| `docs/sharepoint-batch-and-benchmark.md` | OCR a whole SharePoint folder of books (`tools/run_folder.py`), upload to «OCR Results», and refresh the managers' benchmark dashboard (`tools/benchmark.py`) |
 | `TESTING.md` | Real scenarios this pipeline has actually hit, what it did about each, and an automated pytest suite (`src/tests/`, 56 tests) covering most of them |
 
 ---

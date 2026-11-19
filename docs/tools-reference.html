@@ -310,6 +310,10 @@ open "work/المومياوات ناشيونال جيوجرافيك-lighton/cont
 <div class="meta-row">
   <span class="pill env">vx2lm env</span>
 </div>
+<p>One command from a PDF path — Gemini OCR, then this page, then opens it, and stops before diacritising and audio (timed like a full run):</p>
+<pre>python3 src/pipeline/main.py "assets/PDF Samples/دبدوب الطماع.pdf" --ocr-check
+python3 src/pipeline/main.py "assets/PDF Samples/&lt;book&gt;.pdf" --ocr-check --pages 5 --no-open</pre>
+<p>Or build only the page for a book that is already OCR'd:</p>
 <pre>python3 tools/build_ocr_check.py "work/دبدوب الطماع"
 python3 tools/build_ocr_check.py "work/&lt;book&gt;" --pdf "assets/PDF Samples/&lt;book&gt;.pdf"</pre>
 <table>
