@@ -63,6 +63,9 @@ except ImportError:
 
 OUT = REPO / "result" / "ocr_results"
 SOURCES = REPO / "work" / "_sources"   # local copies of the PDFs (git-ignored); OneDrive frees its own
+# Folder runs keep their own work dirs (work/<book>-folder/), so an older local test of the same
+# PDF (diacritised, spoken, an older engine) is never reused as raw OCR, and is left untouched.
+WORK_VARIANT = "folder"
 COST_PER_PAGE = 0.007                  # $ per OCR'd page, measured on the «مؤسسة طيبة» run (247 pages)
 # What a book folder in «OCR Results» holds. audio/ is never copied.
 COPY_FILES = ["book.json", "ocr_check.html", "reader.html", "timings.jsonl", "usage.jsonl"]
@@ -160,7 +163,7 @@ def run_book(book: dict, *, full: bool, pages: str, log) -> Path:
     """Run the pipeline for one book; returns its work dir. Raises on failure."""
     from pipeline import books as work_index, main as pipeline
 
-    work_dir = work_index.resolve_work_dir(book["pdf"])
+    work_dir = work_index.resolve_work_dir(book["pdf"], variant=WORK_VARIANT)
     with contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
         if full:
             pipeline.run_pipeline(book["pdf"], ocr="gemini", tts=None, pages=pages, work_dir=work_dir)
@@ -249,7 +252,7 @@ def batch_submit(a, folder: Path, todo: list[dict]) -> None:
     start, end = parse_pages(a.pages)
     lines, entries = [], []
     for bi, b in enumerate(todo):
-        work_dir = work_index.resolve_work_dir(b["pdf"])
+        work_dir = work_index.resolve_work_dir(b["pdf"], variant=WORK_VARIANT)
         (work_dir / "pages").mkdir(parents=True, exist_ok=True)
         sent = []
         with pymupdf.open(b["pdf"]) as doc:
