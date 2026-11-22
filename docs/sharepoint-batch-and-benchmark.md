@@ -201,6 +201,39 @@ result/ocr_results/run_folder.log   full log of every run
 | upload | copied / skipped / not uploaded |
 | status | done, partial (run again), or failed (reason; details in the log) |
 
+### Batch mode: half price, results later
+
+`--batch` sends every page that still needs OCR, in all the books of a folder, to Google as
+**one Gemini Batch job**: the same model, prompt and settings as the normal run, at half the price
+(`gemini-3.8-flash:batch` in `config/prices.toml`). Results come back when the job finishes:
+Google targets 24 hours and is usually much quicker (a 6-page test took 3 min 18 s). A job
+not finished within 48 hours expires and returns nothing; its pages are simply sent again by the
+next `--batch`.
+
+```bash
+# 1. plan + cost (half-price figure shown too)
+$PY tools/run_folder.py "$SRC/دار نهضة مصر" --batch --dry-run
+
+# 2. cheap test: pages 1-2 of three books, one job
+$PY tools/run_folder.py "$SRC/دار نهضة مصر" --book "أنا محبوب" --book "المتاهة" --pages 2 --batch
+
+# 3. the whole folder as one job (your Mac can sleep afterwards)
+$PY tools/run_folder.py "$SRC/دار نهضة مصر" --batch
+
+# 4. later: fetch the results, write the pages, build review pages, export
+$PY tools/run_folder.py "$SRC/دار نهضة مصر" --collect     # says "not finished yet" until it is
+
+# 5. upload the complete books, as usual
+$PY tools/run_folder.py "$SRC/دار نهضة مصر" --upload
+```
+
+- A folder can have only one open job: `--batch` refuses to submit again until `--collect` has
+  fetched the last one, so nothing is paid for twice. Pages already OCR'd are never sent.
+- Each job is recorded in `work/_batches/<folder>/<time>.json` (job name, pages sent, and after
+  collecting: final state and turnaround).
+- A page Google could not answer is listed by `--collect` and sent again by the next `--batch`.
+- `--full` (diacritics + reader) is not done in batch; run it afterwards without `--batch`.
+
 ### `tools/benchmark.py`: the benchmark scanner
 
 ```

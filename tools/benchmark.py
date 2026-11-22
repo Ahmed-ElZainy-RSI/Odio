@@ -244,10 +244,23 @@ def scan_audio(prices: PriceTable) -> dict[str, dict]:
 
 # ── results folder: one folder per delivered book ─────────────────────────────
 
+def read_text(path: Path, tries: int = 4) -> str:
+    """Read a small file from the OneDrive folder. Opening an online-only file makes OneDrive
+    download it, which can time out (Errno 60) while it is busy uploading: wait and retry."""
+    import time
+    for attempt in range(1, tries + 1):
+        try:
+            return path.read_text(encoding="utf-8")
+        except (TimeoutError, OSError) as e:
+            if attempt == tries:
+                raise RuntimeError(f"could not read {path.parent.name}/{path.name} from OneDrive: {e}") from e
+            time.sleep(10 * attempt)
+
+
 def read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
-    return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    return [json.loads(l) for l in read_text(path).splitlines() if l.strip()]
 
 
 def is_book_dir(d: Path) -> bool:
@@ -289,6 +302,7 @@ def scan_result(d: Path, prices: PriceTable) -> dict:
     failed = sum(1 for t in steps if t.get("ok") is False)
     ats = sorted(t["at"] for t in timings if t.get("at"))
 
+    read_text(d / "usage.jsonl") if (d / "usage.jsonl").exists() else None  # fetch from OneDrive, with retries
     usage = read_log(d)
     usd = unpriced = 0.0
     if usage:
@@ -317,7 +331,7 @@ def scan_result(d: Path, prices: PriceTable) -> dict:
 
     has_book = (d / "book.json").exists()
     if has_book:
-        meta = json.loads((d / "book.json").read_text(encoding="utf-8"))
+        meta = json.loads(read_text(d / "book.json"))
     else:
         meta = {}
     done = len(ocr_pages)

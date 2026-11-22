@@ -216,6 +216,141 @@ def upload(dest: Path, results_root: Path, existing: str | None, overwrite: bool
 
 # ── report ───────────────────────────────────────────────────────────────────────
 
+# ── Batch API (half price, results later) ───────────────────────────────────────
+
+BATCHES = REPO / "work" / "_batches"   # one manifest per submitted job, per folder
+DONE_STATUSES = ("extracted", "diacritised", "spoken")
+
+
+def _gemini_client():
+    from dotenv import load_dotenv
+    from google import genai
+    load_dotenv(REPO / ".env")
+    return genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+
+def _manifests(folder: Path, open_only: bool = True) -> list[Path]:
+    d = BATCHES / folder.name
+    found = sorted(d.glob("*.json")) if d.is_dir() else []
+    return [m for m in found if not open_only or not json.loads(m.read_text(encoding="utf-8")).get("collected")]
+
+
+def batch_submit(a, folder: Path, todo: list[dict]) -> None:
+    """Render every missing page of the books to run and submit them as ONE batch job."""
+    from pipeline import books as work_index, ocr_gemini_batch as gb
+    from pipeline.ocr_gemini import render_page
+    from pipeline.pages import parse_pages
+
+    open_jobs = _manifests(folder)
+    if open_jobs:
+        print(f"\n«{folder.name}» already has {len(open_jobs)} job(s) waiting. Nothing new was submitted;"
+              f" collect them first:\n  python tools/run_folder.py \"{folder}\" --collect")
+        return
+    start, end = parse_pages(a.pages)
+    lines, entries = [], []
+    for bi, b in enumerate(todo):
+        work_dir = work_index.resolve_work_dir(b["pdf"])
+        (work_dir / "pages").mkdir(parents=True, exist_ok=True)
+        sent = []
+        with pymupdf.open(b["pdf"]) as doc:
+            for i, page in enumerate(doc, start=1):
+                if i < start or (end and i > end):
+                    continue
+                rec = work_dir / f"p{i:03d}.json"
+                if rec.exists() and json.loads(rec.read_text(encoding="utf-8")).get("status") in DONE_STATUSES:
+                    continue  # already OCR'd: never pay twice
+                jpeg, size = render_page(page)
+                (work_dir / "pages" / f"p{i:03d}.jpg").write_bytes(jpeg)
+                lines.append(gb.request_line(f"{bi}:{i}", jpeg))
+                sent.append([i, list(size)])
+        entries.append({"title": b["title"], "rel": b["rel"], "pdf": str(b["pdf"]),
+                        "work_dir": str(work_dir), "total_pages": b.get("pages"), "pages": sent})
+        print(f"  {b['title']}: {len(sent)} page(s) to send")
+    if not lines:
+        print("\nNo pages need OCR. Nothing was submitted.")
+        return
+    print(f"\nSubmitting {len(lines)} pages from {len(todo)} book(s) as one batch job ...", flush=True)
+    job = gb.submit(_gemini_client(), lines, f"ocr {folder.name}")
+    stamp = time.strftime("%Y%m%dT%H%M%S")
+    BATCHES.joinpath(folder.name).mkdir(parents=True, exist_ok=True)
+    (BATCHES / folder.name / f"{stamp}.json").write_text(json.dumps({
+        "job": job.name, "folder": folder.name, "submitted": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "requests": len(lines), "pages_arg": a.pages, "books": entries, "collected": False,
+    }, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"Submitted: {job.name}  ({gb.state(job)})\n"
+          f"Google targets 24 h, usually much sooner; a job not finished in 48 h expires.\n"
+          f"Collect with:\n  python tools/run_folder.py \"{folder}\" --collect")
+
+
+def batch_collect(a, folder: Path, source_label: str) -> None:
+    """Fetch finished jobs, write the page records, build review pages, export like a normal run."""
+    import hashlib
+    from pipeline import ocr_gemini_batch as gb, usage
+    from pipeline.run_ocr_gemini import finish_page
+    import build_ocr_check
+
+    jobs = _manifests(folder)
+    if not jobs:
+        print(f"No open batch jobs for «{folder.name}».")
+        return
+    client = _gemini_client()
+    a.out.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for mpath in jobs:
+        man = json.loads(mpath.read_text(encoding="utf-8"))
+        job = client.batches.get(name=man["job"])
+        st = gb.state(job)
+        waited = time.time() - time.mktime(time.strptime(man["submitted"], "%Y-%m-%dT%H:%M:%S"))
+        stats = getattr(job, "completion_stats", None)
+        print(f"\n{man['job']}: {st} · {man['requests']} pages · submitted {fmt_time(waited)} ago"
+              + (f" · {stats}" if stats else ""))
+        if st not in gb.FINISHED:
+            print("  not finished yet: run --collect again later.")
+            continue
+        books = man["books"]
+        got = {}  # book index -> [ok, failed]
+        if st in gb.HAS_RESULTS:
+            hashes = {}
+            for key, lines, units, error in gb.results(client, job):
+                bi, pg = (int(x) for x in key.split(":"))
+                e = books[bi]
+                work_dir, pdf = Path(e["work_dir"]), Path(e["pdf"])
+                size = next(sz for p_, sz in e["pages"] if p_ == pg)
+                with usage.recording(work_dir, "ocr-gemini-batch"), usage.page(pg):
+                    if units:
+                        usage.record("gemini", gb.PRICE_MODEL, "ocr", images=1, **units)
+                c = got.setdefault(bi, [0, 0])
+                if lines is None:
+                    c[1] += 1
+                    print(f"  ! {e['title']} p{pg}: {error}")
+                    continue
+                if pdf not in hashes:
+                    hashes[pdf] = hashlib.sha256(pdf.read_bytes()).hexdigest()[:16]
+                finish_page(lines, pg, pdf.stem, pdf, hashes[pdf], work_dir, size)
+                c[0] += 1
+        else:
+            print("  the job returned nothing; its pages will be sent again by the next --batch.")
+        for bi, e in enumerate(books):
+            work_dir = Path(e["work_dir"])
+            dest = a.out / e["title"]
+            ok, bad = got.get(bi, [0, 0])
+            if any(work_dir.glob("p[0-9][0-9][0-9].json")):
+                with contextlib.redirect_stdout(open(os.devnull, "w")):
+                    build_ocr_check.build(work_dir, Path(e["pdf"]))
+                export({"title": e["title"], "rel": e["rel"]}, work_dir, dest, source_label)
+            s = summarize(dest, e.get("total_pages")) if dest.is_dir() else {"done": 0, "check": False, "usd": 0, "complete": False}
+            rows.append([e["title"], f"{ok} ok" + (f", {bad} failed" if bad else ""),
+                         f"{s['done']}/{e.get('total_pages') or '?'}", "yes" if s["check"] else "no",
+                         f"${s['usd']:.4f}", "complete" if s["complete"] else "partial"])
+        man.update({"collected": True, "state": st, "collected_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "turnaround_s": round(waited)})
+        mpath.write_text(json.dumps(man, ensure_ascii=False, indent=1), encoding="utf-8")
+    if rows:
+        print()
+        table(rows, ["book", "this job", "pages on disk", "check page", "cost so far", "status"])
+        print(f"\nResults: {a.out}. Upload the complete books with --upload.")
+
+
 def fmt_time(s: float) -> str:
     return "—" if not s else (f"{s / 60:.0f} min" if s >= 90 else f"{s:.0f} s")
 
@@ -243,6 +378,10 @@ def main():
     ap.add_argument("--upload", action="store_true",
                     help="copy finished books into the synced «OCR Results» folder (OneDrive uploads)")
     ap.add_argument("--overwrite", action="store_true", help="with --upload: replace a book already there")
+    ap.add_argument("--batch", action="store_true",
+                    help="submit the missing pages as one Gemini Batch job (half price, results later)")
+    ap.add_argument("--collect", action="store_true",
+                    help="fetch finished batch jobs for this folder, build review pages and export")
     a = ap.parse_args()
 
     folder = a.folder.expanduser().resolve()
@@ -290,9 +429,21 @@ def main():
     est_pages = sum((b.get("pages") or 0) for b in todo) if a.pages == "0" else None
     print(f"\n{len(todo)} to run" + (f", {est_pages} pages" if est_pages else "")
           + f", about ${sum(b['estimate'] for b in todo):.2f} and "
-          f"{sum((b.get('pages') or 0) for b in todo) * 14 / 60:.0f} min at ~${COST_PER_PAGE} and ~14 s a page.")
+          f"{sum(min(b.get('pages') or 0, page_limit(a.pages)) for b in todo) * 14 / 60:.0f} min "
+          f"at ~${COST_PER_PAGE} and ~14 s a page.")
+    if a.batch:
+        print(f"With --batch: about ${sum(b['estimate'] for b in todo) / 2:.2f} (half price), "
+              "results within 24 h instead of now.")
     if a.dry_run:
         print("Nothing was run (--dry-run).")
+        return
+    if a.collect:
+        batch_collect(a, folder, source_label)
+        return
+    if a.batch:
+        if a.full:
+            sys.exit("--batch does the paid OCR only; run --full afterwards without --batch.")
+        batch_submit(a, folder, todo)
         return
     if not todo and not a.upload:
         print("\nNothing to run.")

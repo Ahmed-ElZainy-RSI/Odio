@@ -34,6 +34,25 @@ output_per_1m_tokens = 7.50
 valid_from = 2027-01-01
 source = "https://ai.google.dev/gemini-api/docs/pricing (2026-10-19)"
 
+# Batch Mode (src/pipeline/ocr_gemini_batch.py): the same model at half price, results within
+# 24 h. Recorded as model "gemini-3.8-flash:batch" so batch calls are priced (and shown) apart.
+# Source: https://ai.google.dev/gemini-api/docs/pricing, "Batch" column, read 2026-11-19.
+[[price]]
+provider = "gemini"
+model = "gemini-3.8-flash:batch"
+input_per_1m_tokens = 0.375
+output_per_1m_tokens = 1.875
+valid_until = 2026-12-31
+source = "https://ai.google.dev/gemini-api/docs/pricing (Batch, read 2026-11-19)"
+
+[[price]]
+provider = "gemini"
+model = "gemini-3.8-flash:batch"
+input_per_1m_tokens = 0.75
+output_per_1m_tokens = 3.75
+valid_from = 2027-01-01
+source = "https://ai.google.dev/gemini-api/docs/pricing (Batch, read 2026-11-19)"
+
 # TTS: input is text tokens, output is audio tokens (both reported in usage_metadata).
 [[price]]
 provider = "gemini"

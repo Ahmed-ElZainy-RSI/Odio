@@ -23,6 +23,7 @@ import pymupdf
 from dotenv import load_dotenv
 load_dotenv()
 from google import genai
+from google.genai import types
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from pipeline import failures, timing, usage
@@ -41,7 +42,10 @@ def _run(pdf_path: Path, out_dir: Path, pages="0"):
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "pages").mkdir(exist_ok=True)
     pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()[:16]
-    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    # 2-minute cap per request: without it a call that never answers blocks the run for good
+    # (seen on 19 Nov: one page waited over an hour). ocr_page() retries a timed-out page.
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"],
+                          http_options=types.HttpOptions(timeout=120_000))
     doc = pymupdf.open(str(pdf_path))
     start, end = parse_pages(pages)
     print(f"{book} — {len(doc)} pages, OCR via {MODEL}, doing {start}-{end or len(doc)}\n")
@@ -87,31 +91,43 @@ def _do_page(client, page, i, book, pdf_path, pdf_hash, out_dir, summary):
             summary["failed"] += 1
             return False
 
-        tokens = lines_to_tokens(lines, i, clean_word)
-        text = " ".join(t["txt"] for t in tokens)
-        ratio = diacritic_ratio(text)
-        fixed = sum(1 for t in tokens if t["fixes"])
-        rec = {
-            "book": book, "source_pdf": pdf_path.name, "pdf_sha256_16": pdf_hash,
-            "page": i, "source": "ocr", "ocr_engine": MODEL,
-            "box_level": "line",          # word boxes are subdivided, not measured
-            "render_size": list(size),
-            "diac_ratio": round(ratio, 3),
-            "path": "keep" if ratio >= DIAC_THRESHOLD else "diacritise",
-            "status": "extracted", "tokens": tokens,
-        }
-        try:
-            with timing.step("box-fit"):
-                fit_page(rec, out_dir / "pages" / f"p{i:03d}.jpg")
-        except Exception as e:  # the page was paid for: keep it with estimated boxes
-            if failures.handle(out_dir, i, "box-fit", e, f"{i:>3}") != "page":
-                raise
-        write_record(out_dir / f"p{i:03d}.json", rec)
-        failures.clear(out_dir, i, "ocr")
+        rec = finish_page(lines, i, book, pdf_path, pdf_hash, out_dir, size)
         summary["done"] += 1
-    print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {ratio:>6.2f} {fixed:>6}  "
+    tokens = rec["tokens"]
+    text = " ".join(t["txt"] for t in tokens)
+    fixed = sum(1 for t in tokens if t["fixes"])
+    print(f"{i:>3} {len(lines):>6} {len(tokens):>7} {len(text):>6} {rec['diac_ratio']:>6.2f} {fixed:>6}  "
           f"{rec['path']:<10} {timing.fmt(ocr_t.seconds):>7} {timing.fmt(page_t.seconds):>7}")
     return True
+
+
+def finish_page(lines, i, book, pdf_path, pdf_hash, out_dir, size) -> dict:
+    """Model lines -> page record: tokens, diacritic ratio, word boxes fitted to ink, written.
+
+    Shared by the page-by-page run above and the Batch API run (ocr_gemini_batch.py), so both
+    produce identical records. pages/pNNN.jpg must already be on disk (box fitting reads it).
+    """
+    tokens = lines_to_tokens(lines, i, clean_word)
+    text = " ".join(t["txt"] for t in tokens)
+    ratio = diacritic_ratio(text)
+    rec = {
+        "book": book, "source_pdf": pdf_path.name, "pdf_sha256_16": pdf_hash,
+        "page": i, "source": "ocr", "ocr_engine": MODEL,
+        "box_level": "line",          # word boxes are subdivided, not measured
+        "render_size": list(size),
+        "diac_ratio": round(ratio, 3),
+        "path": "keep" if ratio >= DIAC_THRESHOLD else "diacritise",
+        "status": "extracted", "tokens": tokens,
+    }
+    try:
+        with timing.step("box-fit"):
+            fit_page(rec, out_dir / "pages" / f"p{i:03d}.jpg")
+    except Exception as e:  # the page was paid for: keep it with estimated boxes
+        if failures.handle(out_dir, i, "box-fit", e, f"{i:>3}") != "page":
+            raise
+    write_record(out_dir / f"p{i:03d}.json", rec)
+    failures.clear(out_dir, i, "ocr")
+    return rec
 
 
 def run(pdf_path: Path, out_dir: Path, pages="0"):
