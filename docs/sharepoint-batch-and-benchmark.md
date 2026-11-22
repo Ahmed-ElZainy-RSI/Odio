@@ -18,7 +18,7 @@ The dashboard is **Reading First OCR Benchmark**: <https://claude.ai/artifact/GY
 
 ```
 SharePoint «Reading First Book Sample»        SharePoint «OCR Results»
-  <publisher>/<book>.pdf                         <book>/ocr_check.html, p001.json, ...
+  <publisher>/<book>.pdf                         <publisher>/<book>/ocr_check.html, p001.json, ...
           │                                               ▲              │
           │ OneDrive sync (online-only)                   │ --upload     │ OneDrive sync
           ▼                                               │              ▼
@@ -149,7 +149,7 @@ $PY tools/run_folder.py FOLDER [options]
 | `--full` | Also add diacritics and `reader.html`. Never audio |
 | `--redo` | Also run books that are already in «OCR Results» (default: skip them) |
 | `--out DIR` | Local results folder. Default `result/ocr_results/` |
-| `--upload` | Copy **complete** books into the synced «OCR Results»; OneDrive uploads them |
+| `--upload` | Copy **complete** books into the synced «OCR Results», as `<publisher>/<book>/` (the publisher folder is the source folder's name); OneDrive uploads them |
 | `--overwrite` | With `--upload`: replace a book folder that is already there |
 
 Examples:
@@ -263,7 +263,8 @@ $PY src/pipeline/main.py "path/to/book.pdf" --force-ocr     # OCR even if the PD
 ```
 
 Work goes to `work/<book>/`. The folder is chosen by the PDF's content, so a renamed copy resumes
-the same work.
+the same work. `tools/run_folder.py` uses its own folders, `work/<book>-folder/`, so a folder run never
+reuses an older local test of the same PDF (diacritised, spoken, or an older engine) as raw OCR.
 
 ### Other tools you may need
 

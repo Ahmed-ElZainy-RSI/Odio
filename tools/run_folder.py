@@ -22,7 +22,7 @@ timings.jsonl, usage.jsonl. Nothing is uploaded unless you pass --upload.
     # 3. run the folder (books already in «OCR Results» are skipped)
     python tools/run_folder.py "<folder>"
 
-    # 4. copy the finished books into the synced «OCR Results»; OneDrive uploads them
+    # 4. copy the finished books into the synced «OCR Results»/<publisher>/<book>/; OneDrive uploads them
     python tools/run_folder.py "<folder>" --upload
 
 Every book's PDF is copied once to work/_sources/ (git-ignored) and its pages counted: a PDF
@@ -209,12 +209,22 @@ def summarize(dest: Path, total_pages: int | None) -> dict:
 
 # ── upload ───────────────────────────────────────────────────────────────────────
 
-def upload(dest: Path, results_root: Path, existing: str | None, overwrite: bool) -> str:
-    target = results_root / (existing or dest.name)
+def upload(dest: Path, results_root: Path, publisher: str, existing: str | None, overwrite: bool) -> str:
+    """Copy a finished book into «OCR Results»/<publisher>/<book>/ (the layout used for every
+    publisher since 2026-11-22). A book already there keeps its folder (existing)."""
+    if existing:
+        target = results_root / existing
+    else:
+        pub = bm.nfc(publisher)
+        # reuse the publisher folder whatever its Unicode form (macOS hands out decomposed names)
+        parent = next((d for d in results_root.iterdir() if d.is_dir() and bm.nfc(d.name) == pub),
+                      results_root / pub)
+        target = parent / bm.nfc(dest.name)
+    shown = target.relative_to(results_root)
     if target.exists() and not overwrite:
-        return f"skipped: «{target.name}» is already in OCR Results (add --overwrite to replace)"
+        return f"skipped: «{shown}» is already in OCR Results (add --overwrite to replace)"
     shutil.copytree(dest, target, dirs_exist_ok=True)
-    return f"copied to OCR Results/{target.name} (OneDrive uploads it)"
+    return f"copied to OCR Results/{shown} (OneDrive uploads it)"
 
 
 # ── report ───────────────────────────────────────────────────────────────────────
@@ -490,7 +500,7 @@ def main():
                      and summarize(a.out / b["title"], b["pages"])["complete"]]
             print(f"\nUploading {len(ready)} complete book(s) to «{results_root.name}»:")
             for b in ready:
-                b["upload"] = upload(a.out / b["title"], results_root, b.get("already"), a.overwrite)
+                b["upload"] = upload(a.out / b["title"], results_root, folder.name, b.get("already"), a.overwrite)
                 print(f"  {b['title']}: {b['upload']}")
             for b in books:
                 if (a.out / b["title"]).is_dir() and b not in ready:
