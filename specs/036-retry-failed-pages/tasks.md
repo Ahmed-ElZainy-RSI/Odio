@@ -7,7 +7,7 @@ Test-first: each test task lands red before its implementation task. All tests a
 
 ### Unit: domain rule (`service/tests/unit/test_page_retry.py`, new)
 
-- [ ] T001 [P] `next_page_attempt`:
+- [x] T001 [P] `next_page_attempt` — written 2026-11-22, red until T012 (`ModuleNotFoundError: ai_engine.domain.page_retry`). Also pins: counts below 1 raise `ValueError`; the default jitter actually varies. Cases:
   - a retryable code with attempts left → a delay. With attempts used up → `None`
   - every code outside `_RETRYABLE` → `None` on the first attempt (parametrised over the taxonomy)
   - `INTERNAL_ERROR` → `None` (FR-003)

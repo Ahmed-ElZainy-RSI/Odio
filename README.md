@@ -471,6 +471,7 @@ python3 tools/apply_context_suggestions.py "work/<book>-lighton/context_review.j
 | `docs/tools-reference.html` | Every tool: exact command, env, inputs/outputs, how to review its result |
 | `docs/full-pipeline-guide.html` | One copy-pasteable script, start to finish, plus the known quota constraints |
 | `docs/sharepoint-batch-and-benchmark.md` | OCR a whole SharePoint folder of books (`tools/run_folder.py`), upload to «OCR Results», and refresh the managers' benchmark dashboard (`tools/benchmark.py`) |
+| `docs/run-a-publisher-folder.md` | Runbook: every command, in order, to OCR one publisher folder (batch or standard), upload it, report its cost, refresh the dashboard and clean up |
 | `TESTING.md` | Real scenarios this pipeline has actually hit, what it did about each, and an automated pytest suite (`src/tests/`, 56 tests) covering most of them |
 
 ---

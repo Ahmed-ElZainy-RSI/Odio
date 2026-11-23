@@ -10,6 +10,9 @@ Two scripts do the work:
 | `tools/run_folder.py` | OCRs every book in a folder and lays the results out like SharePoint «OCR Results»; `--upload` copies them there | Yes: one Gemini call per page |
 | `tools/benchmark.py` | Scans both SharePoint folders and reports where every book stands: status, pages, review readiness, time, cost, audio | No |
 
+**Just want the steps?** [run-a-publisher-folder.md](run-a-publisher-folder.md) is the start-to-finish
+runbook for one publisher: plan, batch OCR, upload, cost report, dashboard, clean-up.
+
 The dashboard is **Reading First OCR Benchmark**: <https://claude.ai/artifact/GYm32j3FKrLQ3ERc9m1vmZ>
 
 ---
